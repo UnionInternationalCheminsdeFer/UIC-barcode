@@ -53,7 +53,37 @@ class StringCoder implements Decoder, Encoder {
                         .length())) { throw new IllegalArgumentException(
                 "Bad string length, expected " + sizeRange.minValue() + ".."
                         + sizeRange.maxValue() + ", got " + string.length()); }
-        if (restrictionAnnotation.value() == CharacterRestriction.UTF8String) {
+        
+        if (restrictionAnnotation.value() == CharacterRestriction.ObjectIdentifier) {
+      
+        	byte[] oidb = ObjectIdentifierCoder.encodeObjectId(string);
+        	
+            BitBuffer stringbuffer = ByteBitBuffer.createInfinite();
+            
+            for (byte b: oidb){
+            	UperEncoder.encodeConstrainedInt(stringbuffer, b & 0xff, 0, 255);
+            }
+            //-for (char c : string.toCharArray()) {
+            //-    encodeChar(stringbuffer, c, restrictionAnnotation);
+            //-}
+            //char array replaced - end
+
+            stringbuffer.flip();
+            if (stringbuffer.limit() % 8 != 0) { 
+            		throw new AssertionError("encoding resulted not in multiple of 8 bits"); 
+            }
+            int numOctets = (stringbuffer.limit() + 7) / 8;  // Actually +7 is not needed here,
+                                                             // since we already checked with %8.
+            int position1 = bitbuffer.position();
+            UperEncoder.encodeLengthDeterminant(bitbuffer, numOctets);
+            UperEncoder.logger.debug(String.format("ObjectIdentifier %s,  length %d octets, encoded as %s", string, numOctets, bitbuffer.toBooleanStringFromPosition(position1)));
+            int position2 = bitbuffer.position();
+            for (int i = 0; i < stringbuffer.limit(); i++) {
+                bitbuffer.put(stringbuffer.get());
+            }
+            UperEncoder.logger.debug(String.format("UTF8String %s, encoded length %d octets, value bits: %s", string, numOctets, bitbuffer.toBooleanStringFromPosition(position2)));
+            return;
+        } else  if (restrictionAnnotation.value() == CharacterRestriction.UTF8String) {
             // UTF8 length
             BitBuffer stringbuffer = ByteBitBuffer.createInfinite();
             
@@ -129,7 +159,20 @@ class StringCoder implements Decoder, Encoder {
         	throw new UnsupportedOperationException(
                 "Unrestricted character strings are not supported yet. All annotations: " + Arrays.asList(classOfT.getAnnotations())); 
         }
-        if (restrictionAnnotation.value() == CharacterRestriction.UTF8String) {
+        if (restrictionAnnotation.value() == CharacterRestriction.ObjectIdentifier) {
+        	//decode object identifier
+            Long numOctets = UperEncoder.decodeLengthDeterminant(bitbuffer);
+            List<Boolean> content = new ArrayList<Boolean>();
+            for (int i = 0; i < numOctets * 8; i++) {
+                content.add(bitbuffer.get());
+            }
+            byte[] contentBytes = UperEncoder.bytesFromCollection(content);
+            UperEncoder.logger.debug(String.format("Content bytes (hex): %s", UperEncoder.hexStringFromBytes(contentBytes)));   
+        	String resultStr = ObjectIdentifierCoder.decodeObjectId(contentBytes);
+        	UperEncoder.logger.debug(String.format("Object Identifier: %s", resultStr));
+            T result = UperEncoder.instantiate(classOfT, resultStr);
+            return result;
+        } else if (restrictionAnnotation.value() == CharacterRestriction.UTF8String) {
             Long numOctets = UperEncoder.decodeLengthDeterminant(bitbuffer);
             List<Boolean> content = new ArrayList<Boolean>();
             for (int i = 0; i < numOctets * 8; i++) {

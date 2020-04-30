@@ -8,5 +8,6 @@ public enum CharacterRestriction {
     IA5String,
     BMPString,
     UniversalString,
-    UTF8String;
+    UTF8String, 
+    ObjectIdentifier;
 }
