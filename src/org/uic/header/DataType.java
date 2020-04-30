@@ -1,9 +1,9 @@
 package org.uic.header;
 
+import net.gcdc.asn1.datatypes.Asn1Default;
 import net.gcdc.asn1.datatypes.Sequence;
 import net.gcdc.asn1.datatypesimpl.OctetString;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class DataType.
  */
@@ -21,7 +21,8 @@ public class DataType {
 	 *  -- FCB1  FCB version 1
 	 *  -- FCB2  FCB version 2
 	 *  -- RICS  company code + ...
-	 *  */
+	 **/
+	@Asn1Default("FCB1")
 	public String format;
 	
 	/** The data. */
