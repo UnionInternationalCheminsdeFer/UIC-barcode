@@ -5,9 +5,14 @@ import net.gcdc.asn1.datatypes.CharacterRestriction;
 import net.gcdc.asn1.datatypes.IntRange;
 import net.gcdc.asn1.datatypes.RestrictedString;
 import net.gcdc.asn1.datatypes.Sequence;
+import net.gcdc.asn1.uper.UperEncoder;
+
 
 /**
- * The Class DataBlockType.
+ * The DataBlockType.
+ * 
+ * Data block ready for signing
+ * 
  */
 @Sequence
 public class DataBlockType {
@@ -78,10 +83,10 @@ public class DataBlockType {
 		 * 
 		 *  e.g.:
 		 *        	--    DSA SHA224  2.16.840.1.101.3.4.3.1
-      	 *          --    DSA SHA248  2.16.840.1.101.3.4.3.2
-      	 *          --    ECC         1.2.840.10045.3.1.7 
+		 *          --    DSA SHA248  2.16.840.1.101.3.4.3.2
+		 *          --    ECC         1.2.840.10045.3.1.7 
 		 *
-		 * @param signingAlg the new signing algorithm
+		 * @param signingAlgorithm the new signing alg
 		 */
 		public void setSigningAlg(String signingAlgorithm) {
 			this.signingAlg = signingAlgorithm;
@@ -103,6 +108,20 @@ public class DataBlockType {
 		 */
 		public void setKeyId(Long keyId) {
 			this.keyId = keyId;
+		}
+		
+		
+		/**
+		 * Gets the data for signature.
+		 *
+		 * The byte array containing the ASN.1 PER UNALIGNED encoded data of the DataBlock
+		 *
+		 *
+		 * @return the data for signature
+		 */
+		public byte[] getDataForSignature() {
+			return UperEncoder.encode(this);
+
 		}
 		
 		

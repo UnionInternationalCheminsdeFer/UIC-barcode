@@ -4,7 +4,6 @@ import net.gcdc.asn1.datatypes.Asn1Optional;
 import net.gcdc.asn1.datatypes.Sequence;
 import net.gcdc.asn1.datatypesimpl.OctetString;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class SignedDataType.
  */
@@ -12,7 +11,7 @@ import net.gcdc.asn1.datatypesimpl.OctetString;
 public class SignedDataType {
 	
 	/** The data. */
-	public DataBlockType data;
+	public DataBlockType dataBlock;
 	
 	/** The signature. */
 	@Asn1Optional public OctetString signature;
@@ -22,8 +21,8 @@ public class SignedDataType {
 	 *
 	 * @return the data
 	 */
-	public DataBlockType getData() {
-		return data;
+	public DataBlockType getDataBlock() {
+		return dataBlock;
 	}
 
 	/**
@@ -31,8 +30,8 @@ public class SignedDataType {
 	 *
 	 * @param data the new data
 	 */
-	public void setData(DataBlockType data) {
-		this.data = data;
+	public void setDataBlock(DataBlockType dataBlock) {
+		this.dataBlock = dataBlock;
 	}
 
 	/**
@@ -47,10 +46,20 @@ public class SignedDataType {
 	/**
 	 * Sets the signature.
 	 *
-	 * @param signature the new signature
+	 * @param signature the signature
 	 */
 	public void setSignature(OctetString signature) {
 		this.signature = signature;
+	}
+	
+	
+	/**
+	 * Sets the signature.
+	 *
+	 * @param signature the signature
+	 */
+	public void setSignature(byte[] signature) {
+		this.signature = new OctetString(signature);
 	}
 
 	
