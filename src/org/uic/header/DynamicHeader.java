@@ -1,6 +1,7 @@
 package org.uic.header;
 
-import org.uic.ticket.api.asn.omv1.UicRailTicketData;
+import org.uic.ticket.api.EncodingFormatException;
+import org.uic.ticket.api.utils.UicEncoderUtils;
 
 import net.gcdc.asn1.datatypes.Asn1Optional;
 import net.gcdc.asn1.datatypes.CharacterRestriction;
@@ -104,6 +105,8 @@ public class DynamicHeader {
 
 	/**
 	 * Sets the security provider num.
+	 * 
+	 * in case the security provider code is encoded in IA5 this will return null
 	 *
 	 * @param securityProviderNum the new security provider num
 	 */
@@ -112,13 +115,39 @@ public class DynamicHeader {
 	}
 
 	/**
-	 * Gets the security provider IA 5.
+	 * Gets the security provider IA5.
+	 * 
+	 * in case the security provider code is encoded numerically this will return null
 	 *
-	 * @return the security provider IA 5
+	 * @return the security provider IA5
 	 */
 	public String getSecurityProviderIA5() {
 		return securityProviderIA5;
 	}
+	
+	/**
+	 * Sets the security provider
+	 * 
+	 * The security provider code must use the IA5 Alphabet .
+	 *
+	 * @param securityProvider the new security provider
+	 * @throws EncodingFormatException the encoding format exception
+	 */
+	public void setSecurityProvider(String securityProvider) throws EncodingFormatException {
+		this.securityProviderNum = UicEncoderUtils.getNum(securityProvider);
+		this.securityProviderIA5 = UicEncoderUtils.getIA5NonNum(securityProvider);
+	}
+	
+	
+	/**
+	 * Gets the security provider.
+	 *
+	 * @return the security provider
+	 */
+	public String getSecurityProvider() {
+		return UicEncoderUtils.mapToString(this.securityProviderNum, this.securityProviderIA5);
+	}
+	
 
 	/**
 	 * Sets the security provider IA 5.
