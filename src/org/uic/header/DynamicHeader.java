@@ -1,5 +1,7 @@
 package org.uic.header;
 
+import org.uic.ticket.api.asn.omv1.UicRailTicketData;
+
 import net.gcdc.asn1.datatypes.Asn1Optional;
 import net.gcdc.asn1.datatypes.CharacterRestriction;
 import net.gcdc.asn1.datatypes.HasExtensionMarker;
@@ -7,13 +9,14 @@ import net.gcdc.asn1.datatypes.IntRange;
 import net.gcdc.asn1.datatypes.RestrictedString;
 import net.gcdc.asn1.datatypes.Sequence;
 import net.gcdc.asn1.datatypesimpl.OctetString;
+import net.gcdc.asn1.uper.UperEncoder;
 
 
+// TODO: Auto-generated Javadoc
 /**
  * The DynamicHeader for bar codes 
  * 
- * Implementation of the Draft under discussion, not final
- * 
+ * Implementation of the Draft under discussion, not final.
  */
 @Sequence
 @HasExtensionMarker
@@ -37,9 +40,7 @@ public class DynamicHeader {
 	@IntRange(minValue=1,maxValue=32000)
 	@Asn1Optional public Long securityProviderNum;
 
-	/** The security provider 
-	 * alphanumeric codes 
-	 */
+	/**  The security provider  alphanumeric codes. */
 	@RestrictedString(CharacterRestriction.IA5String)
 	@Asn1Optional public String securityProviderIA5;
 
@@ -86,7 +87,7 @@ public class DynamicHeader {
 	/**
 	 * Sets the version.
 	 *
-	 * @param vesion the new version
+	 * @param version the new version
 	 */
 	public void setVersion(Long version) {
 		this.version = version;
@@ -199,6 +200,31 @@ public class DynamicHeader {
 	public void setExtension(Extension extension) {
 		this.extension = extension;
 	}
+	
+	
+	/**
+	 * Encode.
+	 * 
+	 * Encode the header as ASN.1 PER UNALIGNED byte array
+	 *
+	 * @return the byte[]
+	 */
+	public byte[] encode() {
+		return UperEncoder.encode(this);
+	}
+	
+	/**
+	 * Decode.
+	 *
+	 * Decode the header from an ASN.1 PER UNALIGNED encoded byte array
+	 *
+	 * @param bytes the bytes
+	 * @return the dynamic header
+	 */
+	public static DynamicHeader decode(byte[] bytes) {
+		return UperEncoder.decode(bytes, DynamicHeader.class);	
+	}
+	
 
 
 }
