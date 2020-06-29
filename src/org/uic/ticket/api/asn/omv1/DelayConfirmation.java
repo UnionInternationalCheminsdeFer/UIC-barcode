@@ -279,7 +279,7 @@ public class DelayConfirmation extends Object {
 		
 		this.plannedArrivalYear = new Long( cal.get(Calendar.YEAR));
 		this.plannedArrivalDay = new Long (cal.get(Calendar.DAY_OF_YEAR));
-		int time =  cal.get(Calendar.HOUR_OF_DAY) * 60 + cal.get(cal.get(Calendar.MINUTE));
+		int time =  cal.get(Calendar.HOUR_OF_DAY) * 60 + cal.get(Calendar.MINUTE);
 		if (time > 0) {
 			this.plannedArrivalTime = new Long (time );
 		}
