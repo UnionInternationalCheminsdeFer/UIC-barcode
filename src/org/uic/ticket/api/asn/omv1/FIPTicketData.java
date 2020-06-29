@@ -261,7 +261,11 @@ public class FIPTicketData extends Object {
 	
 	public void setActivatedDays(Collection<Date> dates, Date issuingDate){
 		
-		this.activatedDay.clear();
+		if (this.activatedDay != null) {
+			this.activatedDay.clear();
+		} else {
+			this.activatedDay= new SequenceOfActivatedDays();
+		}
 		
 		if (dates != null && !dates.isEmpty()) {
 			
@@ -277,6 +281,10 @@ public class FIPTicketData extends Object {
 		
 		Long dayDiff = DateTimeUtils.getDateDifference(issuingDate, day);
 		
+		if (this.activatedDay == null) {
+			this.activatedDay = new SequenceOfActivatedDays();
+		}
+		
 		if (dayDiff != null) {
 			this.activatedDay.add(dayDiff);
 		}
@@ -284,6 +292,8 @@ public class FIPTicketData extends Object {
 	}
 	
 	public Collection<Date> getActivatedDays(Date issuingDate) {
+		
+		if (this.activatedDay == null) return null;
 		
 		ArrayList<Date> dates = new ArrayList<Date>();
 		

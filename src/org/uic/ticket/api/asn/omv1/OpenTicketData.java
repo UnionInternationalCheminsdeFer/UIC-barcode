@@ -564,9 +564,33 @@ public class OpenTicketData extends Object {
 		
 	}
 	
+
+
+	public void setActivatedDays(Collection<Date> dates, Date issuingDate){
+		
+		if (this.activatedDay != null) {
+			this.activatedDay.clear();
+		} else {
+			this.activatedDay= new SequenceOfActivatedDays();
+		}
+		
+		if (dates != null && !dates.isEmpty()) {
+			
+			for (Date day : dates) {
+				this.addActivatedDay(issuingDate, day);
+			}
+			
+		}
+		
+	}
+	
 	public void addActivatedDay(Date issuingDate, Date day){
 		
 		Long dayDiff = DateTimeUtils.getDateDifference(issuingDate, day);
+		
+		if (this.activatedDay == null) {
+			this.activatedDay = new SequenceOfActivatedDays();
+		}
 		
 		if (dayDiff != null) {
 			this.activatedDay.add(dayDiff);
@@ -575,6 +599,8 @@ public class OpenTicketData extends Object {
 	}
 	
 	public Collection<Date> getActivatedDays(Date issuingDate) {
+		
+		if (this.activatedDay == null) return null;
 		
 		ArrayList<Date> dates = new ArrayList<Date>();
 		
@@ -590,25 +616,7 @@ public class OpenTicketData extends Object {
 				
 		return dates;
 		
-	}
-
-	public void setActivatedDays(Collection<Date> dates, Date issuingDate){
-		
-		if (dates == null || issuingDate == null || dates.isEmpty()) return;
-		
-		
-		this.activatedDay.clear();
-		
-		if (dates != null && !dates.isEmpty()) {
-			
-			for (Date day : dates) {
-				this.addActivatedDay(issuingDate, day);
-			}
-			
-		}
-		
-	}
-
+	}	
 	public Long getValidFromUTCOffset() {
 		return validFromUTCOffset;
 	}
