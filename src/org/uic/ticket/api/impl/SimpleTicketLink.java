@@ -3,11 +3,12 @@
  */
 package org.uic.ticket.api.impl;
 
-import org.uic.ticket.api.asn.omv1.LinkMode;
-import org.uic.ticket.api.asn.omv1.TicketType;
-import org.uic.ticket.api.spec.ITicketLink;
 
-// TODO: Auto-generated Javadoc
+import org.uic.ticket.api.spec.ITicketLink;
+import org.uic.ticket.api.spec.ILinkMode;
+import org.uic.ticket.api.spec.ITicketType;
+
+
 /**
  * The Class SimpleTicketLink.
  */
@@ -26,10 +27,10 @@ public class SimpleTicketLink implements ITicketLink {
 	protected String productOwner;
 	
 	/** The ticket type. */
-	protected TicketType ticketType = TicketType.openTicket;
+	protected ITicketType ticketType = ITicketType.openTicket;
 	
 	/** The link mode. */
-	protected LinkMode linkMode = LinkMode.issuedTogether;
+	protected ILinkMode linkMode = ILinkMode.issuedTogether;
 
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.ITicketLink#getReference()
@@ -76,28 +77,28 @@ public class SimpleTicketLink implements ITicketLink {
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.ITicketLink#getTicketType()
 	 */
-	public TicketType getTicketType() {
+	public ITicketType getTicketType() {
 		return ticketType;
 	}
 
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.ITicketLink#setTicketType(org.uic.ticket.api.asn.om.TicketType)
 	 */
-	public void setTicketType(TicketType ticketType) {
+	public void setTicketType(ITicketType ticketType) {
 		this.ticketType = ticketType;
 	}
 
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.ITicketLink#getLinkMode()
 	 */
-	public LinkMode getLinkMode() {
+	public ILinkMode getLinkMode() {
 		return linkMode;
 	}
 
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.ITicketLink#setLinkMode(org.uic.ticket.api.asn.om.LinkMode)
 	 */
-	public void setLinkMode(LinkMode linkMode) {
+	public void setLinkMode(ILinkMode linkMode) {
 		this.linkMode = linkMode;
 	}
 

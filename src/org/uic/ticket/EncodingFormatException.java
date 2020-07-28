@@ -1,7 +1,7 @@
 /*
  * 
  */
-package org.uic.ticket.api;
+package org.uic.ticket;
 
 
 /**

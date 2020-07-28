@@ -6,11 +6,6 @@ package org.uic.ticket.api.spec;
 import java.util.Collection;
 import java.util.Date;
 
-import org.uic.ticket.api.asn.omv1.CodeTableType;
-import org.uic.ticket.api.asn.omv1.PriceTypeType;
-import org.uic.ticket.api.asn.omv1.ServiceType;
-import org.uic.ticket.api.asn.omv1.TravelClassType;
-
 
 /**
  * The Interface IReservation.
@@ -136,7 +131,7 @@ public interface IReservation extends IDocumentData {
 	 * 
 	 * @return the service
 	 */
-	public ServiceType getService();
+	public IServiceType getService();
 	
 	/**
 	 * Sets the service.
@@ -145,7 +140,7 @@ public interface IReservation extends IDocumentData {
 	 * 
 	 * @param service the new service
 	 */
-	public void setService(ServiceType service);
+	public void setService(IServiceType service);
 
 
 	/**
@@ -153,7 +148,7 @@ public interface IReservation extends IDocumentData {
 	 *
 	 * @return the station code table
 	 */
-	public CodeTableType getStationCodeTable();
+	public IStationCodeTable  getStationCodeTable();
 
 	/**
 	 * Gets the station code table.
@@ -163,7 +158,7 @@ public interface IReservation extends IDocumentData {
 	 *
 	 * @return the station code table
 	 */
-	public void setStationCodeTable(CodeTableType stationCodeTable);
+	public void setStationCodeTable(IStationCodeTable stationCodeTable);
 
 	/**
 	 * Gets the from station code.
@@ -240,14 +235,14 @@ public interface IReservation extends IDocumentData {
 	 *
 	 * @return the travel class code
 	 */
-	public TravelClassType getClassCode();
+	public ITravelClassType getClassCode();
 
 	/**
 	 * Sets the travel class code.
 	 *
 	 * @param classCode the new travel class code
 	 */
-	public void setClassCode(TravelClassType classCode);
+	public void setClassCode(ITravelClassType classCode);
 
 	/**
 	 * Gets the service level.
@@ -371,14 +366,14 @@ public interface IReservation extends IDocumentData {
 	 *
 	 * @return the price type
 	 */
-	public PriceTypeType getPriceType();
+	public IPriceTypeType getPriceType();
 
 	/**
 	 * Sets the price type.
 	 *
 	 * @param priceType the new price type
 	 */
-	public void setPriceType(PriceTypeType priceType) ;
+	public void setPriceType(IPriceTypeType priceType) ;
 
 	/**
 	 * Gets the type of supplement.

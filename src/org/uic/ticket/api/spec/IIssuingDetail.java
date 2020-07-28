@@ -5,7 +5,7 @@ package org.uic.ticket.api.spec;
 
 import java.util.Date;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Interface IIssuerDetails.
  */

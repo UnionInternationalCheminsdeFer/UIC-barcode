@@ -6,9 +6,7 @@ package org.uic.ticket.api.spec;
 import java.util.Collection;
 import java.util.Date;
 
-import org.uic.ticket.api.asn.omv1.CodeTableType;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Interface IStationPassage.
  * 
@@ -92,14 +90,14 @@ public interface IStationPassage  extends IDocumentData {
 	 *
 	 * @return the station code table
 	 */
-	public CodeTableType getStationCodeTable();
+	public IStationCodeTable getStationCodeTable();
 
 	/**
 	 * Sets the station code table.
 	 *
 	 * @param stationCodeTable the new station code table
 	 */
-	public void setStationCodeTable(CodeTableType stationCodeTable);
+	public void setStationCodeTable(IStationCodeTable stationCodeTable);
 
 	/**
 	 * Gets the list of station codes of all stations where the passage is allowed.

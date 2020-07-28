@@ -3,8 +3,6 @@
  */
 package org.uic.ticket.api.spec;
 
-import org.uic.ticket.api.asn.omv1.CompartmentPositionType;
-
 /**
  * The Interface ICompartmentDetails.
  * 
@@ -116,13 +114,13 @@ public interface ICompartmentDetails {
 	 *
 	 * @return the position
 	 */
-	public CompartmentPositionType getPosition();
+	public ICompartmentPositionType getPosition();
 	
 	/**
 	 * Sets the position of the compartment in trains with different decks
 	 *
 	 * @param position the new position
 	 */
-	public void setPosition(CompartmentPositionType position);
+	public void setPosition(ICompartmentPositionType position);
 	
 }

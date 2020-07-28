@@ -3,10 +3,11 @@
  */
 package org.uic.ticket.api.impl;
 
-import org.uic.ticket.api.asn.omv1.CodeTableType;
-import org.uic.ticket.api.spec.IRouteSection;
 
-// TODO: Auto-generated Javadoc
+import org.uic.ticket.api.spec.IRouteSection;
+import org.uic.ticket.api.spec.IStationCodeTable;
+
+
 /**
  * The Class SimpleRouteSection.
  */
@@ -14,7 +15,7 @@ public class SimpleRouteSection implements IRouteSection {
 	
 	
 	/** The station code table. */
-	protected CodeTableType stationCodeTable = CodeTableType.stationUIC;
+	protected IStationCodeTable stationCodeTable = IStationCodeTable.stationUIC;
 	
 	/** The from station. */
 	protected String fromStation;
@@ -31,14 +32,14 @@ public class SimpleRouteSection implements IRouteSection {
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.IRouteSection#getStationCodeTable()
 	 */
-	public CodeTableType getStationCodeTable() {
+	public IStationCodeTable getStationCodeTable() {
 		return stationCodeTable;
 	}
 	
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.IRouteSection#setStationCodeTable(org.uic.ticket.api.asn.om.CodeTableType)
 	 */
-	public void setStationCodeTable(CodeTableType stationCodeTable) {
+	public void setStationCodeTable(IStationCodeTable stationCodeTable) {
 		this.stationCodeTable = stationCodeTable;
 	}
 	

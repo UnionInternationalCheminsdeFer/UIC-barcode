@@ -9,13 +9,11 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 
-
+import org.uic.ticket.EncodingFormatException;
 
 import net.gcdc.asn1.datatypes.Asn1BigInteger;
 import net.gcdc.asn1.datatypesimpl.SequenceOfStringIA5;
 import net.gcdc.asn1.datatypesimpl.SequenceOfStringUTF8;
-
-import org.uic.ticket.api.EncodingFormatException;
 
 
 /**

@@ -7,13 +7,12 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 
-import org.uic.ticket.api.asn.omv1.GenderType;
-import org.uic.ticket.api.asn.omv1.PassengerType;
+import org.uic.ticket.api.spec.IGenderType;
 import org.uic.ticket.api.spec.ICustomerStatusDescription;
 import org.uic.ticket.api.spec.ITraveler;
+import org.uic.ticket.api.spec.IPassengerType;
 
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class SimpleTraveler.
  */
@@ -39,7 +38,7 @@ public class SimpleTraveler implements ITraveler {
 	protected String 	title;
 	
 	/** The gender. */
-	protected GenderType 	gender;									
+	protected IGenderType 	gender;									
 	
 	/** The customer id. */
 	protected String 	customerId;		
@@ -51,7 +50,7 @@ public class SimpleTraveler implements ITraveler {
 	protected boolean	ticketHolder = true;								
 	
 	/** The passenger type. */
-	protected PassengerType passengerType;
+	protected IPassengerType passengerType;
 	
 	/** The passenger with reduced mobility. */
 	protected boolean 	passengerWithReducedMobility = false;
@@ -156,14 +155,14 @@ public class SimpleTraveler implements ITraveler {
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.ITraveler#getGender()
 	 */
-	public GenderType getGender() {
+	public IGenderType getGender() {
 		return gender;
 	}
 	
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.ITraveler#setGender(org.uic.ticket.api.asn.om.GenderType)
 	 */
-	public void setGender(GenderType gender) {
+	public void setGender(IGenderType gender) {
 		this.gender = gender;
 	}
 	
@@ -212,14 +211,14 @@ public class SimpleTraveler implements ITraveler {
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.ITraveler#getPassengerType()
 	 */
-	public PassengerType getPassengerType() {
+	public IPassengerType getPassengerType() {
 		return passengerType;
 	}
 	
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.ITraveler#setPassengerType(org.uic.ticket.api.asn.om.PassengerType)
 	 */
-	public void setPassengerType(PassengerType passengerType) {
+	public void setPassengerType(IPassengerType passengerType) {
 		this.passengerType = passengerType;
 	}
 	

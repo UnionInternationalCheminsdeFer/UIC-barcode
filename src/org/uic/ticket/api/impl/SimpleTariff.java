@@ -6,13 +6,13 @@ package org.uic.ticket.api.impl;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 
-import org.uic.ticket.api.asn.omv1.PassengerType;
 import org.uic.ticket.api.spec.ICardReference;
 import org.uic.ticket.api.spec.IRouteSection;
 import org.uic.ticket.api.spec.ISeriesDataDetails;
 import org.uic.ticket.api.spec.ITariff;
+import org.uic.ticket.api.spec.IPassengerType;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class SimpleTariff.
  */
@@ -22,7 +22,7 @@ public class SimpleTariff implements ITariff {
     protected int numberOfPassengers = 1;
     
 	/** The passenger type. */
-	protected PassengerType  passengerType ;
+	protected IPassengerType  passengerType ;
     
 
 	/** The age below. */
@@ -77,7 +77,7 @@ public class SimpleTariff implements ITariff {
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.ITariff#getPassengerType()
 	 */
-	public PassengerType getPassengerType() {
+	public IPassengerType getPassengerType() {
 		return passengerType;
 	}
 
@@ -85,7 +85,7 @@ public class SimpleTariff implements ITariff {
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.ITariff#setPassengerType(org.uic.ticket.api.asn.om.PassengerType)
 	 */
-	public void setPassengerType(PassengerType passengerType) {
+	public void setPassengerType(IPassengerType passengerType) {
 		this.passengerType = passengerType;
 	}
 

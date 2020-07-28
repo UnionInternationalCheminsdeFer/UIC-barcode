@@ -7,14 +7,14 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedHashSet;
 
-import org.uic.ticket.api.asn.omv1.CodeTableType;
-import org.uic.ticket.api.asn.omv1.TravelClassType;
 import org.uic.ticket.api.spec.ICounterMark;
 import org.uic.ticket.api.spec.IExtension;
 import org.uic.ticket.api.spec.IRegionalValidity;
 import org.uic.ticket.api.spec.IReturnRouteDescription;
+import org.uic.ticket.api.spec.IStationCodeTable;
+import org.uic.ticket.api.spec.ITravelClassType;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class SimpleCounterMark.
  */
@@ -49,7 +49,7 @@ public class SimpleCounterMark extends SimpleDocumentData implements ICounterMar
 	protected boolean returnIncluded = false;
 
 	/** The station code table. */
-	protected CodeTableType stationCodeTable = CodeTableType.stationUIC;
+	protected IStationCodeTable stationCodeTable = IStationCodeTable.stationUIC;
 	
 	/** The from station. */
 	protected String fromStation;
@@ -79,7 +79,7 @@ public class SimpleCounterMark extends SimpleDocumentData implements ICounterMar
 	protected Date  validUntil;
 	  
 	/** The class code. */
-	protected TravelClassType	classCode = TravelClassType.second;       
+	protected ITravelClassType	classCode = ITravelClassType.second;       
    
 	/** The included carriers. */
 	protected Collection<String>includedCarriers = new LinkedHashSet<String>();	  
@@ -133,14 +133,14 @@ public class SimpleCounterMark extends SimpleDocumentData implements ICounterMar
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.ICounterMark#getStationCodeTable()
 	 */
-	public CodeTableType getStationCodeTable() {
+	public IStationCodeTable getStationCodeTable() {
 		return stationCodeTable;
 	}
 
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.ICounterMark#setStationCodeTable(org.uic.ticket.api.asn.om.CodeTableType)
 	 */
-	public void setStationCodeTable(CodeTableType stationCodeTable) {
+	public void setStationCodeTable(IStationCodeTable stationCodeTable) {
 		this.stationCodeTable = stationCodeTable;
 	}
 
@@ -273,14 +273,14 @@ public class SimpleCounterMark extends SimpleDocumentData implements ICounterMar
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.ICounterMark#getClassCode()
 	 */
-	public TravelClassType getClassCode() {
+	public ITravelClassType getClassCode() {
 		return classCode;
 	}
 
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.ICounterMark#setClassCode(org.uic.ticket.api.asn.om.TravelClassType)
 	 */
-	public void setClassCode(TravelClassType classCode) {
+	public void setClassCode(ITravelClassType classCode) {
 		this.classCode = classCode;
 	}
 

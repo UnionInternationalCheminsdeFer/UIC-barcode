@@ -7,8 +7,6 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
-import net.gcdc.asn1.datatypes.Asn1BigInteger;
-
 import org.uic.ticket.api.asn.omv1.BerthDetailData;
 import org.uic.ticket.api.asn.omv1.CarCarriageReservationData;
 import org.uic.ticket.api.asn.omv1.CardReferenceType;
@@ -44,7 +42,6 @@ import org.uic.ticket.api.asn.omv1.TicketLinkType;
 import org.uic.ticket.api.asn.omv1.TimeRangeType;
 import org.uic.ticket.api.asn.omv1.TokenType;
 import org.uic.ticket.api.asn.omv1.TrainLinkType;
-import org.uic.ticket.api.asn.omv1.TravelClassType;
 import org.uic.ticket.api.asn.omv1.TravelerData;
 import org.uic.ticket.api.asn.omv1.TravelerType;
 import org.uic.ticket.api.asn.omv1.UicRailTicketData;
@@ -56,9 +53,12 @@ import org.uic.ticket.api.asn.omv1.VoucherData;
 import org.uic.ticket.api.asn.omv1.ZoneType;
 import org.uic.ticket.api.impl.SimpleUicTicketObjectFactory;
 import org.uic.ticket.api.spec.IBerth;
+import org.uic.ticket.api.spec.IBerthTypeType;
 import org.uic.ticket.api.spec.ICarCarriageReservation;
 import org.uic.ticket.api.spec.ICardReference;
 import org.uic.ticket.api.spec.ICompartmentDetails;
+import org.uic.ticket.api.spec.ICompartmentGenderType;
+import org.uic.ticket.api.spec.ICompartmentPositionType;
 import org.uic.ticket.api.spec.IControlDetail;
 import org.uic.ticket.api.spec.ICounterMark;
 import org.uic.ticket.api.spec.ICustomerCard;
@@ -67,29 +67,42 @@ import org.uic.ticket.api.spec.IDelayConfirmation;
 import org.uic.ticket.api.spec.IDocumentExtension;
 import org.uic.ticket.api.spec.IExtension;
 import org.uic.ticket.api.spec.IFipTicket;
+import org.uic.ticket.api.spec.IGenderType;
 import org.uic.ticket.api.spec.IGeoCoordinate;
+import org.uic.ticket.api.spec.IGeoCoordinateSystemType;
+import org.uic.ticket.api.spec.IGeoUnitType;
+import org.uic.ticket.api.spec.IHemisphereLatitudeType;
+import org.uic.ticket.api.spec.IHemisphereLongitudeType;
 import org.uic.ticket.api.spec.IIncludedOpenTicket;
 import org.uic.ticket.api.spec.IIssuingDetail;
 import org.uic.ticket.api.spec.ILine;
+import org.uic.ticket.api.spec.ILinkMode;
+import org.uic.ticket.api.spec.ILoadingDeckType;
 import org.uic.ticket.api.spec.ILuggageRestriction;
 import org.uic.ticket.api.spec.IOpenTicket;
 import org.uic.ticket.api.spec.IParkingGround;
 import org.uic.ticket.api.spec.IPass;
+import org.uic.ticket.api.spec.IPassengerType;
 import org.uic.ticket.api.spec.IPlaces;
 import org.uic.ticket.api.spec.IPolygone;
+import org.uic.ticket.api.spec.IPriceTypeType;
 import org.uic.ticket.api.spec.IRegionalValidity;
 import org.uic.ticket.api.spec.IRegisteredLuggage;
 import org.uic.ticket.api.spec.IReservation;
 import org.uic.ticket.api.spec.IReturnRouteDescription;
+import org.uic.ticket.api.spec.IRoofRackType;
 import org.uic.ticket.api.spec.IRouteSection;
 import org.uic.ticket.api.spec.ISeriesDataDetails;
 import org.uic.ticket.api.spec.IServiceBrand;
+import org.uic.ticket.api.spec.IStationCodeTable;
 import org.uic.ticket.api.spec.IStationPassage;
 import org.uic.ticket.api.spec.ITariff;
 import org.uic.ticket.api.spec.ITicketLink;
+import org.uic.ticket.api.spec.ITicketType;
 import org.uic.ticket.api.spec.ITimeRange;
 import org.uic.ticket.api.spec.IToken;
 import org.uic.ticket.api.spec.ITrainLink;
+import org.uic.ticket.api.spec.ITravelClassType;
 import org.uic.ticket.api.spec.ITraveler;
 import org.uic.ticket.api.spec.ITravelerDetail;
 import org.uic.ticket.api.spec.IUicRailTicket;
@@ -126,7 +139,24 @@ public class OpenAsn2ApiDecoder {
 
 	}	
 	
-	
+	/**
+	 * Decode from asn.1 unaligned PER encoded data. 
+	 *
+	 * @param data byte array of the asn.1 encoded FCB data
+	 * @return the decoded uic rail ticket
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
+	public IUicRailTicket decodeFromAsn (byte[] data) throws IOException{		
+		
+		UicRailTicketData asnUicRailTicketData = UicRailTicketData.decode(data);
+							
+		IUicRailTicket uicRailTicket = factory.createUicRailTicket();
+		
+		populateFromAsn1Model(uicRailTicket, asnUicRailTicketData);
+		
+		return uicRailTicket;				
+
+	}	
 	
 
 
@@ -328,7 +358,7 @@ public class OpenAsn2ApiDecoder {
 		document.setInfoText(asnDocument.getInfoText());		
 		
  		if (asnDocument.getStationCodeTable()!=null){
-			document.setStationCodeTable(asnDocument.getStationCodeTable());
+			document.setStationCodeTable(IStationCodeTable.valueOf(asnDocument.getStationCodeTable().name()));
 		}	
 		document.setStation(UicEncoderUtils.mapToString(asnDocument.getStationNum(),asnDocument.getStationIA5()));
 		
@@ -384,7 +414,7 @@ public class OpenAsn2ApiDecoder {
 		document.setInfoText(asnDocument.getInfoText());		
 		
  		if (asnDocument.getStationCodeTable()!=null){
-			document.setStationCodeTable(asnDocument.getStationCodeTable());
+			document.setStationCodeTable(IStationCodeTable.valueOf(asnDocument.getStationCodeTable().name()));
 		}	
 		document.setFromStation(UicEncoderUtils.mapToString(asnDocument.getFromStationNum(),asnDocument.getFromStationIA5()));
 		document.setToStation(UicEncoderUtils.mapToString(asnDocument.getToStationNum(),asnDocument.getToStationIA5()));
@@ -402,7 +432,7 @@ public class OpenAsn2ApiDecoder {
 		}
 		
 		if(asnDocument.getClassCode()!=null){
-			document.setClassCode(asnDocument.getClassCode());
+			document.setClassCode(ITravelClassType.valueOf(asnDocument.getClassCode().name()));
 		}
 		
 		document.setCompartmentDetails(convertCompartmentDetails(asnDocument.getCompartmentDetails()));
@@ -425,7 +455,7 @@ public class OpenAsn2ApiDecoder {
 			document.setBicyclePlaces(convertPlaces(asnDocument.getBicyclePlaces()));
 		}
 		
-		document.setPriceType(asnDocument.getPriceType());
+		document.setPriceType(IPriceTypeType.valueOf(asnDocument.getPriceType().name()));
 		
 		IServiceBrand serviceBrand = factory.createServiceBrand();
 		
@@ -508,7 +538,7 @@ public class OpenAsn2ApiDecoder {
 		document.setInfoText(asnDocument.getInfoText());		
 		
  		if (asnDocument.getStationCodeTable()!=null){
-			document.setStationCodeTable(asnDocument.getStationCodeTable());
+			document.setStationCodeTable(IStationCodeTable.valueOf(asnDocument.getStationCodeTable().name()));
 		}	
 		document.setFromStation(UicEncoderUtils.mapToString(asnDocument.getFromStationNum(),asnDocument.getFromStationIA5()));
 		document.setToStation(UicEncoderUtils.mapToString(asnDocument.getToStationNum(),asnDocument.getToStationIA5()));
@@ -542,7 +572,7 @@ public class OpenAsn2ApiDecoder {
 		}
 		
 		if (asnDocument.getLoadingDeck()!=null){
-			document.setLoadingDeck(asnDocument.getLoadingDeck());
+			document.setLoadingDeck(ILoadingDeckType.valueOf(asnDocument.getLoadingDeck().name()));
 		}
 		
 		if(asnDocument.getLoadingListEntry()!=null){
@@ -557,7 +587,7 @@ public class OpenAsn2ApiDecoder {
 		document.setTrailerPlate(asnDocument.getTrailerPlate());
 		
 		if(asnDocument.getRoofRackType()!=null){
-			document.setRoofRackType(asnDocument.getRoofRackType());
+			document.setRoofRackType(IRoofRackType.valueOf(asnDocument.getRoofRackType().name()));
 		}
 		
 		if(asnDocument.getTextileRoof()) {
@@ -586,7 +616,7 @@ public class OpenAsn2ApiDecoder {
 		}
 
 		
-		document.setPriceType(asnDocument.getPriceType());
+		document.setPriceType(IPriceTypeType.valueOf(asnDocument.getPriceType().name()));
 		
 		IServiceBrand serviceBrand = factory.createServiceBrand();
 		
@@ -666,7 +696,7 @@ public class OpenAsn2ApiDecoder {
 		details.setCompartmentTypeDescr(asnDetails.getCompartmentTypeDescr());
 		details.setSpecialAllocationDescr(asnDetails.getSpecialAllocationDescr());
 
-		details.setPosition(asnDetails.getPosition());
+		details.setPosition(ICompartmentPositionType.valueOf(asnDetails.getPosition().name()));
 		
 		return details;
 	}
@@ -715,13 +745,13 @@ public class OpenAsn2ApiDecoder {
 		
 		IBerth berth = factory.createBerth();
 		if (asnBerth.getGender()!= null) {
-			berth.setGender(asnBerth.getGender());
+			berth.setGender(ICompartmentGenderType.valueOf(asnBerth.getGender().name()));
 		}
 		if (asnBerth.getNumberOfBerths()!=null) {
 			berth.setNumberOfBerths(asnBerth.getNumberOfBerths().intValue());
 		}
 		if (asnBerth.getBerthType()!=null){
-			berth.setType(asnBerth.getBerthType());
+			berth.setType(IBerthTypeType.valueOf(asnBerth.getBerthType().name()));
 		}
 
 		return berth;
@@ -742,7 +772,7 @@ public class OpenAsn2ApiDecoder {
 		document.setProductOwner(UicEncoderUtils.mapToString(asnDocument.getProductOwnerNum(),asnDocument.getProductOwnerIA5()));		
 		
 		if(asnDocument.getClassCode()!=null){
-			document.setClassCode(asnDocument.getClassCode());
+			document.setClassCode(ITravelClassType.valueOf(asnDocument.getClassCode().name()));
 		}
 		
 		document.setValidFrom(asnDocument.getValidFromDate(issuingDate));
@@ -894,7 +924,7 @@ public class OpenAsn2ApiDecoder {
 		IOpenTicket document = factory.createOpenTicket();
 		
 		if(asnDocument.getClassCode()!=null){
-			document.setClassCode(asnDocument.getClassCode());
+			document.setClassCode(ITravelClassType.valueOf(asnDocument.getClassCode().name()));
 		}
 		
 		document.setValidFrom(asnDocument.getValidFromDate(issuingDate));
@@ -945,7 +975,7 @@ public class OpenAsn2ApiDecoder {
         }		
 		
  		if (asnDocument.getStationCodeTable()!=null){
-			document.setStationCodeTable(asnDocument.getStationCodeTable());
+			document.setStationCodeTable(IStationCodeTable.valueOf(asnDocument.getStationCodeTable().name()));
 		}	
 		document.setFromStation(UicEncoderUtils.mapToString(asnDocument.getFromStationNum(),asnDocument.getFromStationIA5()));
 		document.setToStation(UicEncoderUtils.mapToString(asnDocument.getToStationNum(),asnDocument.getToStationIA5()));
@@ -1013,12 +1043,12 @@ public class OpenAsn2ApiDecoder {
 	 * @param classCode the class code
 	 * @return the simple included open ticket
 	 */
-	private IIncludedOpenTicket convertIncludedOpenTicket(	IncludedOpenTicketType asnDocument, Date issuingDate,		TravelClassType classCode) {
+	private IIncludedOpenTicket convertIncludedOpenTicket(	IncludedOpenTicketType asnDocument, Date issuingDate,ITravelClassType classCode) {
 		
 		IIncludedOpenTicket document = factory.createIncludedOpenTicket();
 		
 		if(asnDocument.getClassCode()!=null){
-			document.setClassCode(asnDocument.getClassCode());
+			document.setClassCode(ITravelClassType.valueOf(asnDocument.getClassCode().name()));
 		} else {
 			document.setClassCode(classCode);
 		}
@@ -1068,7 +1098,7 @@ public class OpenAsn2ApiDecoder {
         }		
 		
  		if (asnDocument.getStationCodeTable()!=null){
-			document.setStationCodeTable(asnDocument.getStationCodeTable());
+			document.setStationCodeTable(IStationCodeTable.valueOf(asnDocument.getStationCodeTable().name()));
 		}	
 
 		if (asnDocument.getValidRegion()!= null && !asnDocument.getValidRegion().isEmpty()) {
@@ -1120,9 +1150,9 @@ public class OpenAsn2ApiDecoder {
 		}
 		
 		if (asnDocument.getStationNum()!=null && !asnDocument.getStationNum().isEmpty()){
-			for (Asn1BigInteger station : asnDocument.getStationNum()) {
-				if (station.value() != null) {
-					document.addStation(station.value().toString());
+			for (Long station : asnDocument.getStationNum()) {
+				if (station != null) {
+					document.addStation(station.toString());
 				}
 			}			
 		}
@@ -1145,7 +1175,7 @@ public class OpenAsn2ApiDecoder {
 		}
 		
 		if (asnDocument.getStationCodeTable()!=null){
-			document.setStationCodeTable(asnDocument.getStationCodeTable());
+			document.setStationCodeTable(IStationCodeTable.valueOf(asnDocument.getStationCodeTable().name()));
 		}
 		
 		document.setExtension(convertExtension(asnDocument.getExtension()));
@@ -1156,9 +1186,9 @@ public class OpenAsn2ApiDecoder {
 			}			
 		}
 		if (asnDocument.getAreaCodeNum() != null && !asnDocument.getAreaCodeNum().isEmpty())  {
-			for (Asn1BigInteger code : asnDocument.getAreaCodeNum()) {
-				if (code.value() != null) {
-					document.addAreaCode(code.value().toString());
+			for (Long code : asnDocument.getAreaCodeNum()) {
+				if (code != null) {
+					document.addAreaCode(code.toString());
 				}
 			}			
 		}				
@@ -1239,7 +1269,7 @@ public class OpenAsn2ApiDecoder {
 		document.setSpecialInformation(asnDocument.getSpecialInformation());
 				
  		if (asnDocument.getStationCodeTable()!=null){
-			document.setStationCodeTable(asnDocument.getStationCodeTable());
+			document.setStationCodeTable(IStationCodeTable.valueOf(asnDocument.getStationCodeTable().name()));
 		}	
 		
 		document.setStation(UicEncoderUtils.mapToString(asnDocument.getStationNum(),asnDocument.getStationIA5()));		
@@ -1258,51 +1288,51 @@ public class OpenAsn2ApiDecoder {
 	/**
 	 * Convert via station.
 	 *
-	 * @param asnVia the asn via
+	 * @param asnDocument the asn via
 	 * @return the i via station
 	 */
-	protected IViaStation convertViaStation(ViaStationType asnVia) {
+	protected IViaStation convertViaStation(ViaStationType asnDocument) {
 		
-		if (asnVia == null) return null;
+		if (asnDocument == null) return null;
 		
 		IViaStation via = factory.createViaStation();
 		
-		if (asnVia.getBorder()!=null) {
-			via.setBorder(asnVia.getBorder());
+		if (asnDocument.getBorder()!=null) {
+			via.setBorder(asnDocument.getBorder());
 		}
 		
-		if (asnVia.getRouteId() != null) {
-			via.setRouteId(asnVia.getRouteId().intValue());
+		if (asnDocument.getRouteId() != null) {
+			via.setRouteId(asnDocument.getRouteId().intValue());
 		}
 
- 		if (asnVia.getStationCodeTable()!=null){
-			via.setStationCodeTable(asnVia.getStationCodeTable());
+ 		if (asnDocument.getStationCodeTable()!=null){
+			via.setStationCodeTable(IStationCodeTable.valueOf(asnDocument.getStationCodeTable().name()));
 		}	
  		
- 		if (asnVia.getStationNum() != null) {
- 			via.setStation(asnVia.getStationNum().toString());	
- 		} else if (asnVia.getStationIA5() != null) {
- 			via.setStation(asnVia.getStationIA5());	
+ 		if (asnDocument.getStationNum() != null) {
+ 			via.setStation(asnDocument.getStationNum().toString());	
+ 		} else if (asnDocument.getStationIA5() != null) {
+ 			via.setStation(asnDocument.getStationIA5());	
  		} 				 
 
-        if (asnVia.getCarriersNum()!=null && !asnVia.getCarriersNum().isEmpty()){
-            for(Long carrier :asnVia.getCarriersNum()){
+        if (asnDocument.getCarriersNum()!=null && !asnDocument.getCarriersNum().isEmpty()){
+            for(Long carrier :asnDocument.getCarriersNum()){
          	   via.addCarrier(carrier.toString());
             }
         }
-        if (asnVia.getCarriersIA5()!=null && !asnVia.getCarriersIA5().isEmpty()){
-            for(String carrier :asnVia.getCarriersIA5()){
+        if (asnDocument.getCarriersIA5()!=null && !asnDocument.getCarriersIA5().isEmpty()){
+            for(String carrier :asnDocument.getCarriersIA5()){
          	   via.addCarrier(carrier);
             }
          }   		
 
-		if (asnVia.getRoute()!= null && !asnVia.getRoute().isEmpty()) {
-			for ( ViaStationType routeVia: asnVia.getRoute()) {
+		if (asnDocument.getRoute()!= null && !asnDocument.getRoute().isEmpty()) {
+			for ( ViaStationType routeVia: asnDocument.getRoute()) {
 				via.addRouteStation(convertViaStation(routeVia));
 			}
 		}
-		if (asnVia.getAlternativeRoutes()!= null && !asnVia.getAlternativeRoutes().isEmpty()) {
-			for ( ViaStationType routeVia: asnVia.getAlternativeRoutes()) {
+		if (asnDocument.getAlternativeRoutes()!= null && !asnDocument.getAlternativeRoutes().isEmpty()) {
+			for ( ViaStationType routeVia: asnDocument.getAlternativeRoutes()) {
 				via.addRouteStation(convertViaStation(routeVia));
 			}
 		}
@@ -1337,28 +1367,28 @@ public class OpenAsn2ApiDecoder {
 	/**
 	 * Convert zone.
 	 *
-	 * @param asnZone the asn zone
+	 * @param asnDocument the asn zone
 	 * @return the i regional validity
 	 */
-	protected IRegionalValidity convertZone(ZoneType asnZone) {
+	protected IRegionalValidity convertZone(ZoneType asnDocument) {
 		
-		if (asnZone == null) return null;
+		if (asnDocument == null) return null;
 		
 		IZone zone = factory.createZone();
 
-		zone.setBinaryZoneId(asnZone.getBinaryZoneId());
-		zone.setCarrier(UicEncoderUtils.mapToString(asnZone.getCarrierNum(),asnZone.getCarrierIA5()));
+		zone.setBinaryZoneId(asnDocument.getBinaryZoneId());
+		zone.setCarrier(UicEncoderUtils.mapToString(asnDocument.getCarrierNum(),asnDocument.getCarrierIA5()));
 		
-		if (asnZone.getCity() != null) {
-			zone.setCity(asnZone.getCity().intValue());
+		if (asnDocument.getCity() != null) {
+			zone.setCity(asnDocument.getCity().intValue());
 		}
- 		if (asnZone.getStationCodeTable()!=null){
-			zone.setStationCodeTable(asnZone.getStationCodeTable());
+ 		if (asnDocument.getStationCodeTable()!=null){
+			zone.setStationCodeTable(IStationCodeTable.valueOf(asnDocument.getStationCodeTable().name()));
 		}	
-		zone.setEntryStation(UicEncoderUtils.mapToString(asnZone.getEntryStationNum(),asnZone.getEntryStationIA5()));
-		zone.setTerminatingStation(UicEncoderUtils.mapToString(asnZone.getTerminatingStationNum(),asnZone.getTerminatingStationIA5()));
+		zone.setEntryStation(UicEncoderUtils.mapToString(asnDocument.getEntryStationNum(),asnDocument.getEntryStationIA5()));
+		zone.setTerminatingStation(UicEncoderUtils.mapToString(asnDocument.getTerminatingStationNum(),asnDocument.getTerminatingStationIA5()));
 		
-		zone.setNUTScode(asnZone.getNutsCode());
+		zone.setNUTScode(asnDocument.getNutsCode());
 		
 		return zone;
 	}	
@@ -1398,27 +1428,27 @@ public class OpenAsn2ApiDecoder {
 	/**
 	 * Convert line.
 	 *
-	 * @param asnLine the asn line
+	 * @param asnDocument the asn line
 	 * @return the i regional validity
 	 */
-	protected IRegionalValidity convertLine(LineType asnLine) {
+	protected IRegionalValidity convertLine(LineType asnDocument) {
 		
-		if (asnLine == null) return null;
+		if (asnDocument == null) return null;
 		
 		ILine line = factory.createLine();
 
-		line.setBinaryZoneId(asnLine.getBinaryZoneId());
-		line.setCarrier(UicEncoderUtils.mapToString(asnLine.getCarrierNum(),asnLine.getCarrierIA5()));
-		if (asnLine.getCity()!=null) {
-			line.setCity(asnLine.getCity().intValue());
+		line.setBinaryZoneId(asnDocument.getBinaryZoneId());
+		line.setCarrier(UicEncoderUtils.mapToString(asnDocument.getCarrierNum(),asnDocument.getCarrierIA5()));
+		if (asnDocument.getCity()!=null) {
+			line.setCity(asnDocument.getCity().intValue());
 		}
- 		if (asnLine.getStationCodeTable()!=null){
-			line.setStationCodeTable(asnLine.getStationCodeTable());
+ 		if (asnDocument.getStationCodeTable()!=null){
+			line.setStationCodeTable(IStationCodeTable.valueOf(asnDocument.getStationCodeTable().name()));
 		}	
-		line.setEntryStation(UicEncoderUtils.mapToString(asnLine.getEntryStationNum(),asnLine.getEntryStationIA5()));
-		line.setTerminatingStation(UicEncoderUtils.mapToString(asnLine.getTerminatingStationNum(),asnLine.getTerminatingStationIA5()));
-		if (asnLine.getLineId()!=null && !asnLine.getLineId().isEmpty()){
-			for (Asn1BigInteger lineId : asnLine.getLineId()) {
+		line.setEntryStation(UicEncoderUtils.mapToString(asnDocument.getEntryStationNum(),asnDocument.getEntryStationIA5()));
+		line.setTerminatingStation(UicEncoderUtils.mapToString(asnDocument.getTerminatingStationNum(),asnDocument.getTerminatingStationIA5()));
+		if (asnDocument.getLineId()!=null && !asnDocument.getLineId().isEmpty()){
+			for (Long lineId : asnDocument.getLineId()) {
 				line.addLineId(lineId.intValue());
 			}
 		}
@@ -1455,7 +1485,7 @@ public class OpenAsn2ApiDecoder {
 		
 
 		if (asnTariff.getPassengerType()!=null) {
-			tariff.setPassengerType(asnTariff.getPassengerType());
+			tariff.setPassengerType(IPassengerType.valueOf(asnTariff.getPassengerType().name()));
 		}
 		
 
@@ -1524,7 +1554,7 @@ public class OpenAsn2ApiDecoder {
 		
 		IRouteSection document = factory.createRouteSection();
 		if (asnDocument.getStationCodeTable()!=null){
-			document.setStationCodeTable(asnDocument.getStationCodeTable());
+			document.setStationCodeTable(IStationCodeTable.valueOf(asnDocument.getStationCodeTable().name()));
 		}	
 		document.setFromStation(UicEncoderUtils.mapToString(asnDocument.getFromStationNum(),asnDocument.getFromStationIA5()));
 		document.setToStation(UicEncoderUtils.mapToString(asnDocument.getToStationNum(),asnDocument.getToStationIA5()));
@@ -1546,7 +1576,7 @@ public class OpenAsn2ApiDecoder {
 		
 		IFipTicket document = factory.createFipTicket();
 		if(asnDocument.getClassCode()!=null){
-			document.setClassCode(asnDocument.getClassCode());
+			document.setClassCode(ITravelClassType.valueOf(asnDocument.getClassCode().name()));
 		}
 		
 		document.setValidFrom(asnDocument.getValidFromDate(issuingDate));
@@ -1588,7 +1618,7 @@ public class OpenAsn2ApiDecoder {
 		IPass document = factory.createPass();
 		
 		if(asnDocument.getClassCode()!=null){
-			document.setClassCode(asnDocument.getClassCode());
+			document.setClassCode(ITravelClassType.valueOf(asnDocument.getClassCode().name()));
 		}
 		
 		document.setValidFrom(asnDocument.getValidFromDate(issuingDate));
@@ -1785,40 +1815,40 @@ public class OpenAsn2ApiDecoder {
 	/**
 	 * Convert customer card.
 	 *
-	 * @param asnCard the asn card
+	 * @param asnDocument the asn card
 	 * @param issuingDate the issuing date
 	 * @return the i customer card
 	 */
-	protected ICustomerCard convertCustomerCard(CustomerCardData asnCard, Date issuingDate ) {
+	protected ICustomerCard convertCustomerCard(CustomerCardData asnDocument, Date issuingDate ) {
 		
-		if (asnCard == null) return null;
+		if (asnDocument == null) return null;
 		
 		ICustomerCard card = factory.createCustomerCard();
 
-		card.setCardId(UicEncoderUtils.mapToString(asnCard.getCardIdNum(), asnCard.getCardIdIA5()));
-		if (asnCard.getCardType()!= null) {
-			card.setCardType(asnCard.getCardType().intValue());
+		card.setCardId(UicEncoderUtils.mapToString(asnDocument.getCardIdNum(), asnDocument.getCardIdIA5()));
+		if (asnDocument.getCardType()!= null) {
+			card.setCardType(asnDocument.getCardType().intValue());
 		}
-		card.setCardTypeDescr(asnCard.getCardTypeDescr());
-		if(asnCard.getClassCode()!=null){
-			card.setClassCode(asnCard.getClassCode());
+		card.setCardTypeDescr(asnDocument.getCardTypeDescr());
+		if(asnDocument.getClassCode()!=null){
+			card.setClassCode(ITravelClassType.valueOf(asnDocument.getClassCode().name()));
 		}
-		if(asnCard.getCustomer()!=null) {
-			card.setCustomer(convertTraveler(asnCard.getCustomer()));
+		if(asnDocument.getCustomer()!=null) {
+			card.setCustomer(convertTraveler(asnDocument.getCustomer()));
 		}
-		if (asnCard.getCustomerStatus()!=null) {
-			card.setCustomerStatus(asnCard.getCustomerStatus().intValue());
+		if (asnDocument.getCustomerStatus()!=null) {
+			card.setCustomerStatus(asnDocument.getCustomerStatus().intValue());
 		}
 		
-		card.setCustomerStatusDescr(asnCard.getCustomerStatusDescr());
+		card.setCustomerStatusDescr(asnDocument.getCustomerStatusDescr());
 		
-		card.setValidFrom(asnCard.getValidFromDate());
+		card.setValidFrom(asnDocument.getValidFromDate());
 		
-		card.setValidUntil(asnCard.getValidUntilDate());
+		card.setValidUntil(asnDocument.getValidUntilDate());
 		
 		
-		if (asnCard.getIncludedServices() != null && !asnCard.getIncludedServices().isEmpty()){
-			for (Asn1BigInteger service: asnCard.getIncludedServices()){
+		if (asnDocument.getIncludedServices() != null && !asnDocument.getIncludedServices().isEmpty()){
+			for (Long service: asnDocument.getIncludedServices()){
 				card.addIncludedService(new Integer(service.intValue()));	
 			}
 		}
@@ -1894,13 +1924,13 @@ public class OpenAsn2ApiDecoder {
 		
 		traveler.setFirstName(asnTraveler.getFirstName());
 		if (asnTraveler.getGender()!= null) {
-			traveler.setGender(asnTraveler.getGender());
+			traveler.setGender(IGenderType.valueOf(asnTraveler.getGender().name()));
 		}
 		traveler.setIdCard(asnTraveler.getIdCard());
 		traveler.setLastName(asnTraveler.getLastName());
 		
 		if (asnTraveler.getPassengerType()!= null) {
-			traveler.setPassengerType(asnTraveler.getPassengerType());
+			traveler.setPassengerType(IPassengerType.valueOf(asnTraveler.getPassengerType().name()));
 		}
 		if (asnTraveler.getPassengerWithReducedMobility()!= null) {
 			traveler.setPassengerWithReducedMobility(asnTraveler.getPassengerWithReducedMobility());
@@ -2093,24 +2123,24 @@ public class OpenAsn2ApiDecoder {
 		IGeoCoordinate coordinate = factory.createGeoCoordinate();
 		
 		if (asnCoordinate.getCoordinateSystem() != null) {
-			coordinate.setSystem(asnCoordinate.getCoordinateSystem());
+			coordinate.setSystem(IGeoCoordinateSystemType.valueOf(asnCoordinate.getCoordinateSystem().name()));
 		}
 		
 		if (asnCoordinate.getAccuracy() != null) {
-			coordinate.setAccuracy(asnCoordinate.getAccuracy());
+			coordinate.setAccuracy(IGeoUnitType.valueOf(asnCoordinate.getAccuracy().name()));
 		}		
 		
 		if (asnCoordinate.getGeoUnit() != null) {
-			coordinate.setUnit(asnCoordinate.getGeoUnit());
+			coordinate.setUnit(IGeoUnitType.valueOf(asnCoordinate.getGeoUnit().name()));
 		}
 		
 		if (asnCoordinate.getHemisphereLatitude() != null) {
-			coordinate.setHemisphereLatitude(asnCoordinate.getHemisphereLatitude());
+			coordinate.setHemisphereLatitude(IHemisphereLatitudeType.valueOf(asnCoordinate.getHemisphereLatitude().name()));
 		}
 
 		if (asnCoordinate.getHemisphereLongitude() != null) {
-			coordinate.setHemisphereLongitude(asnCoordinate.getHemisphereLongitude());
-		}		
+			coordinate.setHemisphereLongitude(IHemisphereLongitudeType.valueOf(asnCoordinate.getHemisphereLongitude().name()));
+		}			
 		
 		coordinate.setLongitude (asnCoordinate.getLongitude());
 		coordinate.setLatitude (asnCoordinate.getLatitude());
@@ -2151,10 +2181,10 @@ public class OpenAsn2ApiDecoder {
 		ticketLink.setProductOwner(UicEncoderUtils.mapToString(asnTicketLink.getProductOwnerNum(),asnTicketLink.getProductOwnerIA5()));
 		ticketLink.setReference(UicEncoderUtils.mapToString(asnTicketLink.getReferenceNum(),asnTicketLink.getReferenceIA5()));
 		if(asnTicketLink.getTicketType()!=null) {
-			ticketLink.setTicketType(asnTicketLink.getTicketType());
+			ticketLink.setTicketType(ITicketType.valueOf(asnTicketLink.getTicketType().name()));
 		}
 		if(asnTicketLink.getLinkMode()!=null) {
-			ticketLink.setLinkMode(asnTicketLink.getLinkMode());
+			ticketLink.setLinkMode(ILinkMode.valueOf(asnTicketLink.getLinkMode().name()));
 		}	
 		return ticketLink;
 	}

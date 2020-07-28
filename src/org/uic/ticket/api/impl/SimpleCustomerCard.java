@@ -7,10 +7,10 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedHashSet;
 
-import org.uic.ticket.api.asn.omv1.TravelClassType;
 import org.uic.ticket.api.spec.ICustomerCard;
 import org.uic.ticket.api.spec.IExtension;
 import org.uic.ticket.api.spec.ITraveler;
+import org.uic.ticket.api.spec.ITravelClassType;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -31,7 +31,7 @@ public class SimpleCustomerCard  extends SimpleDocumentData implements ICustomer
 	protected Date  	validUntil;
 	
 	/** The class code. */
-	protected TravelClassType	classCode;     
+	protected ITravelClassType	classCode;     
 	
 	/** The extension. */
 	protected IExtension extension;
@@ -111,14 +111,14 @@ public class SimpleCustomerCard  extends SimpleDocumentData implements ICustomer
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.ICustomerCard#getClassCode()
 	 */
-	public TravelClassType getClassCode() {
+	public ITravelClassType getClassCode() {
 		return classCode;
 	}
 	
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.ICustomerCard#setClassCode(org.uic.ticket.api.asn.om.TravelClassType)
 	 */
-	public void setClassCode(TravelClassType classCode) {
+	public void setClassCode(ITravelClassType classCode) {
 		this.classCode = classCode;
 	}
 	

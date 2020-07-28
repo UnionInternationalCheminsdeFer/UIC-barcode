@@ -5,9 +5,7 @@ package org.uic.ticket.api.spec;
 
 import java.util.Collection;
 
-import org.uic.ticket.api.asn.omv1.CodeTableType;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Interface IViaStation.
  * 
@@ -42,7 +40,7 @@ public interface IViaStation extends IRegionalValidity {
 	 * 
 	 * @return the station code table
 	 */
-	public CodeTableType getStationCodeTable();
+	public IStationCodeTable getStationCodeTable();
 
 	/**
 	 * Sets the station code table.
@@ -56,7 +54,7 @@ public interface IViaStation extends IRegionalValidity {
 	 * 	
 	 * @param stationCodeTable the new station code table
 	 */
-	public void setStationCodeTable(CodeTableType stationCodeTable);
+	public void setStationCodeTable(IStationCodeTable stationCodeTable);
 	
 	/**
 	 * Gets the station code.

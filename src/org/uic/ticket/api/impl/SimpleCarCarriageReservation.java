@@ -7,18 +7,18 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedHashSet;
 
-import org.uic.ticket.api.asn.omv1.CodeTableType;
-import org.uic.ticket.api.asn.omv1.LoadingDeckType;
-import org.uic.ticket.api.asn.omv1.PriceTypeType;
-import org.uic.ticket.api.asn.omv1.RoofRackType;
+
 import org.uic.ticket.api.spec.ICarCarriageReservation;
 import org.uic.ticket.api.spec.ICompartmentDetails;
 import org.uic.ticket.api.spec.IExtension;
 import org.uic.ticket.api.spec.IServiceBrand;
 import org.uic.ticket.api.spec.ITariff;
 import org.uic.ticket.api.spec.IVatDetail;
+import org.uic.ticket.api.spec.ILoadingDeckType;
+import org.uic.ticket.api.spec.IPriceTypeType;
+import org.uic.ticket.api.spec.IRoofRackType;
+import org.uic.ticket.api.spec.IStationCodeTable;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class SimpleCarCarriageReservation.
  */
@@ -42,7 +42,7 @@ public class SimpleCarCarriageReservation extends SimpleDocumentData implements 
 
 	    
     /** The station code table. */
-    protected CodeTableType stationCodeTable = CodeTableType.stationUICReservation;
+    protected IStationCodeTable stationCodeTable = IStationCodeTable.stationUICReservation;
     
     /** The from station. */
     protected String fromStation;
@@ -91,7 +91,7 @@ public class SimpleCarCarriageReservation extends SimpleDocumentData implements 
 	protected boolean textileRoof	= false;
 	
 	/** The roof rack type. */
-	protected RoofRackType roofRackType	= RoofRackType.norack;
+	protected IRoofRackType roofRackType	= IRoofRackType.norack;
 										 		  
 	/** The roof rack height. */
 	protected int roofRackHeight;
@@ -116,10 +116,10 @@ public class SimpleCarCarriageReservation extends SimpleDocumentData implements 
 	protected int loadingListEntry;
 	
 	/** The loading deck. */
-	protected LoadingDeckType loadingDeck = LoadingDeckType.upper; 	
+	protected ILoadingDeckType loadingDeck = ILoadingDeckType.upper; 	
 
     /** The price type. */
-    protected PriceTypeType priceType = PriceTypeType.travelPrice;
+    protected IPriceTypeType priceType = IPriceTypeType.travelPrice;
     
     /** The VAT details. */
     protected Collection<IVatDetail>vatDetails = new LinkedHashSet<IVatDetail>();
@@ -198,14 +198,14 @@ public class SimpleCarCarriageReservation extends SimpleDocumentData implements 
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.ICarCarriageReservation#getStationCodeTable()
 	 */
-	public CodeTableType getStationCodeTable() {
+	public IStationCodeTable getStationCodeTable() {
 		return stationCodeTable;
 	}
 
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.ICarCarriageReservation#setStationCodeTable(org.uic.ticket.api.asn.om.CodeTableType)
 	 */
-	public void setStationCodeTable(CodeTableType stationCodeTable) {
+	public void setStationCodeTable(IStationCodeTable stationCodeTable) {
 		this.stationCodeTable = stationCodeTable;
 	}
 
@@ -312,14 +312,14 @@ public class SimpleCarCarriageReservation extends SimpleDocumentData implements 
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.ICarCarriageReservation#getPriceType()
 	 */
-	public PriceTypeType getPriceType() {
+	public IPriceTypeType getPriceType() {
 		return priceType;
 	}
 
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.ICarCarriageReservation#setPriceType(org.uic.ticket.api.asn.om.PriceTypeType)
 	 */
-	public void setPriceType(PriceTypeType priceType) {
+	public void setPriceType(IPriceTypeType priceType) {
 		this.priceType = priceType;
 	}
 
@@ -467,14 +467,14 @@ public class SimpleCarCarriageReservation extends SimpleDocumentData implements 
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.ICarCarriageReservation#getRoofRackType()
 	 */
-	public RoofRackType getRoofRackType() {
+	public IRoofRackType getRoofRackType() {
 		return roofRackType;
 	}
 
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.ICarCarriageReservation#setRoofRackType(org.uic.ticket.api.asn.om.RoofRackType)
 	 */
-	public void setRoofRackType(RoofRackType roofRackType) {
+	public void setRoofRackType(IRoofRackType roofRackType) {
 		this.roofRackType = roofRackType;
 	}
 
@@ -579,14 +579,14 @@ public class SimpleCarCarriageReservation extends SimpleDocumentData implements 
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.ICarCarriageReservation#getLoadingDeck()
 	 */
-	public LoadingDeckType getLoadingDeck() {
+	public ILoadingDeckType getLoadingDeck() {
 		return loadingDeck;
 	}
 
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.ICarCarriageReservation#setLoadingDeck(org.uic.ticket.api.asn.om.LoadingDeckType)
 	 */
-	public void setLoadingDeck(LoadingDeckType loadingDeck) {
+	public void setLoadingDeck(ILoadingDeckType loadingDeck) {
 		this.loadingDeck = loadingDeck;
 	}
 

@@ -3,32 +3,33 @@
  */
 package org.uic.ticket.api.impl;
 
-import org.uic.ticket.api.asn.omv1.GeoCoordinateSystemType;
-import org.uic.ticket.api.asn.omv1.GeoUnitType;
-import org.uic.ticket.api.asn.omv1.HemisphereLatitudeType;
-import org.uic.ticket.api.asn.omv1.HemisphereLongitudeType;
+
+import org.uic.ticket.api.spec.IGeoCoordinateSystemType;
+import org.uic.ticket.api.spec.IGeoUnitType;
+import org.uic.ticket.api.spec.IHemisphereLatitudeType;
+import org.uic.ticket.api.spec.IHemisphereLongitudeType;
 import org.uic.ticket.api.spec.IGeoCoordinate;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class SimpleGeoCoordinate.
  */
 public class SimpleGeoCoordinate implements IGeoCoordinate {
 	
 	/** The unit. */
-	protected GeoUnitType unit = GeoUnitType.milliDegree;
+	protected IGeoUnitType unit = IGeoUnitType.milliDegree;
 
 	/** The accuracy. */
-	protected GeoUnitType accuracy;
+	protected IGeoUnitType accuracy;
 	
 	/** The system. */
-	protected GeoCoordinateSystemType system = GeoCoordinateSystemType.wgs84;
+	protected IGeoCoordinateSystemType system = IGeoCoordinateSystemType.wgs84;
 	
 	/** The hemispher longiture. */
-	protected HemisphereLongitudeType hemispherLongiture = HemisphereLongitudeType.north;
+	protected IHemisphereLongitudeType hemispherLongiture = IHemisphereLongitudeType.north;
 	
 	/** The hemisphere latitude. */
-	protected HemisphereLatitudeType hemisphereLatitude = HemisphereLatitudeType.east;
+	protected IHemisphereLatitudeType hemisphereLatitude = IHemisphereLatitudeType.east;
 	
 	/** The longitude. */
 	protected Long longitude;
@@ -39,70 +40,70 @@ public class SimpleGeoCoordinate implements IGeoCoordinate {
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.IGeoCoordinate#getUnit()
 	 */
-	public GeoUnitType getUnit() {
+	public IGeoUnitType getUnit() {
 		return unit;
 	}
 
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.IGeoCoordinate#setUnit(org.uic.ticket.api.asn.om.GeoUnitType)
 	 */
-	public void setUnit(GeoUnitType unit) {
+	public void setUnit(IGeoUnitType unit) {
 		this.unit = unit;
 	}
 
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.IGeoCoordinate#getAccuracy()
 	 */
-	public GeoUnitType getAccuracy() {
+	public IGeoUnitType getAccuracy() {
 		return accuracy;
 	}
 
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.IGeoCoordinate#setAccuracy(org.uic.ticket.api.asn.om.GeoUnitType)
 	 */
-	public void setAccuracy(GeoUnitType accuracy) {
+	public void setAccuracy(IGeoUnitType accuracy) {
 		this.accuracy = accuracy;
 	}
 
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.IGeoCoordinate#getSystem()
 	 */
-	public GeoCoordinateSystemType getSystem() {
+	public IGeoCoordinateSystemType getSystem() {
 		return system;
 	}
 
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.IGeoCoordinate#setSystem(org.uic.ticket.api.asn.om.GeoCoordinateSystemType)
 	 */
-	public void setSystem(GeoCoordinateSystemType system) {
+	public void setSystem(IGeoCoordinateSystemType system) {
 		this.system = system;
 	}
 
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.IGeoCoordinate#getHemispherLongitude()
 	 */
-	public HemisphereLongitudeType getHemisphereLongitude() {
+	public IHemisphereLongitudeType getHemisphereLongitude() {
 		return hemispherLongiture;
 	}
 
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.IGeoCoordinate#setHemispherLongitude(org.uic.ticket.api.asn.om.HemisphereLongitudeType)
 	 */
-	public void setHemisphereLongitude(HemisphereLongitudeType hemispherLongiture) {
+	public void setHemisphereLongitude(IHemisphereLongitudeType hemispherLongiture) {
 		this.hemispherLongiture = hemispherLongiture;
 	}
 
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.IGeoCoordinate#getHemisphereLatitude()
 	 */
-	public HemisphereLatitudeType getHemisphereLatitude() {
+	public IHemisphereLatitudeType getHemisphereLatitude() {
 		return hemisphereLatitude;
 	}
 
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.IGeoCoordinate#setHemisphereLatitude(org.uic.ticket.api.asn.om.HemisphereLatitudeType)
 	 */
-	public void setHemisphereLatitude(HemisphereLatitudeType hemisphereLatitude) {
+	public void setHemisphereLatitude(IHemisphereLatitudeType hemisphereLatitude) {
 		this.hemisphereLatitude = hemisphereLatitude;
 	}
 
@@ -146,15 +147,15 @@ public class SimpleGeoCoordinate implements IGeoCoordinate {
 	}
 	
 	public long getFullCircle(){
-		if (unit == GeoUnitType.centiDegree) {
+		if (unit == IGeoUnitType.centiDegree) {
 			return 100 * 360;
-		} else if (unit == GeoUnitType.deciDegree) {
+		} else if (unit == IGeoUnitType.deciDegree) {
 			return 10 * 360;
-		} else if (unit == GeoUnitType.milliDegree) {
+		} else if (unit == IGeoUnitType.milliDegree) {
 			return 1000 * 360;
-		} else if (unit == GeoUnitType.tenthmilliDegree) {
+		} else if (unit == IGeoUnitType.tenthmilliDegree) {
 			return 10000 * 360;
-		} else if (unit == GeoUnitType.milliDegree) {
+		} else if (unit == IGeoUnitType.milliDegree) {
 			return 100000 * 360;
 		} else {
 			return 360;

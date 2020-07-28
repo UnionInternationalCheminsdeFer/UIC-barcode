@@ -3,10 +3,9 @@
  */
 package org.uic.ticket.api.impl;
 
-import org.uic.ticket.api.asn.omv1.CompartmentPositionType;
 import org.uic.ticket.api.spec.ICompartmentDetails;
+import org.uic.ticket.api.spec.ICompartmentPositionType;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class SimpleCompartmentDetails.
  */
@@ -32,7 +31,7 @@ public class SimpleCompartmentDetails implements ICompartmentDetails {
 	protected String specialAllocationDescr;
 	
 	/** The position. */
-	protected CompartmentPositionType position        = CompartmentPositionType.unspecified;
+	protected ICompartmentPositionType position        = ICompartmentPositionType.unspecified;
 	
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.ICompartmentDetails#getCoachType()
@@ -121,14 +120,14 @@ public class SimpleCompartmentDetails implements ICompartmentDetails {
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.ICompartmentDetails#getPosition()
 	 */
-	public CompartmentPositionType getPosition() {
+	public ICompartmentPositionType getPosition() {
 		return position;
 	}
 	
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.ICompartmentDetails#setPosition(org.uic.ticket.api.asn.om.CompartmentPositionType)
 	 */
-	public void setPosition(CompartmentPositionType position) {
+	public void setPosition(ICompartmentPositionType position) {
 		this.position = position;
 	}
 	

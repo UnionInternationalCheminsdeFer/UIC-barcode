@@ -7,10 +7,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedHashSet;
 
-import org.uic.ticket.api.asn.omv1.CodeTableType;
-import org.uic.ticket.api.asn.omv1.PriceTypeType;
-import org.uic.ticket.api.asn.omv1.ServiceType;
-import org.uic.ticket.api.asn.omv1.TravelClassType;
+
 import org.uic.ticket.api.spec.IBerth;
 import org.uic.ticket.api.spec.ICompartmentDetails;
 import org.uic.ticket.api.spec.IExtension;
@@ -20,8 +17,12 @@ import org.uic.ticket.api.spec.IReservation;
 import org.uic.ticket.api.spec.IServiceBrand;
 import org.uic.ticket.api.spec.ITariff;
 import org.uic.ticket.api.spec.IVatDetail;
+import org.uic.ticket.api.spec.IPriceTypeType;
+import org.uic.ticket.api.spec.IServiceType;
+import org.uic.ticket.api.spec.IStationCodeTable;
+import org.uic.ticket.api.spec.ITravelClassType;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class SimpleReservation.
  */
@@ -49,7 +50,7 @@ public class SimpleReservation extends SimpleDocumentData implements IReservatio
     	protected IServiceBrand serviceBrand;
 	    
 		/** The service. */
-		protected ServiceType 	service = ServiceType.seat;		
+		protected IServiceType 	service = IServiceType.seat;		
 		   	
 		/** The service brand description. */
 		protected String serviceBrandDescription;
@@ -59,7 +60,7 @@ public class SimpleReservation extends SimpleDocumentData implements IReservatio
 
 		    
         /** The station code table. */
-        protected CodeTableType stationCodeTable = CodeTableType.stationUICReservation;
+        protected IStationCodeTable stationCodeTable = IStationCodeTable.stationUICReservation;
         
         /** The from station. */
         protected String fromStation;
@@ -83,7 +84,7 @@ public class SimpleReservation extends SimpleDocumentData implements IReservatio
         protected Collection<ITariff> tariffs = new LinkedHashSet<ITariff>();	        
 		    
 		/** The class code. */
-		protected TravelClassType	classCode = TravelClassType.second;
+		protected ITravelClassType	classCode = ITravelClassType.second;
 
 		/** The service level. */
 		protected String   serviceLevel;
@@ -106,7 +107,7 @@ public class SimpleReservation extends SimpleDocumentData implements IReservatio
 	
 		
         /** The price type. */
-        protected PriceTypeType priceType = PriceTypeType.travelPrice;
+        protected IPriceTypeType priceType = IPriceTypeType.travelPrice;
         
         /** The type of supplement. */
         protected int typeOfSupplement;				
@@ -222,28 +223,28 @@ public class SimpleReservation extends SimpleDocumentData implements IReservatio
 		/* (nicht-Javadoc)
 		 * @see org.uic.ticket.api.spec.IReservation#getService()
 		 */
-		public ServiceType getService() {
+		public IServiceType getService() {
 			return service;
 		}
 
 		/* (nicht-Javadoc)
 		 * @see org.uic.ticket.api.spec.IReservation#setService(org.uic.ticket.api.asn.om.ServiceType)
 		 */
-		public void setService(ServiceType service) {
+		public void setService(IServiceType service) {
 			this.service = service;
 		}
 
 		/* (nicht-Javadoc)
 		 * @see org.uic.ticket.api.spec.IReservation#getStationCodeTable()
 		 */
-		public CodeTableType getStationCodeTable() {
+		public IStationCodeTable getStationCodeTable() {
 			return stationCodeTable;
 		}
 
 		/* (nicht-Javadoc)
 		 * @see org.uic.ticket.api.spec.IReservation#setStationCodeTable(org.uic.ticket.api.asn.om.CodeTableType)
 		 */
-		public void setStationCodeTable(CodeTableType stationCodeTable) {
+		public void setStationCodeTable(IStationCodeTable stationCodeTable) {
 			this.stationCodeTable = stationCodeTable;
 		}
 
@@ -320,14 +321,14 @@ public class SimpleReservation extends SimpleDocumentData implements IReservatio
 		/* (nicht-Javadoc)
 		 * @see org.uic.ticket.api.spec.IReservation#getClassCode()
 		 */
-		public TravelClassType getClassCode() {
+		public ITravelClassType getClassCode() {
 			return classCode;
 		}
 
 		/* (nicht-Javadoc)
 		 * @see org.uic.ticket.api.spec.IReservation#setClassCode(org.uic.ticket.api.asn.om.TravelClassType)
 		 */
-		public void setClassCode(TravelClassType classCode) {
+		public void setClassCode(ITravelClassType classCode) {
 			this.classCode = classCode;
 		}
 
@@ -449,14 +450,14 @@ public class SimpleReservation extends SimpleDocumentData implements IReservatio
 		/* (nicht-Javadoc)
 		 * @see org.uic.ticket.api.spec.IReservation#getPriceType()
 		 */
-		public PriceTypeType getPriceType() {
+		public IPriceTypeType getPriceType() {
 			return priceType;
 		}
 
 		/* (nicht-Javadoc)
 		 * @see org.uic.ticket.api.spec.IReservation#setPriceType(org.uic.ticket.api.asn.om.PriceTypeType)
 		 */
-		public void setPriceType(PriceTypeType priceType) {
+		public void setPriceType(IPriceTypeType priceType) {
 			this.priceType = priceType;
 		}
 

@@ -7,10 +7,10 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedHashSet;
 
-import org.uic.ticket.api.asn.omv1.CodeTableType;
 import org.uic.ticket.api.spec.IExtension;
 import org.uic.ticket.api.spec.IParkingGround;
 import org.uic.ticket.api.spec.IVatDetail;
+import org.uic.ticket.api.spec.IStationCodeTable;
 
 
 /**
@@ -55,7 +55,7 @@ public class SimpleParkingGround extends SimpleDocumentData implements IParkingG
 		protected String 	numberPlate;
 			                				        	
         /** The station code table. */
-        protected CodeTableType stationCodeTable = CodeTableType.stationUIC;		
+        protected IStationCodeTable stationCodeTable = IStationCodeTable.stationUIC;		
 		
 		/** The extension data. */
 		protected IExtension   	extensionData;
@@ -227,14 +227,14 @@ public class SimpleParkingGround extends SimpleDocumentData implements IParkingG
 		/* (nicht-Javadoc)
 		 * @see org.uic.ticket.api.spec.IParkingGround#getStationCodeTable()
 		 */
-		public CodeTableType getStationCodeTable() {
+		public IStationCodeTable getStationCodeTable() {
 			return stationCodeTable;
 		}
 
 		/* (nicht-Javadoc)
 		 * @see org.uic.ticket.api.spec.IParkingGround#setStationCodeTable(org.uic.ticket.api.asn.om.CodeTableType)
 		 */
-		public void setStationCodeTable(CodeTableType stationCodeTable) {
+		public void setStationCodeTable(IStationCodeTable stationCodeTable) {
 			this.stationCodeTable = stationCodeTable;
 		}
 

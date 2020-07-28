@@ -5,9 +5,6 @@ package org.uic.ticket.api.spec;
 
 import java.util.Collection;
 
-import org.uic.ticket.api.asn.omv1.PassengerType;
-
-// TODO: Auto-generated Javadoc
 /**
  * The Interface ITariff.
  * 
@@ -38,7 +35,7 @@ public interface ITariff {
 	 *
 	 * @return the passenger type
 	 */
-	public PassengerType getPassengerType();
+	public IPassengerType getPassengerType();
 
 
 	/**
@@ -46,7 +43,7 @@ public interface ITariff {
 	 *
 	 * @param passengerType the new passenger type
 	 */
-	public void setPassengerType(PassengerType passengerType);
+	public void setPassengerType(IPassengerType passengerType);
 
 	/**
 	 * Gets the upper limit of the age of the passenger to qualify for that tariff.

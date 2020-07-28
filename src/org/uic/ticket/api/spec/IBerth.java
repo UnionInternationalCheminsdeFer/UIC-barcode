@@ -3,9 +3,8 @@
  */
 package org.uic.ticket.api.spec;
 
-import org.uic.ticket.api.EncodingFormatException;
-import org.uic.ticket.api.asn.omv1.BerthTypeType;
-import org.uic.ticket.api.asn.omv1.CompartmentGenderType;
+import org.uic.ticket.EncodingFormatException;
+
 
 
 /**
@@ -19,7 +18,7 @@ public interface IBerth {
 	 *
 	 * @return the type
 	 */
-	public BerthTypeType getType() ;
+	public IBerthTypeType getType() ;
 	
 	/**
 	 * Sets the type of the Berth.
@@ -27,7 +26,7 @@ public interface IBerth {
 	 *
 	 * @param type the new berth type
 	 */
-	public void setType(BerthTypeType type);
+	public void setType(IBerthTypeType type);
 	
 	/**
 	 * Gets the number of berths.
@@ -49,13 +48,13 @@ public interface IBerth {
 	 *
 	 * @return the gender
 	 */
-	public CompartmentGenderType getGender();
+	public ICompartmentGenderType getGender();
 	
 	/**
 	 * Sets the gender information of the compartment reserved (family, male, female, mixed,..).
 	 *
 	 * @param gender the new gender
 	 */
-	public void setGender(CompartmentGenderType gender) ;
+	public void setGender(ICompartmentGenderType gender) ;
 
 }

@@ -6,9 +6,8 @@ package org.uic.ticket.api.spec;
 import java.util.Collection;
 import java.util.Date;
 
-import org.uic.ticket.api.asn.omv1.TravelClassType;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Interface ICustomerCard.
  */
@@ -76,14 +75,14 @@ public interface ICustomerCard  extends IDocumentData {
 	 *
 	 * @return the class code
 	 */
-	public TravelClassType getClassCode();
+	public ITravelClassType getClassCode();
 	
 	/**
 	 * Sets the class code.
 	 *
 	 * @param classCode the new class code
 	 */
-	public void setClassCode(TravelClassType classCode);
+	public void setClassCode(ITravelClassType classCode);
 	
 	/**
 	 * Gets the card type.

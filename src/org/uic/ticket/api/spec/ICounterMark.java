@@ -6,9 +6,6 @@ package org.uic.ticket.api.spec;
 import java.util.Collection;
 import java.util.Date;
 
-import org.uic.ticket.api.asn.omv1.CodeTableType;
-import org.uic.ticket.api.asn.omv1.TravelClassType;
-
 /**
  * The Interface ICounterMark.
  * 
@@ -98,7 +95,7 @@ public interface ICounterMark  extends IDocumentData {
 	 *	 
 	 * @return the station code table
 	 */
-	public CodeTableType getStationCodeTable();
+	public IStationCodeTable getStationCodeTable();
 
 	/**
 	 * Sets the station code table.
@@ -109,7 +106,7 @@ public interface ICounterMark  extends IDocumentData {
 	 * 	 
 	 * @param stationCodeTable the new station code table
 	 */
-	public void setStationCodeTable(CodeTableType stationCodeTable);
+	public void setStationCodeTable(IStationCodeTable stationCodeTable);
 
 	/**
 	 * Gets the from station.
@@ -242,14 +239,14 @@ public interface ICounterMark  extends IDocumentData {
 	 *
 	 * @return the class code
 	 */
-	public TravelClassType getClassCode();
+	public ITravelClassType getClassCode();
 
 	/**
 	 * Sets the class code.
 	 *
 	 * @param classCode the new class code
 	 */
-	public void setClassCode(TravelClassType classCode);
+	public void setClassCode(ITravelClassType classCode);
 
 	/**
 	 * Gets the included carriers.

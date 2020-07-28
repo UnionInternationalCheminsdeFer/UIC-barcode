@@ -8,9 +8,9 @@ import java.util.Date;
 
 import java.util.LinkedHashSet;
 
-import org.uic.ticket.api.asn.omv1.TravelClassType;
 import org.uic.ticket.api.spec.IExtension;
 import org.uic.ticket.api.spec.IFipTicket;
+import org.uic.ticket.api.spec.ITravelClassType;
 
 
 // TODO: Auto-generated Javadoc
@@ -30,7 +30,7 @@ public class SimpleFipTicket extends SimpleDocumentData implements IFipTicket {
 	protected String productOwner;
 	
 	/** The class code. */
-	protected TravelClassType	classCode = TravelClassType.second;      
+	protected ITravelClassType	classCode = ITravelClassType.second;      
 	
 	/** The valid from. */
 	protected Date validFrom;
@@ -140,14 +140,14 @@ public class SimpleFipTicket extends SimpleDocumentData implements IFipTicket {
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.IFipTicket#getClassCode()
 	 */
-	public TravelClassType getClassCode() {
+	public ITravelClassType getClassCode() {
 		return classCode;
 	}
 
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.IFipTicket#setClassCode(org.uic.ticket.api.asn.om.TravelClassType)
 	 */
-	public void setClassCode(TravelClassType classCode) {
+	public void setClassCode(ITravelClassType classCode) {
 		this.classCode = classCode;
 	}
 

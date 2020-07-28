@@ -3,8 +3,6 @@
  */
 package org.uic.ticket.api.spec;
 
-import org.uic.ticket.api.asn.omv1.LinkMode;
-import org.uic.ticket.api.asn.omv1.TicketType;
 
 /**
  * The Interface ITicketLink.
@@ -60,28 +58,28 @@ public interface ITicketLink {
 	 *
 	 * @return the ticket type
 	 */
-	public TicketType getTicketType();
+	public ITicketType getTicketType();
 
 	/**
 	 * Sets the ticket type.
 	 *
 	 * @param ticketType the new ticket type
 	 */
-	public void setTicketType(TicketType ticketType);
+	public void setTicketType(ITicketType ticketType);
 	
 	/**
 	 * Gets the link mode.
 	 *
 	 * @return the link mode
 	 */
-	public LinkMode getLinkMode();
+	public ILinkMode getLinkMode();
 
 	/**
 	 * Sets the link mode.
 	 *
 	 * @param linkMode the new link mode
 	 */
-	public void setLinkMode(LinkMode linkMode);
+	public void setLinkMode(ILinkMode linkMode);
 	
 	/**
 	 * Gets the issuer PNR.

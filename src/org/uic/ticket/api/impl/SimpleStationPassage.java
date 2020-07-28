@@ -7,11 +7,11 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedHashSet;
 
-import org.uic.ticket.api.asn.omv1.CodeTableType;
 import org.uic.ticket.api.spec.IExtension;
 import org.uic.ticket.api.spec.IStationPassage;
+import org.uic.ticket.api.spec.IStationCodeTable;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class SimpleStationPassage.
  */
@@ -36,7 +36,7 @@ public class SimpleStationPassage extends SimpleDocumentData implements IStation
 	protected Date  validUntil;	
 	
 	/** The station code table. */
-	protected CodeTableType stationCodeTable = CodeTableType.stationUIC;
+	protected IStationCodeTable stationCodeTable = IStationCodeTable.stationUIC;
        
 	/** The station name. */
 	protected String stationName;
@@ -148,14 +148,14 @@ public class SimpleStationPassage extends SimpleDocumentData implements IStation
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.IStationPassage#getStationCodeTable()
 	 */
-	public CodeTableType getStationCodeTable() {
+	public IStationCodeTable getStationCodeTable() {
 		return stationCodeTable;
 	}
 
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.IStationPassage#setStationCodeTable(org.uic.ticket.api.asn.om.CodeTableType)
 	 */
-	public void setStationCodeTable(CodeTableType stationCodeTable) {
+	public void setStationCodeTable(IStationCodeTable stationCodeTable) {
 		this.stationCodeTable = stationCodeTable;
 	}
 

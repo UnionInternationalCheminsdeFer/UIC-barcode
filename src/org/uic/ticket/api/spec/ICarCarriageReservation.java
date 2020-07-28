@@ -6,10 +6,6 @@ package org.uic.ticket.api.spec;
 import java.util.Collection;
 import java.util.Date;
 
-import org.uic.ticket.api.asn.omv1.CodeTableType;
-import org.uic.ticket.api.asn.omv1.LoadingDeckType;
-import org.uic.ticket.api.asn.omv1.PriceTypeType;
-import org.uic.ticket.api.asn.omv1.RoofRackType;
 
 /**
  * The Interface ICarCarriageReservation.
@@ -111,7 +107,7 @@ public interface ICarCarriageReservation  extends IDocumentData {
 	 *
 	 * @return the station code table
 	 */
-	public CodeTableType getStationCodeTable();
+	public IStationCodeTable getStationCodeTable();
 
 	/**
 	 * Sets the station code table.
@@ -121,7 +117,7 @@ public interface ICarCarriageReservation  extends IDocumentData {
 	 *
 	 * @param stationCodeTable the new station code table
 	 */
-	public void setStationCodeTable(CodeTableType stationCodeTable);
+	public void setStationCodeTable(IStationCodeTable stationCodeTable);
 
 	/**
 	 * Gets the from station code
@@ -246,7 +242,7 @@ public interface ICarCarriageReservation  extends IDocumentData {
 	 *
 	 * @return the price type
 	 */
-	public PriceTypeType getPriceType();
+	public IPriceTypeType getPriceType();
 
 	/**
 	 * Sets the price type.
@@ -255,7 +251,7 @@ public interface ICarCarriageReservation  extends IDocumentData {
 	 *
 	 * @param priceType the new price type
 	 */
-	public void setPriceType(PriceTypeType priceType) ;
+	public void setPriceType(IPriceTypeType priceType) ;
 
 	/**
 	 * Gets the info text for the control staff
@@ -412,7 +408,7 @@ public interface ICarCarriageReservation  extends IDocumentData {
 	 *
 	 * @return the roof rack type
 	 */
-	public RoofRackType getRoofRackType();
+	public IRoofRackType getRoofRackType();
 
 	/**
 	 * Sets the roof rack type.
@@ -421,7 +417,7 @@ public interface ICarCarriageReservation  extends IDocumentData {
 	 *
 	 * @param roofRackType the new roof rack type
 	 */
-	public void setRoofRackType(RoofRackType roofRackType);
+	public void setRoofRackType(IRoofRackType roofRackType);
 
 	/**
 	 * Gets the roof rack height in cm
@@ -526,14 +522,14 @@ public interface ICarCarriageReservation  extends IDocumentData {
 	 *
 	 * @return the loading deck
 	 */
-	public LoadingDeckType getLoadingDeck();
+	public ILoadingDeckType getLoadingDeck();
 
 	/**
 	 * Sets the loading deck.
 	 *
 	 * @param loadingDeck the new loading deck
 	 */
-	public void setLoadingDeck(LoadingDeckType loadingDeck);
+	public void setLoadingDeck(ILoadingDeckType loadingDeck);
 
 
 	/**

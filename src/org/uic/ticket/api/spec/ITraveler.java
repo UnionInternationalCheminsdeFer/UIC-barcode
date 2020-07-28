@@ -6,10 +6,7 @@ package org.uic.ticket.api.spec;
 import java.util.Collection;
 import java.util.Date;
 
-import org.uic.ticket.api.asn.omv1.GenderType;
-import org.uic.ticket.api.asn.omv1.PassengerType;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Interface ITravelerData.
  * 
@@ -107,14 +104,14 @@ public interface ITraveler {
 	 *
 	 * @return the gender
 	 */
-	public GenderType getGender();
+	public IGenderType getGender();
 
 	/**
 	 * Sets the gender.
 	 *
 	 * @param gender the new gender
 	 */
-	public void setGender(GenderType gender);
+	public void setGender(IGenderType gender);
 	
 	/**
 	 * Gets the customer id.
@@ -163,14 +160,14 @@ public interface ITraveler {
 	 *
 	 * @return the passenger type
 	 */
-	public PassengerType getPassengerType();
+	public IPassengerType getPassengerType();
 
 	/**
 	 * Sets the passenger type.
 	 *
 	 * @param passengerType the new passenger type
 	 */
-	public void setPassengerType(PassengerType passengerType);
+	public void setPassengerType(IPassengerType passengerType);
 
 	/**
 	 * Checks if is passenger with reduced mobility.

@@ -3,7 +3,6 @@
  */
 package org.uic.ticket.api.spec;
 
-import org.uic.ticket.api.asn.omv1.CodeTableType;
 
 /**
  * The Interface IRouteSection.
@@ -17,14 +16,14 @@ public interface IRouteSection {
 	 *
 	 * @return the station code table
 	 */
-	public CodeTableType getStationCodeTable();
+	public IStationCodeTable getStationCodeTable();
 	
 	/**
 	 * Sets the station code table.
 	 *
 	 * @param stationCodeTable the new station code table
 	 */
-	public void setStationCodeTable(CodeTableType stationCodeTable);
+	public void setStationCodeTable(IStationCodeTable stationCodeTable);
 	
 	/**
 	 * Gets the from station code.

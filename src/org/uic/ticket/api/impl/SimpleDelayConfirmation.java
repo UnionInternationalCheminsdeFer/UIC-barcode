@@ -4,12 +4,11 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 
-import org.uic.ticket.api.asn.omv1.CodeTableType;
 import org.uic.ticket.api.spec.IDelayConfirmation;
 import org.uic.ticket.api.spec.IExtension;
 import org.uic.ticket.api.spec.ITicketLink;
+import org.uic.ticket.api.spec.IStationCodeTable;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class SimpleDelayConfirmation.
  */
@@ -22,7 +21,7 @@ public class SimpleDelayConfirmation extends SimpleDocumentData  implements IDel
 	protected String    reference;
 	
     /** The station code table. */
-    protected CodeTableType stationCodeTable = CodeTableType.stationUICReservation;
+    protected IStationCodeTable stationCodeTable = IStationCodeTable.stationUICReservation;
     
     /** The station. */
     protected String station;	
@@ -94,7 +93,7 @@ public class SimpleDelayConfirmation extends SimpleDocumentData  implements IDel
 	 * @see org.uic.ticket.api.spec.IDelayConfirmation#getStationCodeTable()
 	 */
 	@Override
-	public CodeTableType getStationCodeTable() {
+	public IStationCodeTable getStationCodeTable() {
 		return stationCodeTable;
 	}
 
@@ -102,7 +101,7 @@ public class SimpleDelayConfirmation extends SimpleDocumentData  implements IDel
 	 * @see org.uic.ticket.api.spec.IDelayConfirmation#setStationCodeTable(org.uic.ticket.api.asn.omv1.CodeTableType)
 	 */
 	@Override
-	public void setStationCodeTable(CodeTableType stationCodeTable) {
+	public void setStationCodeTable(IStationCodeTable stationCodeTable) {
 		this.stationCodeTable = stationCodeTable;
 	}
 

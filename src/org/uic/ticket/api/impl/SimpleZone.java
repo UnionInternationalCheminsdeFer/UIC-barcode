@@ -6,10 +6,10 @@ package org.uic.ticket.api.impl;
 import java.util.Collection;
 import java.util.HashSet;
 
-import org.uic.ticket.api.asn.omv1.CodeTableType;
 import org.uic.ticket.api.spec.IZone;
+import org.uic.ticket.api.spec.IStationCodeTable;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class SimpleZone.
  */
@@ -20,7 +20,7 @@ public class SimpleZone implements IZone {
 	
 	
 	/** The station code table. */
-	protected CodeTableType stationCodeTable = CodeTableType.stationUIC;
+	protected IStationCodeTable stationCodeTable = IStationCodeTable.stationUIC;
 	
 	/** The entry station. */
 	protected String entryStation;
@@ -58,14 +58,14 @@ public class SimpleZone implements IZone {
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.IZone#getStationCodeTable()
 	 */
-	public CodeTableType getStationCodeTable() {
+	public IStationCodeTable getStationCodeTable() {
 		return stationCodeTable;
 	}
 
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.IZone#setStationCodeTable(org.uic.ticket.api.asn.om.CodeTableType)
 	 */
-	public void setStationCodeTable(CodeTableType stationCodeTable) {
+	public void setStationCodeTable(IStationCodeTable stationCodeTable) {
 		this.stationCodeTable = stationCodeTable;
 	}
 

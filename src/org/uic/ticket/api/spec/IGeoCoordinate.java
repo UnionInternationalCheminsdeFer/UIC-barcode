@@ -3,10 +3,7 @@
  */
 package org.uic.ticket.api.spec;
 
-import org.uic.ticket.api.asn.omv1.GeoCoordinateSystemType;
-import org.uic.ticket.api.asn.omv1.GeoUnitType;
-import org.uic.ticket.api.asn.omv1.HemisphereLatitudeType;
-import org.uic.ticket.api.asn.omv1.HemisphereLongitudeType;
+
 
 /**
  * The Interface IGeoCoordinate.
@@ -23,7 +20,7 @@ public interface IGeoCoordinate {
 	 *
 	 * @return the unit
 	 */
-	public GeoUnitType getUnit();
+	public IGeoUnitType getUnit();
 	
 	/**
 	 * Sets the unit.
@@ -32,21 +29,21 @@ public interface IGeoCoordinate {
 	 * 	 
 	 * @param unit the new unit
 	 */
-	public void setUnit(GeoUnitType unit);
+	public void setUnit(IGeoUnitType unit);
 	
 	/**
 	 * Gets the accuracy.
 	 *
 	 * @return the accuracy
 	 */
-	public GeoUnitType getAccuracy();
+	public IGeoUnitType getAccuracy();
 	
 	/**
 	 * Sets the accuracy.
 	 *
 	 * @param accuracy the new accuracy
 	 */
-	public void setAccuracy(GeoUnitType accuracy);
+	public void setAccuracy(IGeoUnitType accuracy);
 	
 	/**
 	 * Gets the geo coordinate system.
@@ -55,7 +52,7 @@ public interface IGeoCoordinate {
 	 *
 	 * @return the geo coordinate 
 	 */
-	public GeoCoordinateSystemType getSystem();
+	public IGeoCoordinateSystemType getSystem();
 	
 	/**
 	 * Sets the geo coordinate 
@@ -64,14 +61,14 @@ public interface IGeoCoordinate {
 	 *
 	 * @param system the new geo coordinate 
 	 */
-	public void setSystem(GeoCoordinateSystemType system);
+	public void setSystem(IGeoCoordinateSystemType system);
 	
 	/**
 	 * Gets the longitude hemisphere.
 	 *
 	 * @return the longitude hemisphere
 	 */
-	public HemisphereLongitudeType getHemisphereLongitude() ;
+	public IHemisphereLongitudeType getHemisphereLongitude() ;
 	
 	/**
 	 * Sets the longitude hemisphere.
@@ -80,7 +77,7 @@ public interface IGeoCoordinate {
 	 *
 	 * @param hemispherLongiture the new longitude hemisphere.
 	 */
-	public void setHemisphereLongitude(HemisphereLongitudeType hemispherLongiture);
+	public void setHemisphereLongitude(IHemisphereLongitudeType hemispherLongiture);
 	
 	/**
 	 * Gets the latitude hemisphere.
@@ -89,7 +86,7 @@ public interface IGeoCoordinate {
 	 *
 	 * @return the latitude hemisphere.
 	 */
-	public HemisphereLatitudeType getHemisphereLatitude();
+	public IHemisphereLatitudeType getHemisphereLatitude();
 	
 	/**
 	 * Sets the latitude hemisphere.
@@ -98,7 +95,7 @@ public interface IGeoCoordinate {
 	 * 
 	 * @param hemisphereLatitude the new latitude hemisphere.
 	 */
-	public void setHemisphereLatitude(HemisphereLatitudeType hemisphereLatitude);
+	public void setHemisphereLatitude(IHemisphereLatitudeType hemisphereLatitude);
 	
 	/**
 	 * Gets the longitude.

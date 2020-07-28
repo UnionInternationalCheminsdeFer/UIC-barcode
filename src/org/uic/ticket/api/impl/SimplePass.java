@@ -7,16 +7,15 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedHashSet;
 
-import org.uic.ticket.api.asn.omv1.*;
 import org.uic.ticket.api.spec.IExtension;
 import org.uic.ticket.api.spec.IPass;
 import org.uic.ticket.api.spec.IRegionalValidity;
 import org.uic.ticket.api.spec.ITariff;
 import org.uic.ticket.api.spec.IValidityDetails;
 import org.uic.ticket.api.spec.IVatDetail;
+import org.uic.ticket.api.spec.ITravelClassType;
 
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class SimplePass.
  */
@@ -32,7 +31,7 @@ public class SimplePass extends SimpleDocumentData implements IPass {
 	protected String productOwner;
 	
 	/** The class code. */
-	protected TravelClassType	classCode = TravelClassType.second;      
+	protected ITravelClassType	classCode = ITravelClassType.second;      
 	
 	/** The valid from. */
 	protected Date validFrom;
@@ -329,14 +328,14 @@ public class SimplePass extends SimpleDocumentData implements IPass {
 		/* (nicht-Javadoc)
 		 * @see org.uic.ticket.api.spec.IPass#getClassCode()
 		 */
-		public TravelClassType getClassCode() {
+		public ITravelClassType getClassCode() {
 			return classCode;
 		}
 
 		/* (nicht-Javadoc)
 		 * @see org.uic.ticket.api.spec.IPass#setClassCode(org.uic.ticket.api.asn.om.TravelClassType)
 		 */
-		public void setClassCode(TravelClassType classCode) {
+		public void setClassCode(ITravelClassType classCode) {
 			this.classCode = classCode;
 		}
 

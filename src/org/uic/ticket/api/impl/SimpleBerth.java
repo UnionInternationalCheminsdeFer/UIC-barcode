@@ -3,11 +3,10 @@
  */
 package org.uic.ticket.api.impl;
 
-import org.uic.ticket.api.asn.omv1.BerthTypeType;
-import org.uic.ticket.api.asn.omv1.CompartmentGenderType;
+import org.uic.ticket.api.spec.IBerthTypeType;
+import org.uic.ticket.api.spec.ICompartmentGenderType;
 import org.uic.ticket.api.spec.IBerth;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class SimpleBerth.
  */
@@ -15,25 +14,25 @@ public class SimpleBerth implements IBerth {
 	
 	
 	/** The type. */
-	protected BerthTypeType type;
+	protected IBerthTypeType type;
 	
 	/** The number of berths. */
 	protected int numberOfBerths;
 	
 	/** The gender. */
-	protected CompartmentGenderType	gender = CompartmentGenderType.family;
+	protected ICompartmentGenderType	gender = ICompartmentGenderType.family;
 	
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.IBerth#getType()
 	 */
-	public BerthTypeType getType() {
+	public IBerthTypeType getType() {
 		return type;
 	}
 	
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.IBerth#setType(org.uic.ticket.api.asn.om.BerthTypeType)
 	 */
-	public void setType(BerthTypeType type) {
+	public void setType(IBerthTypeType type) {
 		this.type = type;
 	}
 	
@@ -54,14 +53,14 @@ public class SimpleBerth implements IBerth {
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.IBerth#getGender()
 	 */
-	public CompartmentGenderType getGender() {
+	public ICompartmentGenderType getGender() {
 		return gender;
 	}
 	
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.IBerth#setGender(org.uic.ticket.api.asn.om.CompartmentGenderType)
 	 */
-	public void setGender(CompartmentGenderType gender) {
+	public void setGender(ICompartmentGenderType gender) {
 		this.gender = gender;
 	}
 	

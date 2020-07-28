@@ -6,8 +6,6 @@ package org.uic.ticket.api.spec;
 import java.util.Collection;
 import java.util.Date;
 
-import org.uic.ticket.api.asn.omv1.CodeTableType;
-import org.uic.ticket.api.asn.omv1.TravelClassType;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -123,7 +121,7 @@ public interface IOpenTicket  extends IDocumentData {
 	 * 
 	 * @return the station code table
 	 */
-	public CodeTableType getStationCodeTable();
+	public  IStationCodeTable getStationCodeTable();
 
 	/**
 	 * Sets the station code table.
@@ -134,7 +132,7 @@ public interface IOpenTicket  extends IDocumentData {
 	 * 	
 	 * @param stationCodeTable the new station code table
 	 */
-	public void setStationCodeTable(CodeTableType stationCodeTable);
+	public void setStationCodeTable( IStationCodeTable stationCodeTable);
 
 	/**
 	 * Gets the from station code.
@@ -287,14 +285,14 @@ public interface IOpenTicket  extends IDocumentData {
 	 *
 	 * @return the travel class code
 	 */
-	public TravelClassType getClassCode();
+	public ITravelClassType getClassCode();
 
 	/**
 	 * Sets the travel class code.
 	 *
 	 * @param classCode the new travel class code
 	 */
-	public void setClassCode(TravelClassType classCode);
+	public void setClassCode(ITravelClassType classCode);
 
 	/**
 	 * Gets the carriers included in the transport contract.
@@ -350,6 +348,51 @@ public interface IOpenTicket  extends IDocumentData {
 	 */
 	public void addExcludedServiceBrand(Integer excludedServiceBrand);
 
+	
+
+
+	/**
+	 * Gets the list of excluded Transport Types.
+	 *
+	 * The list should be omitted in case a complete 
+	 * list of included transport types is provided.	 
+	 *
+	 * @return the list of excluded transport types
+	 */
+	public Collection<Integer> getExcludedTransportTypes();
+
+	/**
+	 * Adds an excluded service brand.
+	 *
+	 * The list should be omitted in case a complete 
+	 * list of included TransportTypes is provided.	 
+	 * 
+	 * @param excluded TransportType the excluded TransportTypes
+	 */
+	public void addExcludedTransportType(Integer excludedTransportType);
+
+
+	/**
+	 * Gets the list of excluded Transport Types.
+	 *
+	 * The list should be omitted in case a complete 
+	 * list of included transport types is provided.	 
+	 *
+	 * @return the list of included transport types
+	 */
+	public Collection<Integer> getIncludedTransportTypes();
+
+	/**
+	 * Adds an excluded service brand.
+	 *
+	 * The list should be omitted in case a complete 
+	 * list of included TransportTypes is provided.	 
+	 * 
+	 * @param excluded TransportType the excluded TransportTypes
+	 */
+	public void addInludedTransportType(Integer includedTransportType);
+	
+	
 	/**
 	 * Gets the tariffs.
 	 *

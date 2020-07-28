@@ -1,16 +1,18 @@
 /*
  * 
  */
-package org.uic.ticket.api;
+package org.uic.ticket;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.uic.ticket.api.asn.omv1.UicRailTicketData;
+
 import org.uic.ticket.api.spec.IUicRailTicket;
 import org.uic.ticket.api.utils.Api2OpenAsnEncoder;
+import org.uic.ticket.api.utils.Api2OpenAsnEncoderV2;
 import org.uic.ticket.api.utils.OpenAsn2ApiDecoder;
+import org.uic.ticket.api.utils.OpenAsn2ApiDecoderV2;
 
 
 /**
@@ -69,16 +71,25 @@ public class UicRailTicketCoder {
 	 * @throws EncodingFormatException signals that a format rule of the asn.1 specification was violated. 
 	 */
 	public byte[] encode (IUicRailTicket uicRailTicket, int version) throws IOException, EncodingFormatException{
+
+		
+		if (version == 1) {
 			
-		if (version != 1) {
-			throw new EncodingFormatException(String.format("Encoding version %d not supported", version));
+			Api2OpenAsnEncoder uicEncoder = new Api2OpenAsnEncoder(); 		
+			
+			return uicEncoder.encode(uicRailTicket);
+
+			
+		} else if (version == 2) {
+			
+			Api2OpenAsnEncoderV2 uicEncoder = new Api2OpenAsnEncoderV2(); 		
+			
+			return uicEncoder.encode(uicRailTicket);
+			
 		}
 		
-		Api2OpenAsnEncoder uicEncoder = new Api2OpenAsnEncoder(); 		
-		
-		UicRailTicketData asnUicRailTicketData = uicEncoder.populateToAsn1Model(uicRailTicket);
-		
-		return asnUicRailTicketData.encode();
+		throw new EncodingFormatException(String.format("Encoding version %d not supported", version));
+
 
 	}	
 	
@@ -94,17 +105,32 @@ public class UicRailTicketCoder {
 	 */
 	public void encode ( ByteArrayOutputStream outputStream, IUicRailTicket uicRailTicket, int version) throws IOException, EncodingFormatException{
 			
-		if (version != 1) {
-			throw new EncodingFormatException(String.format("Encoding version %d not supported", version));
+
+		
+		if (version == 1) {
+		
+			Api2OpenAsnEncoder uicEncoder = new Api2OpenAsnEncoder(); 		
+		
+			org.uic.ticket.api.asn.omv1.UicRailTicketData asnUicRailTicketData = uicEncoder.populateToAsn1Model(uicRailTicket);
+		
+			outputStream.write(asnUicRailTicketData.encode());
+		
+			return;
+
+			
+		} else if (version == 2) {
+			
+			Api2OpenAsnEncoderV2 uicEncoder = new Api2OpenAsnEncoderV2(); 		
+			
+			org.uic.ticket.api.asn.omv2.UicRailTicketData asnUicRailTicketData = uicEncoder.populateToAsn1Model(uicRailTicket);
+		
+			outputStream.write(asnUicRailTicketData.encode());
+		
+			return;
+			
 		}
 		
-		Api2OpenAsnEncoder uicEncoder = new Api2OpenAsnEncoder(); 		
-		
-		UicRailTicketData asnUicRailTicketData = uicEncoder.populateToAsn1Model(uicRailTicket);
-		
-		outputStream.write(asnUicRailTicketData.encode());
-		
-		return;
+		throw new EncodingFormatException(String.format("Encoding version %d not supported", version));
 
 	}	
 	
@@ -118,17 +144,25 @@ public class UicRailTicketCoder {
 	 */
 	public IUicRailTicket decodeFromAsn (byte[] byteData, int version) throws IOException, EncodingFormatException{
 		
-		if (version != 1) {
-			throw new EncodingFormatException(String.format("Encoding version %d not supported", version));
+		if (version == 1) {
+			
+			OpenAsn2ApiDecoder uicDecoder = new OpenAsn2ApiDecoder();
+				
+			IUicRailTicket uicRailTicket = uicDecoder.decodeFromAsn(byteData);
+			
+			return uicRailTicket;	
+			
+		} else if (version == 2) {
+			
+			OpenAsn2ApiDecoderV2 uicDecoder = new OpenAsn2ApiDecoderV2();
+				
+			IUicRailTicket uicRailTicket = uicDecoder.decodeFromAsn(byteData);
+			
+			return uicRailTicket;	
+			
 		}
 		
-		UicRailTicketData asnUicRailTicketData = UicRailTicketData.decode(byteData);
-			
-		OpenAsn2ApiDecoder uicDecoder = new OpenAsn2ApiDecoder();
-			
-		IUicRailTicket uicRailTicket = uicDecoder.decodeFromAsn(asnUicRailTicketData);
-		
-		return uicRailTicket;				
+		throw new EncodingFormatException(String.format("Encoding version %d not supported", version));
 
 	}	
 	

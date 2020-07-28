@@ -7,14 +7,13 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedHashSet;
 
-import org.uic.ticket.api.asn.omv1.CodeTableType;
-import org.uic.ticket.api.asn.omv1.TravelClassType;
 import org.uic.ticket.api.spec.IExtension;
 import org.uic.ticket.api.spec.IIncludedOpenTicket;
 import org.uic.ticket.api.spec.IRegionalValidity;
 import org.uic.ticket.api.spec.ITariff;
+import org.uic.ticket.api.spec.IStationCodeTable;
+import org.uic.ticket.api.spec.ITravelClassType;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class SimpleIncludedOpenTicket.
  */
@@ -39,7 +38,7 @@ public class SimpleIncludedOpenTicket implements IIncludedOpenTicket {
 	protected int authorizationCode;	
 
 	/** The station code table. */
-	protected CodeTableType stationCodeTable = CodeTableType.stationUIC;
+	protected IStationCodeTable stationCodeTable = IStationCodeTable.stationUIC;
 	
 	/** The from station. */
 	protected String fromStation;
@@ -66,7 +65,7 @@ public class SimpleIncludedOpenTicket implements IIncludedOpenTicket {
 	protected Date validUntil;    
     
 	/** The class code. */
-	protected TravelClassType	classCode = TravelClassType.second;       
+	protected ITravelClassType	classCode = ITravelClassType.second;       
    
 	/** The included carriers. */
 	protected Collection<String>includedCarriers = new LinkedHashSet<String>();	  
@@ -175,14 +174,14 @@ public class SimpleIncludedOpenTicket implements IIncludedOpenTicket {
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.IIncludedOpenTicket#getStationCodeTable()
 	 */
-	public CodeTableType getStationCodeTable() {
+	public IStationCodeTable getStationCodeTable() {
 		return stationCodeTable;
 	}
 
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.IIncludedOpenTicket#setStationCodeTable(org.uic.ticket.api.asn.om.CodeTableType)
 	 */
-	public void setStationCodeTable(CodeTableType stationCodeTable) {
+	public void setStationCodeTable(IStationCodeTable stationCodeTable) {
 		this.stationCodeTable = stationCodeTable;
 	}
 
@@ -301,14 +300,14 @@ public class SimpleIncludedOpenTicket implements IIncludedOpenTicket {
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.IIncludedOpenTicket#getClassCode()
 	 */
-	public TravelClassType getClassCode() {
+	public ITravelClassType getClassCode() {
 		return classCode;
 	}
 
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.IIncludedOpenTicket#setClassCode(org.uic.ticket.api.asn.om.TravelClassType)
 	 */
-	public void setClassCode(TravelClassType classCode) {
+	public void setClassCode(ITravelClassType classCode) {
 		this.classCode = classCode;
 	}
 
@@ -434,6 +433,30 @@ public class SimpleIncludedOpenTicket implements IIncludedOpenTicket {
 	@Override
 	public void setUntilDate(Date date) {
 		this.validUntil = date;
+	}
+
+	@Override
+	public Collection<Integer> getExcludedTransportTypes() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void addExcludedTransportType(Integer excludedTransportType) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Collection<Integer> getIncludedTransportTypes() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void addInludedTransportType(Integer includedTransportType) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

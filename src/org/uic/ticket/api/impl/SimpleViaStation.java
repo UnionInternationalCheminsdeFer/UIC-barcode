@@ -6,17 +6,18 @@ package org.uic.ticket.api.impl;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 
-import org.uic.ticket.api.asn.omv1.CodeTableType;
-import org.uic.ticket.api.spec.IViaStation;
 
-// TODO: Auto-generated Javadoc
+import org.uic.ticket.api.spec.IViaStation;
+import org.uic.ticket.api.spec.IStationCodeTable;
+
+
 /**
  * The Class SimpleViaStation.
  */
 public class SimpleViaStation implements IViaStation {
 	
 	/** The station code table. */
-	protected CodeTableType stationCodeTable = CodeTableType.stationUIC;
+	protected IStationCodeTable stationCodeTable = IStationCodeTable.stationUIC;
 	
 	/** The station. */
 	protected String station;
@@ -42,14 +43,14 @@ public class SimpleViaStation implements IViaStation {
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.IViaStation#getStationCodeTable()
 	 */
-	public CodeTableType getStationCodeTable() {
+	public IStationCodeTable getStationCodeTable() {
 		return stationCodeTable;
 	}
 	
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.IViaStation#setStationCodeTable(org.uic.ticket.api.asn.om.CodeTableType)
 	 */
-	public void setStationCodeTable(CodeTableType stationCodeTable) {
+	public void setStationCodeTable(IStationCodeTable stationCodeTable) {
 		this.stationCodeTable = stationCodeTable;
 	}
 	

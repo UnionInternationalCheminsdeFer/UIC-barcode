@@ -7,8 +7,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedHashSet;
 
-import org.uic.ticket.api.asn.omv1.CodeTableType;
-import org.uic.ticket.api.asn.omv1.TravelClassType;
 import org.uic.ticket.api.spec.IExtension;
 import org.uic.ticket.api.spec.IIncludedOpenTicket;
 import org.uic.ticket.api.spec.ILuggageRestriction;
@@ -17,8 +15,10 @@ import org.uic.ticket.api.spec.IRegionalValidity;
 import org.uic.ticket.api.spec.IReturnRouteDescription;
 import org.uic.ticket.api.spec.ITariff;
 import org.uic.ticket.api.spec.IVatDetail;
+import org.uic.ticket.api.spec.IStationCodeTable;
+import org.uic.ticket.api.spec.ITravelClassType;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class SimpleOpenTicket.
  */
@@ -63,7 +63,7 @@ public class SimpleOpenTicket  extends SimpleDocumentData implements IOpenTicket
 		protected boolean returnIncluded = false;
 	
 		/** The station code table. */
-		protected CodeTableType stationCodeTable = CodeTableType.stationUIC;
+		protected IStationCodeTable stationCodeTable = IStationCodeTable.stationUIC;
 		
 		/** The from station. */
 		protected String fromStation;
@@ -91,7 +91,7 @@ public class SimpleOpenTicket  extends SimpleDocumentData implements IOpenTicket
         protected Collection<Date> activatedDays = new LinkedHashSet<Date>();      
 	    
 		/** The class code. */
-		protected TravelClassType	classCode = TravelClassType.second;       
+		protected ITravelClassType	classCode = ITravelClassType.second;       
 		
 		
 		/** The service level. */
@@ -106,6 +106,12 @@ public class SimpleOpenTicket  extends SimpleDocumentData implements IOpenTicket
 	    /** The excluded service brands. */
 	    protected Collection<Integer>excludedServiceBrands = new LinkedHashSet<Integer>();	    	
 
+	    /** The included service brands. */
+	    protected Collection<Integer>includedTransportTypes = new LinkedHashSet<Integer>();	
+    	
+	    /** The excluded service brands. */
+	    protected Collection<Integer>excludedTransportTypes = new LinkedHashSet<Integer>();	   
+	    
         /** The tariffs. */
         protected Collection<ITariff> tariffs = new LinkedHashSet<ITariff>();	   
         
@@ -169,14 +175,14 @@ public class SimpleOpenTicket  extends SimpleDocumentData implements IOpenTicket
 		/* (nicht-Javadoc)
 		 * @see org.uic.ticket.api.spec.IOpenTicket#getStationCodeTable()
 		 */
-		public CodeTableType getStationCodeTable() {
+		public IStationCodeTable getStationCodeTable() {
 			return stationCodeTable;
 		}
 
 		/* (nicht-Javadoc)
 		 * @see org.uic.ticket.api.spec.IOpenTicket#setStationCodeTable(org.uic.ticket.api.asn.om.CodeTableType)
 		 */
-		public void setStationCodeTable(CodeTableType stationCodeTable) {
+		public void setStationCodeTable(IStationCodeTable stationCodeTable) {
 			this.stationCodeTable = stationCodeTable;
 		}
 
@@ -479,14 +485,14 @@ public class SimpleOpenTicket  extends SimpleDocumentData implements IOpenTicket
 		/* (nicht-Javadoc)
 		 * @see org.uic.ticket.api.spec.IOpenTicket#getClassCode()
 		 */
-		public TravelClassType getClassCode() {
+		public ITravelClassType getClassCode() {
 			return classCode;
 		}
 
 		/* (nicht-Javadoc)
 		 * @see org.uic.ticket.api.spec.IOpenTicket#setClassCode(org.uic.ticket.api.asn.om.TravelClassType)
 		 */
-		public void setClassCode(TravelClassType classCode) {
+		public void setClassCode(ITravelClassType classCode) {
 			this.classCode = classCode;
 		}
 
@@ -572,6 +578,26 @@ public class SimpleOpenTicket  extends SimpleDocumentData implements IOpenTicket
 		 */
 		public void setValidUntilUTCoffset(Long validUntilUTCoffset) {
 			this.validUntilUTCoffset = validUntilUTCoffset;
+		}
+
+		@Override
+		public Collection<Integer> getExcludedTransportTypes() {
+			return excludedTransportTypes;
+		}
+
+		@Override
+		public void addExcludedTransportType(Integer excludedTransportType) {
+			excludedTransportTypes.add(excludedTransportType);
+		}
+
+		@Override
+		public Collection<Integer> getIncludedTransportTypes() {
+			return includedTransportTypes;
+		}
+
+		@Override
+		public void addInludedTransportType(Integer includedTransportType) {
+			includedTransportTypes.add(includedTransportType);		
 		}
 
 }

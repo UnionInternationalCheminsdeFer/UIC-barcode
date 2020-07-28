@@ -6,10 +6,7 @@ package org.uic.ticket.api.spec;
 import java.util.Collection;
 import java.util.Date;
 
-import org.uic.ticket.api.asn.omv1.CodeTableType;
 
-
-// TODO: Auto-generated Javadoc
 /**
  * The Interface IDelayConfirmation implements 
  * a confirmation of delay given to a traveler to prove to another carrier he want tu use to continue the journey 
@@ -55,7 +52,7 @@ public interface IDelayConfirmation  extends IDocumentData {
 	 * 
 	 * @return the station code table
 	 */
-	public CodeTableType getStationCodeTable();
+	public IStationCodeTable getStationCodeTable();
 
 	/**
 	 * Sets the station code table.
@@ -66,7 +63,7 @@ public interface IDelayConfirmation  extends IDocumentData {
 	 * 	
 	 * @param stationCodeTable the new station code table
 	 */
-	public void setStationCodeTable(CodeTableType stationCodeTable);
+	public void setStationCodeTable(IStationCodeTable stationCodeTable);
 
 	/**
 	 * Gets the from station code where the delay was final (usually the station where the traveler left the train).
