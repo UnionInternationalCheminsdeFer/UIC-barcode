@@ -379,9 +379,11 @@ public class StaticFrame {
 		//INTEGER     --> tag 2
 		int integerTag = 2;
 			
-		byte[] b1 = toUnsignedBytes(i1);
+		//byte[] b1 = toUnsignedBytes(i1);
+		byte[] b1 = i1.toByteArray();
         int lb1 = b1.length;
-		byte[] b2 = toUnsignedBytes(i2);
+		//byte[] b2 = toUnsignedBytes(i2);
+		byte[] b2 = i2.toByteArray();
         int lb2 = b2.length;		
         
         int sequenceLength = lb1 + lb2 + 4;
