@@ -39,11 +39,10 @@ public class PassData extends Object {
 	public PassData() {
 	}
 
-
+	@Asn1Optional public Asn1BigInteger referenceNum;
+	
 	@RestrictedString(CharacterRestriction.IA5String)
 	@Asn1Optional public String referenceIA5;
-
-	@Asn1Optional public Asn1BigInteger referenceNum;
 
 	@IntRange(minValue=1,maxValue=32000)
 	@Asn1Optional public Long productOwnerNum;
