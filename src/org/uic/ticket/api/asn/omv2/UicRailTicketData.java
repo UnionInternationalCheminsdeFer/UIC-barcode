@@ -23,6 +23,7 @@ import java.util.List;
 
 
 import net.gcdc.asn1.datatypes.Asn1Optional;
+import net.gcdc.asn1.datatypes.FieldOrder;
 import net.gcdc.asn1.datatypes.HasExtensionMarker;
 import net.gcdc.asn1.datatypes.Sequence;
 import net.gcdc.asn1.uper.UperEncoder;
@@ -33,14 +34,19 @@ public class UicRailTicketData extends Object {
 	public UicRailTicketData() {
 	}
 
+	@FieldOrder(order = 0)
 	public IssuingData issuingDetail;
 
+	@FieldOrder(order = 1)
 	@Asn1Optional public TravelerData travelerDetail;
 
+	@FieldOrder(order = 2)
 	@Asn1Optional public SequenceOfDocumentData transportDocument;
 
+	@FieldOrder(order = 3)
 	@Asn1Optional public ControlData controlDetail;
 
+	@FieldOrder(order = 4)
 	@Asn1Optional public SequenceOfExtensionData extension;
 
 	public IssuingData getIssuingDetail() {

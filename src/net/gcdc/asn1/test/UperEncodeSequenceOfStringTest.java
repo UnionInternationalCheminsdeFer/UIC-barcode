@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import java.util.logging.Level;
 
 import net.gcdc.asn1.datatypes.CharacterRestriction;
+import net.gcdc.asn1.datatypes.FieldOrder;
 import net.gcdc.asn1.datatypes.RestrictedString;
 import net.gcdc.asn1.datatypes.Sequence;
 import net.gcdc.asn1.datatypesimpl.SequenceOfStringIA5;
@@ -26,7 +27,7 @@ public class UperEncodeSequenceOfStringTest {
     @Sequence
     public static class TestRecord {
     	
-    	
+    	@FieldOrder(order = 0)
     	SequenceOfStringIA5 strings = new SequenceOfStringIA5();
 
         public TestRecord() {

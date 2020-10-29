@@ -15,7 +15,7 @@ import net.gcdc.asn1.uper.UperEncoder;
 import org.junit.Test;
 
 
-public class UperEncodeIntegerExtensionTest {
+public class UperEncodeExtensionFieldOrderTest {
 
     /**
      * Example from the Standard on UPER.
@@ -55,14 +55,13 @@ Encoded successfully in 21 bytes:
     	@FieldOrder(order = 0)
     	Asn1BigInteger value1;
 
-    	@FieldOrder(order = 2)
-    	@IsExtension
-    	Asn1BigInteger value3;
-    	
     	@FieldOrder(order = 1)
     	@IsExtension
     	Asn1BigInteger value2;
     	    
+    	@FieldOrder(order = 2)
+    	@IsExtension
+    	Asn1BigInteger value3;
 
         public TestRecord() {
             value1 = new Asn1BigInteger(12345678909999899L);
@@ -78,14 +77,26 @@ Encoded successfully in 21 bytes:
 
         TestRecord record = new TestRecord();
         byte[] encoded = UperEncoder.encode(record);
+        String hex = UperEncoder.hexStringFromBytes(encoded);
+        UperEncoder.logger.log(Level.FINEST,String.format("data hex: %s", hex));
+        assertEquals("8395EE2A2EF8858D81C1814052C8C338C0C09F4040",hex);
+        
+                      
+    }
+    
+    @Test public void testDecode() throws IllegalArgumentException, IllegalAccessException {
+
+        TestRecord record = new TestRecord();
+        byte[] encoded = UperEncoder.encode(record);
+        String hex = UperEncoder.hexStringFromBytes(encoded);
+        UperEncoder.logger.log(Level.FINEST,String.format("data hex: %s", hex));
+        assertEquals("8395EE2A2EF8858D81C1814052C8C338C0C09F4040",hex);
+        
         TestRecord result = UperEncoder.decode(encoded, TestRecord.class);
         assertEquals(result.value1.longValue(),record.value1.longValue());
         assertEquals(result.value2.longValue(),record.value2.longValue());
         assertEquals(result.value3.longValue(),record.value3.longValue());
         
-                      
     }
-    
-
 
 }

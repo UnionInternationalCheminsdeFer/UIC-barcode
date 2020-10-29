@@ -22,6 +22,7 @@ package org.uic.ticket.api.asn.omv2;
 import net.gcdc.asn1.datatypes.Asn1BigInteger;
 import net.gcdc.asn1.datatypes.Asn1Default;
 import net.gcdc.asn1.datatypes.Asn1Optional;
+import net.gcdc.asn1.datatypes.FieldOrder;
 import net.gcdc.asn1.datatypes.Sequence;
 
 @Sequence
@@ -29,22 +30,29 @@ public class GeoCoordinateType extends Object {
 	public GeoCoordinateType() {
 	}
 
+	@FieldOrder(order = 0)
 	@Asn1Default(value="milliDegree")
 	@Asn1Optional public GeoUnitType geoUnit;
 
+	@FieldOrder(order = 1)
 	@Asn1Default(value="wgs84")
 	@Asn1Optional public GeoCoordinateSystemType coordinateSystem;
 
+	@FieldOrder(order = 2)
 	@Asn1Default(value="north")
 	@Asn1Optional public HemisphereLongitudeType hemisphereLongitude;
 
+	@FieldOrder(order = 3)
 	@Asn1Default(value="east")
 	@Asn1Optional public HemisphereLatitudeType hemisphereLatitude;
 
+	@FieldOrder(order = 4)
 	public Asn1BigInteger longitude;
 
+	@FieldOrder(order = 5)
 	public Asn1BigInteger latitude;
 
+	@FieldOrder(order = 6)
 	@Asn1Optional public GeoUnitType accuracy;
 
 	public GeoUnitType getGeoUnit() {

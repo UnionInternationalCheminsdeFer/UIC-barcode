@@ -14,6 +14,7 @@ import org.uic.barcode.utils.AlgorithmNameResolver;
 
 import net.gcdc.asn1.datatypes.Asn1Optional;
 import net.gcdc.asn1.datatypes.CharacterRestriction;
+import net.gcdc.asn1.datatypes.FieldOrder;
 import net.gcdc.asn1.datatypes.HasExtensionMarker;
 import net.gcdc.asn1.datatypes.RestrictedString;
 import net.gcdc.asn1.datatypes.Sequence;
@@ -33,14 +34,17 @@ public class DynamicFrame extends Object{
 	public DynamicFrame() {}
 
 	/** The format. */
+	@FieldOrder(order = 0)
 	@RestrictedString(CharacterRestriction.IA5String)
 	public String format;
 	
 	/*level 2 data*/
+	@FieldOrder(order = 1)
 	Level2DataType level2SignedData;
 	
 	
 	/** The signature of level 2 data*/
+	@FieldOrder(order = 2)
 	@Asn1Optional public OctetString level2Signature;
 	
 	/**

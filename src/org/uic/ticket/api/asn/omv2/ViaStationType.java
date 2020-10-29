@@ -23,6 +23,7 @@ import net.gcdc.asn1.datatypes.Asn1BigInteger;
 import net.gcdc.asn1.datatypes.Asn1Default;
 import net.gcdc.asn1.datatypes.Asn1Optional;
 import net.gcdc.asn1.datatypes.CharacterRestriction;
+import net.gcdc.asn1.datatypes.FieldOrder;
 import net.gcdc.asn1.datatypes.HasExtensionMarker;
 import net.gcdc.asn1.datatypes.IntRange;
 import net.gcdc.asn1.datatypes.RestrictedString;
@@ -35,27 +36,37 @@ public class ViaStationType extends Object {
 	public ViaStationType() {
 	}
 
+	@FieldOrder(order = 0)
 	@Asn1Default("stationUIC")
 	@Asn1Optional public CodeTableType stationCodeTable;
 
+	@FieldOrder(order = 1)
 	@IntRange(minValue=1,maxValue=9999999)
 	@Asn1Optional public Long stationNum;
 
+	@FieldOrder(order = 2)
 	@RestrictedString(CharacterRestriction.IA5String)
 	@Asn1Optional public String stationIA5;
 
+	@FieldOrder(order = 3)
 	@Asn1Optional public SequenceOfViaStationType alternativeRoutes;
 
+	@FieldOrder(order = 4)
 	@Asn1Optional public SequenceOfViaStationType route;
 
+	@FieldOrder(order = 5)
 	@Asn1Optional public Boolean border = false;
 
+	@FieldOrder(order = 6)
 	@Asn1Optional public SequenceOfCarrierNum carriersNum;
 
+	@FieldOrder(order = 7)
 	@Asn1Optional public SequenceOfStringIA5 carriersIA5;
 
+	@FieldOrder(order = 8)
 	@Asn1Optional public Asn1BigInteger seriesId;
 
+	@FieldOrder(order = 9)
 	@Asn1Optional public Asn1BigInteger routeId;
 	
 	

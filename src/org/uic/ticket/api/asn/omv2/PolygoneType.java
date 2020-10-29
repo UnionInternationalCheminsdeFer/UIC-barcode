@@ -19,6 +19,7 @@
  */
 package org.uic.ticket.api.asn.omv2;
 
+import net.gcdc.asn1.datatypes.FieldOrder;
 import net.gcdc.asn1.datatypes.Sequence;
 
 @Sequence
@@ -26,8 +27,10 @@ public class PolygoneType extends Object {
 	public PolygoneType() {
 	}
 
+	@FieldOrder(order = 0)
 	public GeoCoordinateType firstEdge;
 
+	@FieldOrder(order = 1)
 	public SequenceOfDeltaCoordinates edges;
 	
 

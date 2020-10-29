@@ -27,6 +27,7 @@ import net.gcdc.asn1.datatypes.Asn1BigInteger;
 
 import net.gcdc.asn1.datatypes.Asn1Optional;
 import net.gcdc.asn1.datatypes.CharacterRestriction;
+import net.gcdc.asn1.datatypes.FieldOrder;
 import net.gcdc.asn1.datatypes.HasExtensionMarker;
 import net.gcdc.asn1.datatypes.IntRange;
 import net.gcdc.asn1.datatypes.RestrictedString;
@@ -41,41 +42,53 @@ public class CustomerCardData extends Object {
 	public CustomerCardData() {
 	}
 
+	@FieldOrder(order = 0)
 	@Asn1Optional public TravelerType customer;
 
+	@FieldOrder(order = 1)
 	@RestrictedString(CharacterRestriction.IA5String)
 	@Asn1Optional public String cardIdIA5;
 
+	@FieldOrder(order = 2)
 	@Asn1Optional public Asn1BigInteger cardIdNum;
 
-	
+	@FieldOrder(order = 3)
 	@IntRange(minValue=2016,maxValue=2269)
 	@Asn1Optional public Long validFromYear;	
 	
+	@FieldOrder(order = 4)
 	@IntRange(minValue=0,maxValue=700)
 	@Asn1Optional public Long validFromDay;
 	
+	@FieldOrder(order = 5)
 	@IntRange(minValue=0,maxValue=250)
 	@Asn1Optional public Long validUntilYear;		
 
+	@FieldOrder(order = 6)
 	@IntRange(minValue=0,maxValue=370)
 	@Asn1Optional public Long validUntilDay;
 
-
+	@FieldOrder(order = 7)
 	@Asn1Optional public TravelClassType classCode;
 
+	@FieldOrder(order = 8)
 	@IntRange(minValue=0,maxValue=1000)
 	@Asn1Optional public Long cardType;
 
+	@FieldOrder(order = 9)
 	@RestrictedString(CharacterRestriction.UTF8String)
 	@Asn1Optional public String cardTypeDescr;
 
+	@FieldOrder(order = 10)
 	@Asn1Optional public Asn1BigInteger customerStatus;
 
+	@FieldOrder(order = 11)
 	@Asn1Optional public String customerStatusDescr;
 
+	@FieldOrder(order = 12)
 	@Asn1Optional public SequenceOfUnrestrictedLong includedServices;
 
+	@FieldOrder(order = 13)
 	@Asn1Optional public ExtensionData extension;
 	
 	

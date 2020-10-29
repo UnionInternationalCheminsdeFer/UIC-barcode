@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import net.gcdc.asn1.datatypes.Asn1Optional;
 import net.gcdc.asn1.datatypes.CharacterRestriction;
+import net.gcdc.asn1.datatypes.FieldOrder;
 import net.gcdc.asn1.datatypes.RestrictedString;
 import net.gcdc.asn1.datatypes.Sequence;
 import net.gcdc.asn1.uper.UperEncoder;
@@ -34,12 +35,15 @@ class UperEncodeObjectIdentifierTest {
     @Sequence
     public static class TestRecord {
     	
+    	@FieldOrder(order = 0)
     	@RestrictedString(CharacterRestriction.ObjectIdentifier)
     	String value1 = "2.16.840.1.101.3.4.3.1";  //DSA SHA224
 
+    	@FieldOrder(order = 1)
     	@RestrictedString(CharacterRestriction.ObjectIdentifier)
     	String value2 = "2.16.840.1.101.3.4.3.2";  //DSA SHA248
     	
+    	@FieldOrder(order = 2)
     	@RestrictedString(CharacterRestriction.ObjectIdentifier)
     	String value3 = "1.2.840.10045.3.1.7";     //ECC
      

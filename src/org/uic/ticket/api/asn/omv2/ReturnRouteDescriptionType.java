@@ -23,6 +23,7 @@ import java.util.List;
 
 import net.gcdc.asn1.datatypes.Asn1Optional;
 import net.gcdc.asn1.datatypes.CharacterRestriction;
+import net.gcdc.asn1.datatypes.FieldOrder;
 import net.gcdc.asn1.datatypes.HasExtensionMarker;
 import net.gcdc.asn1.datatypes.IntRange;
 import net.gcdc.asn1.datatypes.RestrictedString;
@@ -34,27 +35,35 @@ public class ReturnRouteDescriptionType extends Object {
 	public ReturnRouteDescriptionType() {
 	}
 
+	@FieldOrder(order = 0)
 	@IntRange(minValue=1,maxValue=9999999)
 	@Asn1Optional public Long fromStationNum;
 
+	@FieldOrder(order = 1)
 	@RestrictedString(CharacterRestriction.IA5String)
 	@Asn1Optional public String fromStationIA5;
 
+	@FieldOrder(order = 2)
 	@IntRange(minValue=1,maxValue=9999999)
 	@Asn1Optional public Long toStationNum;
 
+	@FieldOrder(order = 3)
 	@RestrictedString(CharacterRestriction.IA5String)
 	@Asn1Optional public String toStationIA5;
 
+	@FieldOrder(order = 4)
 	@RestrictedString(CharacterRestriction.UTF8String)
 	@Asn1Optional public String fromStationNameUTF8;
 
+	@FieldOrder(order = 5)
 	@RestrictedString(CharacterRestriction.UTF8String)
 	@Asn1Optional public String toStationNameUTF8;
 
+	@FieldOrder(order = 6)
 	@RestrictedString(CharacterRestriction.UTF8String)
 	@Asn1Optional public String validReturnRegionDesc;
 
+	@FieldOrder(order = 7)
 	@Asn1Optional public SequenceOfRegionalValidityType validReturnRegion;
 
 	public Long getFromStationNum() {

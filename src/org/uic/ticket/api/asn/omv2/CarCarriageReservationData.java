@@ -30,6 +30,7 @@ import net.gcdc.asn1.datatypes.Asn1Default;
 
 import net.gcdc.asn1.datatypes.Asn1Optional;
 import net.gcdc.asn1.datatypes.CharacterRestriction;
+import net.gcdc.asn1.datatypes.FieldOrder;
 import net.gcdc.asn1.datatypes.HasExtensionMarker;
 import net.gcdc.asn1.datatypes.IntRange;
 import net.gcdc.asn1.datatypes.RestrictedString;
@@ -44,132 +45,175 @@ public class CarCarriageReservationData extends Object {
 	public CarCarriageReservationData() {
 	}
 
+	@FieldOrder(order = 0)
 	@Asn1Optional public Asn1BigInteger trainNum;
 
+	@FieldOrder(order = 1)
 	@RestrictedString(CharacterRestriction.IA5String)
 	@Asn1Optional public String trainIA5;
 	
+	@FieldOrder(order = 2)
 	@IntRange(minValue=-1,maxValue=370)
 	@Asn1Default(value="0")
 	@Asn1Optional public Long beginLoadingDate;
 
+	@FieldOrder(order = 3)
 	@IntRange(minValue=0,maxValue=1439)
 	@Asn1Optional public Long beginLoadingTime;
 	
+	@FieldOrder(order = 4)
 	@IntRange(minValue=0,maxValue=1439)
 	@Asn1Optional public Long endLoadingTime;
 
+	@FieldOrder(order = 5)
 	@IntRange(minValue=-60, maxValue=60)
 	@Asn1Optional public Long loadingUTCOffset;
 	
+	@FieldOrder(order = 6)
 	@RestrictedString(CharacterRestriction.IA5String)
 	@Asn1Optional public String referenceIA5;
 
+	@FieldOrder(order = 7)
 	@Asn1Optional public Asn1BigInteger referenceNum;
 
+	@FieldOrder(order = 8)
 	@IntRange(minValue=1,maxValue=32000)
 	@Asn1Optional public Long productOwnerNum;
 
+	@FieldOrder(order = 9)
 	@RestrictedString(CharacterRestriction.IA5String)
 	@Asn1Optional public String productOwnerIA5;
 
+	@FieldOrder(order = 10)
 	@IntRange(minValue=0,maxValue=65535)
 	@Asn1Optional public Long productIdNum;
 
+	@FieldOrder(order = 11)
 	@RestrictedString(CharacterRestriction.IA5String)
 	@Asn1Optional public String productIdIA5;
 
+	@FieldOrder(order = 12)
 	@IntRange(minValue=1,maxValue=32000)
 	@Asn1Optional public Long serviceBrand;
 
+	@FieldOrder(order = 13)
 	@RestrictedString(CharacterRestriction.UTF8String)
 	@Asn1Optional public String serviceBrandAbrUTF8;
 
+	@FieldOrder(order = 14)
 	@RestrictedString(CharacterRestriction.UTF8String)
 	@Asn1Optional public String serviceBrandNameUTF8;
 
+	@FieldOrder(order = 15)
 	@Asn1Default("stationUICReservation")
 	@Asn1Optional public CodeTableType stationCodeTable;
 
+	@FieldOrder(order = 16)
 	@IntRange(minValue=1,maxValue=9999999)
 	@Asn1Optional public Long fromStationNum;
 
+	@FieldOrder(order = 17)
 	@RestrictedString(CharacterRestriction.IA5String)
 	@Asn1Optional public String fromStationIA5;
 
+	@FieldOrder(order = 18)
 	@IntRange(minValue=1,maxValue=9999999)
 	@Asn1Optional public Long toStationNum;
 
+	@FieldOrder(order = 19)
 	@RestrictedString(CharacterRestriction.IA5String)
 	@Asn1Optional public String toStationIA5;
 
+	@FieldOrder(order = 20)
 	@RestrictedString(CharacterRestriction.UTF8String)
 	@Asn1Optional public String fromStationNameUTF8;
 
+	@FieldOrder(order = 21)
 	@RestrictedString(CharacterRestriction.UTF8String)
 	@Asn1Optional public String toStationNameUTF8;
 
+	@FieldOrder(order = 22)
 	@RestrictedString(CharacterRestriction.IA5String)
 	@Asn1Optional public String coach;
 
+	@FieldOrder(order = 23)
 	@RestrictedString(CharacterRestriction.IA5String)
 	@Asn1Optional public String place;
 
+	@FieldOrder(order = 24)
 	@Asn1Optional public CompartmentDetailsType compartmentDetails;
 
+	@FieldOrder(order = 25)
 	@RestrictedString(CharacterRestriction.IA5String)
 	public String numberPlate;
 
+	@FieldOrder(order = 26)
 	@RestrictedString(CharacterRestriction.IA5String)
 	@Asn1Optional public String trailerPlate;
 
+	@FieldOrder(order = 27)
 	@IntRange(minValue=0,maxValue=9)
 	public Long carCategory;
 
+	@FieldOrder(order = 28)
 	@IntRange(minValue=0,maxValue=6)
 	@Asn1Optional public Long boatCategory;
 
+	@FieldOrder(order = 29)
 	public Boolean textileRoof = false;
 
+	@FieldOrder(order = 30)
 	@Asn1Default(value ="norack")
 	@Asn1Optional public RoofRackType roofRackType;
 
+	@FieldOrder(order = 31)
 	@IntRange(minValue=0,maxValue=99)
 	@Asn1Optional public Long roofRackHeight;
 
+	@FieldOrder(order = 32)
 	@IntRange(minValue=0,maxValue=2)
 	@Asn1Optional public Long attachedBoats;
 
+	@FieldOrder(order = 33)
 	@IntRange(minValue=0,maxValue=4)
 	@Asn1Optional public Long attachedBicycles;
 
+	@FieldOrder(order = 34)
 	@IntRange(minValue=0,maxValue=5)
 	@Asn1Optional public Long attachedSurfboards;
 
+	@FieldOrder(order = 35)
 	@IntRange(minValue=0,maxValue=999)
 	@Asn1Optional public Long loadingListEntry;
 
+	@FieldOrder(order = 36)
 	@Asn1Default(value="upper")
 	@Asn1Optional public LoadingDeckType loadingDeck;
 
+	@FieldOrder(order = 37)
 	@Asn1Optional public SequenceOfCarrierNum carrierNum;
 
+	@FieldOrder(order = 38)
 	@Asn1Optional public SequenceOfStringIA5 carrierIA5;
 
+	@FieldOrder(order = 39)
 	public TariffType tariff;
 
+	@FieldOrder(order = 40)
 	@Asn1Default(value="travelPrice")
 	@Asn1Optional public PriceTypeType priceType;
 	
-	
+	@FieldOrder(order = 41)
 	@Asn1Optional Asn1BigInteger price;
 	
+	@FieldOrder(order = 42)
 	@Asn1Optional SequenceOfVatDetail vatDetails;
 	
-
+	@FieldOrder(order = 43)
 	@RestrictedString(CharacterRestriction.UTF8String)
 	@Asn1Optional public String infoText;
 
+	@FieldOrder(order = 44)
 	@Asn1Optional public ExtensionData extension;
 	
 	public Long getTrainNum() {

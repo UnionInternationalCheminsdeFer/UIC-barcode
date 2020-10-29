@@ -25,6 +25,7 @@ import net.gcdc.asn1.datatypes.Asn1BigInteger;
 
 import net.gcdc.asn1.datatypes.Asn1Optional;
 import net.gcdc.asn1.datatypes.CharacterRestriction;
+import net.gcdc.asn1.datatypes.FieldOrder;
 import net.gcdc.asn1.datatypes.HasExtensionMarker;
 import net.gcdc.asn1.datatypes.RestrictedString;
 import net.gcdc.asn1.datatypes.Sequence;
@@ -36,28 +37,38 @@ public class CardReferenceType extends Object {
 	public CardReferenceType() {
 	}
 
+	@FieldOrder(order = 0)
 	@Asn1Optional public Asn1BigInteger cardIssuerNum;
 
+	@FieldOrder(order = 1)
 	@RestrictedString(CharacterRestriction.IA5String)
 	@Asn1Optional public String cardIssuerIA5;
 
+	@FieldOrder(order = 2)
 	@Asn1Optional public Asn1BigInteger cardIdNum;
 
+	@FieldOrder(order = 3)
 	@RestrictedString(CharacterRestriction.IA5String)
 	@Asn1Optional public String cardIdIA5;
 
+	@FieldOrder(order = 4)
 	@RestrictedString(CharacterRestriction.UTF8String)
 	@Asn1Optional public String cardName;
 
+	@FieldOrder(order = 5)
 	@Asn1Optional public Asn1BigInteger cardType;
 
+	@FieldOrder(order = 6)
 	@Asn1Optional public Asn1BigInteger leadingCardIdNum;
 
+	@FieldOrder(order = 7)
 	@RestrictedString(CharacterRestriction.IA5String)
 	@Asn1Optional public String leadingCardIdIA5;
 
+	@FieldOrder(order = 8)
 	@Asn1Optional public Asn1BigInteger trailingCardIdNum;
 
+	@FieldOrder(order = 9)
 	@RestrictedString(CharacterRestriction.IA5String)
 	@Asn1Optional public String trailingCardIdIA5;
 	

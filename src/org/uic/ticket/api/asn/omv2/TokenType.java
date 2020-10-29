@@ -21,6 +21,7 @@ package org.uic.ticket.api.asn.omv2;
 
 import net.gcdc.asn1.datatypes.Asn1Optional;
 import net.gcdc.asn1.datatypes.CharacterRestriction;
+import net.gcdc.asn1.datatypes.FieldOrder;
 import net.gcdc.asn1.datatypes.RestrictedString;
 import net.gcdc.asn1.datatypes.Sequence;
 import net.gcdc.asn1.datatypesimpl.OctetString;
@@ -30,14 +31,18 @@ public class TokenType extends Object {
 	public TokenType() {
 	}
 
+	@FieldOrder(order = 0)
 	@Asn1Optional public Long tokenProviderNum;
 
+	@FieldOrder(order = 1)
 	@RestrictedString(CharacterRestriction.IA5String)
 	@Asn1Optional public String tokenProviderIA5;
 
+	@FieldOrder(order = 2)
 	@RestrictedString(CharacterRestriction.IA5String)
 	@Asn1Optional public String tokenSpecification;
 
+	@FieldOrder(order = 4)
 	public OctetString token;
 
 	public Long getTokenProviderNum() {

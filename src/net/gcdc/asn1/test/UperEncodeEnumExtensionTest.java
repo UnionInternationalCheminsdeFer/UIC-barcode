@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import java.util.logging.Level;
 
 import net.gcdc.asn1.datatypes.Asn1Optional;
+import net.gcdc.asn1.datatypes.FieldOrder;
 import net.gcdc.asn1.datatypes.HasExtensionMarker;
 import net.gcdc.asn1.datatypes.IsExtension;
 import net.gcdc.asn1.datatypes.Sequence;
@@ -35,6 +36,7 @@ public class UperEncodeEnumExtensionTest {
     @Sequence
     public static class TestRecord {
     	
+    	@FieldOrder(order = 0)
     	@Asn1Optional EnumType value = EnumType.value1;
         public TestRecord() {}
         public void setValue(EnumType value) {

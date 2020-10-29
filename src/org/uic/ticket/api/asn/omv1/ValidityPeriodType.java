@@ -23,6 +23,7 @@ import java.util.Date;
 
 import net.gcdc.asn1.datatypes.Asn1Default;
 import net.gcdc.asn1.datatypes.Asn1Optional;
+import net.gcdc.asn1.datatypes.FieldOrder;
 import net.gcdc.asn1.datatypes.IntRange;
 import net.gcdc.asn1.datatypes.Sequence;
 
@@ -31,23 +32,29 @@ public class ValidityPeriodType extends Object {
 	public ValidityPeriodType() {
 	}
 
+	@FieldOrder(order = 0)
 	@IntRange(minValue=0,maxValue=700)
 	@Asn1Default(value="0")
 	@Asn1Optional public Long validFromDay;
 
+	@FieldOrder(order = 1)
 	@IntRange(minValue=0,maxValue=1440)
 	@Asn1Optional public Long validFromTime;
 	
+	@FieldOrder(order = 2)
 	@IntRange(minValue=-60, maxValue=60)
 	@Asn1Optional public Long validFromUTCOffset;
 
+	@FieldOrder(order = 3)
 	@IntRange(minValue=0,maxValue=370)
 	@Asn1Default(value="0")
 	@Asn1Optional public Long validUntilDay;
 
+	@FieldOrder(order = 4)
 	@IntRange(minValue=0,maxValue=1440)
 	@Asn1Optional public Long validUntilTime;
 	
+	@FieldOrder(order = 5)
 	@IntRange(minValue=-60, maxValue=60)
 	@Asn1Optional public Long validUntilUTCOffset;
 

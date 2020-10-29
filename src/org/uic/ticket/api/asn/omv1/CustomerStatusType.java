@@ -23,6 +23,7 @@ import net.gcdc.asn1.datatypes.Asn1BigInteger;
 
 import net.gcdc.asn1.datatypes.Asn1Optional;
 import net.gcdc.asn1.datatypes.CharacterRestriction;
+import net.gcdc.asn1.datatypes.FieldOrder;
 import net.gcdc.asn1.datatypes.IntRange;
 import net.gcdc.asn1.datatypes.RestrictedString;
 import net.gcdc.asn1.datatypes.Sequence;
@@ -34,14 +35,18 @@ public class CustomerStatusType extends Object {
 	public CustomerStatusType() {
 	}
 
+	@FieldOrder(order = 0)
 	@IntRange(minValue=1,maxValue=32000)
 	@Asn1Optional public Long statusProviderNum;
 
+	@FieldOrder(order = 1)
 	@RestrictedString(CharacterRestriction.IA5String)
 	@Asn1Optional public String statusProviderIA5;
 
+	@FieldOrder(order = 2)
 	@Asn1Optional public Asn1BigInteger customerStatus;
 
+	@FieldOrder(order = 3)
 	@RestrictedString(CharacterRestriction.IA5String)
 	@Asn1Optional public String customerStatusDescr;
 

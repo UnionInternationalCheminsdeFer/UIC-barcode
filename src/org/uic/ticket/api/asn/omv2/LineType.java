@@ -23,6 +23,7 @@ import net.gcdc.asn1.datatypes.Asn1BigInteger;
 import net.gcdc.asn1.datatypes.Asn1Default;
 import net.gcdc.asn1.datatypes.Asn1Optional;
 import net.gcdc.asn1.datatypes.CharacterRestriction;
+import net.gcdc.asn1.datatypes.FieldOrder;
 import net.gcdc.asn1.datatypes.HasExtensionMarker;
 import net.gcdc.asn1.datatypes.IntRange;
 import net.gcdc.asn1.datatypes.RestrictedString;
@@ -37,31 +38,41 @@ public class LineType extends Object {
 	public LineType() {
 	}
 
+	@FieldOrder(order = 0)
 	@IntRange(minValue=1,maxValue=32000)
 	@Asn1Optional public Long carrierNum;
 
+	@FieldOrder(order = 1)
 	@RestrictedString(CharacterRestriction.IA5String)
 	@Asn1Optional public String carrierIA5;
 
+	@FieldOrder(order = 2)
 	@Asn1Optional public SequenceOfUnrestrictedLong lineId;
 
+	@FieldOrder(order = 3)
 	@Asn1Default("stationUIC")
 	@Asn1Optional public CodeTableType stationCodeTable;
 
+	@FieldOrder(order = 4)
 	@IntRange(minValue=0,maxValue=9999999)
 	@Asn1Optional public Long entryStationNum;
 
+	@FieldOrder(order = 5)
 	@RestrictedString(CharacterRestriction.IA5String)
 	@Asn1Optional public String entryStationIA5;
 
+	@FieldOrder(order = 6)
 	@IntRange(minValue=0,maxValue=9999999)
 	@Asn1Optional public Long terminatingStationNum;
 
+	@FieldOrder(order = 7)
 	@RestrictedString(CharacterRestriction.IA5String)
 	@Asn1Optional public String terminatingStationIA5;
 
+	@FieldOrder(order = 8)
 	@Asn1Optional public Asn1BigInteger city;
 
+	@FieldOrder(order = 9)
 	@Asn1Optional public OctetString binaryZoneId;
 	
 

@@ -20,6 +20,7 @@
 package org.uic.ticket.api.asn.omv2;
 
 import net.gcdc.asn1.datatypes.CharacterRestriction;
+import net.gcdc.asn1.datatypes.FieldOrder;
 import net.gcdc.asn1.datatypes.RestrictedString;
 import net.gcdc.asn1.datatypes.Sequence;
 import net.gcdc.asn1.datatypesimpl.OctetString;
@@ -30,9 +31,11 @@ public class ExtensionData extends Object {
 	public ExtensionData() {
 	}
 
+	@FieldOrder(order = 0)
 	@RestrictedString(CharacterRestriction.IA5String)
 	public String extensionId;
 
+	@FieldOrder(order = 1)
 	public OctetString extensionData;
 
 	public String getExtensionId() {

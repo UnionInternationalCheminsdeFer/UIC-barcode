@@ -29,6 +29,7 @@ import net.gcdc.asn1.datatypes.Asn1Default;
 
 import net.gcdc.asn1.datatypes.Asn1Optional;
 import net.gcdc.asn1.datatypes.CharacterRestriction;
+import net.gcdc.asn1.datatypes.FieldOrder;
 import net.gcdc.asn1.datatypes.HasExtensionMarker;
 import net.gcdc.asn1.datatypes.IntRange;
 import net.gcdc.asn1.datatypes.RestrictedString;
@@ -41,53 +42,71 @@ public class DelayConfirmation extends Object {
 	public DelayConfirmation() {
 	}
 
+	@FieldOrder(order = 0)
 	@RestrictedString(CharacterRestriction.IA5String)
 	@Asn1Optional public String referenceIA5;
 
+	@FieldOrder(order = 1)
 	@Asn1Optional public Asn1BigInteger referenceNum;
 
+	@FieldOrder(order = 2)
 	@Asn1Optional public Asn1BigInteger trainNum;
 
+	@FieldOrder(order = 3)
 	@RestrictedString(CharacterRestriction.IA5String)
 	@Asn1Optional public String trainIA5;
 
+	@FieldOrder(order = 4)
 	@IntRange(minValue=2016, maxValue=2269)
 	@Asn1Optional public Long plannedArrivalYear;
 
+	@FieldOrder(order = 5)
 	@IntRange(minValue=1, maxValue=366)
 	@Asn1Optional public Long plannedArrivalDay;
 
+	@FieldOrder(order = 6)
 	@IntRange(minValue=0, maxValue=1440)
 	@Asn1Optional public Long plannedArrivalTime;
 	
+	@FieldOrder(order = 7)
 	@IntRange(minValue=-60, maxValue=60)
 	@Asn1Optional public Long departureUTCOffset;
 
+	@FieldOrder(order = 8)
 	@Asn1Default(value="stationUIC")
 	@Asn1Optional public CodeTableType stationCodeTable;
 
+	@FieldOrder(order = 9)
 	@IntRange(minValue=1, maxValue=9999999)
 	@Asn1Optional public Long stationNum;
 
+	@FieldOrder(order = 10)
 	@RestrictedString(CharacterRestriction.IA5String)
 	@Asn1Optional public String stationIA5;
 
+	@FieldOrder(order = 11)
 	@RestrictedString(CharacterRestriction.UTF8String)
 	@Asn1Optional public String stationNameUTF8;
 
+	@FieldOrder(order = 12)
 	@IntRange(minValue=0, maxValue=999, hasExtensionMarker=false)
 	@Asn1Optional public Long delay;
 
+	@FieldOrder(order = 13)
 	@Asn1Optional public Boolean trainCancelled = false;
 
+	@FieldOrder(order = 14)
 	@Asn1Default(value="travelerDelayConfirmation")
 	@Asn1Optional public ConfirmationTypeType confirmationType;
 
+	@FieldOrder(order = 15)
 	@Asn1Optional public SequenceOfTicketLinkType affectedTickets;
 
+	@FieldOrder(order = 16)
 	@RestrictedString(CharacterRestriction.UTF8String)
 	@Asn1Optional public String infoText;
 
+	@FieldOrder(order = 17)
 	@Asn1Optional public ExtensionData extension;
 	
 

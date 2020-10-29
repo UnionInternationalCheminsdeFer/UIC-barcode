@@ -7,6 +7,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,6 +19,7 @@ import logger.LoggerFactory;
 
 import net.gcdc.asn1.datatypes.Asn1Default;
 import net.gcdc.asn1.datatypes.Asn1Optional;
+import net.gcdc.asn1.datatypes.FieldOrder;
 import net.gcdc.asn1.datatypes.HasExtensionMarker;
 import net.gcdc.asn1.datatypes.IntRange;
 import net.gcdc.asn1.datatypes.IsExtension;
@@ -405,7 +408,31 @@ public final class UperEncoder {
         Map<Field, Boolean> originalAccess = new HashMap<>();
 
         Asn1ContainerFieldSorter(Class<?> type) {
-            for (Field f : type.getDeclaredFields()) {
+        	
+        	/*
+        	 * 
+        	 * sorting of the fields added to compensate the error 
+        	 * in the java SDK on android where getDeclaredFields does 
+        	 * not return the fields in the order of the class definition
+        	 * 
+        	 */
+            List<Field> fields = Arrays.asList(type.getDeclaredFields());
+            Collections.sort(fields, new Comparator<Field>() {
+                @Override
+                public int compare(Field o1, Field o2) {
+                    FieldOrder ao1 = o1.getAnnotation(FieldOrder.class);
+                    FieldOrder ao2 = o2.getAnnotation(FieldOrder.class);
+                    int order1 = ao1 == null ? Integer.MAX_VALUE : ao1.order();
+                    int order2 = ao2 == null ? Integer.MAX_VALUE : ao2.order();
+                    if (order1 == Integer.MAX_VALUE || order2 == Integer.MAX_VALUE || order1 < 0 || order2 < 0 || order1 == order2) {
+                    	logger.debug(String.format("field order error for %s",type.getSimpleName()));
+                    }
+                    return Integer.compare(order1, order2);
+                }
+            });
+            
+        	
+            for (Field f : fields) {
                 if (isTestInstrumentation(f) || isNonAsn1Field(f) ) {
                     continue;
                 }

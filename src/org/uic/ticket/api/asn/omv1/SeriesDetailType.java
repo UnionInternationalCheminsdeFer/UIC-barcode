@@ -21,6 +21,7 @@ package org.uic.ticket.api.asn.omv1;
 
 import net.gcdc.asn1.datatypes.Asn1BigInteger;
 import net.gcdc.asn1.datatypes.Asn1Optional;
+import net.gcdc.asn1.datatypes.FieldOrder;
 import net.gcdc.asn1.datatypes.IntRange;
 import net.gcdc.asn1.datatypes.Sequence;
 
@@ -29,12 +30,15 @@ public class SeriesDetailType extends Object {
 	public SeriesDetailType() {
 	}
 
+	@FieldOrder(order = 0)
 	@IntRange(minValue=1,maxValue=32000)
 	@Asn1Optional public Long supplyingCarrier;
 
+	@FieldOrder(order = 1)
 	@IntRange(minValue=1,maxValue=99)
 	@Asn1Optional public Long offerIdentification;
 
+	@FieldOrder(order = 2)
 	@Asn1Optional public Asn1BigInteger series;
 	
 

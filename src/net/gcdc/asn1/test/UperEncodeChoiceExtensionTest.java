@@ -7,6 +7,7 @@ import java.util.logging.Level;
 import net.gcdc.asn1.datatypes.Asn1Optional;
 import net.gcdc.asn1.datatypes.CharacterRestriction;
 import net.gcdc.asn1.datatypes.Choice;
+import net.gcdc.asn1.datatypes.FieldOrder;
 import net.gcdc.asn1.datatypes.HasExtensionMarker;
 import net.gcdc.asn1.datatypes.IsExtension;
 import net.gcdc.asn1.datatypes.RestrictedString;
@@ -30,9 +31,11 @@ public class UperEncodeChoiceExtensionTest {
 	@HasExtensionMarker
 	public static class TestRecordExtended {
   	
+    	@FieldOrder(order = 0)
     	@RestrictedString(CharacterRestriction.IA5String)
     	String value1 = null;
   	
+    	@FieldOrder(order = 1)
     	@IsExtension
     	@RestrictedString(CharacterRestriction.IA5String)
     	String value2 = "extension";

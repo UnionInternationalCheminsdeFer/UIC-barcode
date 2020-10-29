@@ -21,6 +21,7 @@ package org.uic.ticket.api.asn.omv2;
 
 import net.gcdc.asn1.datatypes.Asn1Default;
 import net.gcdc.asn1.datatypes.Asn1Optional;
+import net.gcdc.asn1.datatypes.FieldOrder;
 import net.gcdc.asn1.datatypes.HasExtensionMarker;
 import net.gcdc.asn1.datatypes.IntRange;
 import net.gcdc.asn1.datatypes.Sequence;
@@ -32,11 +33,14 @@ public class BerthDetailData extends Object {
 	public BerthDetailData() {
 	}
 
+	@FieldOrder(order = 0)
 	public BerthTypeType berthType;
 
+	@FieldOrder(order = 1)
 	@IntRange(minValue=1, maxValue=999)
 	public Long numberOfBerths;
 
+	@FieldOrder(order = 2)
 	@Asn1Default(value="family")
 	@Asn1Optional public CompartmentGenderType gender;
 	

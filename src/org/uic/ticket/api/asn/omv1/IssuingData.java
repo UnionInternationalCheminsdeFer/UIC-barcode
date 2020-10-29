@@ -27,6 +27,7 @@ import net.gcdc.asn1.datatypes.Asn1BigInteger;
 import net.gcdc.asn1.datatypes.Asn1Default;
 import net.gcdc.asn1.datatypes.Asn1Optional;
 import net.gcdc.asn1.datatypes.CharacterRestriction;
+import net.gcdc.asn1.datatypes.FieldOrder;
 import net.gcdc.asn1.datatypes.FixedSize;
 import net.gcdc.asn1.datatypes.HasExtensionMarker;
 import net.gcdc.asn1.datatypes.IntRange;
@@ -39,57 +40,76 @@ public class IssuingData extends Object {
 	public IssuingData() {
 	}
 
+	@FieldOrder(order = 0)
 	@IntRange(minValue=1,maxValue=32000)
 	@Asn1Optional public Long securityProviderNum;
 
+	@FieldOrder(order = 1)
 	@RestrictedString(CharacterRestriction.IA5String)
 	@Asn1Optional public String securityProviderIA5;
 
+	@FieldOrder(order = 2)
 	@IntRange(minValue=1,maxValue=32000)
 	@Asn1Optional public Long issuerNum;
 
+	@FieldOrder(order = 3)
 	@RestrictedString(CharacterRestriction.IA5String)
 	@Asn1Optional public String issuerIA5;
 
+	@FieldOrder(order = 4)
 	@IntRange(minValue=2016,maxValue=2269)
 	public Long issuingYear;
 
+	@FieldOrder(order = 5)
 	@IntRange(minValue=1,maxValue=366)
 	public Long issuingDay;
 
+	@FieldOrder(order = 6)
 	@IntRange(minValue=0,maxValue=1440)
 	@Asn1Optional public Long issuingTime;
 
+	@FieldOrder(order = 7)
 	@RestrictedString(CharacterRestriction.UTF8String)
 	@Asn1Optional public String issuerName;
 
+	@FieldOrder(order = 8)
 	public Boolean specimen = false;
 
+	@FieldOrder(order = 9)
 	public Boolean securePaperTicket = false;
 
+	@FieldOrder(order = 10)
 	public Boolean activated = true;
 
+	@FieldOrder(order = 11)
 	@FixedSize(3)
 	@Asn1Default(value="EUR")
 	@RestrictedString(CharacterRestriction.IA5String)
 	@Asn1Optional public String currency;
 
+	@FieldOrder(order = 12)
 	@IntRange(minValue=1,maxValue=3)
 	@Asn1Default(value="2")
 	@Asn1Optional public Long currencyFract;
 	
+	@FieldOrder(order = 13)
 	@RestrictedString(CharacterRestriction.IA5String)
 	@Asn1Optional public String issuerPNR;
 
+	@FieldOrder(order = 14)
 	@Asn1Optional public ExtensionData extension;
 
+	@FieldOrder(order = 15)
 	@Asn1Optional public Asn1BigInteger issuedOnTrainNum;
 
+	@FieldOrder(order = 16)
 	@RestrictedString(CharacterRestriction.IA5String)
 	@Asn1Optional public String issuedOnTrainIA5;
 
+	@FieldOrder(order = 17)
 	@Asn1Optional public Asn1BigInteger issuedOnLine;
 
+	@FieldOrder(order = 18)
 	@Asn1Optional public GeoCoordinateType pointOfSale;
 	
 	

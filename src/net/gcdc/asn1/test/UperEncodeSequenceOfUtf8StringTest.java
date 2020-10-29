@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.logging.Level;
 
+import net.gcdc.asn1.datatypes.FieldOrder;
 import net.gcdc.asn1.datatypes.Sequence;
 import net.gcdc.asn1.datatypesimpl.SequenceOfStringUTF8;
 import net.gcdc.asn1.uper.UperEncoder;
@@ -46,7 +47,7 @@ Encoded successfully in 19 bytes:
     @Sequence
     public static class TestRecord {
     	
-    	
+    	@FieldOrder(order = 0)
     	SequenceOfStringUTF8 strings = new SequenceOfStringUTF8();
 
         public TestRecord() {

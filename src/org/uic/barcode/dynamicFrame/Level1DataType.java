@@ -5,6 +5,7 @@ import org.uic.ticket.api.utils.UicEncoderUtils;
 
 import net.gcdc.asn1.datatypes.Asn1Optional;
 import net.gcdc.asn1.datatypes.CharacterRestriction;
+import net.gcdc.asn1.datatypes.FieldOrder;
 import net.gcdc.asn1.datatypes.IntRange;
 import net.gcdc.asn1.datatypes.RestrictedString;
 import net.gcdc.asn1.datatypes.Sequence;
@@ -22,20 +23,24 @@ public class Level1DataType {
 	 * numeric codes 1 ...32000
 	 *  
 	 *   */
+	@FieldOrder(order = 0)
 	@IntRange(minValue=1,maxValue=32000)
 	@Asn1Optional public Long securityProviderNum;
 
 	/**  The security provider  alphanumeric codes. */
+	@FieldOrder(order = 1)
 	@RestrictedString(CharacterRestriction.IA5String)
 	@Asn1Optional public String securityProviderIA5;
 
 	
 	/** The key id. */
+	@FieldOrder(order = 2)
 	@IntRange(minValue=1,maxValue=99999)
 	@Asn1Optional public Long	keyId;
 	
 	
 	/** The data. */
+	@FieldOrder(order = 3)
 	public SequenceOfDataType data;
 	
 	/** 
@@ -50,10 +55,11 @@ public class Level1DataType {
 	 *  
 	 *  
 	 */
+	@FieldOrder(order = 4)
 	@RestrictedString(CharacterRestriction.ObjectIdentifier)
 	@Asn1Optional public String level1KeyAlg;		
 		
-	
+	@FieldOrder(order = 5)
 	@RestrictedString(CharacterRestriction.ObjectIdentifier)
 	@Asn1Optional public String level2KeyAlg;		
 	
@@ -69,14 +75,17 @@ public class Level1DataType {
 	 *  
 	 *  
 	 */
+	@FieldOrder(order = 6)
 	@RestrictedString(CharacterRestriction.ObjectIdentifier)
 	@Asn1Optional public String level1SigningAlg;	
 	
+	@FieldOrder(order = 7)
 	@RestrictedString(CharacterRestriction.ObjectIdentifier)
 	@Asn1Optional public String level2SigningAlg;		
 	
 	
 	/** The level 2 public key*/
+	@FieldOrder(order = 8)
 	@Asn1Optional public OctetString level2publicKey;
 	
 

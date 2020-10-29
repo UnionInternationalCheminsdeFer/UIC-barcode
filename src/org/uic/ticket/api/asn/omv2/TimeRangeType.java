@@ -19,6 +19,7 @@
  */
 package org.uic.ticket.api.asn.omv2;
 
+import net.gcdc.asn1.datatypes.FieldOrder;
 import net.gcdc.asn1.datatypes.IntRange;
 import net.gcdc.asn1.datatypes.Sequence;
 
@@ -27,9 +28,11 @@ public class TimeRangeType extends Object {
 	public TimeRangeType() {
 	}
 
+	@FieldOrder(order = 0)
 	@IntRange(minValue=0,maxValue=1439)
 	public Long fromTime;
 
+	@FieldOrder(order = 1)
 	@IntRange(minValue=0,maxValue=1439)
 	public Long untilTime;
 

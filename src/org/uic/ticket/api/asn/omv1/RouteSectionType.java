@@ -22,6 +22,7 @@ package org.uic.ticket.api.asn.omv1;
 import net.gcdc.asn1.datatypes.Asn1Default;
 import net.gcdc.asn1.datatypes.Asn1Optional;
 import net.gcdc.asn1.datatypes.CharacterRestriction;
+import net.gcdc.asn1.datatypes.FieldOrder;
 import net.gcdc.asn1.datatypes.IntRange;
 import net.gcdc.asn1.datatypes.RestrictedString;
 
@@ -29,24 +30,31 @@ public class RouteSectionType extends Object {
 	public RouteSectionType() {
 	}
 
+	@FieldOrder(order = 0)
 	@Asn1Default("stationUIC")
 	@Asn1Optional public CodeTableType stationCodeTable;
 
+	@FieldOrder(order = 1)
 	@IntRange(minValue=1,maxValue=9999999)
 	@Asn1Optional public Long fromStationNum;
 
+	@FieldOrder(order = 2)
 	@RestrictedString(CharacterRestriction.IA5String)
 	@Asn1Optional public String fromStationIA5;
 
+	@FieldOrder(order = 3)
 	@IntRange(minValue=1,maxValue=9999999)
 	@Asn1Optional public Long toStationNum;
 
+	@FieldOrder(order = 4)
 	@RestrictedString(CharacterRestriction.IA5String)
 	@Asn1Optional public String toStationIA5;
 
+	@FieldOrder(order = 5)
 	@RestrictedString(CharacterRestriction.UTF8String)
 	@Asn1Optional public String fromStationNameUTF8;
 
+	@FieldOrder(order = 6)
 	@RestrictedString(CharacterRestriction.UTF8String)
 	@Asn1Optional public String toStationNameUTF8;
 

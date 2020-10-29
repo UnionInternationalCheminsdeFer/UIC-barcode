@@ -23,6 +23,7 @@ import net.gcdc.asn1.datatypes.Asn1Default;
 
 import net.gcdc.asn1.datatypes.Asn1Optional;
 import net.gcdc.asn1.datatypes.CharacterRestriction;
+import net.gcdc.asn1.datatypes.FieldOrder;
 import net.gcdc.asn1.datatypes.HasExtensionMarker;
 import net.gcdc.asn1.datatypes.IntRange;
 import net.gcdc.asn1.datatypes.RestrictedString;
@@ -35,24 +36,31 @@ public class CompartmentDetailsType extends Object {
 	public CompartmentDetailsType() {
 	}
 
+	@FieldOrder(order = 0)
 	@IntRange(minValue=1,maxValue=99)
 	@Asn1Optional public Long coachType;
 
+	@FieldOrder(order = 1)
 	@IntRange(minValue=1,maxValue=99)
 	@Asn1Optional public Long compartmentType;
 
+	@FieldOrder(order = 2)
 	@IntRange(minValue=1,maxValue=99)
 	@Asn1Optional public Long specialAllocation;
 
+	@FieldOrder(order = 3)
 	@RestrictedString(CharacterRestriction.UTF8String)
 	@Asn1Optional public String coachTypeDescr;
 
+	@FieldOrder(order = 4)
 	@RestrictedString(CharacterRestriction.UTF8String)
 	@Asn1Optional public String compartmentTypeDescr;
 
+	@FieldOrder(order = 5)
 	@RestrictedString(CharacterRestriction.UTF8String)
 	@Asn1Optional public String specialAllocationDescr;
 
+	@FieldOrder(order = 6)
 	@Asn1Default(value="unspecified")
 	public CompartmentPositionType position;
 

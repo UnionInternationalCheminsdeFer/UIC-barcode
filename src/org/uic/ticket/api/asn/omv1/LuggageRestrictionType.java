@@ -21,6 +21,7 @@ package org.uic.ticket.api.asn.omv1;
 
 import net.gcdc.asn1.datatypes.Asn1Default;
 import net.gcdc.asn1.datatypes.Asn1Optional;
+import net.gcdc.asn1.datatypes.FieldOrder;
 import net.gcdc.asn1.datatypes.HasExtensionMarker;
 import net.gcdc.asn1.datatypes.IntRange;
 import net.gcdc.asn1.datatypes.Sequence;
@@ -31,14 +32,17 @@ public class LuggageRestrictionType extends Object {
 	public LuggageRestrictionType() {
 	}
 
+	@FieldOrder(order = 0)
 	@IntRange(minValue=0,maxValue=99)
 	@Asn1Default(value="3")
 	@Asn1Optional public Long maxHandLuggagePieces;
 
+	@FieldOrder(order = 1)
 	@IntRange(minValue=0,maxValue=99)
 	@Asn1Default(value="1")
 	@Asn1Optional public Long maxNonHandLuggagePieces;
 
+	@FieldOrder(order = 2)
 	@Asn1Optional public SequenceOfRegisteredLuggageType registeredLuggage;
 	
 

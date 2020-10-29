@@ -25,6 +25,7 @@ import net.gcdc.asn1.datatypes.Asn1BigInteger;
 import net.gcdc.asn1.datatypes.Asn1Default;
 import net.gcdc.asn1.datatypes.Asn1Optional;
 import net.gcdc.asn1.datatypes.CharacterRestriction;
+import net.gcdc.asn1.datatypes.FieldOrder;
 import net.gcdc.asn1.datatypes.IntRange;
 import net.gcdc.asn1.datatypes.RestrictedString;
 import net.gcdc.asn1.datatypes.SizeRange;
@@ -34,69 +35,93 @@ public class IncludedOpenTicketType extends Object {
 	public IncludedOpenTicketType() {
 	}
 
+	@FieldOrder(order = 0)
 	@IntRange(minValue=1,maxValue=32000)
 	@Asn1Optional public Long productOwnerNum;
 
+	@FieldOrder(order = 1)
 	@RestrictedString(CharacterRestriction.IA5String)
 	@Asn1Optional public String productOwnerIA5;
 
+	@FieldOrder(order = 2)
 	@IntRange(minValue=0,maxValue=65535)
 	@Asn1Optional public Long productIdNum;
 
+	@FieldOrder(order = 3)
 	@RestrictedString(CharacterRestriction.IA5String)
 	@Asn1Optional public String productIdIA5;
 
+	@FieldOrder(order = 4)
 	@Asn1Optional public Asn1BigInteger externalIssuerId;
 
+	@FieldOrder(order = 5)
 	@Asn1Optional public Asn1BigInteger issuerAutorizationId;
 
+	@FieldOrder(order = 6)
 	@Asn1Default("stationUIC")
 	@Asn1Optional public CodeTableType stationCodeTable;
 
+	@FieldOrder(order = 7)
 	@Asn1Optional public SequenceOfRegionalValidityType validRegion;
 
+	@FieldOrder(order = 8)
 	@IntRange(minValue=-1,maxValue=700)
 	@Asn1Optional public Long validFromDay;
 
+	@FieldOrder(order = 9)
 	@IntRange(minValue=0,maxValue=1439)
 	@Asn1Optional public Long validFromTime;
 	
+	@FieldOrder(order = 10)
 	@IntRange(minValue=-60, maxValue=60)
 	@Asn1Optional public Long validFromUTCOffset;
 
+	@FieldOrder(order = 11)
 	@IntRange(minValue=0,maxValue=370)
 	@Asn1Optional public Long validUntilDay;
 
+	@FieldOrder(order = 12)
 	@IntRange(minValue=0,maxValue=1439)
 	@Asn1Optional public Long validUntilTime;
 	
+	@FieldOrder(order = 13)
 	@IntRange(minValue=-60, maxValue=60)
 	@Asn1Optional public Long validUntilUTCOffset;
 
+	@FieldOrder(order = 14)
 	@Asn1Default(value="second")
 	@Asn1Optional public TravelClassType classCode;
 
+	@FieldOrder(order = 15)
 	@SizeRange(minValue = 1, maxValue = 2)
 	@Asn1Optional public String serviceLevel;
 
+	@FieldOrder(order = 16)
 	@Asn1Optional public SequenceOfCarrierNum includedCarriersNum;
 
+	@FieldOrder(order = 17)
 	@Asn1Optional public SequenceOfStringIA5 includedCarriersIA5;
 
+	@FieldOrder(order = 18)
 	@Asn1Optional public SequenceOfServiceBrands includedServiceBrands;
 
+	@FieldOrder(order = 19)
 	@Asn1Optional public SequenceOfServiceBrands excludedServiceBrands;
 
+	@FieldOrder(order = 20)
 	@Asn1Optional public SequenceOfTariffType tariffs;
 
+	@FieldOrder(order = 21)
 	@RestrictedString(CharacterRestriction.UTF8String)
 	@Asn1Optional public String infoText;
 
-	
+	@FieldOrder(order = 22)
 	@Asn1Optional public SequenceOfTransportTypes includedTransportTypes;
 
+	@FieldOrder(order = 23)
 	@Asn1Optional public SequenceOfTransportTypes excludedTransportTypes;	
 
+	@FieldOrder(order = 24)
 	@Asn1Optional public ExtensionData extension;
 
 	public Long getProductOwnerNum() {

@@ -23,6 +23,7 @@ import net.gcdc.asn1.datatypes.Asn1BigInteger;
 import net.gcdc.asn1.datatypes.Asn1Default;
 import net.gcdc.asn1.datatypes.Asn1Optional;
 import net.gcdc.asn1.datatypes.CharacterRestriction;
+import net.gcdc.asn1.datatypes.FieldOrder;
 import net.gcdc.asn1.datatypes.HasExtensionMarker;
 import net.gcdc.asn1.datatypes.IntRange;
 import net.gcdc.asn1.datatypes.RestrictedString;
@@ -34,27 +35,34 @@ public class TicketLinkType extends Object {
 	public TicketLinkType() {
 	}
 
+	@FieldOrder(order = 0)
 	@RestrictedString(CharacterRestriction.IA5String)
 	@Asn1Optional public String referenceIA5;
 
+	@FieldOrder(order = 1)
 	@Asn1Optional public Asn1BigInteger referenceNum;
 
+	@FieldOrder(order = 2)
 	@RestrictedString(CharacterRestriction.UTF8String)
 	@Asn1Optional public String issuerName;
 	
-	
+	@FieldOrder(order = 3)
 	@RestrictedString(CharacterRestriction.IA5String)
 	@Asn1Optional public String issuerPNR;	
 	
+	@FieldOrder(order = 4)
 	@IntRange(minValue=1,maxValue=32000)
 	@Asn1Optional public Long productOwnerNum;
 
+	@FieldOrder(order = 5)
 	@RestrictedString(CharacterRestriction.IA5String)
 	@Asn1Optional public String productOwnerIA5;
 
+	@FieldOrder(order = 6)
 	@Asn1Default(value="openTicket")
 	@Asn1Optional public TicketType ticketType;
 
+	@FieldOrder(order = 7)
 	@Asn1Default(value="issuedTogether")
 	@Asn1Optional public LinkMode linkMode;
 

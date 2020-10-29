@@ -25,6 +25,7 @@ import net.gcdc.asn1.datatypes.Asn1BigInteger;
 import net.gcdc.asn1.datatypes.Asn1Default;
 import net.gcdc.asn1.datatypes.Asn1Optional;
 import net.gcdc.asn1.datatypes.CharacterRestriction;
+import net.gcdc.asn1.datatypes.FieldOrder;
 import net.gcdc.asn1.datatypes.HasExtensionMarker;
 import net.gcdc.asn1.datatypes.IntRange;
 import net.gcdc.asn1.datatypes.RestrictedString;
@@ -36,60 +37,80 @@ public class ParkingGroundData extends Object {
 	public ParkingGroundData() {
 	}
 
+	@FieldOrder(order = 0)
 	@RestrictedString(CharacterRestriction.IA5String)
 	@Asn1Optional public String referenceIA5;
 
+	@FieldOrder(order = 1)
 	@Asn1Optional public Asn1BigInteger referenceNum;
 
+	@FieldOrder(order = 2)
 	@RestrictedString(CharacterRestriction.IA5String)
 	public String parkingGroundId;
 
+	@FieldOrder(order = 3)
 	@IntRange(minValue=0,maxValue=370)
 	@Asn1Optional public Long fromParkingDate;
 
+	@FieldOrder(order = 4)
 	@IntRange(minValue=0,maxValue=370)
 	@Asn1Optional public Long toParkingDate;
 
+	@FieldOrder(order = 5)
 	@IntRange(minValue=1,maxValue=32000)
 	@Asn1Optional public Long productOwnerNum;
 
+	@FieldOrder(order = 6)
 	@RestrictedString(CharacterRestriction.IA5String)
 	@Asn1Optional public String productOwnerIA5;
 
+	@FieldOrder(order = 7)
 	@IntRange(minValue=0,maxValue=32000)
 	@Asn1Optional public Long productIdNum;
 
+	@FieldOrder(order = 8)
 	@RestrictedString(CharacterRestriction.IA5String)
 	@Asn1Optional public String productIdIA5;
 
+	@FieldOrder(order = 9)
 	@RestrictedString(CharacterRestriction.IA5String)
 	@Asn1Optional public String accessCode;
 
+	@FieldOrder(order = 10)
 	@RestrictedString(CharacterRestriction.UTF8String)
 	public String location;
 
+	@FieldOrder(order = 11)
 	@Asn1Default("stationUIC")
 	@Asn1Optional public CodeTableType stationCodeTable;
 
+	@FieldOrder(order = 12)
 	@IntRange(minValue=1,maxValue=9999999)
 	@Asn1Optional public Long stationNum;
 
+	@FieldOrder(order = 13)
 	@RestrictedString(CharacterRestriction.IA5String)
 	@Asn1Optional public String stationIA5;
 
+	@FieldOrder(order = 14)
 	@RestrictedString(CharacterRestriction.UTF8String)
 	@Asn1Optional public String specialInformation;
 
+	@FieldOrder(order = 15)
 	@RestrictedString(CharacterRestriction.UTF8String)
 	@Asn1Optional public String entryTrack;
 
+	@FieldOrder(order = 16)
 	@RestrictedString(CharacterRestriction.IA5String)
 	@Asn1Optional public String numberPlate;
 	
+	@FieldOrder(order = 17)	
 	@Asn1Optional Asn1BigInteger price;
 	
+	@FieldOrder(order = 18)	
 	@Asn1Optional SequenceOfVatDetail vatDetails;
 
+	@FieldOrder(order = 19)
 	@Asn1Optional public ExtensionData extension;
 	
 

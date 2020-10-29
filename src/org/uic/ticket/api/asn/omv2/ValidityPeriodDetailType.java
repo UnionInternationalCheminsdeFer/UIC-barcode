@@ -23,6 +23,7 @@ import java.util.Collection;
 
 import net.gcdc.asn1.datatypes.Asn1Optional;
 import net.gcdc.asn1.datatypes.Asn1SequenceOf;
+import net.gcdc.asn1.datatypes.FieldOrder;
 import net.gcdc.asn1.datatypes.Sequence;
 
 @Sequence
@@ -30,8 +31,10 @@ public class ValidityPeriodDetailType extends Object {
 	public ValidityPeriodDetailType() {
 	}
 
+	@FieldOrder(order = 0)
 	@Asn1Optional public SequenceOfValidityPeriodType validityPeriod;
 
+	@FieldOrder(order = 1)
 	@Asn1Optional public SequenceOfTimeRangeType excludedTimeRange;
 	
 	

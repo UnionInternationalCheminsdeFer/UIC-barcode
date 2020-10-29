@@ -28,6 +28,7 @@ import net.gcdc.asn1.datatypes.Asn1BigInteger;
 import net.gcdc.asn1.datatypes.Asn1Default;
 import net.gcdc.asn1.datatypes.Asn1Optional;
 import net.gcdc.asn1.datatypes.CharacterRestriction;
+import net.gcdc.asn1.datatypes.FieldOrder;
 import net.gcdc.asn1.datatypes.IntRange;
 import net.gcdc.asn1.datatypes.RestrictedString;
 import net.gcdc.asn1.datatypesimpl.SequenceOfStringIA5;
@@ -36,43 +37,58 @@ public class FIPTicketData extends Object {
 	public FIPTicketData() {
 	}
 
+	@FieldOrder(order = 0)
 	@RestrictedString(CharacterRestriction.IA5String)
 	@Asn1Optional public String referenceIA5;
 
+	@FieldOrder(order = 1)
 	@Asn1Optional public Asn1BigInteger referenceNum;
 
+	@FieldOrder(order = 2)
 	@IntRange(minValue=1,maxValue=32000)
 	@Asn1Optional public Long productOwnerNum;
 
+	@FieldOrder(order = 3)
 	@RestrictedString(CharacterRestriction.IA5String)
 	@Asn1Optional public String productOwnerIA5;
 
+	@FieldOrder(order = 4)
 	@IntRange(minValue=1,maxValue=32000)
 	@Asn1Optional public Long productIdNum;
 
+	@FieldOrder(order = 5)
 	@RestrictedString(CharacterRestriction.IA5String)
 	@Asn1Optional public String productIdIA5;
 
+	@FieldOrder(order = 6)
 	@IntRange(minValue=-1,maxValue=700)
 	@Asn1Optional public Long validFromDay;
 
+	@FieldOrder(order = 7)
 	@IntRange(minValue=0,maxValue=370)
 	@Asn1Optional public Long validUntilDay;
 
+	@FieldOrder(order = 8)
 	@Asn1Optional public SequenceOfActivatedDays activatedDay;
 
+	@FieldOrder(order = 9)
 	@Asn1Optional public SequenceOfCarrierNum carrierNum;
 
+	@FieldOrder(order = 10)
 	@Asn1Optional public SequenceOfStringIA5 carrierIA5;
 
+	@FieldOrder(order = 11)
 	@IntRange(minValue=1,maxValue=200)
 	public Long numberOfTravelDays;
 
+	@FieldOrder(order = 12)
 	public Boolean includesSupplements = false;
 
+	@FieldOrder(order = 13)
 	@Asn1Default(value="second")
 	@Asn1Optional public TravelClassType classCode;
 
+	@FieldOrder(order = 14)
 	@Asn1Optional public ExtensionData extension;
 	
 	public String getReferenceIA5() {

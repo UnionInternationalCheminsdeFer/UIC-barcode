@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.logging.Level;
 
 import net.gcdc.asn1.datatypes.CharacterRestriction;
+import net.gcdc.asn1.datatypes.FieldOrder;
 import net.gcdc.asn1.datatypes.RestrictedString;
 import net.gcdc.asn1.datatypes.Sequence;
 import net.gcdc.asn1.uper.UperEncoder;
@@ -27,6 +28,7 @@ public class UperEncodeSequenceOfStringListTest {
     @Sequence
     public static class TestRecord {
     	
+    	@FieldOrder(order = 0)
         @RestrictedString(CharacterRestriction.IA5String)    	
     	ArrayList<String> strings = new ArrayList<String>();
 

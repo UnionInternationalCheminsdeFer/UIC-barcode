@@ -24,6 +24,7 @@ import java.util.Date;
 import net.gcdc.asn1.datatypes.Asn1BigInteger;
 import net.gcdc.asn1.datatypes.Asn1Optional;
 import net.gcdc.asn1.datatypes.CharacterRestriction;
+import net.gcdc.asn1.datatypes.FieldOrder;
 import net.gcdc.asn1.datatypes.IntRange;
 import net.gcdc.asn1.datatypes.RestrictedString;
 import net.gcdc.asn1.datatypes.Sequence;
@@ -33,35 +34,46 @@ public class TrainLinkType extends Object {
 	public TrainLinkType() {
 	}
 
+	@FieldOrder(order = 0)
 	@Asn1Optional public Asn1BigInteger trainNum;
 
+	@FieldOrder(order = 1)
 	@RestrictedString(CharacterRestriction.IA5String)
 	@Asn1Optional public String trainIA5;
 
+	@FieldOrder(order = 2)
 	@IntRange(minValue=0,maxValue=370)
 	@Asn1Optional public Long travelDate;
 
+	@FieldOrder(order = 3)
 	@IntRange(minValue=0,maxValue=1440)
 	@Asn1Optional public Long departureTime;
 	
+	@FieldOrder(order = 4)
 	@IntRange(minValue=-60, maxValue=60)
 	@Asn1Optional public Long departureUTCOffset;
 
+	@FieldOrder(order = 5)
 	@IntRange(minValue=1,maxValue=9999999)
 	@Asn1Optional public Long fromStationNum;
 
+	@FieldOrder(order = 6)
 	@RestrictedString(CharacterRestriction.IA5String)
 	@Asn1Optional public String fromStationIA5;
 
+	@FieldOrder(order = 7)
 	@IntRange(minValue=1,maxValue=9999999)
 	@Asn1Optional public Long toStationNum;
 
+	@FieldOrder(order = 8)
 	@RestrictedString(CharacterRestriction.IA5String)
 	@Asn1Optional public String toStationIA5;
 
+	@FieldOrder(order = 9)
 	@RestrictedString(CharacterRestriction.UTF8String)
 	@Asn1Optional public String fromStationName;
 
+	@FieldOrder(order = 10)
 	@RestrictedString(CharacterRestriction.UTF8String)
 	@Asn1Optional public String toStationName;
 

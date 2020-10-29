@@ -27,6 +27,7 @@ import net.gcdc.asn1.datatypes.Asn1BigInteger;
 import net.gcdc.asn1.datatypes.Asn1Default;
 import net.gcdc.asn1.datatypes.Asn1Optional;
 import net.gcdc.asn1.datatypes.CharacterRestriction;
+import net.gcdc.asn1.datatypes.FieldOrder;
 import net.gcdc.asn1.datatypes.HasExtensionMarker;
 import net.gcdc.asn1.datatypes.IntRange;
 import net.gcdc.asn1.datatypes.RestrictedString;
@@ -39,88 +40,121 @@ public class PassData extends Object {
 	public PassData() {
 	}
 
+	@FieldOrder(order = 0)
 	@Asn1Optional public Asn1BigInteger referenceNum;
 
+	@FieldOrder(order = 1)
 	@RestrictedString(CharacterRestriction.IA5String)
 	@Asn1Optional public String referenceIA5;
 
+	@FieldOrder(order = 2)
 	@IntRange(minValue=1,maxValue=32000)
 	@Asn1Optional public Long productOwnerNum;
 
+	@FieldOrder(order = 3)
 	@RestrictedString(CharacterRestriction.IA5String)
 	@Asn1Optional public String productOwnerIA5;
 
+	@FieldOrder(order = 4)
 	@IntRange(minValue=1,maxValue=32000)
 	@Asn1Optional public Long productIdNum;
 
+	@FieldOrder(order = 5)
 	@RestrictedString(CharacterRestriction.IA5String)
 	@Asn1Optional public String productIdIA5;
 
+	@FieldOrder(order = 6)
 	@IntRange(minValue=1,maxValue=250)
 	@Asn1Optional public Long passType;
 
+	@FieldOrder(order = 7)
 	@RestrictedString(CharacterRestriction.UTF8String)
 	@Asn1Optional public String passDescription;
 
+	@FieldOrder(order = 8)
 	@Asn1Default (value="second")
 	@Asn1Optional public TravelClassType classCode;
 
+	@FieldOrder(order = 9)
 	@IntRange(minValue=-1,maxValue=700)
 	@Asn1Optional public Long validFromDay;
 
+	@FieldOrder(order = 10)
 	@IntRange(minValue=0,maxValue=1440)
 	@Asn1Optional public Long validFromTime;
 	
+	@FieldOrder(order = 11)
 	@IntRange(minValue=-60, maxValue=60)
 	@Asn1Optional public Long validFromUTCOffset;
 
+	@FieldOrder(order = 12)
 	@IntRange(minValue=0,maxValue=370)
 	@Asn1Optional public Long validUntilDay;
 
+	@FieldOrder(order = 13)
 	@IntRange(minValue=0,maxValue=1440)
 	@Asn1Optional public Long validUntilTime;
 	
+	@FieldOrder(order = 14)
 	@IntRange(minValue=-60, maxValue=60)
 	@Asn1Optional public Long validUntilUTCOffset;
 
+	@FieldOrder(order = 15)
 	@Asn1Optional public ValidityPeriodDetailType validityPeriodDetails;
 
+	@FieldOrder(order = 16)
 	@IntRange(minValue=0,maxValue=370)
 	@Asn1Optional public Long numberOfValidityDays;
 
+	@FieldOrder(order = 17)
 	@IntRange(minValue=1,maxValue=250)
 	@Asn1Optional public Long numberOfPossibleTrips;
 
+	@FieldOrder(order = 18)
 	@IntRange(minValue=1,maxValue=250)
 	@Asn1Optional public Long numberOfDaysOfTravel;
 
+	@FieldOrder(order = 19)
 	@Asn1Optional public SequenceOfActivatedDays activatedDay;
 
+	@FieldOrder(order = 20)
 	@Asn1Optional public SequenceOfCountries countries;
 	
+	@FieldOrder(order = 21)
 	@Asn1Optional public SequenceOfCarrierNum includedCarriersNum;
 
+	@FieldOrder(order = 22)
 	@Asn1Optional public SequenceOfStringIA5 includedCarriersIA5;
 	
+	@FieldOrder(order = 23)
 	@Asn1Optional public SequenceOfCarrierNum excludedCarriersNum;
 
+	@FieldOrder(order = 24)
 	@Asn1Optional public SequenceOfStringIA5 excludedCarriersIA5;
 
+	@FieldOrder(order = 25)
 	@Asn1Optional public SequenceOfServiceBrands includedServiceBrands;
 
+	@FieldOrder(order = 26)
 	@Asn1Optional public SequenceOfServiceBrands excludedServiceBrands;
 
+	@FieldOrder(order = 27)
 	@Asn1Optional public SequenceOfRegionalValidityType validRegion;
 
+	@FieldOrder(order = 28)
 	@Asn1Optional public SequenceOfTariffType tariffs;
 
+	@FieldOrder(order = 29)
 	@Asn1Optional Asn1BigInteger price;
 	
+	@FieldOrder(order = 30)
 	@Asn1Optional SequenceOfVatDetail vatDetails;
 	
+	@FieldOrder(order = 31)
 	@RestrictedString(CharacterRestriction.UTF8String)
 	@Asn1Optional public String infoText;
 
+	@FieldOrder(order = 32)
 	@Asn1Optional public ExtensionData extension;
 	
 	

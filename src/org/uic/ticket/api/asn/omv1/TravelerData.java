@@ -23,6 +23,7 @@ import java.util.List;
 
 import net.gcdc.asn1.datatypes.Asn1Optional;
 import net.gcdc.asn1.datatypes.CharacterRestriction;
+import net.gcdc.asn1.datatypes.FieldOrder;
 import net.gcdc.asn1.datatypes.FixedSize;
 import net.gcdc.asn1.datatypes.HasExtensionMarker;
 import net.gcdc.asn1.datatypes.RestrictedString;
@@ -34,12 +35,15 @@ public class TravelerData extends Object {
 	public TravelerData() {
 	}
 
+	@FieldOrder(order = 0)
 	@Asn1Optional public SequenceOfTravelerType traveler;
 	
+	@FieldOrder(order = 1)
 	@RestrictedString(CharacterRestriction.IA5String)
 	@FixedSize(2)
 	@Asn1Optional public String preferedLanguage;
 
+	@FieldOrder(order = 2)
 	@RestrictedString(CharacterRestriction.UTF8String)
 	@Asn1Optional public String groupName;
 	

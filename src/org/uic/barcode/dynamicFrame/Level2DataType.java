@@ -6,6 +6,7 @@ import java.security.Signature;
 import org.uic.barcode.utils.AlgorithmNameResolver;
 
 import net.gcdc.asn1.datatypes.Asn1Optional;
+import net.gcdc.asn1.datatypes.FieldOrder;
 import net.gcdc.asn1.datatypes.Sequence;
 import net.gcdc.asn1.datatypesimpl.OctetString;
 import net.gcdc.asn1.uper.UperEncoder;
@@ -16,12 +17,14 @@ import net.gcdc.asn1.uper.UperEncoder;
 @Sequence
 public class Level2DataType {
 
+	@FieldOrder(order = 0)
 	Level1DataType level1Data;
 	
 	/** The data. */
+	@FieldOrder(order = 1)
 	@Asn1Optional public OctetString level1Signature;
 	
-	
+	@FieldOrder(order = 2)
 	@Asn1Optional DataType level2Data;
 
 

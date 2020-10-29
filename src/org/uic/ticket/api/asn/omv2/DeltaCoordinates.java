@@ -20,6 +20,7 @@
 package org.uic.ticket.api.asn.omv2;
 
 import net.gcdc.asn1.datatypes.Asn1BigInteger;
+import net.gcdc.asn1.datatypes.FieldOrder;
 import net.gcdc.asn1.datatypes.Sequence;
 
 @Sequence
@@ -27,8 +28,10 @@ public class DeltaCoordinates extends Object {
 	public DeltaCoordinates() {
 	}
 
+	@FieldOrder(order = 0)
 	public Asn1BigInteger longitude;
 
+	@FieldOrder(order = 1)
 	public Asn1BigInteger latitude;
 
 	public Asn1BigInteger getLongitude() {

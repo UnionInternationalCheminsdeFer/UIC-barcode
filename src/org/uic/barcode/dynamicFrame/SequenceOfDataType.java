@@ -4,7 +4,6 @@ package org.uic.barcode.dynamicFrame;
 import java.util.Collection;
 
 import net.gcdc.asn1.datatypes.Asn1SequenceOf;
-// TODO: Auto-generated Javadoc
 
 /**
  * The Class SequenceOfDataType.

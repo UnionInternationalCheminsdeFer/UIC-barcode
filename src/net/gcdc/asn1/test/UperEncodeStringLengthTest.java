@@ -6,6 +6,7 @@ import java.util.logging.Level;
 
 import net.gcdc.asn1.datatypes.Asn1Optional;
 import net.gcdc.asn1.datatypes.CharacterRestriction;
+import net.gcdc.asn1.datatypes.FieldOrder;
 import net.gcdc.asn1.datatypes.RestrictedString;
 import net.gcdc.asn1.datatypes.Sequence;
 
@@ -38,6 +39,7 @@ public class UperEncodeStringLengthTest {
     @Sequence
     public static class TestRecord {
     	
+    	@FieldOrder(order = 0)
     	@RestrictedString(CharacterRestriction.UTF8String)
     	@Asn1Optional() String valueUtf8;
 

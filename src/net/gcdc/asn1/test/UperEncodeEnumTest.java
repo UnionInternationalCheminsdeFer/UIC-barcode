@@ -6,6 +6,7 @@ import java.util.logging.Level;
 
 import net.gcdc.asn1.datatypes.Asn1Default;
 import net.gcdc.asn1.datatypes.Asn1Optional;
+import net.gcdc.asn1.datatypes.FieldOrder;
 import net.gcdc.asn1.datatypes.Sequence;
 
 import net.gcdc.asn1.uper.UperEncoder;
@@ -32,6 +33,7 @@ public class UperEncodeEnumTest {
     @Sequence
     public static class TestRecord {
     	
+    	@FieldOrder(order = 0)
     	@Asn1Default(value="value2")
     	@Asn1Optional EnumType value = EnumType.value2;
     	

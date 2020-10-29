@@ -21,6 +21,7 @@ package org.uic.ticket.api.asn.omv1;
 
 import net.gcdc.asn1.datatypes.Asn1Optional;
 import net.gcdc.asn1.datatypes.CharacterRestriction;
+import net.gcdc.asn1.datatypes.FieldOrder;
 import net.gcdc.asn1.datatypes.HasExtensionMarker;
 import net.gcdc.asn1.datatypes.IntRange;
 import net.gcdc.asn1.datatypes.RestrictedString;
@@ -33,12 +34,15 @@ public class RegisteredLuggageType extends Object {
 	public RegisteredLuggageType() {
 	}
 
+	@FieldOrder(order = 0)
 	@RestrictedString(CharacterRestriction.IA5String)
 	@Asn1Optional public String registrationId;
 
+	@FieldOrder(order = 1)
 	@IntRange(minValue=1,maxValue=99)
 	@Asn1Optional public Long maxWeight;
 
+	@FieldOrder(order = 2)
 	@IntRange(minValue=1,maxValue=300)
 	@Asn1Optional public Long maxSize;
 

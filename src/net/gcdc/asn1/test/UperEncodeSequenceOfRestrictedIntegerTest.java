@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.logging.Level;
 
+import net.gcdc.asn1.datatypes.FieldOrder;
 import net.gcdc.asn1.datatypes.IntRange;
 import net.gcdc.asn1.datatypes.Sequence;
 
@@ -25,6 +26,7 @@ TestRecord ::= [APPLICATION 0] IMPLICIT SEQUENCE {
     @Sequence
     public static class TestRecord {
     	
+    	@FieldOrder(order = 0)
     	@IntRange(minValue=9500000,maxValue=99900001)
     	TestSequenceOfLong numbers = null;;
 

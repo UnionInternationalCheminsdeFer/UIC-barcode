@@ -22,6 +22,7 @@ package org.uic.ticket.api.asn.omv1;
 
 
 import net.gcdc.asn1.datatypes.Choice;
+import net.gcdc.asn1.datatypes.FieldOrder;
 import net.gcdc.asn1.datatypes.HasExtensionMarker;
 
 @Choice
@@ -30,28 +31,40 @@ public class TicketDetailData extends Object {
 	public TicketDetailData() {
 	}
 
+	@FieldOrder(order = 0)
 	public ReservationData reservation;
 
+	@FieldOrder(order = 1)
 	public CarCarriageReservationData carCarriageReservation;
 
+	@FieldOrder(order = 2)
 	public OpenTicketData openTicket;
 
+	@FieldOrder(order = 3)
 	public PassData pass;
 
+	@FieldOrder(order = 4)
 	public VoucherData voucher;
 
+	@FieldOrder(order = 5)
 	public CustomerCardData customerCard;
 
+	@FieldOrder(order = 6)
 	public CountermarkData counterMark;
 
+	@FieldOrder(order = 7)
 	public ParkingGroundData parkingGround;
 
+	@FieldOrder(order = 8)
 	public FIPTicketData fipTicket;
 
+	@FieldOrder(order = 9)
 	public StationPassageData stationPassage;
 
+	@FieldOrder(order = 10)
 	public DelayConfirmation delayConfirmation;
 
+	@FieldOrder(order = 11)
 	public ExtensionData extension;
 
 	public ReservationData getReservation() {

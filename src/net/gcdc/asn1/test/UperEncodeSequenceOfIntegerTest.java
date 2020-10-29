@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
+import net.gcdc.asn1.datatypes.FieldOrder;
 import net.gcdc.asn1.datatypes.Sequence;
 import net.gcdc.asn1.datatypesimpl.SequenceOfUnrestrictedLong;
 
@@ -27,7 +28,7 @@ TestRecord ::= [APPLICATION 0] IMPLICIT SEQUENCE {
     @Sequence
     public static class TestRecord {
     	
-    	
+    	@FieldOrder(order = 0)
     	SequenceOfUnrestrictedLong numbers;
 
         public TestRecord() {

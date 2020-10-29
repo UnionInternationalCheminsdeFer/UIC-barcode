@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.logging.Level;
 
+import net.gcdc.asn1.datatypes.FieldOrder;
 import net.gcdc.asn1.datatypes.Sequence;
 
 import net.gcdc.asn1.uper.UperEncoder;
@@ -25,8 +26,10 @@ public class UperEncodeIntegerSmallTest {
     @Sequence
     public static class TestRecord {
     	
+    	@FieldOrder(order = 0)
     	public Long value1;
     	
+    	@FieldOrder(order = 1)
     	public Integer value2;    	
 
         public TestRecord() {

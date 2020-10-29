@@ -23,6 +23,7 @@ import net.gcdc.asn1.datatypes.Asn1BigInteger;
 
 import net.gcdc.asn1.datatypes.Asn1Optional;
 import net.gcdc.asn1.datatypes.CharacterRestriction;
+import net.gcdc.asn1.datatypes.FieldOrder;
 import net.gcdc.asn1.datatypes.HasExtensionMarker;
 import net.gcdc.asn1.datatypes.IntRange;
 import net.gcdc.asn1.datatypes.RestrictedString;
@@ -36,30 +37,42 @@ public class ControlData extends Object {
 	public ControlData() {
 	}
 
+	@FieldOrder(order = 0)
 	@Asn1Optional public SequenceOfCardReferenceType identificationByCardReference;
 
+	@FieldOrder(order = 1)
 	public Boolean identificationByIdCard = false;
 
+	@FieldOrder(order = 2)
 	public Boolean identificationByPassportId = false;
 
+	@FieldOrder(order = 3)
 	@Asn1Optional public Asn1BigInteger identificationItem;
 
+	@FieldOrder(order = 4)
 	public Boolean passportValidationRequired = false;
 
+	@FieldOrder(order = 5)
 	public Boolean onlineValidationRequired = false;
 
+	@FieldOrder(order = 6)
 	@IntRange(minValue=0,maxValue=99)
 	@Asn1Optional public Long randomDetailedValidationRequired;
 
+	@FieldOrder(order = 7)
 	public Boolean ageCheckRequired = false;
 
+	@FieldOrder(order = 8)
 	public Boolean reductionCardCheckRequired = false;
 
+	@FieldOrder(order = 9)
 	@RestrictedString(CharacterRestriction.UTF8String)
 	@Asn1Optional public String infoText;
 
+	@FieldOrder(order = 10)
 	@Asn1Optional public SequenceOfTicketLinkType includedTickets;
 
+	@FieldOrder(order = 11)
 	@Asn1Optional public ExtensionData extension;
 	
 

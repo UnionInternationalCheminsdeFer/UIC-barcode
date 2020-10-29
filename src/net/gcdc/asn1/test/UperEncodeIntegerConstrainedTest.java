@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.logging.Level;
 
+import net.gcdc.asn1.datatypes.FieldOrder;
 import net.gcdc.asn1.datatypes.IntRange;
 import net.gcdc.asn1.datatypes.Sequence;
 import net.gcdc.asn1.uper.UperEncoder;
@@ -26,12 +27,15 @@ public class UperEncodeIntegerConstrainedTest {
     @Sequence
     public static class TestRecord {
     	
+    	@FieldOrder(order = 0)
     	@IntRange(minValue=1, maxValue=999)
     	public Long value1;
     	
+    	@FieldOrder(order = 1)
     	@IntRange(minValue=0, maxValue=999)
     	public Long value2;    	
     	
+    	@FieldOrder(order = 2)
     	@IntRange(minValue=63, maxValue=999)
     	public Long value3;    	
   	    	

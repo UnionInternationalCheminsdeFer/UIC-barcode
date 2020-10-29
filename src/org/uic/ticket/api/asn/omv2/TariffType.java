@@ -23,6 +23,7 @@ import net.gcdc.asn1.datatypes.Asn1BigInteger;
 import net.gcdc.asn1.datatypes.Asn1Default;
 import net.gcdc.asn1.datatypes.Asn1Optional;
 import net.gcdc.asn1.datatypes.CharacterRestriction;
+import net.gcdc.asn1.datatypes.FieldOrder;
 import net.gcdc.asn1.datatypes.HasExtensionMarker;
 import net.gcdc.asn1.datatypes.IntRange;
 import net.gcdc.asn1.datatypes.RestrictedString;
@@ -33,35 +34,46 @@ import net.gcdc.asn1.datatypes.Sequence;
 public class TariffType extends Object {
 	public TariffType() {
 	}
-
+	@FieldOrder(order = 0)
 	@IntRange(minValue=1,maxValue=200)
 	@Asn1Default(value = "1")
 	@Asn1Optional public Long numberOfPassengers;
 
+	@FieldOrder(order = 1)
 	@Asn1Optional public PassengerType passengerType;
 
+	@FieldOrder(order = 2)
 	@IntRange(minValue=1,maxValue=64)
 	@Asn1Optional public Long ageBelow;
 
+	@FieldOrder(order = 3)
 	@IntRange(minValue=1,maxValue=128)
 	@Asn1Optional public Long ageAbove;
 
+	@FieldOrder(order = 5)
 	@Asn1Optional public SequenceOfTravelerId traverlerid;
 
+	@FieldOrder(order = 6)
 	public Boolean restrictedToCountryOfResidence;
 
+	@FieldOrder(order = 7)
 	@Asn1Optional public RouteSectionType restrictedToRouteSection;
 
+	@FieldOrder(order = 8)
 	@Asn1Optional public SeriesDetailType seriesDataDetails;
 
+	@FieldOrder(order = 9)
 	@Asn1Optional public Asn1BigInteger tariffIdNum;
 
+	@FieldOrder(order = 10)
 	@RestrictedString(CharacterRestriction.IA5String)
 	@Asn1Optional public String tariffIdIA5;
 
+	@FieldOrder(order = 11)
 	@RestrictedString(CharacterRestriction.UTF8String)
 	@Asn1Optional public String tariffDesc;
 
+	@FieldOrder(order = 12)
 	@Asn1Optional public SequenceOfCardReferenceType reductionCard;
 	
 

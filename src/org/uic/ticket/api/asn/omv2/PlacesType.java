@@ -21,6 +21,7 @@ package org.uic.ticket.api.asn.omv2;
 
 import net.gcdc.asn1.datatypes.Asn1Optional;
 import net.gcdc.asn1.datatypes.CharacterRestriction;
+import net.gcdc.asn1.datatypes.FieldOrder;
 import net.gcdc.asn1.datatypes.RestrictedString;
 import net.gcdc.asn1.datatypes.Sequence;
 import net.gcdc.asn1.datatypesimpl.SequenceOfStringIA5;
@@ -30,17 +31,22 @@ public class PlacesType extends Object {
 	public PlacesType() {
 	}
 
+	@FieldOrder(order = 0)
 	@RestrictedString(CharacterRestriction.IA5String)
 	@Asn1Optional public String coach;
 
+	@FieldOrder(order = 1)
 	@RestrictedString(CharacterRestriction.IA5String)
 	@Asn1Optional public String placeString;
 
+	@FieldOrder(order = 2)
 	@RestrictedString(CharacterRestriction.UTF8String)
 	@Asn1Optional public String placeDescription;
 
+	@FieldOrder(order = 3)
 	@Asn1Optional public SequenceOfStringIA5 placeIA5;
 
+	@FieldOrder(order = 4)
 	@Asn1Optional public SequenceOfPlaceNum placeNum;
 	
 		

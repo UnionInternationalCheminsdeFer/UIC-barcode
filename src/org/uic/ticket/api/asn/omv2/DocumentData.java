@@ -20,6 +20,7 @@
 package org.uic.ticket.api.asn.omv2;
 
 import net.gcdc.asn1.datatypes.Asn1Optional;
+import net.gcdc.asn1.datatypes.FieldOrder;
 import net.gcdc.asn1.datatypes.HasExtensionMarker;
 import net.gcdc.asn1.datatypes.Sequence;
 
@@ -29,8 +30,10 @@ public class DocumentData extends Object {
 	public DocumentData() {
 	}
 
+	@FieldOrder(order = 0)
 	@Asn1Optional public TokenType token;
 
+	@FieldOrder(order = 1)
 	public TicketDetailData ticket;
 
 	public TokenType getToken() {

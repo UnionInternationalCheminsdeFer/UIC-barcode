@@ -27,6 +27,7 @@ import net.gcdc.asn1.datatypes.Asn1Default;
 
 import net.gcdc.asn1.datatypes.Asn1Optional;
 import net.gcdc.asn1.datatypes.CharacterRestriction;
+import net.gcdc.asn1.datatypes.FieldOrder;
 import net.gcdc.asn1.datatypes.HasExtensionMarker;
 import net.gcdc.asn1.datatypes.IntRange;
 import net.gcdc.asn1.datatypes.RestrictedString;
@@ -41,105 +42,135 @@ public class CountermarkData extends Object {
 	public CountermarkData() {
 	}
 
+	@FieldOrder(order = 0)
 	@RestrictedString(CharacterRestriction.IA5String)
 	@Asn1Optional public String referenceIA5;
 
+	@FieldOrder(order = 1)
 	@Asn1Optional public Asn1BigInteger referenceNum;
 
+	@FieldOrder(order = 2)
 	@IntRange(minValue=1,maxValue=32000)
 	@Asn1Optional public Long productOwnerNum;
 
+	@FieldOrder(order = 3)
 	@RestrictedString(CharacterRestriction.IA5String)
 	@Asn1Optional public String productOwnerIA5;
 
+	@FieldOrder(order = 4)
 	@IntRange(minValue=1,maxValue=32000)
 	@Asn1Optional public Long productIdNum;
 
+	@FieldOrder(order = 5)
 	@RestrictedString(CharacterRestriction.IA5String)
 	@Asn1Optional public String productIdIA5;
 
+	@FieldOrder(order = 6)
 	@RestrictedString(CharacterRestriction.IA5String)
 	@Asn1Optional public String ticketReferenceIA5;
 
+	@FieldOrder(order = 7)
 	@Asn1Optional public Asn1BigInteger ticketReferenceNum;
 
+	@FieldOrder(order = 8)
 	@IntRange(minValue=1,maxValue=200)
 	@Asn1Optional public Long numberOfCountermark;
 
+	@FieldOrder(order = 9)
 	@IntRange(minValue=1,maxValue=200)
 	@Asn1Optional public Long totalOfCountermarks;
 
+	@FieldOrder(order = 10)
 	@RestrictedString(CharacterRestriction.UTF8String)
 	@Asn1Optional public String groupName;
 
+	@FieldOrder(order = 11)
 	@Asn1Default("stationUIC")
 	@Asn1Optional public CodeTableType stationCodeTable;
 
+	@FieldOrder(order = 12)
 	@IntRange(minValue=1,maxValue=9999999)
 	@Asn1Optional public Long fromStationNum;
 
+	@FieldOrder(order = 13)
 	@RestrictedString(CharacterRestriction.IA5String)
 	@Asn1Optional public String fromStationIA5;
 
+	@FieldOrder(order = 14)
 	@IntRange(minValue=1,maxValue=9999999)
 	@Asn1Optional public Long toStationNum;
 
+	@FieldOrder(order = 15)
 	@RestrictedString(CharacterRestriction.IA5String)
 	@Asn1Optional public String toStationIA5;
 
+	@FieldOrder(order = 16)
 	@RestrictedString(CharacterRestriction.UTF8String)
 	@Asn1Optional public String fromStationNameUTF8;
 
+	@FieldOrder(order = 17)
 	@RestrictedString(CharacterRestriction.UTF8String)
 	@Asn1Optional public String toStationNameUTF8;
 
+	@FieldOrder(order = 18)
 	@RestrictedString(CharacterRestriction.UTF8String)
 	@Asn1Optional public String validRegionDesc;
 	
+	@FieldOrder(order = 19)
 	@Asn1Optional public SequenceOfRegionalValidityType validRegion;
 
+	@FieldOrder(order = 20)
 	public Boolean returnIncluded = false;
 	
+	@FieldOrder(order = 21)
 	@Asn1Optional public ReturnRouteDescriptionType returnDescription;
 
+	@FieldOrder(order = 22)
 	@IntRange(minValue=-1,maxValue=700)
 	@Asn1Optional public Long validFromDay;
 
+	@FieldOrder(order = 22)
 	@IntRange(minValue=0,maxValue=1440)
 	@Asn1Optional public Long validFromTime;
 	
+	@FieldOrder(order = 23)
 	@IntRange(minValue=-60, maxValue=60)
 	@Asn1Optional public Long validFromUTCOffset;
 
+	@FieldOrder(order = 24)
 	@IntRange(minValue=0,maxValue=370)
 	@Asn1Optional public Long validUntilDay;
 
+	@FieldOrder(order = 25)
 	@IntRange(minValue=0,maxValue=1440)
 	@Asn1Optional public Long validUntilTime;
 	
+	@FieldOrder(order = 26)
 	@IntRange(minValue=-60, maxValue=60)
 	@Asn1Optional public Long validUntilUTCOffset;
 
+	@FieldOrder(order = 27)
 	@Asn1Default(value="second")
 	@Asn1Optional public TravelClassType classCode;
 
+	@FieldOrder(order = 28)
 	@Asn1Optional public SequenceOfCarrierNum carrierNum;
 
+	@FieldOrder(order = 29)
 	@Asn1Optional public SequenceOfStringIA5 carrierIA5;
 
+	@FieldOrder(order = 30)
 	@Asn1Optional public SequenceOfServiceBrands includedServiceBrands;
 
+	@FieldOrder(order = 31)
 	@Asn1Optional public SequenceOfServiceBrands excludedServiceBrands;
 
-
+	@FieldOrder(order = 32)
 	@RestrictedString(CharacterRestriction.UTF8String)
 	@Asn1Optional public String infoText;
 
+	@FieldOrder(order = 33)
 	@Asn1Optional public ExtensionData extension;
-	
-
-
-	
 
 	public String getReferenceIA5() {
 

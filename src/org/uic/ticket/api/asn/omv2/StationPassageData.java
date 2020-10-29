@@ -26,6 +26,7 @@ import net.gcdc.asn1.datatypes.Asn1BigInteger;
 import net.gcdc.asn1.datatypes.Asn1Default;
 import net.gcdc.asn1.datatypes.Asn1Optional;
 import net.gcdc.asn1.datatypes.CharacterRestriction;
+import net.gcdc.asn1.datatypes.FieldOrder;
 import net.gcdc.asn1.datatypes.HasExtensionMarker;
 import net.gcdc.asn1.datatypes.IntRange;
 import net.gcdc.asn1.datatypes.RestrictedString;
@@ -40,62 +41,84 @@ public class StationPassageData extends Object {
 	public StationPassageData() {
 	}
 
+	@FieldOrder(order = 0)
 	@RestrictedString(CharacterRestriction.IA5String)
 	@Asn1Optional public String referenceIA5;
 
+	@FieldOrder(order = 1)
 	@Asn1Optional public Asn1BigInteger referenceNum;
 
+	@FieldOrder(order = 2)
 	@IntRange(minValue=1,maxValue=32000)
 	@Asn1Optional public Long productOwnerNum;
 
+	@FieldOrder(order = 3)
 	@RestrictedString(CharacterRestriction.IA5String)
 	@Asn1Optional public String productOwnerIA5;
 
+	@FieldOrder(order = 4)
 	@IntRange(minValue=0,maxValue=65535)
 	@Asn1Optional public Long productIdNum;
 
+	@FieldOrder(order = 5)
 	@RestrictedString(CharacterRestriction.IA5String)
 	@Asn1Optional public String productIdIA5;
 
+	@FieldOrder(order = 6)
 	@RestrictedString(CharacterRestriction.UTF8String)
 	@Asn1Optional public String productName;
 
+	@FieldOrder(order = 7)
 	@Asn1Default("stationUIC")
 	@Asn1Optional public CodeTableType stationCodeTable;
 
+	@FieldOrder(order = 8)
 	@Asn1Optional public SequenceOfUnrestrictedLong stationNum;
 
+	@FieldOrder(order = 9)
 	@Asn1Optional public SequenceOfStringIA5 stationIA5;
 
+	@FieldOrder(order = 10)
 	@Asn1Optional public SequenceOfStringUTF8 stationNameUTF8;
 	
+	@FieldOrder(order = 11)
 	@Asn1Optional public SequenceOfUnrestrictedLong areaCodeNum;
 
+	@FieldOrder(order = 12)
 	@Asn1Optional public SequenceOfStringIA5 areaCodeIA5;
 
+	@FieldOrder(order = 13)
 	@Asn1Optional public SequenceOfStringUTF8 areaNameUTF8;	
 
+	@FieldOrder(order = 14)
 	@IntRange(minValue=-1,maxValue=700)
 	public Long validFromDay;
 
+	@FieldOrder(order = 15)
 	@IntRange(minValue=0,maxValue=1440)
 	@Asn1Optional public Long validFromTime;
 	
+	@FieldOrder(order = 16)
 	@IntRange(minValue=-60, maxValue=60)
 	@Asn1Optional public Long validFromUTCOffset;
 
+	@FieldOrder(order = 17)
 	@Asn1Default(value="0")
 	@IntRange(minValue=0,maxValue=370)
 	@Asn1Optional public Long validUntilDay;
 
+	@FieldOrder(order = 18)
 	@IntRange(minValue=0,maxValue=1440)
 	@Asn1Optional public Long validUntilTime;
 	
+	@FieldOrder(order = 19)
 	@IntRange(minValue=-60, maxValue=60)
 	@Asn1Optional public Long validUntilUTCOffset;
 
+	@FieldOrder(order = 20)
 	@Asn1Optional public Asn1BigInteger numberOfDaysValid;
 
+	@FieldOrder(order = 21)
 	@Asn1Optional public ExtensionData extension;
 	
 	

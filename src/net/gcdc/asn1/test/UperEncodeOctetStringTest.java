@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.logging.Level;
 
+import net.gcdc.asn1.datatypes.FieldOrder;
 import net.gcdc.asn1.datatypes.Sequence;
 import net.gcdc.asn1.datatypesimpl.OctetString;
 
@@ -39,6 +40,7 @@ public class UperEncodeOctetStringTest {
     @Sequence
     public static class TestRecord {
     	
+    	@FieldOrder(order = 0)
     	OctetString value;
 
         public TestRecord() {

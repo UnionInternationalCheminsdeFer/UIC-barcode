@@ -25,6 +25,7 @@ import java.util.TimeZone;
 
 import net.gcdc.asn1.datatypes.Asn1Optional;
 import net.gcdc.asn1.datatypes.CharacterRestriction;
+import net.gcdc.asn1.datatypes.FieldOrder;
 import net.gcdc.asn1.datatypes.HasExtensionMarker;
 import net.gcdc.asn1.datatypes.IntRange;
 import net.gcdc.asn1.datatypes.RestrictedString;
@@ -37,53 +38,71 @@ public class TravelerType extends Object {
 	public TravelerType() {
 	}
 
+	@FieldOrder(order = 0)
 	@RestrictedString(CharacterRestriction.UTF8String)
 	@Asn1Optional public String firstName;
 
+	@FieldOrder(order = 1)
 	@RestrictedString(CharacterRestriction.UTF8String)
 	@Asn1Optional public String secondName;
 
+	@FieldOrder(order = 2)
 	@RestrictedString(CharacterRestriction.UTF8String)
 	@Asn1Optional public String lastName;
 
+	@FieldOrder(order = 3)
 	@RestrictedString(CharacterRestriction.IA5String)
 	@Asn1Optional public String idCard;
 
+	@FieldOrder(order = 4)
 	@RestrictedString(CharacterRestriction.IA5String)
 	@Asn1Optional public String passportId;
 
+	@FieldOrder(order = 5)
 	@SizeRange(minValue = 1, maxValue = 3)
 	@RestrictedString(CharacterRestriction.IA5String)
 	@Asn1Optional public String title;
 
+	@FieldOrder(order = 6)
 	@Asn1Optional public GenderType gender;
 
+	@FieldOrder(order = 7)
 	@RestrictedString(CharacterRestriction.IA5String)
 	@Asn1Optional public String customerIdIA5;
 
+	@FieldOrder(order = 8)
 	@Asn1Optional public Long customerIdNum;
 
+	@FieldOrder(order = 9)
 	@IntRange(minValue=1901,maxValue=2155)
 	@Asn1Optional public Long yearOfBirth;
 
+	@FieldOrder(order = 10)
 	@IntRange(minValue=0,maxValue=366)
 	@Asn1Optional public Long dayOfBirth;
 
+	@FieldOrder(order = 11)
 	public Boolean ticketHolder = true;
 
+	@FieldOrder(order = 12)
 	@Asn1Optional public PassengerType passengerType;
 
+	@FieldOrder(order = 13)
 	@Asn1Optional public Boolean passengerWithReducedMobility;
 
+	@FieldOrder(order = 14)
 	@IntRange(minValue=1,maxValue=999)
 	@Asn1Optional public Long countryOfResidence;
 
+	@FieldOrder(order = 15)
 	@IntRange(minValue=1,maxValue=999)
 	@Asn1Optional public Long countryOfPassport;
 
+	@FieldOrder(order = 16)
 	@IntRange(minValue=1,maxValue=999)
 	@Asn1Optional public Long countryOfIdCard;
 
+	@FieldOrder(order = 17)
 	@Asn1Optional public SequenceOfCustomerStatusType status;
 	
 

@@ -20,6 +20,7 @@
 package org.uic.ticket.api.asn.omv2;
 
 import net.gcdc.asn1.datatypes.Choice;
+import net.gcdc.asn1.datatypes.FieldOrder;
 import net.gcdc.asn1.datatypes.HasExtensionMarker;
 
 
@@ -29,14 +30,19 @@ public class RegionalValidityType extends Object {
 	public RegionalValidityType() {
 	}
 
+	@FieldOrder(order = 0)
 	public TrainLinkType trainLink;
 
+	@FieldOrder(order = 1)
 	public ViaStationType viaStations;
 
+	@FieldOrder(order = 2)
 	public ZoneType zones;
 
+	@FieldOrder(order = 3)
 	public LineType lines;
 
+	@FieldOrder(order = 4)
 	public PolygoneType polygone;
 	
 

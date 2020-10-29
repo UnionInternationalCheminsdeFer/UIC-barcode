@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import java.util.logging.Level;
 
 import net.gcdc.asn1.datatypes.Asn1BigInteger;
+import net.gcdc.asn1.datatypes.FieldOrder;
 import net.gcdc.asn1.datatypes.Sequence;
 
 import net.gcdc.asn1.uper.UperEncoder;
@@ -25,6 +26,7 @@ public class UperEncodeIntegerTest {
     @Sequence
     public static class TestRecord {
     	
+    	@FieldOrder(order = 0)
     	Asn1BigInteger value;
 
         public TestRecord() {
