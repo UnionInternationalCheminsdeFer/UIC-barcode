@@ -18,7 +18,7 @@ import org.junit.Test;
 import org.uic.barcode.Decoder;
 import org.uic.barcode.Encoder;
 import org.uic.barcode.dynamicFrame.Constants;
-import org.uic.barcode.staticHeader.ticketLayoutBarcode.TicketLayout;
+import org.uic.barcode.staticFrame.ticketLayoutBarcode.TicketLayout;
 import org.uic.barcode.test.utils.SimpleTestTicketLayout;
 import org.uic.barcode.test.utils.SimpleUICTestTicket;
 import org.uic.ticket.EncodingFormatException;

@@ -1,7 +1,7 @@
 package org.uic.barcode.test.utils;
 
-import org.uic.barcode.staticHeader.ticketLayoutBarcode.LayoutElement;
-import org.uic.barcode.staticHeader.ticketLayoutBarcode.TicketLayout;
+import org.uic.barcode.staticFrame.ticketLayoutBarcode.LayoutElement;
+import org.uic.barcode.staticFrame.ticketLayoutBarcode.TicketLayout;
 
 public class SimpleTestTicketLayout {
 	

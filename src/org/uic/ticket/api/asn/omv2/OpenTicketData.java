@@ -42,11 +42,11 @@ public class OpenTicketData extends Object {
 	}
 
 	@FieldOrder(order = 0)
-	@RestrictedString(CharacterRestriction.IA5String)
-	@Asn1Optional public String referenceIA5;
+	@Asn1Optional public Asn1BigInteger referenceNum;
 
 	@FieldOrder(order = 1)
-	@Asn1Optional public Asn1BigInteger referenceNum;
+	@RestrictedString(CharacterRestriction.IA5String)
+	@Asn1Optional public String referenceIA5;
 
 	@FieldOrder(order = 2)
 	@IntRange(minValue=1,maxValue=32000)

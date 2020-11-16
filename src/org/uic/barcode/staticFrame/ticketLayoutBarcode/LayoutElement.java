@@ -1,4 +1,4 @@
-package org.uic.barcode.staticHeader.ticketLayoutBarcode;
+package org.uic.barcode.staticFrame.ticketLayoutBarcode;
 
 public class LayoutElement {
 	

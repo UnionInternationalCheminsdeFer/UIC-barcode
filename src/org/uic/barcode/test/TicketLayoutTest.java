@@ -6,7 +6,7 @@ import java.io.IOException;
 
 import org.junit.Test;
 import org.uic.barcode.staticFrame.UTLAYDataRecord;
-import org.uic.barcode.staticHeader.ticketLayoutBarcode.TicketLayout;
+import org.uic.barcode.staticFrame.ticketLayoutBarcode.TicketLayout;
 import org.uic.barcode.test.utils.SimpleTestTicketLayout;
 import org.uic.barcode.test.utils.TestUtils;
 import org.uic.ticket.EncodingFormatException;
