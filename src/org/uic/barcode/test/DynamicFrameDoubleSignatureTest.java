@@ -69,7 +69,7 @@ public class DynamicFrameDoubleSignatureTest {
 		Encoder enc = null;
 
 		try {
-			enc = new Encoder(ticket, null, Encoder.UIC_BARCODE_TYPE_DOSIPAS, 1, 1);
+			enc = new Encoder(ticket, null, Encoder.UIC_BARCODE_TYPE_DOSIPAS, 1, 13);
 		} catch (IOException | EncodingFormatException e1) {
 			assert(false);
 		}
@@ -114,7 +114,7 @@ public class DynamicFrameDoubleSignatureTest {
 		Encoder enc = null;
 
 		try {
-			enc = new Encoder(ticket, null, Encoder.UIC_BARCODE_TYPE_DOSIPAS, 1, 1);
+			enc = new Encoder(ticket, null, Encoder.UIC_BARCODE_TYPE_DOSIPAS, 1, 13);
 		} catch (IOException | EncodingFormatException e1) {
 			assert(false);
 		}

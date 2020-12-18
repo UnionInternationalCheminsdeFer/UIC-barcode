@@ -9,7 +9,7 @@ ASN-Module DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 	
 -- ##############################################################################################
 -- #	                                                                      
--- #   Final version 1.3   - value 1 in the UIC bar code version element 
+-- #   Final version 1.3   - value 13 in the UIC bar code version element 
 -- #                         (see element 2 in U_FLEX record definition in leaflet 918.9)
 -- #
 -- ##############################################################################################

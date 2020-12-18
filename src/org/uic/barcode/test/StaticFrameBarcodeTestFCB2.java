@@ -12,45 +12,58 @@ import java.security.Security;
 import java.security.SignatureException;
 import java.util.zip.DataFormatException;
 
-import org.bouncycastle.jce.ECNamedCurveTable;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.bouncycastle.jce.spec.ECParameterSpec;
 import org.junit.Before;
 import org.junit.Test;
 import org.uic.barcode.Decoder;
 import org.uic.barcode.Encoder;
 import org.uic.barcode.dynamicFrame.Constants;
+import org.uic.barcode.staticFrame.ticketLayoutBarcode.TicketLayout;
+import org.uic.barcode.test.utils.SimpleTestTicketLayout;
 import org.uic.barcode.test.utils.SimpleUICTestTicket;
-import org.uic.barcode.utils.AlgorithmNameResolver;
 import org.uic.ticket.EncodingFormatException;
 import org.uic.ticket.api.spec.IUicRailTicket;
 
-public class DynamicFrameSimpleTest {
+/**
+ * The Class StaticFrameBarcodeTest.
+ */
+public class StaticFrameBarcodeTestFCB2 {
 	
-	public String signatureAlgorithmOID = null;
-	public String elipticCurve = null;
-	public String keyPairAlgorithmOID = null;
+	/** The algorithm OID. */
+	public String algorithmOID = Constants.DSA_SHA224;
 	
+	public int keySize = 2048;
+	
+	/** The key pair. */
 	public KeyPair keyPair = null;
+	
 	
 	public IUicRailTicket testFCBticket = null;
 	
+	public TicketLayout testLayout = null;
 	
+	
+	/**
+	 * Initialize.
+	 * 
+	 *  set the signature algorithm
+	 *  generate a key pair
+	 *  set the test content
+	 *  for ticket and layout
+	 */
 	@Before public void initialize() {
-		
-		signatureAlgorithmOID = Constants.ECDSA_SHA256;
-		keyPairAlgorithmOID = Constants.KG_EC_256;
-		elipticCurve = "secp256k1";
-		
+
+		algorithmOID = Constants.DSA_SHA224;
+		keySize = 2048;
 	    testFCBticket = SimpleUICTestTicket.getUicTestTicket();
+		testLayout = SimpleTestTicketLayout.getSimpleTestTicketLayout();		
 		
 		Security.addProvider(new BouncyCastleProvider());
 
 		try {
-			keyPair  = generateECKeys(Constants.KG_EC, elipticCurve);
-			//keyPair  = generateECDSAKeys("ECDSA", "B-571");
-		} catch (Exception e) {
-			assert(false);
+			keyPair  = generateDSAKeys(keySize);
+		} catch (NoSuchAlgorithmException | NoSuchProviderException | InvalidAlgorithmParameterException e) {
+			e.printStackTrace();
 		}
 
         assert(keyPair != null);
@@ -58,27 +71,33 @@ public class DynamicFrameSimpleTest {
 	}
 	
 	
-	@Test public void testDynamicHeaderBarcodeEncoding() {
+	/**
+	 * Test dynamic header barcode encoding.
+	 */
+	@Test public void testStaticHeaderBarcodeEncoding() {
 		
 		IUicRailTicket ticket = testFCBticket;
-
+		
+		TicketLayout layout = testLayout;
+				
 		Encoder enc = null;
 
 		try {
-			enc = new Encoder(ticket, null, Encoder.UIC_BARCODE_TYPE_DOSIPAS, 1, 13);
+			enc = new Encoder(ticket, layout, Encoder.UIC_BARCODE_TYPE_CLASSIC, 2, 2);
 		} catch (IOException | EncodingFormatException e1) {
 			assert(false);
 		}
 		
+		enc.setStaticHeaderParams("123456789012", "de");
+		
 		assert(enc != null);
 		
 		try {
-			enc.signLevel1("1080", keyPair.getPrivate(), signatureAlgorithmOID, "1");
+			enc.signLevel1("1080", keyPair.getPrivate(), algorithmOID, "1");
 		} catch (Exception e) {
 			assert(false);
 		}
 		
-			
         byte[] encoded = null;
 		try {
 			encoded = enc.encode();
@@ -87,27 +106,34 @@ public class DynamicFrameSimpleTest {
 		}
         
         assert(encoded != null);
-		
 
-		
 	}
 	
-	@Test public void testDynamicHeaderBarcodeDecoding() {
+	/**
+	 * Test dynamic header barcode decoding.
+	 */
+	@Test public void testStaticHeaderBarcodeDecoding() {
+		
 		
 		IUicRailTicket ticket = testFCBticket;
-
+		
+		TicketLayout layout = testLayout;
+		
+					
 		Encoder enc = null;
 
 		try {
-			enc = new Encoder(ticket, null, Encoder.UIC_BARCODE_TYPE_DOSIPAS, 1, 13);
+			enc = new Encoder(ticket, layout, Encoder.UIC_BARCODE_TYPE_CLASSIC, 2, 2);
 		} catch (IOException | EncodingFormatException e1) {
 			assert(false);
 		}
 		
+		enc.setStaticHeaderParams("123456789012", "de");
+		
 		assert(enc != null);
 		
 		try {
-			enc.signLevel1("1080", keyPair.getPrivate(), signatureAlgorithmOID, "1");
+			enc.signLevel1("1080", keyPair.getPrivate(), algorithmOID, "1");
 		} catch (Exception e) {
 			assert(false);
 		}
@@ -136,7 +162,7 @@ public class DynamicFrameSimpleTest {
         
         int signatureCheck = 0;
 		try {
-			signatureCheck = dec.validateLevel1(keyPair.getPublic(),null);
+			signatureCheck = dec.validateLevel1(keyPair.getPublic(),algorithmOID);
 		} catch (InvalidKeyException | NoSuchAlgorithmException | SignatureException | IllegalArgumentException
 				| UnsupportedOperationException | IOException | EncodingFormatException e) {
 			assert(false);
@@ -144,28 +170,24 @@ public class DynamicFrameSimpleTest {
 		
         assert(signatureCheck == Constants.LEVEL1_VALIDATION_OK);
         
-        SimpleUICTestTicket.compare(ticket, dec.getUicTicket());     
-               
+        SimpleUICTestTicket.compare(ticket, dec.getUicTicket());
+        
+        SimpleTestTicketLayout.compare(layout, dec.getLayout());
         
 	}	
 	
-	public KeyPair generateECDSAKeys(String keyAlgorithmName, String paramName)  throws NoSuchAlgorithmException, NoSuchProviderException, InvalidAlgorithmParameterException{
-		ECParameterSpec ecSpec = ECNamedCurveTable.getParameterSpec(paramName);
-	    KeyPairGenerator g = KeyPairGenerator.getInstance(keyAlgorithmName, "BC");
-	    g.initialize(ecSpec, new SecureRandom());
-	    return g.generateKeyPair();	    
-    }
-		
-	public KeyPair generateECKeys(String keyAlgorithmOid, String curve)  throws Exception{
-		
-		String keyAlgorithmName = AlgorithmNameResolver.getName(AlgorithmNameResolver.TYPE_KEY_GENERATOR_ALG,  keyAlgorithmOid, "BC");
-		
-		keyAlgorithmName = "ECDSA";
-		ECParameterSpec ecSpec = ECNamedCurveTable.getParameterSpec(curve);
-	    KeyPairGenerator g = KeyPairGenerator.getInstance(keyAlgorithmName, "BC");
-	    g.initialize(ecSpec, new SecureRandom());
-	    return g.generateKeyPair();	    
-    }
-
+	/**
+	 * Generate DSA keys.
+	 *
+	 * @return the key pair
+	 * @throws NoSuchAlgorithmException the no such algorithm exception
+	 * @throws NoSuchProviderException the no such provider exception
+	 * @throws InvalidAlgorithmParameterException the invalid algorithm parameter exception
+	 */
+	public KeyPair generateDSAKeys(int keySize)  throws NoSuchAlgorithmException, NoSuchProviderException, InvalidAlgorithmParameterException{
+		    KeyPairGenerator g = KeyPairGenerator.getInstance("DSA", "BC");
+		    g.initialize(keySize, new SecureRandom());
+		    return g.generateKeyPair();	    
+	}
 
 }

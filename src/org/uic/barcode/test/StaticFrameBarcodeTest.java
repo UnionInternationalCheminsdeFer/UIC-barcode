@@ -83,7 +83,7 @@ public class StaticFrameBarcodeTest {
 		Encoder enc = null;
 
 		try {
-			enc = new Encoder(ticket, layout, Encoder.UIC_BARCODE_TYPE_CLASSIC, 2, 1);
+			enc = new Encoder(ticket, layout, Encoder.UIC_BARCODE_TYPE_CLASSIC, 2, 13);
 		} catch (IOException | EncodingFormatException e1) {
 			assert(false);
 		}
@@ -123,7 +123,7 @@ public class StaticFrameBarcodeTest {
 		Encoder enc = null;
 
 		try {
-			enc = new Encoder(ticket, layout, Encoder.UIC_BARCODE_TYPE_CLASSIC, 2, 1);
+			enc = new Encoder(ticket, layout, Encoder.UIC_BARCODE_TYPE_CLASSIC, 2, 13);
 		} catch (IOException | EncodingFormatException e1) {
 			assert(false);
 		}

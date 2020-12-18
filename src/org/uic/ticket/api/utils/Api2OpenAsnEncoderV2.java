@@ -2215,7 +2215,9 @@ public class Api2OpenAsnEncoderV2 {
 		asnTraveler.setFirstName(traveler.getFirstName());
 		asnTraveler.setSecondName(traveler.getSecondName());	
 		asnTraveler.setLastName(traveler.getLastName());
-		asnTraveler.setGender(GenderType.valueOf(traveler.getGender().toString()));
+		if (traveler.getGender() != null) {
+			asnTraveler.setGender(GenderType.valueOf(traveler.getGender().toString()));
+		}
 		asnTraveler.setIdCard(UicEncoderUtils.getIA5(traveler.getIdCard()));
 		asnTraveler.setPassportId(UicEncoderUtils.getIA5(traveler.getPassportId()));
 		asnTraveler.setTitle(UicEncoderUtils.getIA5(traveler.getTitle()));	
