@@ -64,7 +64,14 @@ public class UperEncodeStringDefaultTest {
         assertEquals(result.valueIA5,"testString");
     }
     
-    
+    @Test public void testEncodeDefault2() throws IllegalArgumentException, IllegalAccessException {
+        TestRecord record = new TestRecord("Müller", null);
+        byte[] encoded = UperEncoder.encode(record);
+        TestRecord result = UperEncoder.decode(encoded, TestRecord.class);
+        String hex = UperEncoder.hexStringFromBytes(encoded);
+        UperEncoder.logger.log(Level.FINEST,String.format("data hex: %s", hex));
+        assertEquals(result.valueIA5,"testString");
+    }
     
 
 }

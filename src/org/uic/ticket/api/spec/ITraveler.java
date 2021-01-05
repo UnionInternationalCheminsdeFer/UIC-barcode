@@ -174,14 +174,14 @@ public interface ITraveler {
 	 *
 	 * @return true, if is passenger with reduced mobility
 	 */
-	public boolean isPassengerWithReducedMobility();
+	public Boolean isPassengerWithReducedMobility();
 
 	/**
 	 * Sets the passenger with reduced mobility.
 	 *
 	 * @param passengerWithReducedMobility the new passenger with reduced mobility
 	 */
-	public void setPassengerWithReducedMobility(boolean passengerWithReducedMobility);
+	public void setPassengerWithReducedMobility(Boolean passengerWithReducedMobility);
 
 	/**
 	 * Gets the country of residence (numeric ISO country code) .

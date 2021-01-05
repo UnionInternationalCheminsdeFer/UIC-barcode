@@ -53,7 +53,7 @@ public class SimpleTraveler implements ITraveler {
 	protected IPassengerType passengerType;
 	
 	/** The passenger with reduced mobility. */
-	protected boolean 	passengerWithReducedMobility = false;
+	protected boolean 	passengerWithReducedMobility;
 	
 	/** The country of residence. */
 	protected int 		countryOfResidence  = 0;
@@ -225,14 +225,14 @@ public class SimpleTraveler implements ITraveler {
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.ITraveler#isPassengerWithReducedMobility()
 	 */
-	public boolean isPassengerWithReducedMobility() {
+	public Boolean isPassengerWithReducedMobility() {
 		return passengerWithReducedMobility;
 	}
 	
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.ITraveler#setPassengerWithReducedMobility(boolean)
 	 */
-	public void setPassengerWithReducedMobility(boolean passengerWithReducedMobility) {
+	public void setPassengerWithReducedMobility(Boolean passengerWithReducedMobility) {
 		this.passengerWithReducedMobility = passengerWithReducedMobility;
 	}
 	
