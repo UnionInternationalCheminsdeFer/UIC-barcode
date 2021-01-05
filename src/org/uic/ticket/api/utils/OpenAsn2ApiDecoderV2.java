@@ -1650,7 +1650,10 @@ public class OpenAsn2ApiDecoderV2 {
 		}
 		
 		document.setValidFrom(asnDocument.getValidFromDate(issuingDate));
+		document.setValidFromUTCoffset(asnDocument.getValidFromUTCOffset());
+		
 		document.setValidUntil(asnDocument.getValidUntilDate(issuingDate));
+		document.setValidUntilUTCoffset(asnDocument.getValidUntilUTCOffset());	
 				
         if (asnDocument.getActivatedDay()!=null && !asnDocument.getActivatedDay().isEmpty()) {
    			if (document.getValidFrom() != null) {
