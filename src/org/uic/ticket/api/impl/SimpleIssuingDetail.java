@@ -45,7 +45,7 @@ public class SimpleIssuingDetail implements IIssuingDetail{
 	protected String	 	issuedOnTrain;
     
 	/** The issued on line. */
-	int issuedOnLine = 0;
+	Integer issuedOnLine = 0;
 	
 	/** The point of sale. */
 	protected IGeoCoordinate pointOfSale;
@@ -185,14 +185,14 @@ public class SimpleIssuingDetail implements IIssuingDetail{
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.IIssuingDetail#getIssuedOnLine()
 	 */
-	public int getIssuedOnLine() {
+	public Integer getIssuedOnLine() {
 		return issuedOnLine;
 	}
 
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.IIssuingDetail#setIssuedOnLine(int)
 	 */
-	public void setIssuedOnLine(int issuedOnLine) {
+	public void setIssuedOnLine(Integer issuedOnLine) {
 		this.issuedOnLine = issuedOnLine;
 	}
 

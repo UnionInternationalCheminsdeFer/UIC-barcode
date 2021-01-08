@@ -156,7 +156,7 @@ public interface IIssuingDetail {
 	 *
 	 * @return the issued on line
 	 */
-	public int getIssuedOnLine();
+	public Integer getIssuedOnLine();
 	
 
 	/**
@@ -164,7 +164,7 @@ public interface IIssuingDetail {
 	 *
 	 * @param issuedOnLine the new issued on line
 	 */
-	public void setIssuedOnLine(int issuedOnLine);
+	public void setIssuedOnLine(Integer issuedOnLine);
 	
 
 	/**
