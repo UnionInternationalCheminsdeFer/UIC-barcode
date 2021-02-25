@@ -19,7 +19,7 @@ import java.util.zip.DataFormatException;
 import java.util.zip.Deflater;
 import java.util.zip.Inflater;
 
-import org.uic.ticket.EncodingFormatException;
+import org.uic.barcode.ticket.EncodingFormatException;
 
 
 /**

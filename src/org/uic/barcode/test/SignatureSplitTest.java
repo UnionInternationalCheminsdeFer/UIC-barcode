@@ -8,7 +8,7 @@ import java.math.BigInteger;
 import org.junit.Test;
 import org.uic.barcode.staticFrame.StaticFrame;
 import org.uic.barcode.test.utils.TestUtils;
-import org.uic.ticket.EncodingFormatException;
+import org.uic.barcode.ticket.EncodingFormatException;
 
 public class SignatureSplitTest {
 	

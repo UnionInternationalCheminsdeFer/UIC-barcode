@@ -1,11 +1,11 @@
 package org.uic.barcode.dynamicFrame;
 
-import net.gcdc.asn1.datatypes.Asn1Default;
-import net.gcdc.asn1.datatypes.CharacterRestriction;
-import net.gcdc.asn1.datatypes.RestrictedString;
-import net.gcdc.asn1.datatypes.Sequence;
-import net.gcdc.asn1.datatypesimpl.OctetString;
-import net.gcdc.asn1.uper.UperEncoder;
+import org.uic.barcode.asn1.datatypes.Asn1Default;
+import org.uic.barcode.asn1.datatypes.CharacterRestriction;
+import org.uic.barcode.asn1.datatypes.RestrictedString;
+import org.uic.barcode.asn1.datatypes.Sequence;
+import org.uic.barcode.asn1.datatypesimpl.OctetString;
+import org.uic.barcode.asn1.uper.UperEncoder;
 
 /**
  * The Class DataType.

@@ -19,11 +19,10 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.jce.spec.ECParameterSpec;
 import org.junit.Before;
 import org.junit.Test;
+import org.uic.barcode.asn1.uper.UperEncoder;
 import org.uic.barcode.dynamicFrame.Constants;
 import org.uic.barcode.dynamicFrame.DynamicFrame;
 import org.uic.barcode.test.utils.SimpleDynamicFrameTestBarcode;
-
-import net.gcdc.asn1.uper.UperEncoder;
 
 public class DynamicFrameLOwLevelTest {
 	

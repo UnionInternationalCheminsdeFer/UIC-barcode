@@ -9,7 +9,7 @@ import org.uic.barcode.staticFrame.UTLAYDataRecord;
 import org.uic.barcode.staticFrame.ticketLayoutBarcode.TicketLayout;
 import org.uic.barcode.test.utils.SimpleTestTicketLayout;
 import org.uic.barcode.test.utils.TestUtils;
-import org.uic.ticket.EncodingFormatException;
+import org.uic.barcode.ticket.EncodingFormatException;
 
 
 public class TicketLayoutTest {

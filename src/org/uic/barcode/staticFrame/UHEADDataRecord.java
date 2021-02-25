@@ -7,7 +7,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-import org.uic.ticket.EncodingFormatException;
+import org.uic.barcode.ticket.EncodingFormatException;
 
 /**
  * The Class UHEADDataRecord implements the additional header record of a statis UIC bar code

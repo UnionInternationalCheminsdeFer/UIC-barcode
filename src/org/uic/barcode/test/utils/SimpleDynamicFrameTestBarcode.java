@@ -8,9 +8,9 @@ import org.uic.barcode.dynamicFrame.DynamicFrame;
 import org.uic.barcode.dynamicFrame.Level1DataType;
 import org.uic.barcode.dynamicFrame.Level2DataType;
 import org.uic.barcode.dynamicFrame.SequenceOfDataType;
-import org.uic.ticket.EncodingFormatException;
-import org.uic.ticket.api.asn.omv1.UicRailTicketData;
-import org.uic.ticket.api.test.SimpleUicTestTicket;
+import org.uic.barcode.ticket.EncodingFormatException;
+import org.uic.barcode.ticket.api.asn.omv1.UicRailTicketData;
+import org.uic.barcode.ticket.api.test.SimpleUicTestTicket;
 
 
 public class SimpleDynamicFrameTestBarcode {

@@ -3,13 +3,12 @@ package org.uic.barcode.dynamicFrame;
 import java.security.PrivateKey;
 import java.security.Signature;
 
+import org.uic.barcode.asn1.datatypes.Asn1Optional;
+import org.uic.barcode.asn1.datatypes.FieldOrder;
+import org.uic.barcode.asn1.datatypes.Sequence;
+import org.uic.barcode.asn1.datatypesimpl.OctetString;
+import org.uic.barcode.asn1.uper.UperEncoder;
 import org.uic.barcode.utils.AlgorithmNameResolver;
-
-import net.gcdc.asn1.datatypes.Asn1Optional;
-import net.gcdc.asn1.datatypes.FieldOrder;
-import net.gcdc.asn1.datatypes.Sequence;
-import net.gcdc.asn1.datatypesimpl.OctetString;
-import net.gcdc.asn1.uper.UperEncoder;
 
 /**
  * The Class DataType.

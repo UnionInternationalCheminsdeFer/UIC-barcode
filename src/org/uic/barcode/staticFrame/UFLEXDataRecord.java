@@ -2,9 +2,9 @@ package org.uic.barcode.staticFrame;
 
 import java.io.IOException;
 
-import org.uic.ticket.EncodingFormatException;
-import org.uic.ticket.UicRailTicketCoder;
-import org.uic.ticket.api.spec.IUicRailTicket;
+import org.uic.barcode.ticket.EncodingFormatException;
+import org.uic.barcode.ticket.UicRailTicketCoder;
+import org.uic.barcode.ticket.api.spec.IUicRailTicket;
 
 /**
  * The Class UFLEXDataRecord implements the dara record to hold the data of an ASN.1 PER encoded UIC ticket.

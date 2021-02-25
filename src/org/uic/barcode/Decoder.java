@@ -17,9 +17,9 @@ import org.uic.barcode.staticFrame.StaticFrame;
 import org.uic.barcode.staticFrame.UFLEXDataRecord;
 import org.uic.barcode.staticFrame.UTLAYDataRecord;
 import org.uic.barcode.staticFrame.ticketLayoutBarcode.TicketLayout;
-import org.uic.ticket.EncodingFormatException;
-import org.uic.ticket.UicRailTicketCoder;
-import org.uic.ticket.api.spec.IUicRailTicket;
+import org.uic.barcode.ticket.EncodingFormatException;
+import org.uic.barcode.ticket.UicRailTicketCoder;
+import org.uic.barcode.ticket.api.spec.IUicRailTicket;
 
 
 /**

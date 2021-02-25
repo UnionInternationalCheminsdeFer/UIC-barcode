@@ -1,16 +1,15 @@
 package org.uic.barcode.dynamicFrame;
 
-import org.uic.ticket.EncodingFormatException;
-import org.uic.ticket.api.utils.UicEncoderUtils;
-
-import net.gcdc.asn1.datatypes.Asn1Optional;
-import net.gcdc.asn1.datatypes.CharacterRestriction;
-import net.gcdc.asn1.datatypes.FieldOrder;
-import net.gcdc.asn1.datatypes.IntRange;
-import net.gcdc.asn1.datatypes.RestrictedString;
-import net.gcdc.asn1.datatypes.Sequence;
-import net.gcdc.asn1.datatypesimpl.OctetString;
-import net.gcdc.asn1.uper.UperEncoder;
+import org.uic.barcode.asn1.datatypes.Asn1Optional;
+import org.uic.barcode.asn1.datatypes.CharacterRestriction;
+import org.uic.barcode.asn1.datatypes.FieldOrder;
+import org.uic.barcode.asn1.datatypes.IntRange;
+import org.uic.barcode.asn1.datatypes.RestrictedString;
+import org.uic.barcode.asn1.datatypes.Sequence;
+import org.uic.barcode.asn1.datatypesimpl.OctetString;
+import org.uic.barcode.asn1.uper.UperEncoder;
+import org.uic.barcode.ticket.EncodingFormatException;
+import org.uic.barcode.ticket.api.utils.UicEncoderUtils;
 
 /**
  * The Class SignedDataType.

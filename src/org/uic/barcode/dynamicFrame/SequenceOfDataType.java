@@ -3,7 +3,7 @@ package org.uic.barcode.dynamicFrame;
 
 import java.util.Collection;
 
-import net.gcdc.asn1.datatypes.Asn1SequenceOf;
+import org.uic.barcode.asn1.datatypes.Asn1SequenceOf;
 
 /**
  * The Class SequenceOfDataType.

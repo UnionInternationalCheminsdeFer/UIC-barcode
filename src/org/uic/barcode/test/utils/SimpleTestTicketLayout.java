@@ -17,7 +17,7 @@ public class SimpleTestTicketLayout {
 		element.setLine(1);
 		element.setHeight(1);
 		element.setWidth(20);
-		element.setText("Müller");
+		element.setText("MÃ¼ller");
 		layout.addLayoutElement(element);
 
 		return layout;

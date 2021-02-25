@@ -12,7 +12,7 @@ import java.nio.charset.StandardCharsets;
 import org.uic.barcode.staticFrame.ticketLayoutBarcode.FormatType;
 import org.uic.barcode.staticFrame.ticketLayoutBarcode.LayoutElement;
 import org.uic.barcode.staticFrame.ticketLayoutBarcode.TicketLayout;
-import org.uic.ticket.EncodingFormatException;
+import org.uic.barcode.ticket.EncodingFormatException;
 
 /**
  * The Class UTLAYDataRecord implements a bar code data record containing the ticket layout.

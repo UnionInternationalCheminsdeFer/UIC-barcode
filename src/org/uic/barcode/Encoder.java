@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 
+import org.uic.barcode.asn1.datatypesimpl.OctetString;
 import org.uic.barcode.dynamicFrame.Constants;
 import org.uic.barcode.dynamicFrame.DataType;
 import org.uic.barcode.dynamicFrame.DynamicFrame;
@@ -15,11 +16,9 @@ import org.uic.barcode.staticFrame.UFLEXDataRecord;
 import org.uic.barcode.staticFrame.UHEADDataRecord;
 import org.uic.barcode.staticFrame.UTLAYDataRecord;
 import org.uic.barcode.staticFrame.ticketLayoutBarcode.TicketLayout;
-import org.uic.ticket.EncodingFormatException;
-import org.uic.ticket.UicRailTicketCoder;
-import org.uic.ticket.api.spec.IUicRailTicket;
-
-import net.gcdc.asn1.datatypesimpl.OctetString;
+import org.uic.barcode.ticket.EncodingFormatException;
+import org.uic.barcode.ticket.UicRailTicketCoder;
+import org.uic.barcode.ticket.api.spec.IUicRailTicket;
 
 
 /**

@@ -21,8 +21,8 @@ import org.uic.barcode.dynamicFrame.Constants;
 import org.uic.barcode.staticFrame.ticketLayoutBarcode.TicketLayout;
 import org.uic.barcode.test.utils.SimpleTestTicketLayout;
 import org.uic.barcode.test.utils.SimpleUICTestTicket;
-import org.uic.ticket.EncodingFormatException;
-import org.uic.ticket.api.spec.IUicRailTicket;
+import org.uic.barcode.ticket.EncodingFormatException;
+import org.uic.barcode.ticket.api.spec.IUicRailTicket;
 
 /**
  * The Class StaticFrameBarcodeTest.

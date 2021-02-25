@@ -10,16 +10,15 @@ import java.security.SignatureException;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
 
+import org.uic.barcode.asn1.datatypes.Asn1Optional;
+import org.uic.barcode.asn1.datatypes.CharacterRestriction;
+import org.uic.barcode.asn1.datatypes.FieldOrder;
+import org.uic.barcode.asn1.datatypes.HasExtensionMarker;
+import org.uic.barcode.asn1.datatypes.RestrictedString;
+import org.uic.barcode.asn1.datatypes.Sequence;
+import org.uic.barcode.asn1.datatypesimpl.OctetString;
+import org.uic.barcode.asn1.uper.UperEncoder;
 import org.uic.barcode.utils.AlgorithmNameResolver;
-
-import net.gcdc.asn1.datatypes.Asn1Optional;
-import net.gcdc.asn1.datatypes.CharacterRestriction;
-import net.gcdc.asn1.datatypes.FieldOrder;
-import net.gcdc.asn1.datatypes.HasExtensionMarker;
-import net.gcdc.asn1.datatypes.RestrictedString;
-import net.gcdc.asn1.datatypes.Sequence;
-import net.gcdc.asn1.datatypesimpl.OctetString;
-import net.gcdc.asn1.uper.UperEncoder;
 
 
 /**

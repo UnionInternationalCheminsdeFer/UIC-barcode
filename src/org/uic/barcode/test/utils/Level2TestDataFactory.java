@@ -1,8 +1,7 @@
 package org.uic.barcode.test.utils;
 
+import org.uic.barcode.asn1.datatypesimpl.OctetString;
 import org.uic.barcode.dynamicFrame.DataType;
-
-import net.gcdc.asn1.datatypesimpl.OctetString;
 
 public class Level2TestDataFactory {
 	

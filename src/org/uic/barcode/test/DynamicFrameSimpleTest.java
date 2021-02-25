@@ -21,9 +21,9 @@ import org.uic.barcode.Decoder;
 import org.uic.barcode.Encoder;
 import org.uic.barcode.dynamicFrame.Constants;
 import org.uic.barcode.test.utils.SimpleUICTestTicket;
+import org.uic.barcode.ticket.EncodingFormatException;
+import org.uic.barcode.ticket.api.spec.IUicRailTicket;
 import org.uic.barcode.utils.AlgorithmNameResolver;
-import org.uic.ticket.EncodingFormatException;
-import org.uic.ticket.api.spec.IUicRailTicket;
 
 public class DynamicFrameSimpleTest {
 	

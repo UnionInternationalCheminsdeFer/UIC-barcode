@@ -2,7 +2,7 @@ package org.uic.barcode.staticFrame;
 
 import java.io.IOException;
 
-import org.uic.ticket.EncodingFormatException;
+import org.uic.barcode.ticket.EncodingFormatException;
 
 
 /**
