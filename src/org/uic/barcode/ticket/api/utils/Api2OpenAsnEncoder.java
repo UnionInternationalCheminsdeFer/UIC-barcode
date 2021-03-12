@@ -2304,6 +2304,9 @@ public class Api2OpenAsnEncoder {
 		}
 		
 		
+		
+		
+		
 		return TravelClassType.valueOf(apiClass.name());
 	
 		

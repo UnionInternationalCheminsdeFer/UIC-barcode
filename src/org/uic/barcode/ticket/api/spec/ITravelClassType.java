@@ -31,10 +31,10 @@ public enum ITravelClassType {
 		premium("premium"),
 		business("business"),
 		all("all"),
-	    premiumFirst("A"),
-		standardFirst("B"),
-		premiumSecond("C"),
-		standardSecond("D");
+	    premiumFirst("premiumFirst"),
+		standardFirst("standardFirst"),
+		premiumSecond("premiumSecond"),
+		standardSecond("standardSecond");
 		
 		public String text;
 
