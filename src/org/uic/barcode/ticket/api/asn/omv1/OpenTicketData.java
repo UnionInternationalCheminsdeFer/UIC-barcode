@@ -35,6 +35,7 @@ import org.uic.barcode.asn1.datatypes.RestrictedString;
 import org.uic.barcode.asn1.datatypes.Sequence;
 import org.uic.barcode.asn1.datatypes.SizeRange;
 import org.uic.barcode.asn1.datatypesimpl.SequenceOfStringIA5;
+import org.uic.barcode.ticket.api.utils.DateTimeUtils;
 
 @Sequence
 @HasExtensionMarker
@@ -605,24 +606,20 @@ public class OpenTicketData extends Object {
 	}
 	
 
-
-	public void setActivatedDays(Collection<Date> dates, Date issuingDate){
+	public void addActivatedDays(Collection<Long> days) {
 		
-		if (this.activatedDay != null) {
-			this.activatedDay.clear();
-		} else {
-			this.activatedDay= new SequenceOfActivatedDays();
+		if (days == null  || days.isEmpty()) return;
+		
+		if (this.activatedDay == null) {
+			this.activatedDay = new SequenceOfActivatedDays();
 		}
 		
-		if (dates != null && !dates.isEmpty()) {
-			
-			for (Date day : dates) {
-				this.addActivatedDay(issuingDate, day);
-			}
-			
+		for (Long l : days) {
+			this.activatedDay.add(l);
 		}
 		
 	}
+	
 	
 	public void addActivatedDay(Date issuingDate, Date day){
 		

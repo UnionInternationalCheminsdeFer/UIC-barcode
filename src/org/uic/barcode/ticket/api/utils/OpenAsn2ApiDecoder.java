@@ -189,7 +189,12 @@ public class OpenAsn2ApiDecoder {
 		}		
 		
 		if (asnUicRailTicketData.getTransportDocument() != null && !asnUicRailTicketData.getTransportDocument().isEmpty()) {
-			populateTravelDocuments(asnUicRailTicketData.getTransportDocument(),uicRailTicket,uicRailTicket.getIssuerDetails().getIssuingDate() );
+			
+			// date is already converted to local time, use UTC for internal calculations
+			Date localIssuingDate = uicRailTicket.getIssuerDetails().getIssuingDate();
+			Date issuingDate = DateTimeUtils.dateToUTC(localIssuingDate);
+			
+			populateTravelDocuments(asnUicRailTicketData.getTransportDocument(),uicRailTicket, issuingDate);
 		}		
 	
 		
@@ -1627,13 +1632,7 @@ public class OpenAsn2ApiDecoder {
 		document.setValidUntil(asnDocument.getValidUntilDate(issuingDate));
 		document.setValidUntilUTCoffset(asnDocument.getValidUntilUTCOffset());		
 				
-        if (asnDocument.getActivatedDay()!=null && !asnDocument.getActivatedDay().isEmpty()) {
-   			if (document.getValidFrom() != null) {
-   				document.getActivatedDays().addAll(asnDocument.getActivatedDays(document.getValidFrom()));
-   			} else {
-   				document.getActivatedDays().addAll(asnDocument.getActivatedDays(issuingDate));
-        	}
-        }
+		document.getActivatedDays().addAll(asnDocument.getActivatedDays(issuingDate));
 		
 		document.setExtension(convertExtension(asnDocument.getExtension()));
 		document.setInfoText(asnDocument.getInfoText());

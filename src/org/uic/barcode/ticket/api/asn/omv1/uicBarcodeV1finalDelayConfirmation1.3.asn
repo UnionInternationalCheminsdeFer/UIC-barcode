@@ -81,7 +81,7 @@ ASN-Module DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 -- #          		local date (CET):          01.01.2018 23:05   
 -- #          		-> difference in days = 0
 -- #
--- # the day difference could become -1 although this can happen for localtions in America or New Zeeland only.
+-- # the day difference could become -1 although this can happen for locations in America or New Zeeland only.
 -- #
 -- # implementation example:
 -- #
@@ -97,6 +97,7 @@ ASN-Module DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 -- #		issuingCal.set(Calendar.MINUTE, 0);
 -- #		issuingCal.set(Calendar.SECOND, 0);
 -- #		issuingCal.set(Calendar.MILLISECOND, 0);
+-- #        Date start = startCal.getTime();
 -- #				
 -- #		Calendar fromCal = Calendar.getInstance();
 -- #		fromCal.clear();
@@ -106,11 +107,11 @@ ASN-Module DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 -- #		fromCal.set(Calendar.MINUTE, 0);
 -- #		fromCal.set(Calendar.SECOND, 0);
 -- #		fromCal.set(Calendar.MILLISECOND, 0);
+-- #        Date end = endCal.getTime();
 -- #		
--- #		long diff = localDate.getTime() - issuingDate.getTime();
--- #	    long dayDiff = TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);		
+-- #		long diff = TimeUnit.DAYS.convert(end.getTime() - start.getTime(), TimeUnit.MILLISECONDS );	
 -- #	    
--- #	    return new Long(dayDiff);
+-- #	    return new Long(diff);
 -- #	    	
 -- #	 }
 -- #	
@@ -843,7 +844,7 @@ ASN-Module DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 	   productIdIA5				IA5String  	      		OPTIONAL,    
                              
 	   -- type of the pass, code list provided by the product owner
-			-- in case of Eurail:
+	   -- in case of Eurail:
  				-- 1 = Interrail
   				-- 2 = Eurail
        			-- 3 = Eurail Global (all countries)   
@@ -858,16 +859,16 @@ ASN-Module DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 	   -- number of days from issuing date 
 	   validFromDay			INTEGER (-1..700)   	DEFAULT 0,   	
 	   validFromTime		INTEGER (0..1440)  		OPTIONAL,
-      	   validFromUTCOffset        	INTEGER (-60..60)      OPTIONAL,   -- offset in units of 15 minutes from local time to UTC 
-                                                                    -- (UTC = local + offset * 15 Minutes)		   
+       validFromUTCOffset   INTEGER (-60..60)       OPTIONAL,  -- offset in units of 15 minutes from local time to UTC 
+                                                               -- (UTC = local + offset * 15 Minutes)		   
 	   
 	   -- end of validity (local time)
 	   -- number of days from valid from day, 0 = valid on valid-from-date
 	   validUntilDay		INTEGER (0..370)   		DEFAULT 0,     	
 	   validUntilTime	 	INTEGER (0..1440)  		OPTIONAL,      
-           validUntilUTCOffset   	INTEGER (-60..60)          OPTIONAL,   -- offset in units of 15 minutes from local time to UTC 
-                                                                    -- (UTC = local + offset * 15 Minutes)	
-                                                                    -- should be omtted in case it is the same as for depature
+       validUntilUTCOffset  INTEGER (-60..60)       OPTIONAL,   -- offset in units of 15 minutes from local time to UTC 
+                                                                -- (UTC = local + offset * 15 Minutes)	
+                                                                -- should be omitted in case it is the same as for depature
 	   
 	      
 	   
@@ -883,21 +884,21 @@ ASN-Module DEFINITIONS AUTOMATIC TAGS ::= BEGIN
    									
 	   -- list of activated days in case the entire ticket is not activated
 	   -- 	the day is given by the number of days from the first day of validity
-           -- 	0 = first day of validity	   
+       -- 	0 = first day of validity	   
 	   activatedDay        		SEQUENCE OF INTEGER (0..370) 	OPTIONAL,  
    							                                                        
 	   -- included countries, code table according to UIC leaflet 918.9
-	   countries			SEQUENCE OF INTEGER (1..250)	OPTIONAL, 		
+	   countries			    SEQUENCE OF INTEGER (1..250)	OPTIONAL, 		
 	   
 	   -- included carriers (RICS codes)
-           includedCarrierNum		SEQUENCE OF INTEGER (1..32000)	OPTIONAL,	 
-           includedCarrierIA5		SEQUENCE OF IA5String		OPTIONAL,		   
+       includedCarrierNum		SEQUENCE OF INTEGER (1..32000)	OPTIONAL,	 
+       includedCarrierIA5		SEQUENCE OF IA5String		    OPTIONAL,		   
 
 	   -- excluded carriers (RICS codes)
-           excludedCarrierNum		SEQUENCE OF INTEGER (1..32000)	OPTIONAL,	 
-           excludedCarrierIA5		SEQUENCE OF IA5String		OPTIONAL,	       
+       excludedCarrierNum		SEQUENCE OF INTEGER (1..32000)	OPTIONAL,	 
+       excludedCarrierIA5		SEQUENCE OF IA5String		    OPTIONAL,	       
        
-           -- service brand: code list https://uic.org/service-brand-code-list
+       -- service brand: code list https://uic.org/service-brand-code-list
 	   includedServiceBrands 	SEQUENCE OF INTEGER (1..32000) 	OPTIONAL, 
 	   excludedServiceBrands 	SEQUENCE OF INTEGER (1..32000) 	OPTIONAL, 					
    							

@@ -191,7 +191,12 @@ public class OpenAsn2ApiDecoderV2 {
 		}		
 		
 		if (asnUicRailTicketData.getTransportDocument() != null && !asnUicRailTicketData.getTransportDocument().isEmpty()) {
-			populateTravelDocuments(asnUicRailTicketData.getTransportDocument(),uicRailTicket,uicRailTicket.getIssuerDetails().getIssuingDate() );
+			
+			// date is already converted to local time, use UTC for internal calculations
+			Date localIssuingDate = uicRailTicket.getIssuerDetails().getIssuingDate();
+			Date issuingDate = DateTimeUtils.dateToUTC(localIssuingDate);
+			
+			populateTravelDocuments(asnUicRailTicketData.getTransportDocument(),uicRailTicket, issuingDate);
 		}		
 	
 		
