@@ -1,0 +1,25 @@
+plugins {
+    id 'java-library'
+    id 'maven-publish'
+}
+
+repositories {
+    jcenter()
+}
+
+group = 'org.uic.barcode'
+version = '1.2.1-SNAPSHOT'
+description = 'UIC barcode'
+
+java.sourceCompatibility = JavaVersion.VERSION_1_8
+java.targetCompatibility JavaVersion.VERSION_1_8
+
+java {
+    withSourcesJar()
+}
+
+dependencies {
+    testImplementation 'junit:junit:4.13'
+    testImplementation 'org.bouncycastle:bcprov-jdk15to18:1.64'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.1'
+}
