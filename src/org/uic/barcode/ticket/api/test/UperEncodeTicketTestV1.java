@@ -7,6 +7,7 @@ import java.util.logging.Level;
 import org.junit.Test;
 import org.uic.barcode.asn1.uper.UperEncoder;
 import org.uic.barcode.ticket.api.asn.omv1.UicRailTicketData;
+import org.uic.barcode.ticket.api.test.testtickets.SimpleUicTestTicket;
 
 
 public class UperEncodeTicketTestV1 {

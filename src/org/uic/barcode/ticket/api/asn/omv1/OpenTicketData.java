@@ -595,65 +595,85 @@ public class OpenTicketData extends Object {
 		if (this.validFromDay == null) {
 			this.validFromDay = 0L;
 		}
-		
 		if (this.validUntilDay == null) {
 			return null;
 		}		
-		
-		
 		return DateTimeUtils.getDate(issuingDate, this.validFromDay + this.validUntilDay, this.validUntilTime);
 		
 	}
 	
-
+	
 	public void addActivatedDays(Collection<Long> days) {
-		
 		if (days == null  || days.isEmpty()) return;
-		
 		if (this.activatedDay == null) {
 			this.activatedDay = new SequenceOfActivatedDays();
 		}
-		
 		for (Long l : days) {
 			this.activatedDay.add(l);
 		}
-		
 	}
 	
+	/**
+	 * Sets the activated days.
+	 *
+	 * @param dates the dates
+	 * @param issuingDate the issuing date
+	 * @param validFromDate the valid from date
+	 */
+	public void setActivatedDays(Collection<Date> dates, Date issuingDate, Date validFromDate){
+		if (this.activatedDay != null) {
+			this.activatedDay.clear();
+		} else {
+			this.activatedDay= new SequenceOfActivatedDays();
+		}
+		long dateDif = 0L;
+		if (validFromDate != null) {
+			dateDif = DateTimeUtils.getDateDifference(issuingDate,validFromDate);
+		}
+		if (dates != null && !dates.isEmpty()) {
+			for (Date day : dates) {
+				this.addActivatedDay(issuingDate, dateDif, day);
+			}
+		}
+	}
+
 	
-	public void addActivatedDay(Date issuingDate, Date day){
-		
-		Long dayDiff = DateTimeUtils.getDateDifference(issuingDate, day);
-		
+	/**
+	 * Adds the activated day.
+	 *
+	 * @param issuingDate the issuing date in UTC
+	 * @param dateOffset the date offset to be added to the issuing date
+	 * @param day the day to be added
+	 */
+	public void addActivatedDay(Date issuingDate, long dateOffset, Date day){
+		Long vDiff = DateTimeUtils.getDateDifferenceLocal(this.getValidFromDate(issuingDate), day);
 		if (this.activatedDay == null) {
 			this.activatedDay = new SequenceOfActivatedDays();
 		}
-		
-		if (dayDiff != null) {
-			this.activatedDay.add(dayDiff);
+		if (vDiff != null) {
+			this.activatedDay.add(vDiff);
 		}
-		
 	}
 	
+	/**
+	 * Gets the activated days.
+	 *
+	 * @param issuingDate the issuing date
+	 * @return the activated days
+	 */
 	public Collection<Date> getActivatedDays(Date issuingDate) {
-		
 		if (this.activatedDay == null) return null;
-		
 		ArrayList<Date> dates = new ArrayList<Date>();
-		
 		for (Long diff: this.getActivatedDay()) {
-			
-			Date day = DateTimeUtils.getDate(issuingDate, diff, null);
-			
+			Date day = DateTimeUtils.getDate(this.getValidFromDate(issuingDate), diff, null);
 			if (day != null) {
 				dates.add(day);
 			}
-			
-		}
-				
+		}	
 		return dates;
-		
 	}	
+	
+	
 	public Long getValidFromUTCOffset() {
 		return validFromUTCOffset;
 	}

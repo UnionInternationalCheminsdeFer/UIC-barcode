@@ -1,4 +1,4 @@
-package org.uic.barcode.ticket.api.test;
+package org.uic.barcode.ticket.api.test.testtickets;
 
 import org.uic.barcode.asn1.datatypesimpl.SequenceOfStringUTF8;
 import org.uic.barcode.ticket.api.asn.omv1.CardReferenceType;

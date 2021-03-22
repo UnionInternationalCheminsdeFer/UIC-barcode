@@ -1,36 +1,35 @@
-package org.uic.barcode.ticket.api.test;
+package org.uic.barcode.ticket.api.test.testtickets;
 
-import org.uic.barcode.ticket.api.asn.omv1.CardReferenceType;
-import org.uic.barcode.ticket.api.asn.omv1.ControlData;
-import org.uic.barcode.ticket.api.asn.omv1.CustomerStatusType;
-import org.uic.barcode.ticket.api.asn.omv1.DocumentData;
-import org.uic.barcode.ticket.api.asn.omv1.ExtensionData;
-import org.uic.barcode.ticket.api.asn.omv1.IssuingData;
-import org.uic.barcode.ticket.api.asn.omv1.LinkMode;
-import org.uic.barcode.ticket.api.asn.omv1.PassData;
-import org.uic.barcode.ticket.api.asn.omv1.SequenceOfCardReferenceType;
-import org.uic.barcode.ticket.api.asn.omv1.SequenceOfCustomerStatusType;
-import org.uic.barcode.ticket.api.asn.omv1.SequenceOfDocumentData;
-import org.uic.barcode.ticket.api.asn.omv1.SequenceOfExtensionData;
-import org.uic.barcode.ticket.api.asn.omv1.SequenceOfTicketLinkType;
-import org.uic.barcode.ticket.api.asn.omv1.SequenceOfTravelerType;
-import org.uic.barcode.ticket.api.asn.omv1.TicketDetailData;
-import org.uic.barcode.ticket.api.asn.omv1.TicketLinkType;
-import org.uic.barcode.ticket.api.asn.omv1.TicketType;
-import org.uic.barcode.ticket.api.asn.omv1.TravelClassType;
-import org.uic.barcode.ticket.api.asn.omv1.TravelerData;
-import org.uic.barcode.ticket.api.asn.omv1.TravelerType;
-import org.uic.barcode.ticket.api.asn.omv1.UicRailTicketData;
+import org.uic.barcode.ticket.api.asn.omv2.CardReferenceType;
+import org.uic.barcode.ticket.api.asn.omv2.ControlData;
+import org.uic.barcode.ticket.api.asn.omv2.CustomerStatusType;
+import org.uic.barcode.ticket.api.asn.omv2.DocumentData;
+import org.uic.barcode.ticket.api.asn.omv2.ExtensionData;
+import org.uic.barcode.ticket.api.asn.omv2.IssuingData;
+import org.uic.barcode.ticket.api.asn.omv2.OpenTicketData;
+import org.uic.barcode.ticket.api.asn.omv2.SequenceOfActivatedDays;
+import org.uic.barcode.ticket.api.asn.omv2.SequenceOfCardReferenceType;
+import org.uic.barcode.ticket.api.asn.omv2.SequenceOfCustomerStatusType;
+import org.uic.barcode.ticket.api.asn.omv2.SequenceOfDocumentData;
+import org.uic.barcode.ticket.api.asn.omv2.SequenceOfExtensionData;
+import org.uic.barcode.ticket.api.asn.omv2.SequenceOfTravelerType;
+import org.uic.barcode.ticket.api.asn.omv2.TicketDetailData;
+import org.uic.barcode.ticket.api.asn.omv2.TokenType;
+import org.uic.barcode.ticket.api.asn.omv2.TravelClassType;
+import org.uic.barcode.ticket.api.asn.omv2.TravelerData;
+import org.uic.barcode.ticket.api.asn.omv2.TravelerType;
+import org.uic.barcode.ticket.api.asn.omv2.UicRailTicketData;
 
-	public class PassTestTicketV1 {
+
+	public class OpenTicketTimeZoneTestTicketV2 {
 		
 		public static UicRailTicketData getUicTestTicket() {
 			UicRailTicketData ticket = new UicRailTicketData();
 	    	populateTicket(ticket);
 			return ticket;
 		}
-
 		
+
 	    private static void populateTicket(UicRailTicketData ticket) {
 	    	
 	    	ticket.setControlDetail(new ControlData());
@@ -49,9 +48,10 @@ import org.uic.barcode.ticket.api.asn.omv1.UicRailTicketData;
 	    	
 	    	//OpenTicket
 	    	DocumentData do1 = new DocumentData();
-	    	addPass(do1);
+	    	addOpenTicketData(do1);
 	    	ds.add(do1);   	    	
-
+	    	   	
+	    	
 	    	ticket.setTransportDocument(ds);
 	    	
 	       	SequenceOfExtensionData ed = new SequenceOfExtensionData();
@@ -59,20 +59,34 @@ import org.uic.barcode.ticket.api.asn.omv1.UicRailTicketData;
 	    	ticket.setExtension(ed);
 	    	
 		}
-
 	    
-		private static void addPass(DocumentData dd) {		
+	    
+	    
+		private static void addOpenTicketData(DocumentData dd) {
+	    	TokenType to = new TokenType();
+	    	to.setTokenProviderIA5("VDV");
+	    	byte[] ba = { (byte) 0x82, (byte) 0xDA };
+	    	to.setToken(ba);
+	    	dd.setToken(to);   		
 			
 	    	TicketDetailData tdd = new TicketDetailData();
-	    	PassData otd = new PassData();  
-	    	otd.setInfoText("pass");
+	    	OpenTicketData otd = new OpenTicketData();  
+	    	otd.setInfoText("openTicketInfo");
 	    	otd.setClassCode(TravelClassType.first);
-	    	otd.setPassDescription("ONE COUNTRY");
-	    	tdd.setPass(otd);
+	    	otd.setReturnIncluded(false);
+	    	otd.setValidFromDay(10L);
+	    	otd.setValidFromTime(0L);
+	    	otd.setValidUntilDay(10L);
+	    	otd.setValidUntilTime(1439L);
+	    	SequenceOfActivatedDays s = new SequenceOfActivatedDays(); 
+	    	otd.setActivatedDay(s);
+	    	s.add(0L);
+	    	tdd.setOpenTicket(otd);
 	    	dd.setTicket(tdd);
 		}
 
 
+    
 	    private static void populateTravelerData(TravelerData td) {
 	    	td.setGroupName("myGroup");
 	    	SequenceOfTravelerType trs = new SequenceOfTravelerType();
@@ -100,6 +114,7 @@ import org.uic.barcode.ticket.api.asn.omv1.UicRailTicketData;
 	    	issuingDetail.setIssuedOnLine(12L);	
 		}
 
+
 	    private static void populateExtensionSequence(SequenceOfExtensionData ed) {
 	       	ExtensionData ed1 = new ExtensionData();
 	    	ed1.setExtensionId("1");
@@ -123,22 +138,14 @@ import org.uic.barcode.ticket.api.asn.omv1.UicRailTicketData;
 			controlDetail.setReductionCardCheckRequired(false);
 			controlDetail.setIdentificationByCardReference(new SequenceOfCardReferenceType());
 			controlDetail.getIdentificationByCardReference().add(populateCardRefrence());
-			SequenceOfTicketLinkType sit = new SequenceOfTicketLinkType();
-			populateLinkedTickets(sit);
-			controlDetail.setIncludedTickets(sit);
 		}
 
-		private static void populateLinkedTickets(SequenceOfTicketLinkType sequenceOfTicketLinkType) {
-			TicketLinkType tlt = new TicketLinkType();
-			tlt.productOwnerIA5="test";
-			tlt.setTicketType(TicketType.pass);
-			tlt.setIssuerPNR("PNR");
-			tlt.setReferenceIA5("UED12435867");
-			tlt.setLinkMode(LinkMode.onlyValidInCombination);
-			tlt.setIssuerName("OEBB");
-			sequenceOfTicketLinkType.add(tlt);
-		}
-
+		
+		/*
+		 {
+		   trailingCardIdNum 100
+		 }
+		 */
 		private static CardReferenceType populateCardRefrence() {
 			CardReferenceType cr = new CardReferenceType();
 			cr.setTrailingCardIdNum(100L);

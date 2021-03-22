@@ -1593,9 +1593,9 @@ public class OpenAsn2ApiDecoder {
 		document.setProductOwner(UicEncoderUtils.mapToString(asnDocument.getProductOwnerNum(),asnDocument.getProductOwnerIA5()));
 		document.setReference(UicEncoderUtils.mapToString(asnDocument.getReferenceNum(),asnDocument.getReferenceIA5()));	
 		
-        if (asnDocument.getActivatedDay()!=null && !asnDocument.getActivatedDay().isEmpty()) {
-        	document.getActivatedDays().addAll(asnDocument.getActivatedDays(issuingDate));
-        }
+		if (asnDocument.getActivatedDay() != null && !asnDocument.getActivatedDay().isEmpty()) {
+			document.getActivatedDays().addAll(asnDocument.getActivatedDays(issuingDate));
+		}
 		
 		if(asnDocument.getIncludesSupplements()!=null) {
 			document.setIncludesSupplements(asnDocument.getIncludesSupplements());
@@ -1632,7 +1632,9 @@ public class OpenAsn2ApiDecoder {
 		document.setValidUntil(asnDocument.getValidUntilDate(issuingDate));
 		document.setValidUntilUTCoffset(asnDocument.getValidUntilUTCOffset());		
 				
-		document.getActivatedDays().addAll(asnDocument.getActivatedDays(issuingDate));
+		if (asnDocument.getActivatedDay() != null && !asnDocument.getActivatedDay().isEmpty()) {
+			document.getActivatedDays().addAll(asnDocument.getActivatedDays(issuingDate));
+		}
 		
 		document.setExtension(convertExtension(asnDocument.getExtension()));
 		document.setInfoText(asnDocument.getInfoText());

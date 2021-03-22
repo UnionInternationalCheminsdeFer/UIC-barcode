@@ -894,17 +894,14 @@ public class PassData extends Object {
 	
 
 	public void addActivatedDays(Collection<Long> days) {
-		
 		if (days == null  || days.isEmpty()) return;
 		
 		if (this.activatedDay == null) {
 			this.activatedDay = new SequenceOfActivatedDays();
 		}
-		
 		for (Long l : days) {
 			this.activatedDay.add(l);
 		}
-		
 	}
 	
 	/**
@@ -915,26 +912,20 @@ public class PassData extends Object {
 	 * @param validFromDate the valid from date
 	 */
 	public void setActivatedDays(Collection<Date> dates, Date issuingDate, Date validFromDate){
-		
 		if (this.activatedDay != null) {
 			this.activatedDay.clear();
 		} else {
 			this.activatedDay= new SequenceOfActivatedDays();
 		}
-		
 		long dateDif = 0L;
 		if (validFromDate != null) {
 			dateDif = DateTimeUtils.getDateDifference(issuingDate,validFromDate);
 		}
-		
 		if (dates != null && !dates.isEmpty()) {
-			
 			for (Date day : dates) {
 				this.addActivatedDay(issuingDate, dateDif, day);
 			}
-			
 		}
-		
 	}
 	
 	/**
@@ -945,19 +936,13 @@ public class PassData extends Object {
 	 * @param day the day to be added
 	 */
 	public void addActivatedDay(Date issuingDate, long dateOffset, Date day){
-		
-		Long dayDiff = DateTimeUtils.getDateDifferenceLocal(issuingDate, day);
-		
 		Long vDiff = DateTimeUtils.getDateDifferenceLocal(this.getValidFromDate(issuingDate), day);
-		
 		if (this.activatedDay == null) {
 			this.activatedDay = new SequenceOfActivatedDays();
 		}
-		
-		if (dayDiff != null) {
+		if (vDiff != null) {
 			this.activatedDay.add(vDiff);
 		}
-		
 	}
 	
 	/**
@@ -967,23 +952,15 @@ public class PassData extends Object {
 	 * @return the activated days
 	 */
 	public Collection<Date> getActivatedDays(Date issuingDate) {
-		
 		if (this.activatedDay == null) return null;
-		
 		ArrayList<Date> dates = new ArrayList<Date>();
-		
 		for (Long diff: this.getActivatedDay()) {
-			
 			Date day = DateTimeUtils.getDate(this.getValidFromDate(issuingDate), diff, null);
-			
 			if (day != null) {
 				dates.add(day);
 			}
-			
-		}
-				
+		}	
 		return dates;
-		
 	}	
 
 	/**

@@ -1,30 +1,32 @@
-package org.uic.barcode.ticket.api.test;
+package org.uic.barcode.ticket.api.test.testtickets;
 
-	import org.uic.barcode.asn1.datatypesimpl.SequenceOfStringUTF8;
-	import org.uic.barcode.ticket.api.asn.omv1.CardReferenceType;
-	import org.uic.barcode.ticket.api.asn.omv1.ControlData;
-	import org.uic.barcode.ticket.api.asn.omv1.CustomerStatusType;
-	import org.uic.barcode.ticket.api.asn.omv1.DocumentData;
-	import org.uic.barcode.ticket.api.asn.omv1.ExtensionData;
-	import org.uic.barcode.ticket.api.asn.omv1.IssuingData;
-	import org.uic.barcode.ticket.api.asn.omv1.LinkMode;
-	import org.uic.barcode.ticket.api.asn.omv1.OpenTicketData;
-	import org.uic.barcode.ticket.api.asn.omv1.SequenceOfCardReferenceType;
-	import org.uic.barcode.ticket.api.asn.omv1.SequenceOfCustomerStatusType;
-	import org.uic.barcode.ticket.api.asn.omv1.SequenceOfDocumentData;
-	import org.uic.barcode.ticket.api.asn.omv1.SequenceOfExtensionData;
-	import org.uic.barcode.ticket.api.asn.omv1.SequenceOfTicketLinkType;
-	import org.uic.barcode.ticket.api.asn.omv1.SequenceOfTravelerType;
-	import org.uic.barcode.ticket.api.asn.omv1.StationPassageData;
-	import org.uic.barcode.ticket.api.asn.omv1.TicketDetailData;
-	import org.uic.barcode.ticket.api.asn.omv1.TicketLinkType;
-	import org.uic.barcode.ticket.api.asn.omv1.TicketType;
-	import org.uic.barcode.ticket.api.asn.omv1.TokenType;
-	import org.uic.barcode.ticket.api.asn.omv1.TravelerData;
-	import org.uic.barcode.ticket.api.asn.omv1.TravelerType;
-	import org.uic.barcode.ticket.api.asn.omv1.UicRailTicketData;
+import org.uic.barcode.asn1.datatypesimpl.SequenceOfStringUTF8;
+import org.uic.barcode.ticket.api.asn.omv1.CardReferenceType;
+import org.uic.barcode.ticket.api.asn.omv1.ControlData;
+import org.uic.barcode.ticket.api.asn.omv1.CustomerStatusType;
+import org.uic.barcode.ticket.api.asn.omv1.DocumentData;
+import org.uic.barcode.ticket.api.asn.omv1.ExtensionData;
+import org.uic.barcode.ticket.api.asn.omv1.IssuingData;
+import org.uic.barcode.ticket.api.asn.omv1.LinkMode;
+import org.uic.barcode.ticket.api.asn.omv1.OpenTicketData;
+import org.uic.barcode.ticket.api.asn.omv1.SequenceOfCardReferenceType;
+import org.uic.barcode.ticket.api.asn.omv1.SequenceOfCustomerStatusType;
+import org.uic.barcode.ticket.api.asn.omv1.SequenceOfDocumentData;
+import org.uic.barcode.ticket.api.asn.omv1.SequenceOfExtensionData;
+import org.uic.barcode.ticket.api.asn.omv1.SequenceOfTicketLinkType;
+import org.uic.barcode.ticket.api.asn.omv1.SequenceOfTravelerType;
+import org.uic.barcode.ticket.api.asn.omv1.StationPassageData;
+import org.uic.barcode.ticket.api.asn.omv1.TicketDetailData;
+import org.uic.barcode.ticket.api.asn.omv1.TicketLinkType;
+import org.uic.barcode.ticket.api.asn.omv1.TicketType;
+import org.uic.barcode.ticket.api.asn.omv1.TokenType;
+import org.uic.barcode.ticket.api.asn.omv1.TravelClassType;
+import org.uic.barcode.ticket.api.asn.omv1.TravelerData;
+import org.uic.barcode.ticket.api.asn.omv1.TravelerType;
+import org.uic.barcode.ticket.api.asn.omv1.UicRailTicketData;
 
-	public class SimpleTicketLinkTestTicket {
+
+	public class AsnLevelPassTimeZoneTestTicketV1 {
 		
 		public static UicRailTicketData getUicTestTicket() {
 			UicRailTicketData ticket = new UicRailTicketData();
@@ -60,7 +62,8 @@ package org.uic.barcode.ticket.api.test;
 	    		         	 token {tokenProviderIA5 "VDV", token '82DA'H }
 	    		        	,ticket openTicket : {
 	    		        			returnIncluded    FALSE
-	    	        				infoText          "openTicketInfo"
+	    	        			   ,infoText          "openTicketInfo"
+	    	        			   ,classCode         "second"
 	    		        	 }
 	    		       	}
 	    		      	,{
@@ -429,6 +432,7 @@ C158B266 D1AC0441 B9E5DDA7 7F2076D7 947726F7 57002501 D689580A 0B684000
 	    	TicketDetailData tdd = new TicketDetailData();
 	    	OpenTicketData otd = new OpenTicketData();  
 	    	otd.setInfoText("openTicketInfo");
+	    	otd.setClassCode(TravelClassType.first);
 	    	otd.setReturnIncluded(false);
 	    	tdd.setOpenTicket(otd);
 	    	dd.setTicket(tdd);

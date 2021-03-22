@@ -1,4 +1,4 @@
-package org.uic.barcode.ticket.api.test;
+package org.uic.barcode.ticket.api.test.testtickets;
 
 import org.uic.barcode.ticket.api.asn.omv1.CardReferenceType;
 import org.uic.barcode.ticket.api.asn.omv1.ControlData;
@@ -6,24 +6,22 @@ import org.uic.barcode.ticket.api.asn.omv1.CustomerStatusType;
 import org.uic.barcode.ticket.api.asn.omv1.DocumentData;
 import org.uic.barcode.ticket.api.asn.omv1.ExtensionData;
 import org.uic.barcode.ticket.api.asn.omv1.IssuingData;
-import org.uic.barcode.ticket.api.asn.omv1.LinkMode;
-import org.uic.barcode.ticket.api.asn.omv1.PassData;
+import org.uic.barcode.ticket.api.asn.omv1.OpenTicketData;
 import org.uic.barcode.ticket.api.asn.omv1.SequenceOfActivatedDays;
 import org.uic.barcode.ticket.api.asn.omv1.SequenceOfCardReferenceType;
 import org.uic.barcode.ticket.api.asn.omv1.SequenceOfCustomerStatusType;
 import org.uic.barcode.ticket.api.asn.omv1.SequenceOfDocumentData;
 import org.uic.barcode.ticket.api.asn.omv1.SequenceOfExtensionData;
-import org.uic.barcode.ticket.api.asn.omv1.SequenceOfTicketLinkType;
 import org.uic.barcode.ticket.api.asn.omv1.SequenceOfTravelerType;
 import org.uic.barcode.ticket.api.asn.omv1.TicketDetailData;
-import org.uic.barcode.ticket.api.asn.omv1.TicketLinkType;
-import org.uic.barcode.ticket.api.asn.omv1.TicketType;
+import org.uic.barcode.ticket.api.asn.omv1.TokenType;
 import org.uic.barcode.ticket.api.asn.omv1.TravelClassType;
 import org.uic.barcode.ticket.api.asn.omv1.TravelerData;
 import org.uic.barcode.ticket.api.asn.omv1.TravelerType;
 import org.uic.barcode.ticket.api.asn.omv1.UicRailTicketData;
 
-	public class PassTimeZoneTestTicketCase3V1 {
+
+	public class OpenTicketTimeZoneTestTicketV1 {
 		
 		public static UicRailTicketData getUicTestTicket() {
 			UicRailTicketData ticket = new UicRailTicketData();
@@ -31,45 +29,7 @@ import org.uic.barcode.ticket.api.asn.omv1.UicRailTicketData;
 			return ticket;
 		}
 		
-		/*
-		 * 
-		 * Case 1:
-				issue date: 04-03-2021 12:30 UTC
- 				issuingYear: 2021
-  				issuingDay: 63
-  				issuingTime: 750
-  				validFromDay: 10
-  				activatedDays: [0]
-  				utcOffset: 0
 
-				expected:   activated for 04-03-2021 + 10 + 0 00:00 UTC --> 14-03-2021
-
-		Case 2:
-				issue date: 04-03-2021 00:30 UTC
-  				issuingYear: 2021
-  				issuingDay: 63
-  				issuingTime: 30
-  				validFromDay: 10
-  				activatedDays: [0]
-  				utcOffset: 0
-  				
-  				expected:   activated for 04-03-2021 + 10 + 0 00:00 UTC --> 14-03-2021
-  				 
-		Case 3:
-				issue date: 03-03-2021 23:30 UTC
-  				issuingYear: 2021
-  				issuingDay: 62
-  				issuingTime: 1410
-  				validFromDay: 11
-  				activatedDays: [0]
-  				
-  				expected: activated for 03-03-2021 + 11 + 0 00:00 UTC --> 14-03-2021
-
-
-		 */
-		
-		
-		
 	    private static void populateTicket(UicRailTicketData ticket) {
 	    	
 	    	ticket.setControlDetail(new ControlData());
@@ -88,9 +48,9 @@ import org.uic.barcode.ticket.api.asn.omv1.UicRailTicketData;
 	    	
 	    	//OpenTicket
 	    	DocumentData do1 = new DocumentData();
-	    	addPass1(do1);    	
+	    	addOpenTicketData(do1);
 	    	ds.add(do1);   	    	
-	    	 	    	
+	    	   	
 	    	
 	    	ticket.setTransportDocument(ds);
 	    	
@@ -100,40 +60,32 @@ import org.uic.barcode.ticket.api.asn.omv1.UicRailTicketData;
 	    	
 		}
 	    
-
-	    //03-03-2021 23:30 UTC
-	    private static void populateIssuingData(IssuingData issuingDetail) {
-	    	issuingDetail.setIssuingYear(2021L);
-	    	issuingDetail.setIssuingTime(1410L);
-	    	issuingDetail.setIssuingDay(62L);
-	    	issuingDetail.setIssuerPNR("issuerTestPNR");
-	    	issuingDetail.setSpecimen(true);
-	    	issuingDetail.setSecurePaperTicket(false);
-	    	issuingDetail.setActivated(true);
-	    	issuingDetail.setIssuedOnLine(12L);	
-		}
 	    
-		private static void addPass1(DocumentData dd) {		
+	    
+		private static void addOpenTicketData(DocumentData dd) {
+	    	TokenType to = new TokenType();
+	    	to.setTokenProviderIA5("VDV");
+	    	byte[] ba = { (byte) 0x82, (byte) 0xDA };
+	    	to.setToken(ba);
+	    	dd.setToken(to);   		
 			
 	    	TicketDetailData tdd = new TicketDetailData();
-	    	PassData otd = new PassData();  
-	    	otd.setInfoText("pass");
+	    	OpenTicketData otd = new OpenTicketData();  
+	    	otd.setInfoText("openTicketInfo");
 	    	otd.setClassCode(TravelClassType.first);
-	    	otd.setPassDescription("ONE COUNTRY");
-	    	otd.setValidFromDay(11L);
+	    	otd.setReturnIncluded(false);
+	    	otd.setValidFromDay(10L);
 	    	otd.setValidFromTime(0L);
-	    	otd.setValidFromUTCOffset(0L);
-	    	otd.setValidUntilDay(12L);
-	    	otd.setValidUntilTime(0L);
-	    	otd.setValidUntilUTCOffset(0L);
+	    	otd.setValidUntilDay(10L);
+	    	otd.setValidUntilTime(1439L);
 	    	SequenceOfActivatedDays s = new SequenceOfActivatedDays(); 
 	    	otd.setActivatedDay(s);
 	    	s.add(0L);
-	    	
-	    	tdd.setPass(otd);
+	    	tdd.setOpenTicket(otd);
 	    	dd.setTicket(tdd);
 		}
-		
+
+
     
 	    private static void populateTravelerData(TravelerData td) {
 	    	td.setGroupName("myGroup");
@@ -152,8 +104,15 @@ import org.uic.barcode.ticket.api.asn.omv1.UicRailTicketData;
 	    	td.setTraveler(trs);
 		}
 
-	    
-
+	    private static void populateIssuingData(IssuingData issuingDetail) {
+	    	issuingDetail.setIssuingYear(2018L);
+	    	issuingDetail.setIssuingDay(1L);
+	    	issuingDetail.setIssuerPNR("issuerTestPNR");
+	    	issuingDetail.setSpecimen(true);
+	    	issuingDetail.setSecurePaperTicket(false);
+	    	issuingDetail.setActivated(true);
+	    	issuingDetail.setIssuedOnLine(12L);	
+		}
 
 
 	    private static void populateExtensionSequence(SequenceOfExtensionData ed) {
@@ -179,22 +138,14 @@ import org.uic.barcode.ticket.api.asn.omv1.UicRailTicketData;
 			controlDetail.setReductionCardCheckRequired(false);
 			controlDetail.setIdentificationByCardReference(new SequenceOfCardReferenceType());
 			controlDetail.getIdentificationByCardReference().add(populateCardRefrence());
-			SequenceOfTicketLinkType sit = new SequenceOfTicketLinkType();
-			populateLinkedTickets(sit);
-			controlDetail.setIncludedTickets(sit);
 		}
 
-		private static void populateLinkedTickets(SequenceOfTicketLinkType sequenceOfTicketLinkType) {
-			TicketLinkType tlt = new TicketLinkType();
-			tlt.productOwnerIA5="test";
-			tlt.setTicketType(TicketType.pass);
-			tlt.setIssuerPNR("PNR");
-			tlt.setReferenceIA5("UED12435867");
-			tlt.setLinkMode(LinkMode.onlyValidInCombination);
-			tlt.setIssuerName("OEBB");
-			sequenceOfTicketLinkType.add(tlt);
-		}
-
+		
+		/*
+		 {
+		   trailingCardIdNum 100
+		 }
+		 */
 		private static CardReferenceType populateCardRefrence() {
 			CardReferenceType cr = new CardReferenceType();
 			cr.setTrailingCardIdNum(100L);

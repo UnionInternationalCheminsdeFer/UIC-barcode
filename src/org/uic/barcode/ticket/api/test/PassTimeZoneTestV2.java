@@ -12,64 +12,21 @@ import org.junit.Before;
 import org.junit.Test;
 import org.uic.barcode.asn1.uper.UperEncoder;
 import org.uic.barcode.ticket.EncodingFormatException;
-import org.uic.barcode.ticket.api.asn.omv1.UicRailTicketData;
+import org.uic.barcode.ticket.api.asn.omv2.UicRailTicketData;
 import org.uic.barcode.ticket.api.spec.IPass;
 import org.uic.barcode.ticket.api.spec.IUicRailTicket;
-import org.uic.barcode.ticket.api.test.testtickets.PassTimeZoneTestTicketCase1V1;
-import org.uic.barcode.ticket.api.test.testtickets.PassTimeZoneTestTicketCase2V1;
-import org.uic.barcode.ticket.api.test.testtickets.PassTimeZoneTestTicketCase3V1;
-import org.uic.barcode.ticket.api.utils.Api2OpenAsnEncoder;
-import org.uic.barcode.ticket.api.utils.OpenAsn2ApiDecoder;
+import org.uic.barcode.ticket.api.test.testtickets.PassTimeZoneTestTicketV2;
+import org.uic.barcode.ticket.api.utils.Api2OpenAsnEncoderV2;
+import org.uic.barcode.ticket.api.utils.OpenAsn2ApiDecoderV2;
 
 
 /**
- * The Class PassTimeZoneTestV1.
- * 
- * 
- * test validity dates and activated days in different time zones
- * 
-   Case 1:
-				issue date: 04-03-2021 12:30 UTC
- 				issuingYear: 2021
-  				issuingDay: 63
-  				issuingTime: 750
-  				validFromDay: 10
-  				activatedDays: [0]
-  				utcOffset: 0
-
-				expected:   activated for 04-03-2021 + 10 + 0 00:00 UTC --> 14-03-2021
-
-   Case 2:
-				issue date: 04-03-2021 00:30 UTC
-  				issuingYear: 2021
-  				issuingDay: 63
-  				issuingTime: 30
-  				validFromDay: 10
-  				activatedDays: [0]
-  				utcOffset: 0
-  				
-  				expected:   activated for 04-03-2021 + 10 + 0 00:00 UTC --> 14-03-2021
-  				 
-   Case 3:
-				issue date: 03-03-2021 23:30 UTC
-  				issuingYear: 2021
-  				issuingDay: 62
-  				issuingTime: 1410
-  				validFromDay: 11
-  				activatedDays: [0]
-  				
-  				expected: activated for 03-03-2021 + 11 + 0 00:00 UTC --> 14-03-2021
- * 
- * - Test tickets defined on the level of the asn.1 object model
- * - set the local time zone
- * - decoded to get an API ticket object
- * - encode again to  
- * 
+ * The Class FipTimeZoneTestV2.
  * 
  * 
  * 
  */
-public class PassTimeZoneTestV1 {
+public class PassTimeZoneTestV2 {
 	
 	/** The low level encoded test ticket test case 1 . */
 	private byte[] encoded1 = null;
@@ -81,10 +38,10 @@ public class PassTimeZoneTestV1 {
 	private byte[] encoded3 = null;
     
     /** The decoder. */
-    OpenAsn2ApiDecoder decoder = new OpenAsn2ApiDecoder();
+    OpenAsn2ApiDecoderV2 decoder = new OpenAsn2ApiDecoderV2();
     
     /** The encoder. */
-    Api2OpenAsnEncoder encoder = new Api2OpenAsnEncoder();
+    Api2OpenAsnEncoderV2 encoder = new Api2OpenAsnEncoderV2();
     
     /** The API ticket low level encoded for case 1. */
     IUicRailTicket iTicketDecodedFromAsn1Case1 = null;
@@ -134,9 +91,9 @@ public class PassTimeZoneTestV1 {
 		
 		defaulttimeZone = TimeZone.getDefault();
 		
-    	UicRailTicketData ticket1 =  PassTimeZoneTestTicketCase1V1.getUicTestTicket();
-    	UicRailTicketData ticket2 =  PassTimeZoneTestTicketCase2V1.getUicTestTicket();
-    	UicRailTicketData ticket3 =  PassTimeZoneTestTicketCase3V1.getUicTestTicket();
+    	UicRailTicketData ticket1 =  PassTimeZoneTestTicketV2.getUicTestTicket();
+    	UicRailTicketData ticket2 =  PassTimeZoneTestTicketV2.getUicTestTicket();
+    	UicRailTicketData ticket3 =  PassTimeZoneTestTicketV2.getUicTestTicket();
     	
     	//encode in UTC time zone
 		TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
@@ -154,73 +111,6 @@ public class PassTimeZoneTestV1 {
 		TimeZone.setDefault(defaulttimeZone);
 	}
 	
-	/**
-	 * Test decode test tickets in CET.
-	 *
-	 * @throws IllegalArgumentException the illegal argument exception
-	 * @throws IllegalAccessException the illegal access exception
-	 */
-	@Test public void testCETdecodeOnly() throws IllegalArgumentException, IllegalAccessException {
-		
-		encodedInTimeZone1 = encoded1;
-		encodedInTimeZone2 = encoded2;
-		encodedInTimeZone3 = encoded3;
-
-		decode("CET");
-        decodedDateToStrings();
-        
-        assert(issuingDate1.equals("Thu Mar 04 13:30:00 CET 2021" ));
-        assert(issuingDate2.equals("Thu Mar 04 01:30:00 CET 2021" ));
-        assert(issuingDate3.equals("Thu Mar 04 00:30:00 CET 2021" ));        
-       
-        assert(validFrom1.equals("Sun Mar 14 00:00:00 CET 2021" ));
-        assert(validFrom2.equals("Sun Mar 14 00:00:00 CET 2021" ));
-        assert(validFrom3.equals("Sun Mar 14 00:00:00 CET 2021" )); 
-        
-        assert(validUntil1.equals("Wed Mar 24 23:59:00 CET 2021" ));
-        assert(validUntil2.equals("Wed Mar 24 23:59:00 CET 2021" ));
-        assert(validUntil3.equals("Wed Mar 24 23:59:00 CET 2021" )); 
-        
-        assert(activationDate1.equals("Sun Mar 14 00:00:00 CET 2021" ));
-        assert(activationDate2.equals("Sun Mar 14 00:00:00 CET 2021" ));
-        assert(activationDate3.equals("Sun Mar 14 00:00:00 CET 2021" ));
-        
-    }    
-
-	/**
-	 * Test  decode test tickets in GMT.
-	 *
-	 * @throws IllegalArgumentException the illegal argument exception
-	 * @throws IllegalAccessException the illegal access exception
-	 */
-	@Test public void testGMTdecodeOnly() throws IllegalArgumentException, IllegalAccessException {
-		
-		encodedInTimeZone1 = encoded1;
-		encodedInTimeZone2 = encoded2;
-		encodedInTimeZone3 = encoded3;
-
-        //test decoded ticket
-		decode("GMT");
-        decodedDateToStrings();
-        
-        assert(issuingDate1.equals("Thu Mar 04 12:30:00 GMT 2021" ));
-        assert(issuingDate2.equals("Thu Mar 04 00:30:00 GMT 2021" ));
-        assert(issuingDate3.equals("Wed Mar 03 23:30:00 GMT 2021" ));        
-               
-        assert(validFrom1.equals("Sun Mar 14 00:00:00 GMT 2021" ));
-        assert(validFrom2.equals("Sun Mar 14 00:00:00 GMT 2021" ));
-        assert(validFrom3.equals("Sun Mar 14 00:00:00 GMT 2021" )); 
-        
-        assert(validUntil1.equals("Wed Mar 24 23:59:00 GMT 2021" ));
-        assert(validUntil2.equals("Wed Mar 24 23:59:00 GMT 2021" ));
-        assert(validUntil3.equals("Wed Mar 24 23:59:00 GMT 2021" )); 
-        
-        assert(activationDate1.equals("Sun Mar 14 00:00:00 GMT 2021" ));
-        assert(activationDate2.equals("Sun Mar 14 00:00:00 GMT 2021" ));
-        assert(activationDate3.equals("Sun Mar 14 00:00:00 GMT 2021" ));
-        
-    }    
-
     
 	/**
 	 * Test encode test tickets in UTC and decode in CET.
