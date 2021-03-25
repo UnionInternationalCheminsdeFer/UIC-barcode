@@ -6,6 +6,7 @@ import java.io.IOException;
 
 import org.junit.Test;
 import org.uic.barcode.staticFrame.UTLAYDataRecord;
+import org.uic.barcode.staticFrame.ticketLayoutBarcode.LayoutElement;
 import org.uic.barcode.staticFrame.ticketLayoutBarcode.TicketLayout;
 import org.uic.barcode.test.utils.SimpleTestTicketLayout;
 import org.uic.barcode.test.utils.TestUtils;
@@ -40,6 +41,32 @@ public class TicketLayoutTest {
 		
 		assertEquals(tl1.toString(),tl2.toString()); 
 		
+		compare(layout, tl2.getLayout());
+		
 	}
+	
+	public static void compare(TicketLayout layout1, TicketLayout layout2) {
+
+		assert(layout1.getLayoutStandard().equals(layout2.getLayoutStandard()));
+		
+		for (LayoutElement e1: layout1.getElements() ) {
+			
+			for (LayoutElement e2 :layout2.getElements()) {
+				
+				boolean found = false;
+				if (e1.getLine() == e2.getLine() && e1.getColumn() == e2.getColumn()) {
+					found = true;
+					assert(e1.getText().equals(e2.getText()));
+				}
+				assert(found == true);
+				
+			}
+			
+		}
+		
+	}
+
+	
+	
 
 }
