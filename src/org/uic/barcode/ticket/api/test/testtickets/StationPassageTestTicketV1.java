@@ -1,4 +1,4 @@
-package org.uic.barcode.ticket.api.test;
+package org.uic.barcode.ticket.api.test.testtickets;
 
 import org.uic.barcode.asn1.datatypesimpl.SequenceOfStringUTF8;
 import org.uic.barcode.ticket.api.asn.omv1.CardReferenceType;
@@ -7,7 +7,6 @@ import org.uic.barcode.ticket.api.asn.omv1.CustomerStatusType;
 import org.uic.barcode.ticket.api.asn.omv1.DocumentData;
 import org.uic.barcode.ticket.api.asn.omv1.ExtensionData;
 import org.uic.barcode.ticket.api.asn.omv1.IssuingData;
-import org.uic.barcode.ticket.api.asn.omv1.OpenTicketData;
 import org.uic.barcode.ticket.api.asn.omv1.SequenceOfCardReferenceType;
 import org.uic.barcode.ticket.api.asn.omv1.SequenceOfCustomerStatusType;
 import org.uic.barcode.ticket.api.asn.omv1.SequenceOfDocumentData;
@@ -17,12 +16,11 @@ import org.uic.barcode.ticket.api.asn.omv1.SequenceOfTravelerType;
 import org.uic.barcode.ticket.api.asn.omv1.StationPassageData;
 import org.uic.barcode.ticket.api.asn.omv1.TicketDetailData;
 import org.uic.barcode.ticket.api.asn.omv1.TicketLinkType;
-import org.uic.barcode.ticket.api.asn.omv1.TokenType;
 import org.uic.barcode.ticket.api.asn.omv1.TravelerData;
 import org.uic.barcode.ticket.api.asn.omv1.TravelerType;
 import org.uic.barcode.ticket.api.asn.omv1.UicRailTicketData;
 
-public class SimpleUicTestTicket {
+public class StationPassageTestTicketV1 {
 	
 	
 	public static UicRailTicketData getUicTestTicket() {
@@ -47,12 +45,7 @@ public class SimpleUicTestTicket {
     	ticket.setTravelerDetail(td);    	
     	
     	SequenceOfDocumentData ds = new SequenceOfDocumentData();
-
-    	
-    	//OpenTicket
-    	DocumentData do1 = new DocumentData();
-    	addOpenTicketData(do1);
-    	ds.add(do1);   	    	
+  	    	
     	
     	//StationPassage
     	DocumentData do2 = new DocumentData();    	
@@ -79,8 +72,11 @@ public class SimpleUicTestTicket {
     	TicketDetailData tdd = new TicketDetailData();
     	StationPassageData sp = new StationPassageData();  
     	sp.setProductName("passage");
-    	sp.setValidFromDay(0L);
-    	sp.setNumberOfDaysValid(123L);
+    	sp.setValidFromDay(5L);
+    	sp.setValidFromTime(0L);
+    	sp.setValidUntilDay(5L);
+    	sp.setValidUntilTime(1000L);
+    	sp.setNumberOfDaysValid(5L);
     	SequenceOfStringUTF8 ss = new SequenceOfStringUTF8();
     	ss.add("Amsterdam");
     	sp.setStationNameUTF8(ss);   	
@@ -88,46 +84,6 @@ public class SimpleUicTestTicket {
     	dd.setTicket(tdd);
 	}
     
-    /*
-     	{
-	        token {tokenProviderIA5 "VDV", token '82DA'H }
-	        ,ticket openTicket : {
-	        	returnIncluded FALSE
-        		infoText "openTicketInfo"
-	        }
-	    }
-     */
-    
-	private static void addOpenTicketData(DocumentData dd) {
-    	TokenType to = new TokenType();
-    	to.setTokenProviderIA5("VDV");
-    	byte[] ba = { (byte) 0x82, (byte) 0xDA };
-    	to.setToken(ba);
-    	dd.setToken(to);   		
-		
-    	TicketDetailData tdd = new TicketDetailData();
-    	OpenTicketData otd = new OpenTicketData();  
-    	otd.setInfoText("openTicketInfo");
-    	otd.setReturnIncluded(false);
-    	tdd.setOpenTicket(otd);
-    	dd.setTicket(tdd);
-	}
-
-
-	/*
-       ,travelerDetail{
-            traveler {
-               {
-                	firstName "John"
-          	     	,secondName "Dow"
-                	,idCard "12345"
-                	,ticketHolder TRUE
-          			,status {{customerStatusDescr "senior"  }}
-               }
-            }
-           ,groupName "myGroup"
-       }
-     */
     
     private static void populateTravelerData(TravelerData td) {
     	td.setGroupName("myGroup");
@@ -146,17 +102,6 @@ public class SimpleUicTestTicket {
     	td.setTraveler(trs);
 	}
 
-	/*
-       ,issuingDetail {
-            issuingYear       2018
-            issuingDay        1
-       	    specimen  TRUE,
-            securePaperTicket FALSE,
-            activated TRUE,
-            issuerPNR  "issuerTestPNR",
-       	    issuedOnLine  12
-       }
-     */
     private static void populateIssuingData(IssuingData issuingDetail) {
     	issuingDetail.setIssuingYear(2018L);
     	issuingDetail.setIssuingDay(1L);
@@ -167,12 +112,6 @@ public class SimpleUicTestTicket {
     	issuingDetail.setIssuedOnLine(12L);	
 	}
 
-	/*
-       ,extension {
-            { extensionId "1", extensionData '82DA'H }
-           ,{ extensionId "2", extensionData '83DA'H }
-        }
-     */
     private static void populateExtensionSequence(SequenceOfExtensionData ed) {
        	ExtensionData ed1 = new ExtensionData();
     	ed1.setExtensionId("1");

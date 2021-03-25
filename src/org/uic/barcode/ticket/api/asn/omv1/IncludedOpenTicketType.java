@@ -31,6 +31,7 @@ import org.uic.barcode.asn1.datatypes.IntRange;
 import org.uic.barcode.asn1.datatypes.RestrictedString;
 import org.uic.barcode.asn1.datatypes.SizeRange;
 import org.uic.barcode.asn1.datatypesimpl.SequenceOfStringIA5;
+import org.uic.barcode.ticket.api.utils.DateTimeUtils;
 
 public class IncludedOpenTicketType extends Object {
 	public IncludedOpenTicketType() {

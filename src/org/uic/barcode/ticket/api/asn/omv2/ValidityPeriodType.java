@@ -26,6 +26,7 @@ import org.uic.barcode.asn1.datatypes.Asn1Optional;
 import org.uic.barcode.asn1.datatypes.FieldOrder;
 import org.uic.barcode.asn1.datatypes.IntRange;
 import org.uic.barcode.asn1.datatypes.Sequence;
+import org.uic.barcode.ticket.api.utils.DateTimeUtils;
 
 @Sequence
 public class ValidityPeriodType extends Object {

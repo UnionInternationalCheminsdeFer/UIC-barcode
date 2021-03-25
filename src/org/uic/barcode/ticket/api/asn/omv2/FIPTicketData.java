@@ -29,10 +29,15 @@ import org.uic.barcode.asn1.datatypes.Asn1Default;
 import org.uic.barcode.asn1.datatypes.Asn1Optional;
 import org.uic.barcode.asn1.datatypes.CharacterRestriction;
 import org.uic.barcode.asn1.datatypes.FieldOrder;
+import org.uic.barcode.asn1.datatypes.HasExtensionMarker;
 import org.uic.barcode.asn1.datatypes.IntRange;
 import org.uic.barcode.asn1.datatypes.RestrictedString;
+import org.uic.barcode.asn1.datatypes.Sequence;
 import org.uic.barcode.asn1.datatypesimpl.SequenceOfStringIA5;
+import org.uic.barcode.ticket.api.utils.DateTimeUtils;
 
+@Sequence
+@HasExtensionMarker
 public class FIPTicketData extends Object {
 	public FIPTicketData() {
 	}
@@ -254,7 +259,7 @@ public class FIPTicketData extends Object {
 	
 	public Date getValidFromDate(Date issuingDate){
 		
-		return DateTimeUtils.getDate(issuingDate, this.validFromDay,null);
+		return DateTimeUtils.getDate(issuingDate, this.validFromDay,0L);
 		
 	}
 	
@@ -271,24 +276,20 @@ public class FIPTicketData extends Object {
 		}		
 		
 		
-		return DateTimeUtils.getDate(issuingDate, this.validFromDay + this.validUntilDay, null);
+		return DateTimeUtils.getDate(issuingDate, this.validFromDay + this.validUntilDay, 1439L);
 		
 	}
 	
-	public void setActivatedDays(Collection<Date> dates, Date issuingDate){
+	public void addActivatedDays(Collection<Long> days) {
 		
-		if (this.activatedDay != null) {
-			this.activatedDay.clear();
-		} else {
-			this.activatedDay= new SequenceOfActivatedDays();
+		if (days == null  || days.isEmpty()) return;
+		
+		if (this.activatedDay == null) {
+			this.activatedDay = new SequenceOfActivatedDays();
 		}
 		
-		if (dates != null && !dates.isEmpty()) {
-			
-			for (Date day : dates) {
-				this.addActivatedDay(issuingDate, day);
-			}
-			
+		for (Long l : days) {
+			this.activatedDay.add(l);
 		}
 		
 	}
@@ -307,6 +308,12 @@ public class FIPTicketData extends Object {
 		
 	}
 	
+	/**
+	 * Gets the activated days.
+	 *
+	 * @param issuingDate the issuing date
+	 * @return the activated days
+	 */
 	public Collection<Date> getActivatedDays(Date issuingDate) {
 		
 		if (this.activatedDay == null) return null;
@@ -315,7 +322,7 @@ public class FIPTicketData extends Object {
 		
 		for (Long diff: this.getActivatedDay()) {
 			
-			Date day = DateTimeUtils.getDate(issuingDate, diff, null);
+			Date day = DateTimeUtils.getDate(this.getValidFromDate(issuingDate), diff, null);
 			
 			if (day != null) {
 				dates.add(day);

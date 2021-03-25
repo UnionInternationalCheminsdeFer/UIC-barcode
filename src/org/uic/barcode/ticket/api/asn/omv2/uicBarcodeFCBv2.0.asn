@@ -535,7 +535,7 @@ ASN-Module DEFINITIONS AUTOMATIC TAGS ::= BEGIN
     
     vatDetail           SEQUENCE OF VatDetailType       OPTIONAL,	
 	
-	-- type of supplement - code list from 018.1
+	-- type of supplement - code list from 918.1
 	typeOfSupplement	INTEGER (0..9)				    DEFAULT 0,				
 	
 	numberOfSupplements	INTEGER (0..200)				DEFAULT 0,

@@ -351,7 +351,8 @@ public class IssuingData extends Object {
 
 		}
 		
-		return cal.getTime();
+		Date d = cal.getTime();
+		return d;
 	}
 	
 	

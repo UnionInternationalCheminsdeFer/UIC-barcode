@@ -34,6 +34,7 @@ import org.uic.barcode.asn1.datatypes.Sequence;
 import org.uic.barcode.asn1.datatypesimpl.SequenceOfStringIA5;
 import org.uic.barcode.asn1.datatypesimpl.SequenceOfStringUTF8;
 import org.uic.barcode.asn1.datatypesimpl.SequenceOfUnrestrictedLong;
+import org.uic.barcode.ticket.api.utils.DateTimeUtils;
 
 @Sequence
 @HasExtensionMarker

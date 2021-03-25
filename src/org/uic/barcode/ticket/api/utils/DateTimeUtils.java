@@ -1,6 +1,8 @@
-package org.uic.barcode.ticket.api.asn.omv2;
+package org.uic.barcode.ticket.api.utils;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
@@ -11,10 +13,41 @@ public class DateTimeUtils {
 		
 		if (issuingDate == null || localDate == null) return null;
 		
+		Calendar startCal = Calendar.getInstance();
+		startCal.clear();
+		startCal.setTime(issuingDate);
+		startCal.setTimeZone(TimeZone.getTimeZone("UTC"));
+		startCal.set(Calendar.HOUR_OF_DAY, 0);
+		startCal.set(Calendar.MINUTE, 0);
+		startCal.set(Calendar.SECOND, 0);
+		startCal.set(Calendar.MILLISECOND, 0);
+		Date start = startCal.getTime();
+			
+		Calendar endCal = Calendar.getInstance();
+		endCal.clear();
+		endCal.setTime(localDate);
+		endCal.setTimeZone(TimeZone.getTimeZone("UTC"));
+		endCal.set(Calendar.HOUR_OF_DAY, 0);
+		endCal.set(Calendar.MINUTE, 0);
+		endCal.set(Calendar.SECOND, 0);
+		endCal.set(Calendar.MILLISECOND, 0);
+		Date end = endCal.getTime();
+		
+		long diff = TimeUnit.DAYS.convert(end.getTime() - start.getTime(), TimeUnit.MILLISECONDS );
+		//long diff = localDate.getTime() - issuingDate.getTime();
+	    //long dayDiff = TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);		
+	    
+	    return new Long(diff);
+	    	
+	}
+	
+	public static Long getDateDifferenceLocal(Date referenceDate, Date localDate) {
+		
+		if (referenceDate == null || localDate == null) return null;
+		
 		Calendar issuingCal = Calendar.getInstance();
 		issuingCal.clear();
-		issuingCal.setTime(issuingDate);
-		issuingCal.setTimeZone(TimeZone.getTimeZone("UTC"));
+		issuingCal.setTime(referenceDate);
 		issuingCal.set(Calendar.HOUR_OF_DAY, 0);
 		issuingCal.set(Calendar.MINUTE, 0);
 		issuingCal.set(Calendar.SECOND, 0);
@@ -23,13 +56,12 @@ public class DateTimeUtils {
 		Calendar fromCal = Calendar.getInstance();
 		fromCal.clear();
 		fromCal.setTime(localDate);
-		fromCal.setTimeZone(TimeZone.getTimeZone("UTC"));
 		fromCal.set(Calendar.HOUR_OF_DAY, 0);
 		fromCal.set(Calendar.MINUTE, 0);
 		fromCal.set(Calendar.SECOND, 0);
 		fromCal.set(Calendar.MILLISECOND, 0);
 		
-		long diff = localDate.getTime() - issuingDate.getTime();
+		long diff = localDate.getTime() - referenceDate.getTime();
 	    long dayDiff = TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);		
 	    
 	    return new Long(dayDiff);
@@ -78,10 +110,7 @@ public class DateTimeUtils {
 		}
 		
 		int time =  cal.get(Calendar.HOUR_OF_DAY) * 60 + cal.get(Calendar.MINUTE);
-		if (time > 0) {
-			return new Long (time );
-		}
-		return null;
+		return new Long (time );
 	}
 	
 	public static Long getTime (Date date) {
@@ -89,18 +118,9 @@ public class DateTimeUtils {
 		Calendar cal = Calendar.getInstance();
 		cal.clear();
 		cal.setTime(date);
-		
-		if (cal == null || 
-		    !cal.isSet(Calendar.HOUR_OF_DAY) ||
-		    !cal.isSet(Calendar.MINUTE)	) {
-			return null;
-		}
-		
+	
 		int time =  cal.get(Calendar.HOUR_OF_DAY) * 60 + cal.get(Calendar.MINUTE);
-		if (time > 0) {
-			return new Long (time );
-		}
-		return null;
+		return new Long (time );
 	}
 	
 	public static Date getDate(Date issuingDate, Long date, Long time){
@@ -122,12 +142,14 @@ public class DateTimeUtils {
 		
 		cal.add(Calendar.DAY_OF_YEAR, date.intValue());
 		
-		DateTimeUtils.setTime(cal,time);
-
+		if (time == null) {
+			DateTimeUtils.setTime(cal,0L);
+		} else {
+			DateTimeUtils.setTime(cal,time);
+		}
 		return cal.getTime();
 
 	}
-
 	
 
 	/**
@@ -193,6 +215,25 @@ public class DateTimeUtils {
 		return cal.getTime();		
 
 	}
+	
+	
+	public static Collection<Long> getActivatedDays(Date referenceDate, Collection<Date> days) {
+			
+		ArrayList<Long> lDays = new ArrayList<Long>();
+		
+		if (referenceDate == null) return lDays;
+				
+		for (Date day : days) {
+			long dateDiff2 = DateTimeUtils.getDateDifference(referenceDate,day);
+			lDays.add(dateDiff2);
+		}
+		
+		return lDays;
+		
+	}
 
+	public static Date dateToUTC(Date date){
+	    return new Date(date.getTime() - Calendar.getInstance().getTimeZone().getOffset(date.getTime()));
+	}
 
 }

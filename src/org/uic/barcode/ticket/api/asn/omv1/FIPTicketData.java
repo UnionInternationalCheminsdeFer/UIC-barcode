@@ -29,10 +29,15 @@ import org.uic.barcode.asn1.datatypes.Asn1Default;
 import org.uic.barcode.asn1.datatypes.Asn1Optional;
 import org.uic.barcode.asn1.datatypes.CharacterRestriction;
 import org.uic.barcode.asn1.datatypes.FieldOrder;
+import org.uic.barcode.asn1.datatypes.HasExtensionMarker;
 import org.uic.barcode.asn1.datatypes.IntRange;
 import org.uic.barcode.asn1.datatypes.RestrictedString;
+import org.uic.barcode.asn1.datatypes.Sequence;
 import org.uic.barcode.asn1.datatypesimpl.SequenceOfStringIA5;
+import org.uic.barcode.ticket.api.utils.DateTimeUtils;
 
+@Sequence
+@HasExtensionMarker
 public class FIPTicketData extends Object {
 	public FIPTicketData() {
 	}
@@ -253,15 +258,12 @@ public class FIPTicketData extends Object {
 	}
 	
 	public Date getValidFromDate(Date issuingDate){
-		
-		return DateTimeUtils.getDate(issuingDate, this.validFromDay,null);
-		
+		return DateTimeUtils.getDate(issuingDate, this.validFromDay,0L);
 	}
 	
 	public Date getValidUntilDate(Date issuingDate){
 		
 		if (issuingDate == null) return null;
-		
 		if (this.validFromDay == null) {
 			this.validFromDay = 0L;
 		}
@@ -269,63 +271,77 @@ public class FIPTicketData extends Object {
 		if (this.validUntilDay == null) {
 			return null;
 		}		
-		
-		
-		return DateTimeUtils.getDate(issuingDate, this.validFromDay + this.validUntilDay, null);
-		
+		return DateTimeUtils.getDate(issuingDate, this.validFromDay + this.validUntilDay, 1439L);	
 	}
 	
-	public void setActivatedDays(Collection<Date> dates, Date issuingDate){
-		
+	public void addActivatedDays(Collection<Long> days) {
+		if (days == null  || days.isEmpty()) return;
+		if (this.activatedDay == null) {
+			this.activatedDay = new SequenceOfActivatedDays();
+		}
+		for (Long l : days) {
+			this.activatedDay.add(l);
+		}
+	}
+	
+	/**
+	 * Sets the activated days.
+	 *
+	 * @param dates the dates
+	 * @param issuingDate the issuing date
+	 * @param validFromDate the valid from date
+	 */
+	public void setActivatedDays(Collection<Date> dates, Date issuingDate, Date validFromDate){
 		if (this.activatedDay != null) {
 			this.activatedDay.clear();
 		} else {
 			this.activatedDay= new SequenceOfActivatedDays();
 		}
-		
-		if (dates != null && !dates.isEmpty()) {
-			
-			for (Date day : dates) {
-				this.addActivatedDay(issuingDate, day);
-			}
-			
+		long dateDif = 0L;
+		if (validFromDate != null) {
+			dateDif = DateTimeUtils.getDateDifference(issuingDate,validFromDate);
 		}
-		
+		if (dates != null && !dates.isEmpty()) {
+			for (Date day : dates) {
+				this.addActivatedDay(issuingDate, dateDif, day);
+			}
+		}
 	}
-	
-	public void addActivatedDay(Date issuingDate, Date day){
-		
-		Long dayDiff = DateTimeUtils.getDateDifference(issuingDate, day);
-		
+
+	/**
+	 * Adds the activated day.
+	 *
+	 * @param issuingDate the issuing date in UTC
+	 * @param dateOffset the date offset to be added to the issuing date
+	 * @param day the day to be added
+	 */
+	public void addActivatedDay(Date issuingDate, long dateOffset, Date day){
+		Long vDiff = DateTimeUtils.getDateDifferenceLocal(this.getValidFromDate(issuingDate), day);
 		if (this.activatedDay == null) {
 			this.activatedDay = new SequenceOfActivatedDays();
 		}
-		
-		if (dayDiff != null) {
-			this.activatedDay.add(dayDiff);
+		if (vDiff != null) {
+			this.activatedDay.add(vDiff);
 		}
-		
 	}
 	
+	/**
+	 * Gets the activated days.
+	 *
+	 * @param issuingDate the issuing date
+	 * @return the activated days
+	 */
 	public Collection<Date> getActivatedDays(Date issuingDate) {
-		
 		if (this.activatedDay == null) return null;
-		
 		ArrayList<Date> dates = new ArrayList<Date>();
-		
 		for (Long diff: this.getActivatedDay()) {
-			
-			Date day = DateTimeUtils.getDate(issuingDate, diff, null);
-			
+			Date day = DateTimeUtils.getDate(this.getValidFromDate(issuingDate), diff, null);
 			if (day != null) {
 				dates.add(day);
 			}
-			
-		}
-				
+		}	
 		return dates;
-		
 	}	
-	
+
 	
 }
