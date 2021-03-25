@@ -28,6 +28,21 @@ public class SimpleTestTicketLayout {
 
 		assert(layout1.getLayoutStandard().equals(layout2.getLayoutStandard()));
 		
+		for (LayoutElement e1: layout1.getElements() ) {
+			
+			for (LayoutElement e2 :layout2.getElements()) {
+				
+				boolean found = false;
+				if (e1.getLine() == e2.getLine() && e1.getColumn() == e2.getColumn()) {
+					found = true;
+					assert(e1.getText().equals(e2.getText()));
+				}
+				assert(found == true);
+				
+			}
+			
+		}
+		
 	}
 
 }
