@@ -110,10 +110,7 @@ public class DateTimeUtils {
 		}
 		
 		int time =  cal.get(Calendar.HOUR_OF_DAY) * 60 + cal.get(Calendar.MINUTE);
-		if (time > 0) {
-			return new Long (time );
-		}
-		return null;
+		return new Long (time );
 	}
 	
 	public static Long getTime (Date date) {
@@ -121,18 +118,9 @@ public class DateTimeUtils {
 		Calendar cal = Calendar.getInstance();
 		cal.clear();
 		cal.setTime(date);
-		
-		if (cal == null || 
-		    !cal.isSet(Calendar.HOUR_OF_DAY) ||
-		    !cal.isSet(Calendar.MINUTE)	) {
-			return null;
-		}
-		
+	
 		int time =  cal.get(Calendar.HOUR_OF_DAY) * 60 + cal.get(Calendar.MINUTE);
-		if (time > 0) {
-			return new Long (time );
-		}
-		return null;
+		return new Long (time );
 	}
 	
 	public static Date getDate(Date issuingDate, Long date, Long time){
