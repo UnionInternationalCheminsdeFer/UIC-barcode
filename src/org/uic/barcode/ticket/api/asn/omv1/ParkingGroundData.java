@@ -47,7 +47,7 @@ public class ParkingGroundData extends Object {
 
 	@FieldOrder(order = 2)
 	@RestrictedString(CharacterRestriction.IA5String)
-	public String parkingGroundId;
+	public String parkingGroundId = "";
 
 	@FieldOrder(order = 3)
 	@IntRange(minValue=0,maxValue=370)
@@ -335,7 +335,7 @@ public class ParkingGroundData extends Object {
 	
 	public Date getFromParkingDate(Date issuingDate){
 		
-		return DateTimeUtils.getDate(issuingDate, this.fromParkingDate, null);
+		return DateTimeUtils.getDate(issuingDate, this.fromParkingDate, 0L);
 		
 	}
 
@@ -343,7 +343,7 @@ public class ParkingGroundData extends Object {
 		
 		if ( this.toParkingDate == null) return null;
 		
-		return DateTimeUtils.getDate(issuingDate, this.fromParkingDate + this.toParkingDate, null);
+		return DateTimeUtils.getDate(issuingDate, this.fromParkingDate + this.toParkingDate, 1439L);
 		
 	}
 

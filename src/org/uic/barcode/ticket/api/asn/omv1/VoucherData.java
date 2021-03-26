@@ -21,7 +21,6 @@ package org.uic.barcode.ticket.api.asn.omv1;
 
 import java.util.Calendar;
 import java.util.Date;
-import java.util.TimeZone;
 
 import org.uic.barcode.asn1.datatypes.Asn1BigInteger;
 import org.uic.barcode.asn1.datatypes.Asn1Optional;
@@ -287,9 +286,11 @@ public class VoucherData extends Object {
 		
 		Calendar cal = Calendar.getInstance();
 		cal.clear();
-		cal.setTimeZone(TimeZone.getTimeZone("UTC"));
+		//cal.setTimeZone(TimeZone.getTimeZone("UTC"));
 		cal.set(Calendar.YEAR, this.validFromYear.intValue());
 		cal.set(Calendar.DAY_OF_YEAR, this.validFromDay.intValue());
+		cal.set(Calendar.MINUTE,0);
+		cal.set(Calendar.HOUR_OF_DAY,0);
 
 		return cal.getTime();
 		
@@ -301,9 +302,11 @@ public class VoucherData extends Object {
 		
 		Calendar cal = Calendar.getInstance();
 		cal.clear();
-		cal.setTimeZone(TimeZone.getTimeZone("UTC"));
+		//cal.setTimeZone(TimeZone.getTimeZone("UTC"));
 		cal.set(Calendar.YEAR, this.validUntilYear.intValue());
 		cal.set(Calendar.DAY_OF_YEAR, this.validUntilDay.intValue());
+		cal.set(Calendar.MINUTE,59);
+		cal.set(Calendar.HOUR_OF_DAY,23);
 
 		return cal.getTime();
 		
