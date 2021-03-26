@@ -1508,10 +1508,12 @@ public class Api2OpenAsnEncoder {
 		
 		asnData.setValidity(document.getValidFrom(), document.getValidUntil());
 
-		asnData.setType(UicEncoderUtils.getRestrictedInt(document.getType(), 1,9999));
-		
-		asnData.setValue(UicEncoderUtils.getRestrictedInt(document.getAmount(),1,9999999));
-		
+		if (document.getType() != null) {
+			asnData.setType(UicEncoderUtils.getRestrictedInt(document.getType(), 1,9999));
+		}
+		if (document.getAmount() != null) {
+			asnData.setValue(UicEncoderUtils.getRestrictedInt(document.getAmount(),1,9999999));
+		}
 		return asnDocument;
 	}	
 	

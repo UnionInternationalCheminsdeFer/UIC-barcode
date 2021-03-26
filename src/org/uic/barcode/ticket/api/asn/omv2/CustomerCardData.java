@@ -262,14 +262,15 @@ public class CustomerCardData extends Object {
 	
 	public Date getValidFromDate (){
 		
-		if (this.validFromYear == null || this.validFromYear == 0) return null;
+		if (this.validFromYear == null || this.validFromDay == null) return null;
 			
 			Calendar cal = Calendar.getInstance();
 			cal.clear();
-			cal.setTimeZone(TimeZone.getTimeZone("UTC"));
+			//cal.setTimeZone(TimeZone.getTimeZone("UTC"));
 			cal.set(Calendar.YEAR, this.validFromYear.intValue());
 			cal.set(Calendar.DAY_OF_YEAR, this.validFromDay.intValue());
-
+			cal.set(Calendar.MINUTE,0);
+			cal.set(Calendar.HOUR_OF_DAY,0);
 			return cal.getTime();
 			
 	}
@@ -277,17 +278,18 @@ public class CustomerCardData extends Object {
 	
 	public Date getValidUntilDate (){
 		
-		if (this.validUntilYear == null || this.validUntilYear == 0) return null;
+		if (this.validUntilYear == null || this.validUntilDay == null) return null;
 			
 			Calendar cal = Calendar.getInstance();
 			cal.clear();
-			cal.setTimeZone(TimeZone.getTimeZone("UTC"));
+			//cal.setTimeZone(TimeZone.getTimeZone("UTC"));
 			cal.set(Calendar.YEAR, this.validFromYear.intValue());
 			if (this.validUntilYear != null) {
 				cal.add(Calendar.YEAR, this.validUntilYear.intValue());
 			}
 			cal.set(Calendar.DAY_OF_YEAR, this.validUntilDay.intValue());
-
+			cal.set(Calendar.MINUTE,59);
+			cal.set(Calendar.HOUR_OF_DAY,23);
 			return cal.getTime();
 		
 		}

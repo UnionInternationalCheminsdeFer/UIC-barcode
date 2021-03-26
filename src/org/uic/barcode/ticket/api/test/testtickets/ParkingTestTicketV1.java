@@ -17,7 +17,7 @@ import org.uic.barcode.ticket.api.asn.omv1.TravelerData;
 import org.uic.barcode.ticket.api.asn.omv1.TravelerType;
 import org.uic.barcode.ticket.api.asn.omv1.UicRailTicketData;
 
-	public class ParkingTestTicketV3 {
+	public class ParkingTestTicketV1 {
 		
 		public static UicRailTicketData getUicTestTicket() {
 			UicRailTicketData ticket = new UicRailTicketData();
@@ -81,6 +81,7 @@ import org.uic.barcode.ticket.api.asn.omv1.UicRailTicketData;
 	    	ticket.setNumberPlate("AA-DE-12345");
 	    	ticket.setStationNum(8000001L);
 	    	ticket.setPrice(500L);
+	    	ticket.setParkingGroundId("P47623");
 	    	ticket.setSpecialInformation("outdoor parking");
 
 	    	tdd.setParkingGround(ticket);
