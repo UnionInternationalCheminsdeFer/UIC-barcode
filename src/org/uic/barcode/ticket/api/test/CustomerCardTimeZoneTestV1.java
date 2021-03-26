@@ -21,7 +21,7 @@ import org.uic.barcode.ticket.api.utils.OpenAsn2ApiDecoder;
 
 
 /**
- * The Class FipTimeZoneTestV1.
+ * The Class CustomerCardTestV1.
  * 
  * 
  * 
@@ -141,9 +141,9 @@ public class CustomerCardTimeZoneTestV1 {
         assert(validFromDate2.equals("Sun Mar 14 00:00:00 CET 2021" ));
         assert(validFromDate3.equals("Sun Mar 14 00:00:00 CET 2021" )); 
         
-        assert(validUntilDate1.equals("Thu Mar 24 00:00:00 CET 2022" ));
-        assert(validUntilDate2.equals("Thu Mar 24 00:00:00 CET 2022" ));
-        assert(validUntilDate3.equals("Thu Mar 24 00:00:00 CET 2022" )); 
+        assert(validUntilDate1.equals("Thu Mar 24 23:59:00 CET 2022" ));
+        assert(validUntilDate2.equals("Thu Mar 24 23:59:00 CET 2022" ));
+        assert(validUntilDate3.equals("Thu Mar 24 23:59:00 CET 2022" )); 
         
         
     }    
@@ -182,9 +182,9 @@ public class CustomerCardTimeZoneTestV1 {
         assert(validFromDate2.equals("Sun Mar 14 00:00:00 CET 2021" ));
         assert(validFromDate3.equals("Sun Mar 14 00:00:00 CET 2021" )); 
         
-        assert(validUntilDate1.equals("Thu Mar 24 00:00:00 CET 2022" ));
-        assert(validUntilDate2.equals("Thu Mar 24 00:00:00 CET 2022" ));
-        assert(validUntilDate3.equals("Thu Mar 24 00:00:00 CET 2022" )); 
+        assert(validUntilDate1.equals("Wed Mar 24 23:59:00 CET 2021" ));
+        assert(validUntilDate2.equals("Wed Mar 24 23:59:00 CET 2021" ));
+        assert(validUntilDate3.equals("Wed Mar 24 23:59:00 CET 2021" )); 
         
          
     }    
@@ -222,9 +222,9 @@ public class CustomerCardTimeZoneTestV1 {
         assert(validFromDate2.equals("Sun Mar 14 00:00:00 GMT 2021" ));
         assert(validFromDate3.equals("Sun Mar 14 00:00:00 GMT 2021" )); 
         
-        assert(validUntilDate1.equals("Thu Mar 24 00:00:00 GMT 2022" ));
-        assert(validUntilDate2.equals("Thu Mar 24 00:00:00 GMT 2022" ));
-        assert(validUntilDate3.equals("Thu Mar 24 00:00:00 GMT 2022" )); 
+        assert(validUntilDate1.equals("Thu Mar 24 23:59:00 GMT 2022" ));
+        assert(validUntilDate2.equals("Thu Mar 24 23:59:00 GMT 2022" ));
+        assert(validUntilDate3.equals("Thu Mar 24 23:59:00 GMT 2022" )); 
         
         
     }    
