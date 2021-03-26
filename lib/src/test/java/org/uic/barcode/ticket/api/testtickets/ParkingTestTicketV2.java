@@ -1,23 +1,23 @@
 package org.uic.barcode.ticket.api.testtickets;
 
-import org.uic.barcode.ticket.api.asn.omv1.CardReferenceType;
-import org.uic.barcode.ticket.api.asn.omv1.ControlData;
-import org.uic.barcode.ticket.api.asn.omv1.CustomerStatusType;
-import org.uic.barcode.ticket.api.asn.omv1.DocumentData;
-import org.uic.barcode.ticket.api.asn.omv1.ExtensionData;
-import org.uic.barcode.ticket.api.asn.omv1.IssuingData;
-import org.uic.barcode.ticket.api.asn.omv1.SequenceOfCardReferenceType;
-import org.uic.barcode.ticket.api.asn.omv1.SequenceOfCustomerStatusType;
-import org.uic.barcode.ticket.api.asn.omv1.SequenceOfDocumentData;
-import org.uic.barcode.ticket.api.asn.omv1.SequenceOfExtensionData;
-import org.uic.barcode.ticket.api.asn.omv1.SequenceOfTravelerType;
-import org.uic.barcode.ticket.api.asn.omv1.TicketDetailData;
-import org.uic.barcode.ticket.api.asn.omv1.TravelerData;
-import org.uic.barcode.ticket.api.asn.omv1.TravelerType;
-import org.uic.barcode.ticket.api.asn.omv1.UicRailTicketData;
-import org.uic.barcode.ticket.api.asn.omv1.VoucherData;
+import org.uic.barcode.ticket.api.asn.omv2.CardReferenceType;
+import org.uic.barcode.ticket.api.asn.omv2.ControlData;
+import org.uic.barcode.ticket.api.asn.omv2.CustomerStatusType;
+import org.uic.barcode.ticket.api.asn.omv2.DocumentData;
+import org.uic.barcode.ticket.api.asn.omv2.ExtensionData;
+import org.uic.barcode.ticket.api.asn.omv2.IssuingData;
+import org.uic.barcode.ticket.api.asn.omv2.ParkingGroundData;
+import org.uic.barcode.ticket.api.asn.omv2.SequenceOfCardReferenceType;
+import org.uic.barcode.ticket.api.asn.omv2.SequenceOfCustomerStatusType;
+import org.uic.barcode.ticket.api.asn.omv2.SequenceOfDocumentData;
+import org.uic.barcode.ticket.api.asn.omv2.SequenceOfExtensionData;
+import org.uic.barcode.ticket.api.asn.omv2.SequenceOfTravelerType;
+import org.uic.barcode.ticket.api.asn.omv2.TicketDetailData;
+import org.uic.barcode.ticket.api.asn.omv2.TravelerData;
+import org.uic.barcode.ticket.api.asn.omv2.TravelerType;
+import org.uic.barcode.ticket.api.asn.omv2.UicRailTicketData;
 
-	public class VoucherTestTicketV3 {
+	public class ParkingTestTicketV2 {
 		
 		public static UicRailTicketData getUicTestTicket() {
 			UicRailTicketData ticket = new UicRailTicketData();
@@ -73,16 +73,18 @@ import org.uic.barcode.ticket.api.asn.omv1.VoucherData;
 		private static void addTicket(DocumentData dd) {		
 			
 	    	TicketDetailData tdd = new TicketDetailData();
-	    	VoucherData ticket = new VoucherData();  
-	    	ticket.setInfoText("coffee voucher");
-	    	ticket.setValidFromYear(2022L);	    	
-	    	ticket.setValidFromDay(01L);
-	    	ticket.setValidUntilYear(2022L);	    	
-	    	ticket.setValidUntilDay(01L);
+	    	ParkingGroundData ticket = new ParkingGroundData(); 
+	    	ticket.setFromParkingDate(01L);	    	
+	    	ticket.setToParkingDate(01L);
 	    	ticket.setReferenceIA5("ACHE12345");
-	    	ticket.setProductOwnerIA5("COFFEEMACHINE");
-	    	ticket.setValue(500L);
-	    	tdd.setVoucher(ticket);
+	    	ticket.setLocation("Parking Frankfurt Main West");
+	    	ticket.setNumberPlate("AA-DE-12345");
+	    	ticket.setStationNum(8000001L);
+	    	ticket.setPrice(500L);
+	    	ticket.setParkingGroundId("P47623");
+	    	ticket.setSpecialInformation("outdoor parking");
+
+	    	tdd.setParkingGround(ticket);
 	    	dd.setTicket(tdd);
 		}
 
