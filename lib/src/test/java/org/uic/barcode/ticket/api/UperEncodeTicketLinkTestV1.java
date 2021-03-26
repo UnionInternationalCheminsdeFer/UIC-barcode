@@ -12,6 +12,7 @@ import org.uic.barcode.ticket.api.spec.ILinkMode;
 import org.uic.barcode.ticket.api.spec.ITicketLink;
 import org.uic.barcode.ticket.api.spec.ITicketType;
 import org.uic.barcode.ticket.api.spec.IUicRailTicket;
+import org.uic.barcode.ticket.api.testtickets.SimpleTicketLinkTestTicket;
 import org.uic.barcode.ticket.api.utils.OpenAsn2ApiDecoder;
 
 

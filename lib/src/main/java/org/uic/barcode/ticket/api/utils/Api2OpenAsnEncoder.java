@@ -881,7 +881,9 @@ public class Api2OpenAsnEncoder {
 			
 		asnData.setTariffs(encodeTariffCollection(document.getTariffs()));
 		
-		asnData.setActivatedDays(document.getActivatedDays(),document.getValidFrom());
+		if (document.getActivatedDays() != null && !document.getActivatedDays().isEmpty()) {
+			asnData.addActivatedDays(DateTimeUtils.getActivatedDays(document.getValidFrom(), document.getActivatedDays()));
+		}
 
 		if (document.getClassCode() != ITravelClassType.second){
 			asnData.setClassCode(convertTravelClass(document.getClassCode()));
@@ -1557,13 +1559,8 @@ public class Api2OpenAsnEncoder {
 			}
 		}
 
-		
-		if(document.getActivatedDays()!= null && document.getActivatedDays().size() > 0) {
-			if (document.getValidFrom() != null) {			
-				asnData.setActivatedDays(document.getActivatedDays(),document.getValidFrom());
-			} else {
-				asnData.setActivatedDays(document.getActivatedDays(),issuingDate);
-			}
+		if (document.getActivatedDays() != null && !document.getActivatedDays().isEmpty()) {
+			asnData.addActivatedDays(DateTimeUtils.getActivatedDays(document.getValidFrom(), document.getActivatedDays()));
 		}
 		
 		asnData.setClassCode(convertTravelClass(document.getClassCode()));
@@ -1697,9 +1694,9 @@ public class Api2OpenAsnEncoder {
 		
 		asnData.setValidityDates(document.getValidFrom(), document.getValidUntil(), issuingDate);
 		
-		if(document.getActivatedDays()!= null && document.getActivatedDays().size() > 0) {
-			asnData.setActivatedDays(document.getActivatedDays(), document.getValidFrom());
-		}		
+		if (document.getActivatedDays() != null && !document.getActivatedDays().isEmpty()) {
+			asnData.addActivatedDays(DateTimeUtils.getActivatedDays(document.getValidFrom(), document.getActivatedDays()));
+		}
 		
 		asnData.setExtension(encodeExtension(document.getExtension()));				
 		

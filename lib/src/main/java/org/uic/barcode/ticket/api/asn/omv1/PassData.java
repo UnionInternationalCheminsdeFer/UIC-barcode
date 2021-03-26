@@ -34,127 +34,169 @@ import org.uic.barcode.asn1.datatypes.IntRange;
 import org.uic.barcode.asn1.datatypes.RestrictedString;
 import org.uic.barcode.asn1.datatypes.Sequence;
 import org.uic.barcode.asn1.datatypesimpl.SequenceOfStringIA5;
+import org.uic.barcode.ticket.api.utils.DateTimeUtils;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class PassData.
+ */
 @Sequence
 @HasExtensionMarker
 public class PassData extends Object {
+	
+	/**
+	 * Instantiates a new pass data.
+	 */
 	public PassData() {
 	}
 
+	/** The reference num. */
 	@FieldOrder(order = 0)
 	@Asn1Optional public Asn1BigInteger referenceNum;
 
+	/** The reference IA 5. */
 	@FieldOrder(order = 1)
 	@RestrictedString(CharacterRestriction.IA5String)
 	@Asn1Optional public String referenceIA5;
 
+	/** The product owner num. */
 	@FieldOrder(order = 2)
 	@IntRange(minValue=1,maxValue=32000)
 	@Asn1Optional public Long productOwnerNum;
 
+	/** The product owner IA 5. */
 	@FieldOrder(order = 3)
 	@RestrictedString(CharacterRestriction.IA5String)
 	@Asn1Optional public String productOwnerIA5;
 
+	/** The product id num. */
 	@FieldOrder(order = 4)
 	@IntRange(minValue=1,maxValue=32000)
 	@Asn1Optional public Long productIdNum;
 
+	/** The product id IA 5. */
 	@FieldOrder(order = 5)
 	@RestrictedString(CharacterRestriction.IA5String)
 	@Asn1Optional public String productIdIA5;
 
+	/** The pass type. */
 	@FieldOrder(order = 6)
 	@IntRange(minValue=1,maxValue=250)
 	@Asn1Optional public Long passType;
 
+	/** The pass description. */
 	@FieldOrder(order = 7)
 	@RestrictedString(CharacterRestriction.UTF8String)
 	@Asn1Optional public String passDescription;
 
+	/** The class code. */
 	@FieldOrder(order = 8)
 	@Asn1Default (value="second")
 	@Asn1Optional public TravelClassType classCode;
 
+	/** The valid from day. */
 	@FieldOrder(order = 9)
 	@IntRange(minValue=-1,maxValue=700)
 	@Asn1Optional public Long validFromDay;
 
+	/** The valid from time. */
 	@FieldOrder(order = 10)
 	@IntRange(minValue=0,maxValue=1440)
 	@Asn1Optional public Long validFromTime;
 	
+	/** The valid from UTC offset. */
 	@FieldOrder(order = 11)
 	@IntRange(minValue=-60, maxValue=60)
 	@Asn1Optional public Long validFromUTCOffset;
 
+	/** The valid until day. */
 	@FieldOrder(order = 12)
 	@IntRange(minValue=0,maxValue=370)
 	@Asn1Optional public Long validUntilDay;
 
+	/** The valid until time. */
 	@FieldOrder(order = 13)
 	@IntRange(minValue=0,maxValue=1440)
 	@Asn1Optional public Long validUntilTime;
 	
+	/** The valid until UTC offset. */
 	@FieldOrder(order = 14)
 	@IntRange(minValue=-60, maxValue=60)
 	@Asn1Optional public Long validUntilUTCOffset;
 
+	/** The validity period details. */
 	@FieldOrder(order = 15)
 	@Asn1Optional public ValidityPeriodDetailType validityPeriodDetails;
 
+	/** The number of validity days. */
 	@FieldOrder(order = 16)
 	@IntRange(minValue=0,maxValue=370)
 	@Asn1Optional public Long numberOfValidityDays;
 
+	/** The number of possible trips. */
 	@FieldOrder(order = 17)
 	@IntRange(minValue=1,maxValue=250)
 	@Asn1Optional public Long numberOfPossibleTrips;
 
+	/** The number of days of travel. */
 	@FieldOrder(order = 18)
 	@IntRange(minValue=1,maxValue=250)
 	@Asn1Optional public Long numberOfDaysOfTravel;
 
+	/** The activated day. */
 	@FieldOrder(order = 19)
 	@Asn1Optional public SequenceOfActivatedDays activatedDay;
 
+	/** The countries. */
 	@FieldOrder(order = 20)
 	@Asn1Optional public SequenceOfCountries countries;
 	
+	/** The included carriers num. */
 	@FieldOrder(order = 21)
 	@Asn1Optional public SequenceOfCarrierNum includedCarriersNum;
 
+	/** The included carriers IA 5. */
 	@FieldOrder(order = 22)
 	@Asn1Optional public SequenceOfStringIA5 includedCarriersIA5;
 	
+	/** The excluded carriers num. */
 	@FieldOrder(order = 23)
 	@Asn1Optional public SequenceOfCarrierNum excludedCarriersNum;
 
+	/** The excluded carriers IA 5. */
 	@FieldOrder(order = 24)
 	@Asn1Optional public SequenceOfStringIA5 excludedCarriersIA5;
 
+	/** The included service brands. */
 	@FieldOrder(order = 25)
 	@Asn1Optional public SequenceOfServiceBrands includedServiceBrands;
 
+	/** The excluded service brands. */
 	@FieldOrder(order = 26)
 	@Asn1Optional public SequenceOfServiceBrands excludedServiceBrands;
 
+	/** The valid region. */
 	@FieldOrder(order = 27)
 	@Asn1Optional public SequenceOfRegionalValidityType validRegion;
 
+	/** The tariffs. */
 	@FieldOrder(order = 28)
 	@Asn1Optional public SequenceOfTariffType tariffs;
 
+	/** The price. */
 	@FieldOrder(order = 29)
 	@Asn1Optional Asn1BigInteger price;
 	
+	/** The vat details. */
 	@FieldOrder(order = 30)
 	@Asn1Optional SequenceOfVatDetail vatDetails;
 	
+	/** The info text. */
 	@FieldOrder(order = 31)
 	@RestrictedString(CharacterRestriction.UTF8String)
 	@Asn1Optional public String infoText;
 
+	/** The extension. */
 	@FieldOrder(order = 32)
 	@Asn1Optional public ExtensionData extension;
 	
@@ -162,46 +204,91 @@ public class PassData extends Object {
 
 	
 
+	/**
+	 * Gets the reference num.
+	 *
+	 * @return the reference num
+	 */
 	public Asn1BigInteger getReferenceNum() {
 
 		return this.referenceNum;
 	}
 
+	/**
+	 * Gets the reference IA 5.
+	 *
+	 * @return the reference IA 5
+	 */
 	public String getReferenceIA5() {
 
 		return this.referenceIA5;
 	}
 
+	/**
+	 * Gets the product owner num.
+	 *
+	 * @return the product owner num
+	 */
 	public Long getProductOwnerNum() {
 
 		return this.productOwnerNum;
 	}
 
+	/**
+	 * Gets the product owner IA 5.
+	 *
+	 * @return the product owner IA 5
+	 */
 	public String getProductOwnerIA5() {
 
 		return this.productOwnerIA5;
 	}
 
+	/**
+	 * Gets the product id num.
+	 *
+	 * @return the product id num
+	 */
 	public Long getProductIdNum() {
 
 		return this.productIdNum;
 	}
 
+	/**
+	 * Gets the product id IA 5.
+	 *
+	 * @return the product id IA 5
+	 */
 	public String getProductIdIA5() {
 
 		return this.productIdIA5;
 	}
 
+	/**
+	 * Gets the pass type.
+	 *
+	 * @return the pass type
+	 */
 	public Long getPassType() {
 
 		return this.passType;
 	}
 
+	/**
+	 * Gets the pass description.
+	 *
+	 * @return the pass description
+	 */
 	public String getPassDescription() {
 
 		return this.passDescription;
 	}
 
+	/**
+	 * Gets the class code.
+	 *
+	 * @return the class code
+	 */
 	public TravelClassType getClassCode() {
 
 		if (classCode == null){
@@ -211,267 +298,537 @@ public class PassData extends Object {
 		return this.classCode;
 	}
 
+	/**
+	 * Gets the valid from day.
+	 *
+	 * @return the valid from day
+	 */
 	public Long getValidFromDay() {
 
 		return this.validFromDay;
 	}
 
+	/**
+	 * Gets the valid from time.
+	 *
+	 * @return the valid from time
+	 */
 	public Long getValidFromTime() {
 
 		return this.validFromTime;
 	}
 
+	/**
+	 * Gets the valid until day.
+	 *
+	 * @return the valid until day
+	 */
 	public Long getValidUntilDay() {
 
 		return this.validUntilDay;
 	}
 
+	/**
+	 * Gets the valid until time.
+	 *
+	 * @return the valid until time
+	 */
 	public Long getValidUntilTime() {
 
 		return this.validUntilTime;
 	}
 
+	/**
+	 * Gets the validity period details.
+	 *
+	 * @return the validity period details
+	 */
 	public ValidityPeriodDetailType getValidityPeriodDetails() {
 
 		return this.validityPeriodDetails;
 	}
 
+	/**
+	 * Gets the number of validity days.
+	 *
+	 * @return the number of validity days
+	 */
 	public Long getNumberOfValidityDays() {
 
 		return this.numberOfValidityDays;
 	}
 
+	/**
+	 * Gets the number of possible trips.
+	 *
+	 * @return the number of possible trips
+	 */
 	public Long getNumberOfPossibleTrips() {
 
 		return this.numberOfPossibleTrips;
 	}
 
+	/**
+	 * Gets the number of days of travel.
+	 *
+	 * @return the number of days of travel
+	 */
 	public Long getNumberOfDaysOfTravel() {
 
 		return this.numberOfDaysOfTravel;
 	}
 
+	/**
+	 * Gets the activated day.
+	 *
+	 * @return the activated day
+	 */
 	public List<Long> getActivatedDay() {
 
 		return this.activatedDay;
 	}
 
+	/**
+	 * Gets the countries.
+	 *
+	 * @return the countries
+	 */
 	public List<Long> getCountries() {
 
 		return this.countries;
 	}
 
+	/**
+	 * Gets the included carriers num.
+	 *
+	 * @return the included carriers num
+	 */
 	public List<Long> getIncludedCarriersNum() {
 
 		return this.includedCarriersNum;
 	}
 
+	/**
+	 * Gets the included carriers IA 5.
+	 *
+	 * @return the included carriers IA 5
+	 */
 	public List<String> getIncludedCarriersIA5() {
 
 		return this.includedCarriersIA5;
 	}
 
+	/**
+	 * Gets the excluded carriers num.
+	 *
+	 * @return the excluded carriers num
+	 */
 	public List<Long> getExcludedCarriersNum() {
 
 		return this.excludedCarriersNum;
 	}
 
+	/**
+	 * Gets the excluded carriers IA 5.
+	 *
+	 * @return the excluded carriers IA 5
+	 */
 	public SequenceOfStringIA5 getExcludedCarriersIA5() {
 
 		return this.excludedCarriersIA5;
 	}
 
+	/**
+	 * Gets the included service brands.
+	 *
+	 * @return the included service brands
+	 */
 	public SequenceOfServiceBrands getIncludedServiceBrands() {
 
 		return this.includedServiceBrands;
 	}
 
+	/**
+	 * Gets the excluded service brands.
+	 *
+	 * @return the excluded service brands
+	 */
 	public SequenceOfServiceBrands getExcludedServiceBrands() {
 
 		return this.excludedServiceBrands;
 	}
 
+	/**
+	 * Gets the valid region.
+	 *
+	 * @return the valid region
+	 */
 	public List<RegionalValidityType> getValidRegion() {
 
 		return this.validRegion;
 	}
 
+	/**
+	 * Gets the tariffs.
+	 *
+	 * @return the tariffs
+	 */
 	public List<TariffType> getTariffs() {
 
 		return this.tariffs;
 	}
 
+	/**
+	 * Gets the info text.
+	 *
+	 * @return the info text
+	 */
 	public String getInfoText() {
 
 		return this.infoText;
 	}
 
+	/**
+	 * Gets the extension.
+	 *
+	 * @return the extension
+	 */
 	public ExtensionData getExtension() {
 
 		return this.extension;
 	}
 
+	/**
+	 * Sets the reference num.
+	 *
+	 * @param referenceNum the new reference num
+	 */
 	public void setReferenceNum(Asn1BigInteger referenceNum) {
 
 		this.referenceNum = referenceNum;
 	}
 
+	/**
+	 * Sets the reference IA 5.
+	 *
+	 * @param referenceIA5 the new reference IA 5
+	 */
 	public void setReferenceIA5(String referenceIA5) {
 
 		this.referenceIA5 = referenceIA5;
 	}
 
+	/**
+	 * Sets the product owner num.
+	 *
+	 * @param productOwnerNum the new product owner num
+	 */
 	public void setProductOwnerNum(Long productOwnerNum) {
 
 		this.productOwnerNum = productOwnerNum;
 	}
 
+	/**
+	 * Sets the product owner IA 5.
+	 *
+	 * @param productOwnerIA5 the new product owner IA 5
+	 */
 	public void setProductOwnerIA5(String productOwnerIA5) {
 
 		this.productOwnerIA5 = productOwnerIA5;
 	}
 
+	/**
+	 * Sets the product id num.
+	 *
+	 * @param productIdNum the new product id num
+	 */
 	public void setProductIdNum(Long productIdNum) {
 
 		this.productIdNum = productIdNum;
 	}
 
+	/**
+	 * Sets the product id IA 5.
+	 *
+	 * @param productIdIA5 the new product id IA 5
+	 */
 	public void setProductIdIA5(String productIdIA5) {
 
 		this.productIdIA5 = productIdIA5;
 	}
 
+	/**
+	 * Sets the pass type.
+	 *
+	 * @param passType the new pass type
+	 */
 	public void setPassType(Long passType) {
 
 		this.passType = passType;
 	}
 
+	/**
+	 * Sets the pass description.
+	 *
+	 * @param passDescription the new pass description
+	 */
 	public void setPassDescription(String passDescription) {
 
 		this.passDescription = passDescription;
 	}
 
+	/**
+	 * Sets the class code.
+	 *
+	 * @param classCode the new class code
+	 */
 	public void setClassCode(TravelClassType classCode) {
 
 		this.classCode = classCode;
 	}
 
+	/**
+	 * Sets the valid from day.
+	 *
+	 * @param validFromDay the new valid from day
+	 */
 	public void setValidFromDay(Long validFromDay) {
 
 		this.validFromDay = validFromDay;
 	}
 
+	/**
+	 * Sets the valid from time.
+	 *
+	 * @param validFromTime the new valid from time
+	 */
 	public void setValidFromTime(Long validFromTime) {
 
 		this.validFromTime = validFromTime;
 	}
 
+	/**
+	 * Sets the valid until day.
+	 *
+	 * @param validUntilDay the new valid until day
+	 */
 	public void setValidUntilDay(Long validUntilDay) {
 
 		this.validUntilDay = validUntilDay;
 	}
 
+	/**
+	 * Sets the valid until time.
+	 *
+	 * @param validUntilTime the new valid until time
+	 */
 	public void setValidUntilTime(Long validUntilTime) {
 
 		this.validUntilTime = validUntilTime;
 	}
 
+	/**
+	 * Sets the validity period details.
+	 *
+	 * @param validityPeriodDetails the new validity period details
+	 */
 	public void setValidityPeriodDetails(ValidityPeriodDetailType validityPeriodDetails) {
 
 		this.validityPeriodDetails = validityPeriodDetails;
 	}
 
+	/**
+	 * Sets the number of validity days.
+	 *
+	 * @param numberOfValidityDays the new number of validity days
+	 */
 	public void setNumberOfValidityDays(Long numberOfValidityDays) {
 
 		this.numberOfValidityDays = numberOfValidityDays;
 	}
 
+	/**
+	 * Sets the number of possible trips.
+	 *
+	 * @param numberOfPossibleTrips the new number of possible trips
+	 */
 	public void setNumberOfPossibleTrips(Long numberOfPossibleTrips) {
 
 		this.numberOfPossibleTrips = numberOfPossibleTrips;
 	}
 
+	/**
+	 * Sets the number of days of travel.
+	 *
+	 * @param numberOfDaysOfTravel the new number of days of travel
+	 */
 	public void setNumberOfDaysOfTravel(Long numberOfDaysOfTravel) {
 
 		this.numberOfDaysOfTravel = numberOfDaysOfTravel;
 	}
 
+	/**
+	 * Sets the activated day.
+	 *
+	 * @param activatedDay the new activated day
+	 */
 	public void setActivatedDay(SequenceOfActivatedDays activatedDay) {
 
 		this.activatedDay = activatedDay;
 	}
 
+	/**
+	 * Sets the countries.
+	 *
+	 * @param countries the new countries
+	 */
 	public void setCountries(SequenceOfCountries countries) {
 
 		this.countries = countries;
 	}
 
+	/**
+	 * Sets the included carriers num.
+	 *
+	 * @param includedCarriersNum the new included carriers num
+	 */
 	public void setIncludedCarriersNum(SequenceOfCarrierNum includedCarriersNum) {
 
 		this.includedCarriersNum = includedCarriersNum;
 	}
 
+	/**
+	 * Sets the included carriers IA 5.
+	 *
+	 * @param includedCarriersIA5 the new included carriers IA 5
+	 */
 	public void setIncludedCarriersIA5(SequenceOfStringIA5 includedCarriersIA5) {
 
 		this.includedCarriersIA5 = includedCarriersIA5;
 	}
 
+	/**
+	 * Sets the excluded carriers num.
+	 *
+	 * @param excludedCarriersNum the new excluded carriers num
+	 */
 	public void setExcludedCarriersNum(SequenceOfCarrierNum excludedCarriersNum) {
 
 		this.excludedCarriersNum = excludedCarriersNum;
 	}
 
+	/**
+	 * Sets the excluded carriers IA 5.
+	 *
+	 * @param excludedCarriersIA5 the new excluded carriers IA 5
+	 */
 	public void setExcludedCarriersIA5(SequenceOfStringIA5 excludedCarriersIA5) {
 
 		this.excludedCarriersIA5 = excludedCarriersIA5;
 	}
 
+	/**
+	 * Sets the included service brands.
+	 *
+	 * @param includedServiceBrands the new included service brands
+	 */
 	public void setIncludedServiceBrands(SequenceOfServiceBrands includedServiceBrands) {
 
 		this.includedServiceBrands = includedServiceBrands;
 	}
 
+	/**
+	 * Sets the excluded service brands.
+	 *
+	 * @param excludedServiceBrands the new excluded service brands
+	 */
 	public void setExcludedServiceBrands(SequenceOfServiceBrands excludedServiceBrands) {
 
 		this.excludedServiceBrands = excludedServiceBrands;
 	}
 
+	/**
+	 * Sets the valid region.
+	 *
+	 * @param validRegion the new valid region
+	 */
 	public void setValidRegion(SequenceOfRegionalValidityType validRegion) {
 
 		this.validRegion = validRegion;
 	}
 
+	/**
+	 * Sets the tariffs.
+	 *
+	 * @param tariffs the new tariffs
+	 */
 	public void setTariffs(SequenceOfTariffType tariffs) {
 
 		this.tariffs = tariffs;
 	}
 
+	/**
+	 * Sets the info text.
+	 *
+	 * @param infoText the new info text
+	 */
 	public void setInfoText(String infoText) {
 
 		this.infoText = infoText;
 	}
 
+	/**
+	 * Sets the extension.
+	 *
+	 * @param extension the new extension
+	 */
 	public void setExtension(ExtensionData extension) {
 
 		this.extension = extension;
 	}
 
+	/**
+	 * Gets the price.
+	 *
+	 * @return the price
+	 */
 	public Long getPrice() {
 		return Asn1BigInteger.toLong(price);
 	}
 
+	/**
+	 * Sets the price.
+	 *
+	 * @param price the new price
+	 */
 	public void setPrice(Long price) {
 		this.price = Asn1BigInteger.toAsn1(price);
 	}
 
+	/**
+	 * Gets the vat details.
+	 *
+	 * @return the vat details
+	 */
 	public SequenceOfVatDetail getVatDetails() {
 		return vatDetails;
 	}
 
+	/**
+	 * Sets the vat details.
+	 *
+	 * @param vatDetails the new vat details
+	 */
 	public void setVatDetails(SequenceOfVatDetail vatDetails) {
 		this.vatDetails = vatDetails;
 	}
 
+	/**
+	 * Adds the vat detail.
+	 *
+	 * @param vatDetail the vat detail
+	 */
 	public void addVatDetail(VatDetailType vatDetail) {
 		if (this.vatDetails == null) {
 			this.vatDetails = new SequenceOfVatDetail();
@@ -479,6 +836,13 @@ public class PassData extends Object {
 		this.vatDetails.add(vatDetail);
 	}
 	
+	/**
+	 * Sets the validity dates.
+	 *
+	 * @param fromDate the from date
+	 * @param untilDate the until date
+	 * @param issuingDate the issuing date
+	 */
 	public void setValidityDates (Date fromDate, Date untilDate, Date issuingDate){
 		
 		if (issuingDate == null || fromDate == null) return;
@@ -493,12 +857,24 @@ public class PassData extends Object {
 
 	}
 	
+	/**
+	 * Gets the valid from date.
+	 *
+	 * @param issuingDate the issuing date
+	 * @return the valid from date
+	 */
 	public Date getValidFromDate(Date issuingDate){
 		
 		return DateTimeUtils.getDate(issuingDate, this.validFromDay, this.validFromTime);
 		
 	}
 	
+	/**
+	 * Gets the valid until date.
+	 *
+	 * @param issuingDate the issuing date
+	 * @return the valid until date
+	 */
 	public Date getValidUntilDate(Date issuingDate){
 		
 		if (issuingDate == null) return null;
@@ -516,70 +892,109 @@ public class PassData extends Object {
 		
 	}
 	
-	public void setActivatedDays(Collection<Date> dates, Date issuingDate){
+
+	public void addActivatedDays(Collection<Long> days) {
+		if (days == null  || days.isEmpty()) return;
 		
+		if (this.activatedDay == null) {
+			this.activatedDay = new SequenceOfActivatedDays();
+		}
+		for (Long l : days) {
+			this.activatedDay.add(l);
+		}
+	}
+	
+	/**
+	 * Sets the activated days.
+	 *
+	 * @param dates the dates
+	 * @param issuingDate the issuing date
+	 * @param validFromDate the valid from date
+	 */
+	public void setActivatedDays(Collection<Date> dates, Date issuingDate, Date validFromDate){
 		if (this.activatedDay != null) {
 			this.activatedDay.clear();
 		} else {
 			this.activatedDay= new SequenceOfActivatedDays();
 		}
-		
-		if (dates != null && !dates.isEmpty()) {
-			
-			for (Date day : dates) {
-				this.addActivatedDay(issuingDate, day);
-			}
-			
+		long dateDif = 0L;
+		if (validFromDate != null) {
+			dateDif = DateTimeUtils.getDateDifference(issuingDate,validFromDate);
 		}
-		
+		if (dates != null && !dates.isEmpty()) {
+			for (Date day : dates) {
+				this.addActivatedDay(issuingDate, dateDif, day);
+			}
+		}
 	}
 	
-	public void addActivatedDay(Date issuingDate, Date day){
-		
-		Long dayDiff = DateTimeUtils.getDateDifference(issuingDate, day);
-		
+	/**
+	 * Adds the activated day.
+	 *
+	 * @param issuingDate the issuing date in UTC
+	 * @param dateOffset the date offset to be added to the issuing date
+	 * @param day the day to be added
+	 */
+	public void addActivatedDay(Date issuingDate, long dateOffset, Date day){
+		Long vDiff = DateTimeUtils.getDateDifferenceLocal(this.getValidFromDate(issuingDate), day);
 		if (this.activatedDay == null) {
 			this.activatedDay = new SequenceOfActivatedDays();
 		}
-		
-		if (dayDiff != null) {
-			this.activatedDay.add(dayDiff);
+		if (vDiff != null) {
+			this.activatedDay.add(vDiff);
 		}
-		
 	}
 	
+	/**
+	 * Gets the activated days.
+	 *
+	 * @param issuingDate the issuing date
+	 * @return the activated days
+	 */
 	public Collection<Date> getActivatedDays(Date issuingDate) {
-		
 		if (this.activatedDay == null) return null;
-		
 		ArrayList<Date> dates = new ArrayList<Date>();
-		
 		for (Long diff: this.getActivatedDay()) {
-			
-			Date day = DateTimeUtils.getDate(issuingDate, diff, null);
-			
+			Date day = DateTimeUtils.getDate(this.getValidFromDate(issuingDate), diff, null);
 			if (day != null) {
 				dates.add(day);
 			}
-			
-		}
-				
+		}	
 		return dates;
-		
 	}	
 
+	/**
+	 * Gets the valid from UTC offset.
+	 *
+	 * @return the valid from UTC offset
+	 */
 	public Long getValidFromUTCOffset() {
 		return validFromUTCOffset;
 	}
 
+	/**
+	 * Sets the valid from UTC offset.
+	 *
+	 * @param validFromUTCOffset the new valid from UTC offset
+	 */
 	public void setValidFromUTCOffset(Long validFromUTCOffset) {
 		this.validFromUTCOffset = validFromUTCOffset;
 	}
 
+	/**
+	 * Gets the valid until UTC offset.
+	 *
+	 * @return the valid until UTC offset
+	 */
 	public Long getValidUntilUTCOffset() {
 		return validUntilUTCOffset;
 	}
 
+	/**
+	 * Sets the valid until UTC offset.
+	 *
+	 * @param validUntilUTCOffset the new valid until UTC offset
+	 */
 	public void setValidUntilUTCOffset(Long validUntilUTCOffset) {
 		this.validUntilUTCOffset = validUntilUTCOffset;
 	}

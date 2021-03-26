@@ -10,7 +10,7 @@ import org.uic.barcode.dynamicFrame.Level2DataType;
 import org.uic.barcode.dynamicFrame.SequenceOfDataType;
 import org.uic.barcode.ticket.EncodingFormatException;
 import org.uic.barcode.ticket.api.asn.omv1.UicRailTicketData;
-import org.uic.barcode.ticket.api.SimpleUicTestTicket;
+import org.uic.barcode.ticket.api.testtickets.SimpleUicTestTicket;
 
 
 public class SimpleDynamicFrameTestBarcode {

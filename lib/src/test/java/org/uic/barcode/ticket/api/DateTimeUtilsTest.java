@@ -3,7 +3,7 @@ package org.uic.barcode.ticket.api;
 import java.util.Calendar;
 import java.util.TimeZone;
 import org.junit.Test;
-import org.uic.barcode.ticket.api.asn.omv1.DateTimeUtils;
+import org.uic.barcode.ticket.api.utils.DateTimeUtils;
 
 
 public class DateTimeUtilsTest{
