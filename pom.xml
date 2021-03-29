@@ -54,6 +54,22 @@
     </plugins>
    
   </build>
+  
+  <dependencies>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
+      <version>5.5.1</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.bouncycastle</groupId>
+      <artifactId>bcprov-jdk15to18</artifactId>
+      <version>1.6.5</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+  
   <licenses>
         <license>
             <name>The Apache Software License, Version 2.0</name>
