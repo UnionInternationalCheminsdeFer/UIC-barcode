@@ -21,7 +21,6 @@ package org.uic.barcode.ticket.api.asn.omv2;
 
 import java.util.Calendar;
 import java.util.Date;
-import java.util.TimeZone;
 
 import org.uic.barcode.asn1.datatypes.Asn1BigInteger;
 import org.uic.barcode.asn1.datatypes.Asn1Optional;
