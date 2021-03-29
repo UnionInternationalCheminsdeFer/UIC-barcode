@@ -223,11 +223,11 @@ class IntCoder implements Encoder, Decoder {
         	} else if (classOfT == BigInteger.class) {
         		return (T) resultValue;           		
         	} else if (classOfT == Long.class) {
-        		return (T) Long.valueOf(resultValue.longValueExact());        			
+        		return (T) bigToLong(resultValue);        			
         	} else if (classOfT == Integer.class) {
-        		return (T) Integer.valueOf(resultValue.intValueExact());    
+        		return (T) bigToInteger(resultValue);   
         	} else if (classOfT == Short.class) {
-        		return (T) Short.valueOf(resultValue.shortValueExact());       
+        		return (T) bigToShort(resultValue);         
         	} 	
         } catch (Exception e){
         	UperEncoder.logger.debug(String.format("INTEGER Decoded as %s is too big for data type", resultValue));
@@ -235,6 +235,42 @@ class IntCoder implements Encoder, Decoder {
 		return null;
     }
 
+    private Long bigToLong(BigInteger b) {
+    	
+    	Long l = b.longValue();
+    	
+    	if (BigInteger.valueOf(l).equals(b)) {
+    		return l;
+    	} else {
+    		throw new ArithmeticException("BigInteger To Long failed");
+    	}
+
+    }
+    
+    private Integer bigToInteger(BigInteger b) {
+    	
+    	Integer l = b.intValue();
+    	
+    	if (BigInteger.valueOf(l).equals(b)) {
+    		return l;
+    	} else {
+    		throw new ArithmeticException("BigInteger To Integer failed");
+    	}
+
+    }
+    
+    private Short bigToShort(BigInteger b) {
+    	
+    	Short l = b.shortValue();
+    	
+    	if (BigInteger.valueOf(l).equals(b)) {
+    		return l;
+    	} else {
+    		throw new ArithmeticException("BigInteger To Short failed");
+    	}
+
+    }
+    
 	@SuppressWarnings("unchecked")
 	@Override
 	public <T> T getDefault(Class<T> classOfT, Annotation[] extraAnnotations) {
