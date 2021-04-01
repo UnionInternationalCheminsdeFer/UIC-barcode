@@ -488,7 +488,6 @@ public class StaticFrame {
 			throw (new EncodingFormatException(String.format("UIC Barcode Version %s not supported", versionValue)));
 		}
 
-
 		String lengthValue   = new String( Arrays.copyOfRange(inputData,offset,offset + 4));
 		offset = offset + 4;		
 		

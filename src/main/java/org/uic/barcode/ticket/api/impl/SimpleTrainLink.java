@@ -88,7 +88,13 @@ public class SimpleTrainLink implements ITrainLink{
 	 * @see org.uic.ticket.api.spec.ITrainLink#setToStation(java.lang.String)
 	 */
 	public void setToStation(String toStation) {
-		this.toStation = toStation.trim();
+		if (toStation != null) {
+			this.toStation = toStation.trim();
+		} else {
+			this.toStation = null;
+		}
+		
+		
 	}
 	
 	/* (nicht-Javadoc)
@@ -102,7 +108,12 @@ public class SimpleTrainLink implements ITrainLink{
 	 * @see org.uic.ticket.api.spec.ITrainLink#setFromStationName(java.lang.String)
 	 */
 	public void setFromStationName(String fromStationName) {
-		this.fromStationName = fromStationName.trim();
+		if (fromStationName != null) {
+			this.fromStationName = fromStationName.trim();
+		} else {
+			this.fromStationName = null;
+		}
+		
 	}
 	
 	/* (nicht-Javadoc)

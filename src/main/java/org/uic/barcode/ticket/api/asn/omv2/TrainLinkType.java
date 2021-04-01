@@ -44,11 +44,11 @@ public class TrainLinkType extends Object {
 
 	@FieldOrder(order = 2)
 	@IntRange(minValue=0,maxValue=370)
-	@Asn1Optional public Long travelDate;
+	public Long travelDate;
 
 	@FieldOrder(order = 3)
 	@IntRange(minValue=0,maxValue=1440)
-	@Asn1Optional public Long departureTime;
+	public Long departureTime;
 	
 	@FieldOrder(order = 4)
 	@IntRange(minValue=-60, maxValue=60)
