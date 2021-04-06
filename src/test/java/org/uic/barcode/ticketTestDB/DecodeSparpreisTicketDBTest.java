@@ -1,15 +1,43 @@
 package org.uic.barcode.ticketTestDB;
 
+import static org.junit.jupiter.api.Assertions.assertAll;
+
+import java.util.TimeZone;
+
+import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.uic.barcode.Decoder;
 import org.uic.barcode.asn1.uper.UperEncoder;
 import org.uic.barcode.staticFrame.ticketLayoutBarcode.TicketLayout;
 import org.uic.barcode.ticket.api.spec.IOpenTicket;
+import org.uic.barcode.ticket.api.spec.IPassengerType;
+import org.uic.barcode.ticket.api.spec.ITariff;
 import org.uic.barcode.ticket.api.spec.ITrainLink;
+import org.uic.barcode.ticket.api.spec.ITraveler;
 import org.uic.barcode.ticket.api.spec.IUicRailTicket;
 
 public class DecodeSparpreisTicketDBTest {
+	
+    TimeZone defaulttimeZone = null;
+	
+	/**
+	 * Prepare tickets.
+	 */
+	@Before public void prepare() {
+		defaulttimeZone = TimeZone.getDefault();
+    	//decode in local CET time zone
+		TimeZone.setDefault(TimeZone.getTimeZone("CET"));
+	}
+	
+	
+	/**
+	 * clean up
+	 */
+	@After public void resetTimeZone() {
+		TimeZone.setDefault(defaulttimeZone);
+	}
 	
     @Test
     public void testDecoder() throws Exception {
@@ -28,12 +56,46 @@ public class DecodeSparpreisTicketDBTest {
         Assert.assertNotNull(ticket.getDocumentData());
         Assert.assertNotNull(ticket.getIssuerDetails());        
         Assert.assertNotNull(ticket.getTravelerDetails());
+
+        assert(ticket.getIssuerDetails().getIssuer().equals("1080"));
+        assert(ticket.getIssuerDetails().getIssuerPNR().equals("D260V48G"));
+        String issuingDate = ticket.getIssuerDetails().getIssuingDate().toString();
+        assert(issuingDate.equals("Fri Oct 30 11:50:00 CET 2020"));
+        assert(ticket.getIssuerDetails().getSecurityProvider().equals("1080"));
+        assert(ticket.getIssuerDetails().isSecurePaperTicket() == false);
+        assert(ticket.getIssuerDetails().isActivated() == true);
+        assert(ticket.getIssuerDetails().isSpecimen() == false);
+        
         assert(ticket.getTravelerDetails().getTravelers().size() == 1); 
+        ITraveler traveler = ticket.getTravelerDetails().getTravelers().iterator().next();
+        assert(traveler.getFirstName().equals("Karsten"));
+        assert(traveler.getLastName().equals("Will"));
+        assert(traveler.isTicketHolder() == true);
+        
         assert(ticket.getDocumentData().size() == 1);
         IOpenTicket openTicket = (IOpenTicket) ticket.getDocumentData().iterator().next();
         Assert.assertNotNull(openTicket.getValidRegionList());
+        assert(openTicket.getReference().equals("CN0CTUMY"));
+        String fromDate = openTicket.getValidFrom().toString();
+        assert(fromDate.equals("Thu Nov 05 00:00:00 CET 2020"));
+        assert(openTicket.getValidFromUTCoffset() == -4L);
+        String toDate = openTicket.getValidUntil().toString();
+        assert(toDate.equals("Fri Nov 06 10:00:00 CET 2020"));
+        assert(openTicket.getValidUntilUTCoffset() == -4L);
+        
+        Assert.assertNotNull(openTicket.getTariffs());
+        assert(openTicket.getTariffs().size() == 1);
+        ITariff tariff = openTicket.getTariffs().iterator().next();
+        assert(tariff.getNumberOfPassengers() == 1);
+        assert(tariff.getPassengerType().equals(IPassengerType.adult));
+        assert(tariff.getTariffDescription().equals("Super Sparpreis"));
+        
         ITrainLink tl = (ITrainLink) openTicket.getValidRegionList().iterator().next();
-        assert(tl.getTrain().contentEquals("ICE973"));
+        Assert.assertNotNull(tl);
+        assert(tl.getTrain().equals("ICE973"));
+        String departureDate = tl.getDepartureDateTime().toString();
+        assert(departureDate.equals("Fri Nov 06 11:58:00 CET 2020"));
+        Assert.assertNull(layout);
         Assert.assertNotNull(decoder);
     }
     
