@@ -30,6 +30,9 @@ import org.uic.barcode.asn1.datatypes.Sequence;
 
 @Sequence
 public class VatDetailType extends Object {
+	
+	
+	@Sequence
 	public VatDetailType() {
 	}
 

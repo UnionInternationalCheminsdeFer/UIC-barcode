@@ -43,7 +43,7 @@ public class TrainLinkType extends Object {
 	@Asn1Optional public String trainIA5;
 
 	@FieldOrder(order = 2)
-	@IntRange(minValue=0,maxValue=370)
+	@IntRange(minValue=-1,maxValue=370)
 	public Long travelDate;
 
 	@FieldOrder(order = 3)

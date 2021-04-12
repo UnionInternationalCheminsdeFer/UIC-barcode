@@ -27,12 +27,16 @@ import org.uic.barcode.asn1.datatypes.Asn1Default;
 import org.uic.barcode.asn1.datatypes.Asn1Optional;
 import org.uic.barcode.asn1.datatypes.CharacterRestriction;
 import org.uic.barcode.asn1.datatypes.FieldOrder;
+import org.uic.barcode.asn1.datatypes.HasExtensionMarker;
 import org.uic.barcode.asn1.datatypes.IntRange;
 import org.uic.barcode.asn1.datatypes.RestrictedString;
+import org.uic.barcode.asn1.datatypes.Sequence;
 import org.uic.barcode.asn1.datatypes.SizeRange;
 import org.uic.barcode.asn1.datatypesimpl.SequenceOfStringIA5;
 import org.uic.barcode.ticket.api.utils.DateTimeUtils;
 
+@Sequence
+@HasExtensionMarker
 public class IncludedOpenTicketType extends Object {
 	public IncludedOpenTicketType() {
 	}
@@ -68,6 +72,7 @@ public class IncludedOpenTicketType extends Object {
 
 	@FieldOrder(order = 8)
 	@IntRange(minValue=-1,maxValue=700)
+	@Asn1Default(value = "0")
 	@Asn1Optional public Long validFromDay;
 
 	@FieldOrder(order = 9)
@@ -80,6 +85,7 @@ public class IncludedOpenTicketType extends Object {
 
 	@FieldOrder(order = 11)
 	@IntRange(minValue=0,maxValue=370)
+	@Asn1Default(value = "0")
 	@Asn1Optional public Long validUntilDay;
 
 	@FieldOrder(order = 12)
@@ -91,7 +97,6 @@ public class IncludedOpenTicketType extends Object {
 	@Asn1Optional public Long validUntilUTCOffset;
 
 	@FieldOrder(order = 14)
-	@Asn1Default(value="second")
 	@Asn1Optional public TravelClassType classCode;
 
 	@FieldOrder(order = 15)

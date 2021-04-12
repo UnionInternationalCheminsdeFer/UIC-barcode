@@ -115,6 +115,7 @@ import org.uic.barcode.ticket.api.asn.omv1.UicRailTicketData;
 	    	tr.setIdCard("12345");
 	    	tr.setFirstName("John");
 	    	tr.setSecondName("Dow");
+	    	tr.setYearOfBirth(1990L);
 	    	tr.setDayOfBirth(100L);
 	    	tr.setGender(GenderType.male);
 	    	tr.setIdCard("IEDZ235FT");
