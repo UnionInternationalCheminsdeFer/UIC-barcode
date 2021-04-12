@@ -72,6 +72,7 @@ public class IncludedOpenTicketType extends Object {
 
 	@FieldOrder(order = 8)
 	@IntRange(minValue=-1,maxValue=700)
+	@Asn1Default(value = "0")
 	@Asn1Optional public Long validFromDay;
 
 	@FieldOrder(order = 9)
@@ -83,7 +84,8 @@ public class IncludedOpenTicketType extends Object {
 	@Asn1Optional public Long validFromUTCOffset;
 
 	@FieldOrder(order = 11)
-	@IntRange(minValue=0,maxValue=370)
+	@IntRange(minValue=-1,maxValue=370)
+	@Asn1Default(value = "0")
 	@Asn1Optional public Long validUntilDay;
 
 	@FieldOrder(order = 12)
@@ -95,7 +97,6 @@ public class IncludedOpenTicketType extends Object {
 	@Asn1Optional public Long validUntilUTCOffset;
 
 	@FieldOrder(order = 14)
-	@Asn1Default(value="second")
 	@Asn1Optional public TravelClassType classCode;
 
 	@FieldOrder(order = 15)
