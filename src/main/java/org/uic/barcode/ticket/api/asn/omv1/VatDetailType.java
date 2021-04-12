@@ -23,6 +23,7 @@ import org.uic.barcode.asn1.datatypes.Asn1BigInteger;
 import org.uic.barcode.asn1.datatypes.Asn1Optional;
 import org.uic.barcode.asn1.datatypes.CharacterRestriction;
 import org.uic.barcode.asn1.datatypes.FieldOrder;
+import org.uic.barcode.asn1.datatypes.HasExtensionMarker;
 import org.uic.barcode.asn1.datatypes.IntRange;
 import org.uic.barcode.asn1.datatypes.RestrictedString;
 import org.uic.barcode.asn1.datatypes.Sequence;
@@ -30,6 +31,9 @@ import org.uic.barcode.asn1.datatypes.Sequence;
 
 @Sequence
 public class VatDetailType extends Object {
+	
+	
+	@Sequence
 	public VatDetailType() {
 	}
 

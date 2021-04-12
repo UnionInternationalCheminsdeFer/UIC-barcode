@@ -27,7 +27,6 @@ import org.uic.barcode.asn1.datatypes.IntRange;
 import org.uic.barcode.asn1.datatypes.RestrictedString;
 import org.uic.barcode.asn1.datatypes.Sequence;
 
-
 @Sequence
 public class VatDetailType extends Object {
 	public VatDetailType() {
