@@ -240,7 +240,7 @@ ASN-Module DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 	    trainIA5       		 IA5String 	                    OPTIONAL,     						
 	    						
 	    -- planned departure date of the delayed train in local time at the station where delay 
-	    -  became relevant (see below)
+	    --  became relevant (see below)
       	-- number of year 
    	    departureYear 		INTEGER (2016..2269) 	OPTIONAL,    	
    	    -- number of the day in the year (1.1. = 1)
@@ -868,7 +868,7 @@ ASN-Module DEFINITIONS AUTOMATIC TAGS ::= BEGIN
        -- in case no UTC offset is provided (RECOMMENDED) the local date time in the time zone of the current location of the traveler	   
 	   -- offset in units of 15 minutes from local time to UTC 
        -- (UTC = local + offset * 15 Minutes)
-       validFromUTCOffset   INTEGER (-60..60)       OPTIONAL,   	   the 
+       validFromUTCOffset   INTEGER (-60..60)       OPTIONAL,
 	   
 	   -- end of validity  (local time)
 	   -- number of days from valid from day, 0 = valid on valid-from-date

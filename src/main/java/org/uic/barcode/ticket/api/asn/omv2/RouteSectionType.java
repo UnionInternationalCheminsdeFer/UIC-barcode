@@ -25,7 +25,9 @@ import org.uic.barcode.asn1.datatypes.CharacterRestriction;
 import org.uic.barcode.asn1.datatypes.FieldOrder;
 import org.uic.barcode.asn1.datatypes.IntRange;
 import org.uic.barcode.asn1.datatypes.RestrictedString;
+import org.uic.barcode.asn1.datatypes.Sequence;
 
+@Sequence
 public class RouteSectionType extends Object {
 	public RouteSectionType() {
 	}

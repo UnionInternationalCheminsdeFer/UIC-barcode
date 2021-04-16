@@ -78,31 +78,35 @@ public class TravelerType extends Object {
 	@Asn1Optional public Long yearOfBirth;
 
 	@FieldOrder(order = 10)
-	@IntRange(minValue=0,maxValue=366)
-	@Asn1Optional public Long dayOfBirth;
-
+	@IntRange(minValue=1,maxValue=12)
+	@Asn1Optional public Long monthOfBirth;
+	
 	@FieldOrder(order = 11)
-	public Boolean ticketHolder = true;
+	@IntRange(minValue=1,maxValue=31)
+	@Asn1Optional public Long dayOfBirth;	    
 
 	@FieldOrder(order = 12)
-	@Asn1Optional public PassengerType passengerType;
+	public Boolean ticketHolder = true;
 
 	@FieldOrder(order = 13)
-	@Asn1Optional public Boolean passengerWithReducedMobility;
+	@Asn1Optional public PassengerType passengerType;
 
 	@FieldOrder(order = 14)
-	@IntRange(minValue=1,maxValue=999)
-	@Asn1Optional public Long countryOfResidence;
+	@Asn1Optional public Boolean passengerWithReducedMobility;
 
 	@FieldOrder(order = 15)
 	@IntRange(minValue=1,maxValue=999)
-	@Asn1Optional public Long countryOfPassport;
+	@Asn1Optional public Long countryOfResidence;
 
 	@FieldOrder(order = 16)
 	@IntRange(minValue=1,maxValue=999)
-	@Asn1Optional public Long countryOfIdCard;
+	@Asn1Optional public Long countryOfPassport;
 
 	@FieldOrder(order = 17)
+	@IntRange(minValue=1,maxValue=999)
+	@Asn1Optional public Long countryOfIdCard;
+
+	@FieldOrder(order = 18)
 	@Asn1Optional public SequenceOfCustomerStatusType status;
 	
 
@@ -286,8 +290,14 @@ public class TravelerType extends Object {
 		this.status = status;
 	}
 	
-	
-	
+	public Long getMonthOfBirth() {
+		return monthOfBirth;
+	}
+
+	public void setMonthOfBirth(Long monthOfBirth) {
+		this.monthOfBirth = monthOfBirth;
+	}
+
 	public void setDateOfBirth(Date date){
 		
 		if (date == null) return;
@@ -296,9 +306,9 @@ public class TravelerType extends Object {
 		cal.setTime(date);
 		
 		this.yearOfBirth = new Long( cal.get(Calendar.YEAR));
-		this.dayOfBirth = new Long (cal.get(Calendar.DAY_OF_YEAR));
+		this.monthOfBirth = new Long(cal.get(Calendar.MONTH) + 1);
+		this.dayOfBirth = new Long (cal.get(Calendar.DAY_OF_MONTH));
 
-		
 	}
 	
 	public Date getDateOfBirth() {
@@ -310,13 +320,15 @@ public class TravelerType extends Object {
 		cal.clear();
 		cal.setTimeZone(TimeZone.getTimeZone("UTC"));
 		cal.set(Calendar.YEAR, this.yearOfBirth.intValue());
-		cal.set(Calendar.DAY_OF_YEAR, this.dayOfBirth.intValue());
+		cal.set(Calendar.MONTH, (int)(this.monthOfBirth - 1));
+		cal.set(Calendar.DAY_OF_MONTH, this.dayOfBirth.intValue());
 		cal.set(Calendar.HOUR_OF_DAY,0);
 		cal.set(Calendar.MINUTE,0);
 		
 		return cal.getTime();
 	}
 
+	
 
 
 }

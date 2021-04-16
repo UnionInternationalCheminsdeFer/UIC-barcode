@@ -34,7 +34,7 @@ public class ValidityPeriodType extends Object {
 	}
 
 	@FieldOrder(order = 0)
-	@IntRange(minValue=0,maxValue=700)
+	@IntRange(minValue=-1,maxValue=700)
 	@Asn1Default(value="0")
 	@Asn1Optional public Long validFromDay;
 
@@ -47,7 +47,7 @@ public class ValidityPeriodType extends Object {
 	@Asn1Optional public Long validFromUTCOffset;
 
 	@FieldOrder(order = 3)
-	@IntRange(minValue=0,maxValue=370)
+	@IntRange(minValue=-1,maxValue=370)
 	@Asn1Default(value="0")
 	@Asn1Optional public Long validUntilDay;
 

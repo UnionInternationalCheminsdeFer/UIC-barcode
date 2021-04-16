@@ -5,7 +5,7 @@
 
     <groupId>org.uic.barcode</groupId>
     <artifactId>org.uic.barcode</artifactId>
-    <version>1.2.3-SNAPSHOT</version>
+    <version>1.2.4-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>UIC barcode</name>
@@ -53,7 +53,6 @@
                 </configuration>
             </plugin>
         </plugins>
-
     </build>
 
     <dependencies>
