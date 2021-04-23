@@ -1,7 +1,5 @@
 package org.uic.barcode.ticketTestDB;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
-
 import java.util.TimeZone;
 
 import org.junit.After;

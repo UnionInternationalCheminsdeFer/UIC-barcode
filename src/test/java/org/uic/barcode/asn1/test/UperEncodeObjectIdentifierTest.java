@@ -3,16 +3,15 @@ package org.uic.barcode.asn1.test;
 import static org.junit.Assert.assertEquals;
 import java.util.logging.Level;
 
-import org.junit.jupiter.api.Test;
-import org.uic.barcode.asn1.datatypes.Asn1Optional;
+import org.junit.Test;
 import org.uic.barcode.asn1.datatypes.CharacterRestriction;
 import org.uic.barcode.asn1.datatypes.FieldOrder;
 import org.uic.barcode.asn1.datatypes.RestrictedString;
 import org.uic.barcode.asn1.datatypes.Sequence;
 import org.uic.barcode.asn1.uper.UperEncoder;
 
-class UperEncodeObjectIdentifierTest {
-	
+public class UperEncodeObjectIdentifierTest {
+
 	
     /**
      * Example from the Standard on UPER.
@@ -50,7 +49,7 @@ class UperEncodeObjectIdentifierTest {
 
     }
     
-    @Test 
+    @Test
     public void testEncode() throws IllegalArgumentException, IllegalAccessException {
         TestRecord record = new TestRecord();
         byte[] encoded = UperEncoder.encode(record);

@@ -50,7 +50,7 @@ public class UperEncodeStringTest {
 
     @Test public void testEncode() throws IllegalArgumentException, IllegalAccessException {
     	
-    	//Teststring: AêñüC
+    	//Teststring: AÃªÃ±Ã¼C
     	String original = new String("A" + "\u00ea" + "\u00f1" + "\u00fc" + "C");
     	
         TestRecord record = new TestRecord(original, "Meier");
@@ -63,7 +63,7 @@ public class UperEncodeStringTest {
     
     @Test public void testEncodeUtf8() throws IllegalArgumentException, IllegalAccessException {
     	
-    	 //"你好�?�" 
+    	 //"ä½ å¥½å?—" 
         String original = new String("\u00e4" + "\u00bd" + "\u00a0" + "\u00e5" + "\u00a5" + "\u00bd" + "\u00e5" + "\u0090" + "\u0097");
         TestRecord record = new TestRecord(original, "Meier");
         byte[] encoded = UperEncoder.encode(record);
@@ -76,7 +76,7 @@ public class UperEncodeStringTest {
     
     @Test public void testDecode() throws IllegalArgumentException, IllegalAccessException {
 
-    	//Teststring: AêñüC
+    	//Teststring: AÃªÃ±Ã¼C
     	String original = new String("A" + "\u00ea" + "\u00f1" + "\u00fc" + "C");
 
     	TestRecord record = new TestRecord(original, "Meier");
@@ -91,7 +91,7 @@ public class UperEncodeStringTest {
     
     
     @Test public void testDecodeUtf8() throws IllegalArgumentException, IllegalAccessException {
-   	    //"你好�?�" 
+   	    //"ä½ å¥½å?—" 
         String original = new String("\u00e4" + "\u00bd" + "\u00a0" + "\u00e5" + "\u00a5" + "\u00bd" + "\u00e5" + "\u0090" + "\u0097");
         TestRecord record = new TestRecord(original, "Meier");    	
         byte[] encoded = UperEncoder.encode(record);
