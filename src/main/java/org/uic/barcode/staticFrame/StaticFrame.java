@@ -655,7 +655,7 @@ public class StaticFrame {
 	 * @throws NoSuchAlgorithmException the no such algorithm exception
 	 * @throws SignatureException the signature exception
 	 * @throws IllegalArgumentException the illegal argument exception
-	 * @throws UnsupportedOperationException the unsupported operatign exception
+	 * @throws UnsupportedOperationException the unsupported operating exception
 	 * @throws EncodingFormatException 
 	 * @throws IOException 
 	 */
@@ -668,6 +668,9 @@ public class StaticFrame {
 	       if (service != null) {
 	    	   algo = service.getAlgorithm();
 	       }
+		}
+		if (algo == null) {
+			throw new NoSuchAlgorithmException("No service for algorithm found: " + signingAlg);
 		}
 		Signature sig = Signature.getInstance(algo);
 		sig.initVerify(key);
@@ -697,7 +700,11 @@ public class StaticFrame {
 	       Service service = prov.getService("Signature",signingAlg);
 	       if (service != null) {
 	    	   algo = service.getAlgorithm();
+	    	   break;
 	       }
+		}
+		if (algo == null) {
+			throw new NoSuchAlgorithmException("No service for algorthm found: " + signingAlg);
 		}
 		Signature sig = Signature.getInstance(algo);
 		sig.initSign(key);

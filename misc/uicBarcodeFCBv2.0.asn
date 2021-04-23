@@ -1996,7 +1996,7 @@ ASN-Module DEFINITIONS AUTOMATIC TAGS ::= BEGIN
     								
     GeoUnitType ::=					ENUMERATED {   	
     	microDegree   		(0),   -- approx. 11 cm on earth surface                                                    
-    	tenthmilliDegree  	(1),   -- 1 / 100000 degree is approx. 1.1 meter on earth surface   
+    	tenthmilliDegree  	(1),   -- 1 / 10000 degree is approx. 11 meter on earth surface   
     	milliDegree   		(2),   -- approx 110 meter on earth surface 
     	centiDegree   		(3),   
     	deciDegree    		(4)

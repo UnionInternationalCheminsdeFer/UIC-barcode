@@ -12,7 +12,7 @@ public class Constants {
 	
 	public static String DSA_SHA1 = "1.2.840.10040.4.3";
 	public static String DSA_SHA224 = "2.16.840.1.101.3.4.3.1";
-	public static String DSA_SHA248 = "2.16.840.1.101.3.4.3.2";	
+	public static String DSA_SHA256 = "2.16.840.1.101.3.4.3.2";	
 	
 	public static String DATA_TYPE_FCB_VERSION_1 = "FCB1";
 	public static String DATA_TYPE_FCB_VERSION_2 = "FCB2";	

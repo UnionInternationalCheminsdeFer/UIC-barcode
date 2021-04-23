@@ -58,7 +58,7 @@ public class SignatureValidationDBTicketTest {
         
         assert("00002".equals(keyVersion));
         
-		String algorithmOID = Constants.DSA_SHA248;
+		String algorithmOID = Constants.DSA_SHA256;
 		
         int result = decoder.validateLevel1(getPublicKey2(), algorithmOID);
         

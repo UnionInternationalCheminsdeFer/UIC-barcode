@@ -50,7 +50,7 @@ public class AlgorithmNameResolver {
 		       			Service pservice = prov.getService(ptype, poid);
 		       			String palgo = pservice.getAlgorithm();	
 
-	       				if (ptype.equalsIgnoreCase(type) && poid.equals(oid)) {
+	       				if (poid != null && ptype.equalsIgnoreCase(type) && poid.equals(oid)) {
 	       					return palgo;
 	       				}
 	       			}
