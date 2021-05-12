@@ -119,4 +119,5 @@ public class DecodeSparpreisTicketDBTest {
 				"14b00240400f53757065722053706172" + 
 				"7072656973c41e4a03";
 		 }
+
 }

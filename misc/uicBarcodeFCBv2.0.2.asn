@@ -2109,5 +2109,3 @@ ASN-Module DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 		otherRack 			(8)
 		,...
 	}	
-
-END

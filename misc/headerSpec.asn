@@ -29,7 +29,7 @@ ASN-Module DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 -- #    the format is kept more flexible to cover upcoming extensions of the RICS code by ERA	
 -- #          
 -- # 
--- # -	A bar code which is only static (printed on a paper), and for which the security is in the system, doesn’t need any of these elements.
+-- # -	A bar code which is only static (printed on a paper), and for which the security is in the system, doesnâ€™t need any of these elements.
 -- # -	A bar code which is only static, and includes its own security, needs:
 -- #  	  level1Signature
 -- #      level1KeyAlg if the associated key does not include the complete certificate in keys.xml but only the public key
@@ -114,6 +114,3 @@ ASN-Module DEFINITIONS AUTOMATIC TAGS ::= BEGIN
        	dataFormat	    IA5String,      	
     	data	    	OCTET STRING
    }
-
-
-END
