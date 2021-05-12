@@ -17,29 +17,30 @@
  *   along with openASN.1. If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package org.uic.barcode.dynamicContent.dfcb1;
+package org.uic.barcode.dynamicContent.fdc1;
 
 // TODO: Auto-generated Javadoc
 /**
- * The Enum HemisphereLongitudeType.
+ * The Enum HemisphereLatitudeType.
  */
-public enum HemisphereLongitudeType {
+public enum HemisphereLatitudeType {
 		
-		/** The north. */
-		north("north"),
+		/** The east. */
+		east("east"),
 		
-		/** The south. */
-		south("south");
+		/** The west. */
+		west("west");
+		
 		
 		/** The text. */
 		public String text;
 
 		/**
-		 * Instantiates a new hemisphere longitude type.
+		 * Instantiates a new hemisphere latitude type.
 		 *
 		 * @param text the text
 		 */
-		HemisphereLongitudeType(String text) {
+		HemisphereLatitudeType(String text) {
 			this.text = text;
 		}
 		
@@ -50,6 +51,6 @@ public enum HemisphereLongitudeType {
 		 */
 		public String toString(){
 			return text;
-		}	
+		}		
 }
 

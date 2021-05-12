@@ -17,7 +17,7 @@
  *   along with openASN.1. If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package org.uic.barcode.dynamicContent.dfcb1;
+package org.uic.barcode.dynamicContent.fdc1;
 
 import org.uic.barcode.asn1.datatypes.CharacterRestriction;
 import org.uic.barcode.asn1.datatypes.FieldOrder;

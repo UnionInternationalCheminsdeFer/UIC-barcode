@@ -18,7 +18,7 @@ import org.uic.barcode.asn1.datatypes.RestrictedString;
 import org.uic.barcode.asn1.datatypes.Sequence;
 import org.uic.barcode.asn1.datatypesimpl.OctetString;
 import org.uic.barcode.asn1.uper.UperEncoder;
-import org.uic.barcode.dynamicContent.dfcb1.UicDynamicContentData1;
+import org.uic.barcode.dynamicContent.fdc1.UicDynamicContentDataFDC1;
 import org.uic.barcode.utils.AlgorithmNameResolver;
 
 
@@ -263,19 +263,19 @@ public class DynamicFrame extends Object{
 		
 	}
 	
-	public void addLevel2DynamicData(UicDynamicContentData1 dynamicData) {
+	public void addLevel2DynamicData(UicDynamicContentDataFDC1 dynamicData) {
 		this.getLevel2SignedData().setLevel2Data( dynamicData.getDataType());	
 	}
 	
-	public UicDynamicContentData1 getDynamicDataFDC1() {
+	public UicDynamicContentDataFDC1 getDynamicDataFDC1() {
 		
 		if (this.getLevel2SignedData() == null || 
 			this.getLevel2SignedData().getLevel2Data() == null){
 			return null;
 		}
 		
-		if ( UicDynamicContentData1.getFormat().equals(this.getLevel2SignedData().getLevel2Data().getFormat())) {
-			return UperEncoder.decode(this.getLevel2SignedData().getLevel2Data().getByteData(), UicDynamicContentData1.class);		
+		if ( UicDynamicContentDataFDC1.getFormat().equals(this.getLevel2SignedData().getLevel2Data().getFormat())) {
+			return UperEncoder.decode(this.getLevel2SignedData().getLevel2Data().getByteData(), UicDynamicContentDataFDC1.class);		
 		}
 		return null;
 		

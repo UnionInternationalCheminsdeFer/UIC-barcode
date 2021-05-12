@@ -180,7 +180,7 @@ public class UHEADDataRecord extends DataRecord{
 			}		
 
 			// date format "DDMMYYYYHHMM"
-			SimpleDateFormat formatter = new SimpleDateFormat("ddMMyyyyhhmm");
+			SimpleDateFormat formatter = new SimpleDateFormat("ddMMyyyyHHmm");
 			try {
 				issuingDate = formatter.parse(issuingDateString);
 			} catch (ParseException e) {
