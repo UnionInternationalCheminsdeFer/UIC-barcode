@@ -1,8 +1,18 @@
 package org.uic.barcode.test.utils;
 
+import java.security.InvalidAlgorithmParameterException;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.SecureRandom;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import org.bouncycastle.jce.ECNamedCurveTable;
+import org.bouncycastle.jce.spec.ECParameterSpec;
+import org.uic.barcode.utils.AlgorithmNameResolver;
 
 public class TestUtils {
 	
@@ -33,6 +43,31 @@ public class TestUtils {
 			}
 		}
     	
+    }
+    
+	/**
+	 * Generate DSA keys.
+	 *
+	 * @return the key pair
+	 * @throws NoSuchAlgorithmException the no such algorithm exception
+	 * @throws NoSuchProviderException the no such provider exception
+	 * @throws InvalidAlgorithmParameterException the invalid algorithm parameter exception
+	 */
+	public static KeyPair generateDSAKeys(int keySize)  throws NoSuchAlgorithmException, NoSuchProviderException, InvalidAlgorithmParameterException{
+		    KeyPairGenerator g = KeyPairGenerator.getInstance("DSA", "BC");
+		    g.initialize(keySize, new SecureRandom());
+		    return g.generateKeyPair();	    
+	}
+
+	public static KeyPair generateECKeys(String keyAlgorithmOid, String curve)  throws Exception{
+		
+		String keyAlgorithmName = AlgorithmNameResolver.getName(AlgorithmNameResolver.TYPE_KEY_GENERATOR_ALG,  keyAlgorithmOid, "BC");
+		
+		keyAlgorithmName = "ECDSA";
+		ECParameterSpec ecSpec = ECNamedCurveTable.getParameterSpec(curve);
+	    KeyPairGenerator g = KeyPairGenerator.getInstance(keyAlgorithmName, "BC");
+	    g.initialize(ecSpec, new SecureRandom());
+	    return g.generateKeyPair();	    
     }
     
 }

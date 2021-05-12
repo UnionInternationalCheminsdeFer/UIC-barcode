@@ -868,7 +868,7 @@ ASN-Module DEFINITIONS AUTOMATIC TAGS ::= BEGIN
        -- in case no UTC offset is provided (RECOMMENDED) the local date time in the time zone of the current location of the traveler	   
 	   -- offset in units of 15 minutes from local time to UTC 
        -- (UTC = local + offset * 15 Minutes)
-       validFromUTCOffset   INTEGER (-60..60)       OPTIONAL,
+       validFromUTCOffset   INTEGER (-60..60)       OPTIONAL,   	   
 	   
 	   -- end of validity  (local time)
 	   -- number of days from valid from day, 0 = valid on valid-from-date
@@ -2069,7 +2069,7 @@ ASN-Module DEFINITIONS AUTOMATIC TAGS ::= BEGIN
     								
     GeoUnitType ::=					ENUMERATED {   	
     	microDegree   		(0),   -- approx. 11 cm on earth surface                                                    
-    	tenthmilliDegree  	(1),   -- 1 / 100000 degree is approx. 1.1 meter on earth surface   
+    	tenthmilliDegree  	(1),   -- 1 / 10000 degree is approx. 11 meter on earth surface   
     	milliDegree   		(2),   -- approx 110 meter on earth surface 
     	centiDegree   		(3),   
     	deciDegree    		(4)
@@ -2109,5 +2109,3 @@ ASN-Module DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 		otherRack 			(8)
 		,...
 	}	
-
-END

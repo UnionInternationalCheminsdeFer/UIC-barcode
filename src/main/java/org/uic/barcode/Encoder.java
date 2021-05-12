@@ -5,6 +5,7 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 
 import org.uic.barcode.asn1.datatypesimpl.OctetString;
+import org.uic.barcode.dynamicContent.fdc1.UicDynamicContentDataFDC1;
 import org.uic.barcode.dynamicFrame.Constants;
 import org.uic.barcode.dynamicFrame.DataType;
 import org.uic.barcode.dynamicFrame.DynamicFrame;
@@ -165,12 +166,29 @@ public class Encoder {
 		}
 	}
 	
+	public void setDynamicContentDataUIC1(UicDynamicContentDataFDC1 dcd) {
+		if (dynamicFrame != null) {
+			if (dynamicFrame.getLevel2SignedData() == null) {
+				dynamicFrame.setLevel2SignedData(new Level2DataType());
+			}		
+			dynamicFrame.getLevel2SignedData().setLevel2Data(dcd.getDataType());
+		}
+	}
+		
 	public DataType getLevel2Data() {
 		if (dynamicFrame != null && dynamicFrame.getLevel2SignedData() != null) {
 			return dynamicFrame.getLevel2SignedData().getLevel2Data();
 		}
 		return null;
 	}
+	
+	public UicDynamicContentDataFDC1 getDynamicContentDataUIC1() {
+		if (dynamicFrame != null && dynamicFrame.getLevel2SignedData() != null) {
+			return dynamicFrame.getDynamicDataFDC1();
+		}
+		return null;
+	}
+
 	
 	/**
 	 * Sign level 1 of a dynamic bar code or a static bar code.
