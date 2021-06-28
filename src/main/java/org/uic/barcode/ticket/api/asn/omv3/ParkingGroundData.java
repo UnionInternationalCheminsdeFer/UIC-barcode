@@ -17,7 +17,7 @@
  *   along with openASN.1. If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package org.uic.barcode.ticket.api.asn.omv2;
+package org.uic.barcode.ticket.api.asn.omv3;
 
 import java.util.Date;
 
@@ -50,7 +50,7 @@ public class ParkingGroundData extends Object {
 	public String parkingGroundId = "";
 
 	@FieldOrder(order = 3)
-	@IntRange(minValue=-1,maxValue=370)
+	@IntRange(minValue=-367,maxValue=370)
 	@Asn1Optional public Long fromParkingDate;
 
 	@FieldOrder(order = 4)

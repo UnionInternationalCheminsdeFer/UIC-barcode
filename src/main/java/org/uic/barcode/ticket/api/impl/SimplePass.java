@@ -11,6 +11,7 @@ import org.uic.barcode.ticket.api.spec.IExtension;
 import org.uic.barcode.ticket.api.spec.IPass;
 import org.uic.barcode.ticket.api.spec.IRegionalValidity;
 import org.uic.barcode.ticket.api.spec.ITariff;
+import org.uic.barcode.ticket.api.spec.ITrainValidity;
 import org.uic.barcode.ticket.api.spec.ITravelClassType;
 import org.uic.barcode.ticket.api.spec.IValidityDetails;
 import org.uic.barcode.ticket.api.spec.IVatDetail;
@@ -97,6 +98,9 @@ public class SimplePass extends SimpleDocumentData implements IPass {
         
         /** The price. */
         protected Long price;        
+        
+        
+        protected ITrainValidity trainValidity;
 
 
 		/* (nicht-Javadoc)
@@ -480,6 +484,16 @@ public class SimplePass extends SimpleDocumentData implements IPass {
 		@Override
 		public void setUntilDate(Date date) {
 			this.setValidUntil(date);			
+		}
+
+		@Override
+		public void setTrainValidity(ITrainValidity trainValidity) {
+			this.trainValidity = trainValidity;			
+		}
+
+		@Override
+		public ITrainValidity getTrainValidity() {
+			return trainValidity;
 		}
 
 }

@@ -39,6 +39,13 @@ public class SimpleViaStation implements IViaStation {
 	/** The series id. */
 	protected int seriesId;	
 	
+    /** The included service brands. */
+    protected Collection<Integer>includedServiceBrands = new LinkedHashSet<Integer>();	
+    	
+    /** The excluded service brands. */
+    protected Collection<Integer>excludedServiceBrands = new LinkedHashSet<Integer>();	 
+
+	
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.IViaStation#getStationCodeTable()
 	 */
@@ -151,7 +158,22 @@ public class SimpleViaStation implements IViaStation {
 	public void setSeriesId(int seriesId) {
 		this.seriesId = seriesId;
 	}
-	
-	
 
+	public Collection<Integer> getIncludedServiceBrands() {
+		return includedServiceBrands;
+	}
+
+	
+	public void addIncludedServiceBrand(Integer includedServiceBrand) {
+		this.includedServiceBrands.add(includedServiceBrand);
+	}
+
+	
+	public Collection<Integer> getExcludedServiceBrands() {
+		return excludedServiceBrands;
+	}
+
+	public void addExcludedServiceBrand(Integer excludedServiceBrand) {
+		this.excludedServiceBrands.add(excludedServiceBrand);
+	}
 }

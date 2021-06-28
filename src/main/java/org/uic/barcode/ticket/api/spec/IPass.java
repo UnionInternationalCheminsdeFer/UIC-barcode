@@ -6,6 +6,7 @@ package org.uic.barcode.ticket.api.spec;
 import java.util.Collection;
 import java.util.Date;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Interface IPass.
  * 
@@ -339,8 +340,7 @@ public interface IPass  extends IDocumentData {
 	/**
 	 * Sets the price. 
 	 *
-	 *
-	 * @param price
+	 * @param price the new price
 	 */
 	public void setPrice(Long price);
 	
@@ -369,7 +369,7 @@ public interface IPass  extends IDocumentData {
 	 * 
 	 * E.g. an included local transport ticket at the beginning or end of the route.
 	 *
-	 * @param includedAddOn the included add on
+	 * @param vatDetail the vat detail
 	 */
 	public void addVatDetail(IVatDetail vatDetail) ;
 	
@@ -391,7 +391,7 @@ public interface IPass  extends IDocumentData {
 	/**
 	 * Sets the validFrom date time.
 	 *
-	 * @param validFromDateTime the new validFrom date time
+	 * @param validFromUTCoffset the new valid from UT coffset
 	 */
 	public void setValidFromUTCoffset(Long validFromUTCoffset) ;
 	
@@ -405,8 +405,24 @@ public interface IPass  extends IDocumentData {
 	/**
 	 * Sets the validUntil date time.
 	 *
-	 * @param validUntilDateTime the new validUntil date time
+	 * @param validUntilUTCoffset the new valid until UT coffset
 	 */
 	public void setValidUntilUTCoffset(Long validUntilUTCoffset) ;
+	
+	
+	/**
+	 * Sets the train validity.
+	 *
+	 * @param trainValidity the new train validity
+	 */
+	public void setTrainValidity(ITrainValidity trainValidity);
+	
+	/**
+	 * Gets the train validity.
+	 *
+	 * @return the train validity
+	 */
+	public ITrainValidity getTrainValidity();
+	
 	
 }

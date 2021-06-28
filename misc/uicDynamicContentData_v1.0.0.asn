@@ -1,9 +1,10 @@
 -- ##########################################################################################
 -- # 
--- # FCB Dynamic Content - Version 1.0 - Draft #3 (2021-05-12) 
+-- # FCB Dynamic Content - Version 1.0 (2021-05-12) 
 -- #
--- # This file is available on the UIC FCB User Group GitHub:
--- #   <GitHub-link-to-be-added-here>
+-- # This file is available on the UIC FCB User Group GitHub: 
+-- #             https://github.com/UnionInternationalCheminsdeFer/UIC-barcode
+-- # 
 -- # Please check this link to see if a more recent version of this file is available.
 -- # 
 -- # The type UicDynamicContentData defined below is at least intended to generate a data
@@ -12,6 +13,14 @@
 -- # and identified as "FDC1" in UicBarcodeHeader.level2SignedData.level2Data.dataFormat.
 -- # 
 -- ##########################################################################################
+-- Creator: ASN.1 Editor (http://asneditor.sourceforge.net)
+-- Author: ClemensGantert
+-- Created: Mon Jun 28 14:14:28 CEST 2021
+ASN-Module DEFINITIONS AUTOMATIC TAGS ::= BEGIN
+
+-- imports and exports
+-- EXPORTS ALL;
+
    UicDynamicContentData ::= SEQUENCE {
 
      -- Identification of the mobile application that generated the barcode
@@ -112,4 +121,4 @@
 	   extensionId   IA5String, 
 	   extensionData OCTET STRING
    }						
-			
+END			
