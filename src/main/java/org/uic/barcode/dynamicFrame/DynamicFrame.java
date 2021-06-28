@@ -4,6 +4,7 @@ import java.security.InvalidKeyException;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
+import java.security.Provider;
 import java.security.PublicKey;
 import java.security.Signature;
 import java.security.SignatureException;
@@ -111,6 +112,18 @@ public class DynamicFrame extends Object{
 	 *
 	 */	
 	public int validateLevel2() {
+
+		return validateLevel2(null);
+	
+	}
+	
+	/**
+	 * Verify the level 2 signature
+	 * 
+	 * Note:  an appropriate security provider (e.g. BC) must be registered before 
+	 *
+	 */	
+	public int validateLevel2(Provider prov) {
 		
 		
 		String level2KeyAlg = this.getLevel2SignedData().getLevel1Data().level2KeyAlg;
@@ -155,7 +168,11 @@ public class DynamicFrame extends Object{
 		
 		Signature sig;
 		try {
-			sig = Signature.getInstance(algo);
+			if (prov == null) {
+				sig = Signature.getInstance(algo);
+			} else {
+				sig = Signature.getInstance(algo, prov);
+			}
 		} catch (NoSuchAlgorithmException e) {
 			return Constants.LEVEL2_VALIDATION_SIG_ALG_NOT_IMPLEMENTED;
 		}
@@ -262,6 +279,19 @@ public class DynamicFrame extends Object{
 		this.level2Signature = new OctetString(sig.sign());
 		
 	}
+
+	public void signLevel2(PrivateKey key, Provider prov) throws Exception {
+		
+		//find the algorithm name for the signature OID
+		String algo = AlgorithmNameResolver.getSignatureAlgorithmName(this.getLevel2SignedData().getLevel1Data().level2SigningAlg);
+		Signature sig = Signature.getInstance(algo,prov);
+		sig.initSign(key);
+		byte[] data = level2SignedData.encode();
+		sig.update(data);
+		this.level2Signature = new OctetString(sig.sign());
+		
+	}
+
 	
 	public void addLevel2DynamicData(UicDynamicContentDataFDC1 dynamicData) {
 		this.getLevel2SignedData().setLevel2Data( dynamicData.getDataType());	

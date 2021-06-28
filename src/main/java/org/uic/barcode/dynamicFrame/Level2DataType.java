@@ -1,6 +1,7 @@
 package org.uic.barcode.dynamicFrame;
 
 import java.security.PrivateKey;
+import java.security.Provider;
 import java.security.Signature;
 
 import org.uic.barcode.asn1.datatypes.Asn1Optional;
@@ -95,6 +96,26 @@ public class Level2DataType {
 		this.level1Signature = new OctetString(sig.sign());
 	}
 
+	/**
+	 * Sign the contained data block.
+	 * 
+	 * Note:  an appropriate security provider (e.g. BC) must be registered before 
+	 *
+	 * @param key the key
+	 * @param security provider - security provider that must be sued to create the signature
+	 * @return 
+	 * @return the byte[]
+	 * @throws Exception 
+	 */
+	public void signLevel1(PrivateKey key, Provider prov) throws Exception {
+		//find the algorithm name for the signature OID
+		String algo = AlgorithmNameResolver.getSignatureAlgorithmName(getLevel1Data().level1SigningAlg);
+		Signature sig = Signature.getInstance(algo, prov);
+		sig.initSign(key);
+		byte[] data = level1Data.encode();
+		sig.update(data);
+		this.level1Signature = new OctetString(sig.sign());
+	}
 	
 	
 }

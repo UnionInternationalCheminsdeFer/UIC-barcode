@@ -39,24 +39,40 @@ public class AlgorithmNameResolver {
     	Provider[] provs = Security.getProviders();
 
         for (Provider prov : provs) {
+        	
+        	   String name = getName(type, oid, prov);
+        	   if (name != null) return name;
 	        	
-	       		SortedSet<String> typeAndOID = getTypeAndOIDStrings(prov);
-
-	       		for (String entry : typeAndOID) {
-	       			String[] typeAndOIDArray = entry.split("-");
-	       			String ptype = typeAndOIDArray[0];   
-	       			if (ptype.equalsIgnoreCase(type)) {
-		       			String poid = typeAndOIDArray[1];
-		       			Service pservice = prov.getService(ptype, poid);
-		       			String palgo = pservice.getAlgorithm();	
-
-	       				if (poid != null && ptype.equalsIgnoreCase(type) && poid.equals(oid)) {
-	       					return palgo;
-	       				}
-	       			}
-	       		}
         }
         
+		if (oid.startsWith("1.2.840.10045")) {
+			return "ECDSA";
+		} else if (oid.startsWith("1.2.840.10040")) {
+			return "DSA";
+		}
+		
+        return null;
+	        	
+	}    
+    
+   public static String getName(String type, String oid, Provider prov) throws Exception {
+    	
+   		SortedSet<String> typeAndOID = getTypeAndOIDStrings(prov);
+
+	    for (String entry : typeAndOID) {
+	       	String[] typeAndOIDArray = entry.split("-");
+	       	String ptype = typeAndOIDArray[0];   
+	       	if (ptype.equalsIgnoreCase(type)) {
+		    	String poid = typeAndOIDArray[1];
+		    	Service pservice = prov.getService(ptype, poid);
+		    	String palgo = pservice.getAlgorithm();	
+
+		    	if (poid != null && ptype.equalsIgnoreCase(type) && poid.equals(oid)) {
+	       			return palgo;
+	       		}
+	      	}
+	   	}
+              
         
 		if (oid.startsWith("1.2.840.10045")) {
 			return "ECDSA";
@@ -104,6 +120,8 @@ public class AlgorithmNameResolver {
         return null;
 	        	
 	}
+    
+
 
     private static SortedSet<String> getTypeAndOIDStrings(Provider prov) {
     	
