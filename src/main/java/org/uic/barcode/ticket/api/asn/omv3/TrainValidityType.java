@@ -25,12 +25,14 @@ import java.util.List;
 import org.uic.barcode.asn1.datatypes.Asn1Default;
 import org.uic.barcode.asn1.datatypes.Asn1Optional;
 import org.uic.barcode.asn1.datatypes.FieldOrder;
+import org.uic.barcode.asn1.datatypes.HasExtensionMarker;
 import org.uic.barcode.asn1.datatypes.IntRange;
 import org.uic.barcode.asn1.datatypes.Sequence;
 import org.uic.barcode.asn1.datatypesimpl.SequenceOfStringIA5;
 import org.uic.barcode.ticket.api.utils.DateTimeUtils;
 
 @Sequence
+@HasExtensionMarker
 public class TrainValidityType extends Object {
 	public TrainValidityType() {
 	}

@@ -12,23 +12,23 @@ import org.junit.Before;
 import org.junit.Test;
 import org.uic.barcode.asn1.uper.UperEncoder;
 import org.uic.barcode.ticket.EncodingFormatException;
-import org.uic.barcode.ticket.api.asn.omv2.UicRailTicketData;
-import org.uic.barcode.ticket.api.spec.IVoucher;
+import org.uic.barcode.ticket.api.asn.omv3.UicRailTicketData;
+import org.uic.barcode.ticket.api.spec.ICustomerCard;
 import org.uic.barcode.ticket.api.spec.IUicRailTicket;
-import org.uic.barcode.ticket.api.test.testtickets.VoucherTestTicketV2;
+import org.uic.barcode.ticket.api.test.testtickets.CustomerCardTestTicketV3;
 import org.uic.barcode.ticket.api.utils.Api2AsnEncoder;
-import org.uic.barcode.ticket.api.utils.Api2OpenAsnEncoderV2;
+import org.uic.barcode.ticket.api.utils.Api2OpenAsnEncoderV3;
 import org.uic.barcode.ticket.api.utils.Asn2ApiDecoder;
-import org.uic.barcode.ticket.api.utils.OpenAsn2ApiDecoderV2;
+import org.uic.barcode.ticket.api.utils.OpenAsn2ApiDecoderV3;
 
 
 /**
- * The Class VoucherTestV1.
+ * The Class CustomerCardTestV1.
  * 
  * 
  * 
  */
-public class VoucherTimeZoneTestV2 {
+public class CustomerCardTimeZoneTestV3 {
 	
 	/** The low level encoded test ticket test case 1 . */
 	private byte[] encoded1 = null;
@@ -40,10 +40,10 @@ public class VoucherTimeZoneTestV2 {
 	private byte[] encoded3 = null;
     
     /** The decoder. */
-    Asn2ApiDecoder decoder = new OpenAsn2ApiDecoderV2();
+    Asn2ApiDecoder decoder = new OpenAsn2ApiDecoderV3();
     
     /** The encoder. */
-    Api2AsnEncoder encoder = new Api2OpenAsnEncoderV2();
+    Api2AsnEncoder encoder = new Api2OpenAsnEncoderV3();
     
     /** The API ticket low level encoded for case 1. */
     IUicRailTicket iTicketDecodedFromAsn1Case1 = null;
@@ -89,9 +89,9 @@ public class VoucherTimeZoneTestV2 {
 		
 		defaulttimeZone = TimeZone.getDefault();
 		
-    	UicRailTicketData ticket1 =  VoucherTestTicketV2.getUicTestTicket();
-    	UicRailTicketData ticket2 =  VoucherTestTicketV2.getUicTestTicket();
-    	UicRailTicketData ticket3 =  VoucherTestTicketV2.getUicTestTicket();
+    	UicRailTicketData ticket1 =  CustomerCardTestTicketV3.getUicTestTicket();
+    	UicRailTicketData ticket2 =  CustomerCardTestTicketV3.getUicTestTicket();
+    	UicRailTicketData ticket3 =  CustomerCardTestTicketV3.getUicTestTicket();
     	
     	//encode in UTC time zone
 		TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
@@ -237,13 +237,13 @@ public class VoucherTimeZoneTestV2 {
         issuingDate2 = iTicketDecodedCase2.getIssuerDetails().getIssuingDate().toString();
         issuingDate3 = iTicketDecodedCase3.getIssuerDetails().getIssuingDate().toString();
   
-        validFromDate1 = ((IVoucher) iTicketDecodedCase1.getDocumentData().iterator().next()).getValidFrom().toString();
-        validFromDate2 = ((IVoucher) iTicketDecodedCase2.getDocumentData().iterator().next()).getValidFrom().toString();
-        validFromDate3 = ((IVoucher) iTicketDecodedCase3.getDocumentData().iterator().next()).getValidFrom().toString();
+        validFromDate1 = ((ICustomerCard) iTicketDecodedCase1.getDocumentData().iterator().next()).getValidFrom().toString();
+        validFromDate2 = ((ICustomerCard) iTicketDecodedCase2.getDocumentData().iterator().next()).getValidFrom().toString();
+        validFromDate3 = ((ICustomerCard) iTicketDecodedCase3.getDocumentData().iterator().next()).getValidFrom().toString();
 
-        validUntilDate1 = ((IVoucher) iTicketDecodedCase1.getDocumentData().iterator().next()).getValidUntil().toString();
-        validUntilDate2 = ((IVoucher) iTicketDecodedCase2.getDocumentData().iterator().next()).getValidUntil().toString();
-        validUntilDate3 = ((IVoucher) iTicketDecodedCase3.getDocumentData().iterator().next()).getValidUntil().toString();
+        validUntilDate1 = ((ICustomerCard) iTicketDecodedCase1.getDocumentData().iterator().next()).getValidUntil().toString();
+        validUntilDate2 = ((ICustomerCard) iTicketDecodedCase2.getDocumentData().iterator().next()).getValidUntil().toString();
+        validUntilDate3 = ((ICustomerCard) iTicketDecodedCase3.getDocumentData().iterator().next()).getValidUntil().toString();
 
         
  	}
@@ -252,17 +252,17 @@ public class VoucherTimeZoneTestV2 {
 	private void setValidFromDateTo(String dateString) throws ParseException {
 	    DateFormat dateFormat = new SimpleDateFormat( "yyyy.MM.dd-HH:mm" );
 	    Date date = dateFormat.parse(dateString);
-		((IVoucher) iTicketDecodedFromAsn1Case1.getDocumentData().iterator().next()).setValidFrom(date);
-		((IVoucher) iTicketDecodedFromAsn1Case2.getDocumentData().iterator().next()).setValidFrom(date);
-		((IVoucher) iTicketDecodedFromAsn1Case3.getDocumentData().iterator().next()).setValidFrom(date);			
+		((ICustomerCard) iTicketDecodedFromAsn1Case1.getDocumentData().iterator().next()).setValidFrom(date);
+		((ICustomerCard) iTicketDecodedFromAsn1Case2.getDocumentData().iterator().next()).setValidFrom(date);
+		((ICustomerCard) iTicketDecodedFromAsn1Case3.getDocumentData().iterator().next()).setValidFrom(date);			
 	}
 
 	private void setValidUntilDateTo(String dateString) throws ParseException {
 	    DateFormat dateFormat = new SimpleDateFormat( "yyyy.MM.dd-HH:mm" );
 	    Date date = dateFormat.parse(dateString);
-		((IVoucher) iTicketDecodedFromAsn1Case1.getDocumentData().iterator().next()).setValidUntil(date);
-		((IVoucher) iTicketDecodedFromAsn1Case2.getDocumentData().iterator().next()).setValidUntil(date);
-		((IVoucher) iTicketDecodedFromAsn1Case3.getDocumentData().iterator().next()).setValidUntil(date);
+		((ICustomerCard) iTicketDecodedFromAsn1Case1.getDocumentData().iterator().next()).setValidUntil(date);
+		((ICustomerCard) iTicketDecodedFromAsn1Case2.getDocumentData().iterator().next()).setValidUntil(date);
+		((ICustomerCard) iTicketDecodedFromAsn1Case3.getDocumentData().iterator().next()).setValidUntil(date);
 	}
 
 

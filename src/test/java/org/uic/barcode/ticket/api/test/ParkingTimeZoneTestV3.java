@@ -12,23 +12,23 @@ import org.junit.Before;
 import org.junit.Test;
 import org.uic.barcode.asn1.uper.UperEncoder;
 import org.uic.barcode.ticket.EncodingFormatException;
-import org.uic.barcode.ticket.api.asn.omv2.UicRailTicketData;
-import org.uic.barcode.ticket.api.spec.IVoucher;
+import org.uic.barcode.ticket.api.asn.omv3.UicRailTicketData;
+import org.uic.barcode.ticket.api.spec.IParkingGround;
 import org.uic.barcode.ticket.api.spec.IUicRailTicket;
-import org.uic.barcode.ticket.api.test.testtickets.VoucherTestTicketV2;
+import org.uic.barcode.ticket.api.test.testtickets.ParkingTestTicketV3;
 import org.uic.barcode.ticket.api.utils.Api2AsnEncoder;
-import org.uic.barcode.ticket.api.utils.Api2OpenAsnEncoderV2;
+import org.uic.barcode.ticket.api.utils.Api2OpenAsnEncoderV3;
 import org.uic.barcode.ticket.api.utils.Asn2ApiDecoder;
-import org.uic.barcode.ticket.api.utils.OpenAsn2ApiDecoderV2;
+import org.uic.barcode.ticket.api.utils.OpenAsn2ApiDecoderV3;
 
 
 /**
- * The Class VoucherTestV1.
+ * The Class ParkingTestV3.
  * 
  * 
  * 
  */
-public class VoucherTimeZoneTestV2 {
+public class ParkingTimeZoneTestV3 {
 	
 	/** The low level encoded test ticket test case 1 . */
 	private byte[] encoded1 = null;
@@ -40,10 +40,10 @@ public class VoucherTimeZoneTestV2 {
 	private byte[] encoded3 = null;
     
     /** The decoder. */
-    Asn2ApiDecoder decoder = new OpenAsn2ApiDecoderV2();
+    Asn2ApiDecoder decoder = new OpenAsn2ApiDecoderV3();
     
     /** The encoder. */
-    Api2AsnEncoder encoder = new Api2OpenAsnEncoderV2();
+    Api2AsnEncoder encoder = new Api2OpenAsnEncoderV3();
     
     /** The API ticket low level encoded for case 1. */
     IUicRailTicket iTicketDecodedFromAsn1Case1 = null;
@@ -72,13 +72,13 @@ public class VoucherTimeZoneTestV2 {
     String issuingDate2 = null;
     String issuingDate3 = null;
     
-    String validFromDate1 = null;
-    String validFromDate2 = null;
-    String validFromDate3 = null;
+    String FromParkingDateDate1 = null;
+    String FromParkingDateDate2 = null;
+    String FromParkingDateDate3 = null;
     
-    String validUntilDate1 = null;
-    String validUntilDate2 = null;
-    String validUntilDate3 = null;
+    String ToParkingDateDate1 = null;
+    String ToParkingDateDate2 = null;
+    String ToParkingDateDate3 = null;
     
     TimeZone defaulttimeZone = null;
     
@@ -89,9 +89,9 @@ public class VoucherTimeZoneTestV2 {
 		
 		defaulttimeZone = TimeZone.getDefault();
 		
-    	UicRailTicketData ticket1 =  VoucherTestTicketV2.getUicTestTicket();
-    	UicRailTicketData ticket2 =  VoucherTestTicketV2.getUicTestTicket();
-    	UicRailTicketData ticket3 =  VoucherTestTicketV2.getUicTestTicket();
+    	UicRailTicketData ticket1 =  ParkingTestTicketV3.getUicTestTicket();
+    	UicRailTicketData ticket2 =  ParkingTestTicketV3.getUicTestTicket();
+    	UicRailTicketData ticket3 =  ParkingTestTicketV3.getUicTestTicket();
     	
     	//encode in UTC time zone
 		TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
@@ -128,8 +128,8 @@ public class VoucherTimeZoneTestV2 {
 		iTicketDecodedFromAsn1Case2.getIssuerDetails().setIssuingDate(new SimpleDateFormat( "yyyy.MM.dd-HH:mm" ).parse( "2021.03.04-00:30" ));
 		iTicketDecodedFromAsn1Case3.getIssuerDetails().setIssuingDate(new SimpleDateFormat( "yyyy.MM.dd-HH:mm" ).parse( "2021.03.03-23:30" ));
 			
-		setValidFromDateTo("2021.03.14-00:00");
-		setValidUntilDateTo("2022.03.24-23:59");
+		setFromParkingDateDateTo("2021.03.14-00:00");
+		setToParkingDateDateTo("2021.03.24-23:59");
 		
 		encode("CET");	
 		decode("CET");
@@ -139,13 +139,13 @@ public class VoucherTimeZoneTestV2 {
         assert(issuingDate2.equals("Thu Mar 04 01:30:00 CET 2021" ));
         assert(issuingDate3.equals("Thu Mar 04 00:30:00 CET 2021" ));        
        
-        assert(validFromDate1.equals("Sun Mar 14 00:00:00 CET 2021" ));
-        assert(validFromDate2.equals("Sun Mar 14 00:00:00 CET 2021" ));
-        assert(validFromDate3.equals("Sun Mar 14 00:00:00 CET 2021" )); 
+        assert(FromParkingDateDate1.equals("Sun Mar 14 00:00:00 CET 2021" ));
+        assert(FromParkingDateDate2.equals("Sun Mar 14 00:00:00 CET 2021" ));
+        assert(FromParkingDateDate3.equals("Sun Mar 14 00:00:00 CET 2021" )); 
         
-        assert(validUntilDate1.equals("Thu Mar 24 23:59:00 CET 2022" ));
-        assert(validUntilDate2.equals("Thu Mar 24 23:59:00 CET 2022" ));
-        assert(validUntilDate3.equals("Thu Mar 24 23:59:00 CET 2022" )); 
+        assert(ToParkingDateDate1.equals("Wed Mar 24 23:59:00 CET 2021" ));
+        assert(ToParkingDateDate2.equals("Wed Mar 24 23:59:00 CET 2021" ));
+        assert(ToParkingDateDate3.equals("Wed Mar 24 23:59:00 CET 2021" )); 
         
         
     }    
@@ -169,8 +169,8 @@ public class VoucherTimeZoneTestV2 {
 		iTicketDecodedFromAsn1Case2.getIssuerDetails().setIssuingDate(new SimpleDateFormat( "yyyy.MM.dd-HH:mm" ).parse( "2021.03.04-00:30" ));
 		iTicketDecodedFromAsn1Case3.getIssuerDetails().setIssuingDate(new SimpleDateFormat( "yyyy.MM.dd-HH:mm" ).parse( "2021.03.03-23:30" ));
 				
-		setValidFromDateTo("2021.03.14-00:00");
-		setValidUntilDateTo("2021.03.24-23:59");
+		setFromParkingDateDateTo("2021.03.14-00:00");
+		setToParkingDateDateTo("2021.03.24-23:59");
 			
 		encode("GMT");	
 		decode("CET");
@@ -180,13 +180,13 @@ public class VoucherTimeZoneTestV2 {
         assert(issuingDate2.equals("Thu Mar 04 01:30:00 CET 2021" ));
         assert(issuingDate3.equals("Thu Mar 04 00:30:00 CET 2021" ));        
        
-        assert(validFromDate1.equals("Sun Mar 14 00:00:00 CET 2021" ));
-        assert(validFromDate2.equals("Sun Mar 14 00:00:00 CET 2021" ));
-        assert(validFromDate3.equals("Sun Mar 14 00:00:00 CET 2021" )); 
+        assert(FromParkingDateDate1.equals("Sun Mar 14 00:00:00 CET 2021" ));
+        assert(FromParkingDateDate2.equals("Sun Mar 14 00:00:00 CET 2021" ));
+        assert(FromParkingDateDate3.equals("Sun Mar 14 00:00:00 CET 2021" )); 
         
-        assert(validUntilDate1.equals("Wed Mar 24 23:59:00 CET 2021" ));
-        assert(validUntilDate2.equals("Wed Mar 24 23:59:00 CET 2021" ));
-        assert(validUntilDate3.equals("Wed Mar 24 23:59:00 CET 2021" )); 
+        assert(ToParkingDateDate1.equals("Wed Mar 24 23:59:00 CET 2021" ));
+        assert(ToParkingDateDate2.equals("Wed Mar 24 23:59:00 CET 2021" ));
+        assert(ToParkingDateDate3.equals("Wed Mar 24 23:59:00 CET 2021" )); 
         
          
     }    
@@ -209,8 +209,8 @@ public class VoucherTimeZoneTestV2 {
 		iTicketDecodedFromAsn1Case2.getIssuerDetails().setIssuingDate(new SimpleDateFormat( "yyyy.MM.dd-HH:mm" ).parse( "2021.03.04-00:30" ));
 		iTicketDecodedFromAsn1Case3.getIssuerDetails().setIssuingDate(new SimpleDateFormat( "yyyy.MM.dd-HH:mm" ).parse( "2021.03.03-23:30" ));
 
-		setValidFromDateTo("2021.03.14-00:00");
-		setValidUntilDateTo("2022.03.24-23:59");
+		setFromParkingDateDateTo("2021.03.14-00:00");
+		setToParkingDateDateTo("2021.03.24-23:59");
 			
 		encode("CET");	
 		decode("GMT");
@@ -220,13 +220,13 @@ public class VoucherTimeZoneTestV2 {
         assert(issuingDate2.equals("Thu Mar 04 00:30:00 GMT 2021" ));
         assert(issuingDate3.equals("Wed Mar 03 23:30:00 GMT 2021" ));        
        
-        assert(validFromDate1.equals("Sun Mar 14 00:00:00 GMT 2021" ));
-        assert(validFromDate2.equals("Sun Mar 14 00:00:00 GMT 2021" ));
-        assert(validFromDate3.equals("Sun Mar 14 00:00:00 GMT 2021" )); 
+        assert(FromParkingDateDate1.equals("Sun Mar 14 00:00:00 GMT 2021" ));
+        assert(FromParkingDateDate2.equals("Sun Mar 14 00:00:00 GMT 2021" ));
+        assert(FromParkingDateDate3.equals("Sun Mar 14 00:00:00 GMT 2021" )); 
         
-        assert(validUntilDate1.equals("Thu Mar 24 23:59:00 GMT 2022" ));
-        assert(validUntilDate2.equals("Thu Mar 24 23:59:00 GMT 2022" ));
-        assert(validUntilDate3.equals("Thu Mar 24 23:59:00 GMT 2022" )); 
+        assert(ToParkingDateDate1.equals("Wed Mar 24 23:59:00 GMT 2021" ));
+        assert(ToParkingDateDate2.equals("Wed Mar 24 23:59:00 GMT 2021" ));
+        assert(ToParkingDateDate3.equals("Wed Mar 24 23:59:00 GMT 2021" )); 
         
         
     }    
@@ -237,32 +237,32 @@ public class VoucherTimeZoneTestV2 {
         issuingDate2 = iTicketDecodedCase2.getIssuerDetails().getIssuingDate().toString();
         issuingDate3 = iTicketDecodedCase3.getIssuerDetails().getIssuingDate().toString();
   
-        validFromDate1 = ((IVoucher) iTicketDecodedCase1.getDocumentData().iterator().next()).getValidFrom().toString();
-        validFromDate2 = ((IVoucher) iTicketDecodedCase2.getDocumentData().iterator().next()).getValidFrom().toString();
-        validFromDate3 = ((IVoucher) iTicketDecodedCase3.getDocumentData().iterator().next()).getValidFrom().toString();
+        FromParkingDateDate1 = ((IParkingGround) iTicketDecodedCase1.getDocumentData().iterator().next()).getFromParkingDate().toString();
+        FromParkingDateDate2 = ((IParkingGround) iTicketDecodedCase2.getDocumentData().iterator().next()).getFromParkingDate().toString();
+        FromParkingDateDate3 = ((IParkingGround) iTicketDecodedCase3.getDocumentData().iterator().next()).getFromParkingDate().toString();
 
-        validUntilDate1 = ((IVoucher) iTicketDecodedCase1.getDocumentData().iterator().next()).getValidUntil().toString();
-        validUntilDate2 = ((IVoucher) iTicketDecodedCase2.getDocumentData().iterator().next()).getValidUntil().toString();
-        validUntilDate3 = ((IVoucher) iTicketDecodedCase3.getDocumentData().iterator().next()).getValidUntil().toString();
+        ToParkingDateDate1 = ((IParkingGround) iTicketDecodedCase1.getDocumentData().iterator().next()).getToParkingDate().toString();
+        ToParkingDateDate2 = ((IParkingGround) iTicketDecodedCase2.getDocumentData().iterator().next()).getToParkingDate().toString();
+        ToParkingDateDate3 = ((IParkingGround) iTicketDecodedCase3.getDocumentData().iterator().next()).getToParkingDate().toString();
 
         
  	}
 
 	
-	private void setValidFromDateTo(String dateString) throws ParseException {
+	private void setFromParkingDateDateTo(String dateString) throws ParseException {
 	    DateFormat dateFormat = new SimpleDateFormat( "yyyy.MM.dd-HH:mm" );
 	    Date date = dateFormat.parse(dateString);
-		((IVoucher) iTicketDecodedFromAsn1Case1.getDocumentData().iterator().next()).setValidFrom(date);
-		((IVoucher) iTicketDecodedFromAsn1Case2.getDocumentData().iterator().next()).setValidFrom(date);
-		((IVoucher) iTicketDecodedFromAsn1Case3.getDocumentData().iterator().next()).setValidFrom(date);			
+		((IParkingGround) iTicketDecodedFromAsn1Case1.getDocumentData().iterator().next()).setFromParkingDate(date);
+		((IParkingGround) iTicketDecodedFromAsn1Case2.getDocumentData().iterator().next()).setFromParkingDate(date);
+		((IParkingGround) iTicketDecodedFromAsn1Case3.getDocumentData().iterator().next()).setFromParkingDate(date);			
 	}
 
-	private void setValidUntilDateTo(String dateString) throws ParseException {
+	private void setToParkingDateDateTo(String dateString) throws ParseException {
 	    DateFormat dateFormat = new SimpleDateFormat( "yyyy.MM.dd-HH:mm" );
 	    Date date = dateFormat.parse(dateString);
-		((IVoucher) iTicketDecodedFromAsn1Case1.getDocumentData().iterator().next()).setValidUntil(date);
-		((IVoucher) iTicketDecodedFromAsn1Case2.getDocumentData().iterator().next()).setValidUntil(date);
-		((IVoucher) iTicketDecodedFromAsn1Case3.getDocumentData().iterator().next()).setValidUntil(date);
+		((IParkingGround) iTicketDecodedFromAsn1Case1.getDocumentData().iterator().next()).setToParkingDate(date);
+		((IParkingGround) iTicketDecodedFromAsn1Case2.getDocumentData().iterator().next()).setToParkingDate(date);
+		((IParkingGround) iTicketDecodedFromAsn1Case3.getDocumentData().iterator().next()).setToParkingDate(date);
 	}
 
 

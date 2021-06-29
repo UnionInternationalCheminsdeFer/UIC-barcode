@@ -127,6 +127,7 @@ public class DynamicFrame extends Object{
 		
 		
 		String level2KeyAlg = this.getLevel2SignedData().getLevel1Data().level2KeyAlg;
+
 	 
 		if (level2KeyAlg == null || level2KeyAlg.length() == 0) {
 			return Constants.LEVEL2_VALIDATION_NO_KEY;
@@ -135,9 +136,7 @@ public class DynamicFrame extends Object{
 		if (this.level2Signature.toByteArray() == null || this.level2Signature.toByteArray().length == 0) {
 			return Constants.LEVEL2_VALIDATION_NO_SIGNATURE;
 		}
-		
-
-				
+					
 		String keyAlgName = null;
 		try {
 			keyAlgName = AlgorithmNameResolver.getName(AlgorithmNameResolver.TYPE_KEY_GENERATOR_ALG, level2KeyAlg);
@@ -147,31 +146,35 @@ public class DynamicFrame extends Object{
 		if (keyAlgName == null || keyAlgName.length() == 0) {
 			return Constants.LEVEL2_VALIDATION_KEY_ALG_NOT_IMPLEMENTED;	
 		}
-				
+		
 		PublicKey key = null;
 		try {
-			key = KeyFactory.getInstance(keyAlgName).generatePublic(new X509EncodedKeySpec(this.getLevel2SignedData().getLevel1Data().level2publicKey.toByteArray()));
+			byte[] keyBytes = this.getLevel2SignedData().getLevel1Data().level2publicKey.toByteArray();
+			X509EncodedKeySpec keySpec = new X509EncodedKeySpec(keyBytes);
+			key = KeyFactory.getInstance(keyAlgName).generatePublic(keySpec);
 		} catch (InvalidKeySpecException | NoSuchAlgorithmException e1) {
 			return Constants.LEVEL2_VALIDATION_KEY_ALG_NOT_IMPLEMENTED;	
 		}
 		
 		//find the algorithm name for the signature OID
-		String algo = null;
+		String level2SigAlg = this.getLevel2SignedData().getLevel1Data().level2SigningAlg;
+
+		String sigAlgName = null;
 		try {
-			algo = AlgorithmNameResolver.getName(AlgorithmNameResolver.TYPE_SIGNATURE_ALG,this.getLevel2SignedData().getLevel1Data().level2SigningAlg);
+			sigAlgName = AlgorithmNameResolver.getName(AlgorithmNameResolver.TYPE_SIGNATURE_ALG,level2SigAlg);
 		} catch (Exception e1) {
 			return Constants.LEVEL2_VALIDATION_SIG_ALG_NOT_IMPLEMENTED;
 		}
-		if (algo == null) {
+		if (sigAlgName == null) {
 			return Constants.LEVEL2_VALIDATION_SIG_ALG_NOT_IMPLEMENTED;
 		}
 		
 		Signature sig;
 		try {
 			if (prov == null) {
-				sig = Signature.getInstance(algo);
+				sig = Signature.getInstance(sigAlgName);
 			} else {
-				sig = Signature.getInstance(algo, prov);
+				sig = Signature.getInstance(sigAlgName, prov);
 			}
 		} catch (NoSuchAlgorithmException e) {
 			return Constants.LEVEL2_VALIDATION_SIG_ALG_NOT_IMPLEMENTED;
@@ -183,7 +186,8 @@ public class DynamicFrame extends Object{
 		}
 		
 		try {
-			sig.update(UperEncoder.encode(level2SignedData));
+			byte[] data = UperEncoder.encode(level2SignedData);
+			sig.update(data);
 		} catch (SignatureException e) {
 			return Constants.LEVEL2_VALIDATION_SIG_ALG_NOT_IMPLEMENTED;
 		} catch (IllegalArgumentException e) {
@@ -210,7 +214,7 @@ public class DynamicFrame extends Object{
 	 * Note:  an appropriate security provider (e.g. BC) must be registered before 
 	 *
 	 */
-	public int validateLevel1(PublicKey key) {
+	public int validateLevel1(PublicKey key, Provider prov) {
 		
 		if (this.level2SignedData == null) {
 			return Constants.LEVEL1_VALIDATION_NO_SIGNATURE;
@@ -236,7 +240,12 @@ public class DynamicFrame extends Object{
 		
 		Signature sig;
 		try {
-			sig = Signature.getInstance(algo);
+			if (prov != null) {
+				sig = Signature.getInstance(algo, prov);
+			} else {
+				sig = Signature.getInstance(algo);
+
+			}
 		} catch (NoSuchAlgorithmException e) {
 			return Constants.LEVEL1_VALIDATION_SIG_ALG_NOT_IMPLEMENTED;
 		}
@@ -268,6 +277,18 @@ public class DynamicFrame extends Object{
 		}
   	}
 	
+	/**
+	 * Verify the level 1 signature
+	 * 
+	 * Note:  an appropriate security provider (e.g. BC) must be registered before 
+	 *
+	 */
+	public int validateLevel1(PublicKey key) {
+		
+		return validateLevel1(key, null);
+
+  	}
+	
 	public void signLevel2(PrivateKey key) throws Exception {
 		
 		//find the algorithm name for the signature OID
@@ -276,7 +297,8 @@ public class DynamicFrame extends Object{
 		sig.initSign(key);
 		byte[] data = level2SignedData.encode();
 		sig.update(data);
-		this.level2Signature = new OctetString(sig.sign());
+		byte[] signature = sig.sign();
+		this.level2Signature = new OctetString(signature);
 		
 	}
 

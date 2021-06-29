@@ -151,7 +151,7 @@ import org.uic.barcode.ticket.api.spec.IZone;
 /**
  * The Class Api2OpenAsnEncoder.
  */
-public class Api2OpenAsnEncoder {
+public class Api2OpenAsnEncoder implements Api2AsnEncoder {
 	
 	
 	/**

@@ -12,7 +12,6 @@ import java.util.Date;
 
 import org.bouncycastle.jce.ECNamedCurveTable;
 import org.bouncycastle.jce.spec.ECParameterSpec;
-import org.uic.barcode.utils.AlgorithmNameResolver;
 
 public class TestUtils {
 	
@@ -61,9 +60,7 @@ public class TestUtils {
 
 	public static KeyPair generateECKeys(String keyAlgorithmOid, String curve)  throws Exception{
 		
-		String keyAlgorithmName = AlgorithmNameResolver.getName(AlgorithmNameResolver.TYPE_KEY_GENERATOR_ALG,  keyAlgorithmOid, "BC");
-		
-		keyAlgorithmName = "ECDSA";
+		String keyAlgorithmName = "ECDSA";
 		ECParameterSpec ecSpec = ECNamedCurveTable.getParameterSpec(curve);
 	    KeyPairGenerator g = KeyPairGenerator.getInstance(keyAlgorithmName, "BC");
 	    g.initialize(ecSpec, new SecureRandom());

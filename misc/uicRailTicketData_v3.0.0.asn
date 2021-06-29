@@ -964,7 +964,7 @@ ASN-Module DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 
 	   -- included carriers (RICS codes)
        includedCarrierNum		SEQUENCE OF INTEGER (1..32000)	OPTIONAL,	 
-       includedCarrierIA5		SEQUENCE OF IA5String		OPTIONAL,		   
+       includedCarrierIA5		SEQUENCE OF IA5String		    OPTIONAL,		   
 
 	   -- excluded carriers (RICS codes)
        excludedCarrierNum		SEQUENCE OF INTEGER (1..32000)	OPTIONAL,	 
@@ -1857,8 +1857,8 @@ ASN-Module DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 	   
 	   -- service brands valid for the route 
 	   -- in case this list is provided the ticket is valid on all other service brands	   
-	   excludedServiceBrands SEQUENCE OF INTEGER (1..32000) OPTIONAL,    
-	      	
+	   excludedServiceBrands SEQUENCE OF INTEGER (1..32000) OPTIONAL    
+	 
 	   ,...
    }		
    

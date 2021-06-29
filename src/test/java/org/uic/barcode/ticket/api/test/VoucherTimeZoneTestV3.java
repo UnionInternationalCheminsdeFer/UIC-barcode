@@ -12,14 +12,14 @@ import org.junit.Before;
 import org.junit.Test;
 import org.uic.barcode.asn1.uper.UperEncoder;
 import org.uic.barcode.ticket.EncodingFormatException;
-import org.uic.barcode.ticket.api.asn.omv2.UicRailTicketData;
+import org.uic.barcode.ticket.api.asn.omv3.UicRailTicketData;
 import org.uic.barcode.ticket.api.spec.IVoucher;
 import org.uic.barcode.ticket.api.spec.IUicRailTicket;
-import org.uic.barcode.ticket.api.test.testtickets.VoucherTestTicketV2;
+import org.uic.barcode.ticket.api.test.testtickets.VoucherTestTicketV3;
 import org.uic.barcode.ticket.api.utils.Api2AsnEncoder;
-import org.uic.barcode.ticket.api.utils.Api2OpenAsnEncoderV2;
+import org.uic.barcode.ticket.api.utils.Api2OpenAsnEncoderV3;
 import org.uic.barcode.ticket.api.utils.Asn2ApiDecoder;
-import org.uic.barcode.ticket.api.utils.OpenAsn2ApiDecoderV2;
+import org.uic.barcode.ticket.api.utils.OpenAsn2ApiDecoderV3;
 
 
 /**
@@ -28,7 +28,7 @@ import org.uic.barcode.ticket.api.utils.OpenAsn2ApiDecoderV2;
  * 
  * 
  */
-public class VoucherTimeZoneTestV2 {
+public class VoucherTimeZoneTestV3 {
 	
 	/** The low level encoded test ticket test case 1 . */
 	private byte[] encoded1 = null;
@@ -40,10 +40,10 @@ public class VoucherTimeZoneTestV2 {
 	private byte[] encoded3 = null;
     
     /** The decoder. */
-    Asn2ApiDecoder decoder = new OpenAsn2ApiDecoderV2();
+    Asn2ApiDecoder decoder = new OpenAsn2ApiDecoderV3();
     
     /** The encoder. */
-    Api2AsnEncoder encoder = new Api2OpenAsnEncoderV2();
+    Api2AsnEncoder encoder = new Api2OpenAsnEncoderV3();
     
     /** The API ticket low level encoded for case 1. */
     IUicRailTicket iTicketDecodedFromAsn1Case1 = null;
@@ -89,9 +89,9 @@ public class VoucherTimeZoneTestV2 {
 		
 		defaulttimeZone = TimeZone.getDefault();
 		
-    	UicRailTicketData ticket1 =  VoucherTestTicketV2.getUicTestTicket();
-    	UicRailTicketData ticket2 =  VoucherTestTicketV2.getUicTestTicket();
-    	UicRailTicketData ticket3 =  VoucherTestTicketV2.getUicTestTicket();
+    	UicRailTicketData ticket1 =  VoucherTestTicketV3.getUicTestTicket();
+    	UicRailTicketData ticket2 =  VoucherTestTicketV3.getUicTestTicket();
+    	UicRailTicketData ticket3 =  VoucherTestTicketV3.getUicTestTicket();
     	
     	//encode in UTC time zone
 		TimeZone.setDefault(TimeZone.getTimeZone("UTC"));

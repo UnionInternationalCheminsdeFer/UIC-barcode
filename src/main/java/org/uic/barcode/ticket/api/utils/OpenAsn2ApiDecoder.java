@@ -118,7 +118,7 @@ import org.uic.barcode.ticket.api.spec.IZone;
 /**
  * The Class OpenAsn2ApiDecoder.
  */
-public class OpenAsn2ApiDecoder {
+public class OpenAsn2ApiDecoder implements Asn2ApiDecoder {
 	
 	IUicTicketObjectFactory factory = SimpleUicTicketObjectFactory.getInstance();
 	

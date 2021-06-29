@@ -155,7 +155,7 @@ import org.uic.barcode.ticket.api.spec.IZone;
 /**
  * The Class Api2OpenAsnEncoder.
  */
-public class Api2OpenAsnEncoderV3 {
+public class Api2OpenAsnEncoderV3 implements Api2AsnEncoder {
 	
 	/**
 	 * encode to asn1 model.
@@ -1500,8 +1500,7 @@ public class Api2OpenAsnEncoderV3 {
 		DocumentData asnDocument = new DocumentData();
 		TicketDetailData asnTicket = new TicketDetailData();		
 		asnDocument.setTicket(asnTicket);			
-		
-		
+				
 		VoucherData asnData = new VoucherData();
 		asnDocument.getTicket().setVoucher(asnData);
 		
@@ -1518,9 +1517,13 @@ public class Api2OpenAsnEncoderV3 {
 		
 		asnData.setValidity(document.getValidFrom(), document.getValidUntil());
 
-		asnData.setType(UicEncoderUtils.getRestrictedInt(document.getType(), 1,9999));
+		if (document.getType() != null) {
+			asnData.setType(UicEncoderUtils.getRestrictedInt(document.getType(), 1,32000));
+		}
 		
-		asnData.setValue(UicEncoderUtils.getRestrictedInt(document.getAmount(),1,9999999));
+		if (document.getAmount() != null) {
+			asnData.setValue(UicEncoderUtils.getRestrictedInt(document.getAmount(),1,9999999));
+		}
 		
 		return asnDocument;
 	}	

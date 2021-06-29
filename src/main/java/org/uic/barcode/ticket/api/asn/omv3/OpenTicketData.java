@@ -35,7 +35,7 @@ import org.uic.barcode.asn1.datatypes.RestrictedString;
 import org.uic.barcode.asn1.datatypes.Sequence;
 import org.uic.barcode.asn1.datatypes.SizeRange;
 import org.uic.barcode.asn1.datatypesimpl.SequenceOfStringIA5;
-import org.uic.barcode.ticket.api.asn.omv2.SequenceOfActivatedDays;
+import org.uic.barcode.ticket.api.asn.omv3.SequenceOfActivatedDays;
 import org.uic.barcode.ticket.api.utils.DateTimeUtils;
 
 @Sequence
