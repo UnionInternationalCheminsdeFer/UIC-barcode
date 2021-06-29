@@ -2,6 +2,7 @@ package org.uic.barcode;
 
 import java.io.IOException;
 import java.security.PrivateKey;
+import java.security.Provider;
 import java.security.PublicKey;
 
 import org.uic.barcode.asn1.datatypesimpl.OctetString;
@@ -120,6 +121,20 @@ public class Encoder {
 			dynamicFrame.signLevel2(key);
 		} 
 	}
+	
+	/**
+	 * Signing level 2 of a dynamic bar code
+	 *     
+	 * @param key the key
+	 * @param provider - provider of the java security implementation to be used
+	 * @throws Exception the exception
+	 */
+	public void signLevel2(PrivateKey key, Provider prov) throws Exception {
+		if (dynamicFrame != null) {
+			dynamicFrame.signLevel2(key, prov);
+		} 
+	}
+
 
 	/**
 	 * Sets the level 1 algorithm Is.
@@ -193,7 +208,7 @@ public class Encoder {
 	/**
 	 * Sign level 1 of a dynamic bar code or a static bar code.
 	 *
-	 * @param securityProvider the security provider
+	 * @param securityProvider the security provider (RICS code of the company responsible for the security)
 	 * @param key the key
 	 * @param signingAlg the signing algorithm (OID)
 	 * @param keyId the key id
@@ -214,6 +229,33 @@ public class Encoder {
 			staticFrame.signByAlgorithmOID(key,signingAlg);
 		}
 	}
+	
+	/**
+	 * Sign level 1 of a dynamic bar code or a static bar code.
+	 *
+	 * @param securityProvider the security provider (RICS code of the company responsible for the security)
+	 * @param key the key
+	 * @param signingAlg the signing algorithm (OID)
+	 * @param keyId the key id
+	 * @param provider - the provider of the java security implementation
+	 * @throws Exception the exception
+	 */
+	public void signLevel1(String securityProvider,PrivateKey key,String signingAlg, String keyId, Provider prov) throws Exception {
+		if (dynamicFrame != null) {
+			dynamicFrame.getLevel2SignedData().getLevel1Data().setSecurityProvider(securityProvider);
+			dynamicFrame.getLevel2SignedData().getLevel1Data().setLevel1SigningAlg(signingAlg);
+			dynamicFrame.getLevel2SignedData().getLevel1Data().setKeyId(Long.parseLong(keyId));
+			dynamicFrame.getLevel2SignedData().signLevel1(key, prov);
+		} else if (staticFrame != null) {
+			staticFrame.setSignatureKey(keyId);
+			staticFrame.setSecurityProvider(securityProvider);
+			if (staticFrame.getHeaderRecord()!= null && staticFrame.getHeaderRecord().getIssuer() == null) {
+				staticFrame.getHeaderRecord().setIssuer(securityProvider);
+			}
+			staticFrame.signByAlgorithmOID(key,signingAlg,prov);
+		}
+	}
+	
 	
 	/**
 	 * Sets the static header parameter.

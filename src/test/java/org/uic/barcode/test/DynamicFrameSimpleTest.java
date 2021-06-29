@@ -23,7 +23,6 @@ import org.uic.barcode.dynamicFrame.Constants;
 import org.uic.barcode.test.utils.SimpleUICTestTicket;
 import org.uic.barcode.ticket.EncodingFormatException;
 import org.uic.barcode.ticket.api.spec.IUicRailTicket;
-import org.uic.barcode.utils.AlgorithmNameResolver;
 
 public class DynamicFrameSimpleTest {
 	
@@ -158,9 +157,7 @@ public class DynamicFrameSimpleTest {
 		
 	public KeyPair generateECKeys(String keyAlgorithmOid, String curve)  throws Exception{
 		
-		String keyAlgorithmName = AlgorithmNameResolver.getName(AlgorithmNameResolver.TYPE_KEY_GENERATOR_ALG,  keyAlgorithmOid, "BC");
-		
-		keyAlgorithmName = "ECDSA";
+		String keyAlgorithmName = "ECDSA";
 		ECParameterSpec ecSpec = ECNamedCurveTable.getParameterSpec(curve);
 	    KeyPairGenerator g = KeyPairGenerator.getInstance(keyAlgorithmName, "BC");
 	    g.initialize(ecSpec, new SecureRandom());

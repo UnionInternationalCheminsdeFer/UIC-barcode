@@ -11,7 +11,6 @@ import org.uic.barcode.asn1.datatypes.HasExtensionMarker;
 import org.uic.barcode.asn1.datatypes.RestrictedString;
 import org.uic.barcode.asn1.datatypes.Sequence;
 import org.uic.barcode.asn1.uper.UperEncoder;
-import org.uic.barcode.dynamicContent.DynamicContent;
 import org.uic.barcode.dynamicFrame.DataType;
 
 

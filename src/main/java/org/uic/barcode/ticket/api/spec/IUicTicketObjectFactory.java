@@ -46,6 +46,8 @@ public interface IUicTicketObjectFactory {
 	public abstract IDocumentExtension         createDocumentExtension();
 	public abstract IServiceBrand              createServiceBrand();
 	public abstract IVatDetail                 createVatDetail();
+	public abstract ITrainValidity             createTrainValidity();
+
 
 	
 }

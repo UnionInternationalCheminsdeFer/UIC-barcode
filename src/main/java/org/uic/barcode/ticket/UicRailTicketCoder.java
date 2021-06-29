@@ -10,8 +10,10 @@ import java.io.InputStream;
 import org.uic.barcode.ticket.api.spec.IUicRailTicket;
 import org.uic.barcode.ticket.api.utils.Api2OpenAsnEncoder;
 import org.uic.barcode.ticket.api.utils.Api2OpenAsnEncoderV2;
+import org.uic.barcode.ticket.api.utils.Api2OpenAsnEncoderV3;
 import org.uic.barcode.ticket.api.utils.OpenAsn2ApiDecoder;
 import org.uic.barcode.ticket.api.utils.OpenAsn2ApiDecoderV2;
+import org.uic.barcode.ticket.api.utils.OpenAsn2ApiDecoderV3;
 
 
 /**
@@ -44,7 +46,14 @@ public class UicRailTicketCoder {
 			
 			return uicEncoder.encode(uicRailTicket);
 			
+		} else if (version == 3) {
+			
+			Api2OpenAsnEncoderV3 uicEncoder = new Api2OpenAsnEncoderV3(); 		
+			
+			return uicEncoder.encode(uicRailTicket);
+			
 		}
+
 		
 		throw new EncodingFormatException(String.format("Encoding version %d not supported", version));
 
@@ -86,7 +95,19 @@ public class UicRailTicketCoder {
 		
 			return;
 			
+			
+		} else if (version == 3) {
+			
+			Api2OpenAsnEncoderV3 uicEncoder = new Api2OpenAsnEncoderV3(); 		
+			
+			org.uic.barcode.ticket.api.asn.omv3.UicRailTicketData asnUicRailTicketData = uicEncoder.populateToAsn1Model(uicRailTicket);
+		
+			outputStream.write(asnUicRailTicketData.encode());
+		
+			return;
+			
 		}
+
 		
 		throw new EncodingFormatException(String.format("Encoding version %d not supported", version));
 
@@ -118,7 +139,16 @@ public class UicRailTicketCoder {
 			
 			return uicRailTicket;	
 			
+		} else if (version == 3) {
+			
+			OpenAsn2ApiDecoderV3 uicDecoder = new OpenAsn2ApiDecoderV3();
+				
+			IUicRailTicket uicRailTicket = uicDecoder.decodeFromAsn(byteData);
+			
+			return uicRailTicket;	
+			
 		}
+
 		
 		throw new EncodingFormatException(String.format("Encoding version %d not supported", version));
 
@@ -135,7 +165,7 @@ public class UicRailTicketCoder {
 	 */
 	public IUicRailTicket decodeFromAsn (InputStream input, int version) throws IOException, EncodingFormatException{
 		
-		if (version != 1 && version != 2 && version != 13) {
+		if (version != 1 && version != 2 && version != 13 && version != 3) {
 			throw new EncodingFormatException(String.format("Encoding version %d not supported", version));
 		}
 			

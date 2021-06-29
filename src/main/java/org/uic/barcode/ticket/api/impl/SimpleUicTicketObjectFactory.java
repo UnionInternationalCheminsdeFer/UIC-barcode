@@ -35,6 +35,7 @@ import org.uic.barcode.ticket.api.spec.ITicketLink;
 import org.uic.barcode.ticket.api.spec.ITimeRange;
 import org.uic.barcode.ticket.api.spec.IToken;
 import org.uic.barcode.ticket.api.spec.ITrainLink;
+import org.uic.barcode.ticket.api.spec.ITrainValidity;
 import org.uic.barcode.ticket.api.spec.ITraveler;
 import org.uic.barcode.ticket.api.spec.ITravelerDetail;
 import org.uic.barcode.ticket.api.spec.IUicRailTicket;
@@ -234,6 +235,12 @@ public class SimpleUicTicketObjectFactory implements IUicTicketObjectFactory {
 	@Override
 	public IVatDetail createVatDetail() {
 		return new SimpleVatDetail();
+	}
+
+
+	@Override
+	public ITrainValidity createTrainValidity() {
+		return new SimpleTrainValidity();
 	}
 
 	

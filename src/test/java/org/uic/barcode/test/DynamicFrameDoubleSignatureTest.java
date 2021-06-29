@@ -26,7 +26,6 @@ import org.uic.barcode.test.utils.Level2TestDataFactory;
 import org.uic.barcode.test.utils.SimpleUICTestTicket;
 import org.uic.barcode.ticket.EncodingFormatException;
 import org.uic.barcode.ticket.api.spec.IUicRailTicket;
-import org.uic.barcode.utils.AlgorithmNameResolver;
 
 public class DynamicFrameDoubleSignatureTest {
 	
@@ -59,54 +58,12 @@ public class DynamicFrameDoubleSignatureTest {
 
         assert(keyPairLevel1 != null);
         
-	}
-	
-	
-	@Test public void testDynamicHeaderBarcodeEncoding() {
-		
-		IUicRailTicket ticket = testFCBticket;
-
-		Encoder enc = null;
-
-		try {
-			enc = new Encoder(ticket, null, Encoder.UIC_BARCODE_TYPE_DOSIPAS, 1, 13);
-		} catch (IOException | EncodingFormatException e1) {
-			assert(false);
-		}
-		
-		assert(enc != null);
-		
-		try {
-			enc.setLevel1Algs(signatureAlgorithmOID, keyPairAlgorithmOID);
-			enc.setLevel2Algs(signatureAlgorithmOID, keyPairAlgorithmOID,keyPairLevel2.getPublic());
-			enc.signLevel1("1080", keyPairLevel1.getPrivate(), signatureAlgorithmOID, "1");
-		} catch (Exception e) {
-			assert(false);
-		}
-		
-		assert(enc != null);
-		
-		try {
-			enc.setLevel2Data(Level2TestDataFactory.getLevel2SimpleTestData());
-			enc.signLevel2(keyPairLevel2.getPrivate());
-		} catch (Exception e) {
-			assert(false);
-		}
-		
-			
-        byte[] encoded = null;
-		try {
-			encoded = enc.encode();
-		} catch (Exception e) {
-			assert(false);
-		}
+        assert(keyPairLevel2 != null);
         
-        assert(encoded != null);
-		
-
-		
 	}
 	
+	
+
 	@Test public void testDynamicHeaderBarcodeDecoding() {
 		
 		IUicRailTicket ticket = testFCBticket;
@@ -164,7 +121,7 @@ public class DynamicFrameDoubleSignatureTest {
         
         int signatureCheck = 0;
 		try {
-			signatureCheck = dec.validateLevel1(keyPairLevel1.getPublic(),null);
+			signatureCheck = dec.validateLevel1(keyPairLevel1.getPublic(), null);
 		} catch (InvalidKeyException | NoSuchAlgorithmException | SignatureException | IllegalArgumentException
 				| UnsupportedOperationException | IOException | EncodingFormatException e) {
 			assert(false);
@@ -177,8 +134,7 @@ public class DynamicFrameDoubleSignatureTest {
 		} catch (IllegalArgumentException | UnsupportedOperationException e) {
 			assert(false);
 		}
-        assert(signatureCheck == Constants.LEVEL2_VALIDATION_OK);       
-        
+        assert(signatureCheck == Constants.LEVEL2_VALIDATION_OK);              
         
         DataType level2DataDec = dec.getLevel2Data();
         
@@ -186,7 +142,6 @@ public class DynamicFrameDoubleSignatureTest {
         assert(Arrays.equals(level2Data.getData().toByteArray(),level2DataDec.getData().toByteArray()));        
         
         SimpleUICTestTicket.compare(ticket, dec.getUicTicket());     
-               
         
 	}	
 	
@@ -199,9 +154,7 @@ public class DynamicFrameDoubleSignatureTest {
 		
 	public KeyPair generateECKeys(String keyAlgorithmOid, String curve)  throws Exception{
 		
-		String keyAlgorithmName = AlgorithmNameResolver.getName(AlgorithmNameResolver.TYPE_KEY_GENERATOR_ALG,  keyAlgorithmOid, "BC");
-		
-		keyAlgorithmName = "ECDSA";
+		String keyAlgorithmName = "ECDSA";
 		ECParameterSpec ecSpec = ECNamedCurveTable.getParameterSpec(curve);
 	    KeyPairGenerator g = KeyPairGenerator.getInstance(keyAlgorithmName, "BC");
 	    g.initialize(ecSpec, new SecureRandom());

@@ -3,6 +3,7 @@ package org.uic.barcode;
 import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.security.Provider;
 import java.security.PublicKey;
 import java.security.SignatureException;
 import java.util.zip.DataFormatException;
@@ -89,6 +90,34 @@ public class Decoder {
 		}
 	}
 	
+	
+	/**
+	 * Validate level 1.
+	 *
+	 * @param key the public key
+	 * @param signingAlg the signing algorithm OID
+	 * @param security provider in case a dedicated provider must be used (otherwise null)
+	 * @return the return code indicating errors
+	 * @throws InvalidKeyException the invalid key exception
+	 * @throws NoSuchAlgorithmException the no such algorithm exception
+	 * @throws SignatureException the signature exception
+	 * @throws IllegalArgumentException the illegal argument exception
+	 * @throws UnsupportedOperationException the unsupported operation exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws EncodingFormatException the encoding format exception
+	 */
+	public int validateLevel1(PublicKey key, String signingAlg, Provider provider) throws InvalidKeyException, NoSuchAlgorithmException, SignatureException, IllegalArgumentException, UnsupportedOperationException, IOException, EncodingFormatException {
+		if (!isStaticHeader(data)) {
+			return dynamicFrame.validateLevel1(key, provider) ;
+		} else {
+			if (staticFrame.verifyByAlgorithmOid(key,signingAlg, provider)) {
+				return Constants.LEVEL1_VALIDATION_OK;
+			} else {
+				return Constants.LEVEL1_VALIDATION_FRAUD;
+			}
+		}
+	}
+	
 	/**
 	 * Validate level 2.
 	 *
@@ -101,6 +130,20 @@ public class Decoder {
 			return Constants.LEVEL2_VALIDATION_NO_SIGNATURE;
 		}
 	}
+
+	/*
+	 * Validate level 2.
+	 * @param prov - provider of the java security implementation in case a dedicated provider must be used
+	 * @return the return code indicating errors
+	 */
+	public int validateLevel2(Provider prov) {
+		if (!isStaticHeader(data)) {
+			return dynamicFrame.validateLevel2(prov) ;
+		} else {
+			return Constants.LEVEL2_VALIDATION_NO_SIGNATURE;
+		}
+	}
+
 	
 	/**
 	 * Decode.

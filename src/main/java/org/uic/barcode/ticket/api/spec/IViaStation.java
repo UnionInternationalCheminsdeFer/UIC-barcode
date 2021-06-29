@@ -166,5 +166,35 @@ public interface IViaStation extends IRegionalValidity {
 	 */
 	public void setSeriesId(int seriesId);
 	
+	
+	/**
+	 * Gets the included service brands.
+	 *
+	 * @return the included service brands
+	 */
+	public Collection<Integer> getIncludedServiceBrands();
+
+	/**
+	 * Adds the included service brand.
+	 *
+	 * @param includedServiceBrand the included service brand
+	 */
+	public void addIncludedServiceBrand(Integer includedServiceBrand);
+
+	/**
+	 * Gets the excluded service brands.
+	 *
+	 * @return the excluded service brands
+	 */
+	public Collection<Integer> getExcludedServiceBrands();
+
+	/**
+	 * Adds the excluded service brand.
+	 *
+	 * @param excludedServiceBrand the excluded service brand
+	 */
+	public void addExcludedServiceBrand(Integer excludedServiceBrand);
+
+	
 
 }

@@ -50,7 +50,7 @@ public class ParkingGroundData extends Object {
 	public String parkingGroundId = "";
 
 	@FieldOrder(order = 3)
-	@IntRange(minValue=0,maxValue=370)
+	@IntRange(minValue=-1,maxValue=370)
 	@Asn1Optional public Long fromParkingDate;
 
 	@FieldOrder(order = 4)

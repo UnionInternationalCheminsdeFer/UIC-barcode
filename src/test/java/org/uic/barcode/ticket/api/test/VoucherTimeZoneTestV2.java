@@ -12,12 +12,14 @@ import org.junit.Before;
 import org.junit.Test;
 import org.uic.barcode.asn1.uper.UperEncoder;
 import org.uic.barcode.ticket.EncodingFormatException;
-import org.uic.barcode.ticket.api.asn.omv1.UicRailTicketData;
+import org.uic.barcode.ticket.api.asn.omv2.UicRailTicketData;
 import org.uic.barcode.ticket.api.spec.IVoucher;
 import org.uic.barcode.ticket.api.spec.IUicRailTicket;
-import org.uic.barcode.ticket.api.test.testtickets.VoucherTestTicketV1;
-import org.uic.barcode.ticket.api.utils.Api2OpenAsnEncoder;
-import org.uic.barcode.ticket.api.utils.OpenAsn2ApiDecoder;
+import org.uic.barcode.ticket.api.test.testtickets.VoucherTestTicketV2;
+import org.uic.barcode.ticket.api.utils.Api2AsnEncoder;
+import org.uic.barcode.ticket.api.utils.Api2OpenAsnEncoderV2;
+import org.uic.barcode.ticket.api.utils.Asn2ApiDecoder;
+import org.uic.barcode.ticket.api.utils.OpenAsn2ApiDecoderV2;
 
 
 /**
@@ -38,10 +40,10 @@ public class VoucherTimeZoneTestV2 {
 	private byte[] encoded3 = null;
     
     /** The decoder. */
-    OpenAsn2ApiDecoder decoder = new OpenAsn2ApiDecoder();
+    Asn2ApiDecoder decoder = new OpenAsn2ApiDecoderV2();
     
     /** The encoder. */
-    Api2OpenAsnEncoder encoder = new Api2OpenAsnEncoder();
+    Api2AsnEncoder encoder = new Api2OpenAsnEncoderV2();
     
     /** The API ticket low level encoded for case 1. */
     IUicRailTicket iTicketDecodedFromAsn1Case1 = null;
@@ -87,9 +89,9 @@ public class VoucherTimeZoneTestV2 {
 		
 		defaulttimeZone = TimeZone.getDefault();
 		
-    	UicRailTicketData ticket1 =  VoucherTestTicketV1.getUicTestTicket();
-    	UicRailTicketData ticket2 =  VoucherTestTicketV1.getUicTestTicket();
-    	UicRailTicketData ticket3 =  VoucherTestTicketV1.getUicTestTicket();
+    	UicRailTicketData ticket1 =  VoucherTestTicketV2.getUicTestTicket();
+    	UicRailTicketData ticket2 =  VoucherTestTicketV2.getUicTestTicket();
+    	UicRailTicketData ticket3 =  VoucherTestTicketV2.getUicTestTicket();
     	
     	//encode in UTC time zone
 		TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
