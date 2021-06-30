@@ -8,9 +8,10 @@ ASN-Module DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 
 
 -- changes:
---    product id 1 bit more 65535
---    open ticket transport mode EN 1545-1
---    allowing -1 in differences of days between dates (validity of tickets crossing time zones)
+--    extended range in valid from dates
+--    service brand restrictions in viaStation
+--    new train validity in pass data
+
 	
 -- ##############################################################################################
 -- #	                                                                      
