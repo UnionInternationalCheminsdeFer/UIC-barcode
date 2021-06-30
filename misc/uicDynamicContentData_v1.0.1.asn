@@ -1,0 +1,157 @@
+-- ##########################################################################################
+-- # 
+-- # FCB Dynamic Content - Version 1.0 (2021-05-12) 
+-- #
+-- # This file is available on the UIC FCB User Group GitHub: 
+-- #             https://github.com/UnionInternationalCheminsdeFer/UIC-barcode
+-- # 
+-- # Please check this link to see if a more recent version of this file is available.
+-- # 
+-- # The type UicDynamicContentData defined below is at least intended to generate a data
+-- # that, once valued and encoded as PER unaligned [UPER],
+-- # is to be stored in UicBarcodeHeader.level2SignedData.level2Data.data, 
+-- # and identified as "FDC1" in UicBarcodeHeader.level2SignedData.level2Data.dataFormat.
+-- # 
+-- ##########################################################################################
+-- Creator: ASN.1 Editor (http://asneditor.sourceforge.net)
+-- Author: ClemensGantert
+-- Created: Mon Jun 28 14:14:28 CEST 2021
+ASN-Module DEFINITIONS AUTOMATIC TAGS ::= BEGIN
+
+-- imports and exports
+-- EXPORTS ALL;
+
+   UicDynamicContentData ::= SEQUENCE {
+
+     -- Identification of the mobile application that generated the barcode
+     --   and filled in the data of its dynamic part.
+     --
+     -- The possible values are defined by the security provider
+     --   (the security provider being UicBarcodeHeader.level2SignedData.level1Data.securityProviderNum/IA5)
+     dynamicContentMobileAppId IA5String OPTIONAL,
+
+     -- Moment of generation of the dynamic content, expressed in UTC
+     dynamicContentTimeStamp TimeStampData OPTIONAL,
+
+     -- Coordinates of the place where the dynamic content has been generated
+     --   (same GeoCoordinateType type as in UicRailTicketData)
+     dynamicContentGeoCoordinate GeoCoordinateType OPTIONAL,
+  
+     -- Response from the mobile to any data received from the terminal.
+     --   The data received from the terminal may be a random number, or any other information.
+	 --   The response may be the received data itself, possibly completed with other information
+     --     (e.g. IMEI, mobile phone number, user identifier assigned by the phone-app...),
+	 --     the whole being returned as is, or hashed, or modified in some way.
+	 --
+     -- The type used is a SEQUENCE OF ExtensionData
+	 --   (the same ExtensionData type as in UicRailTicketData, as it is fully adapted),
+	 --   in which extensionId identifies the content of extensionData.
+	 --
+	 -- Two types of value are possible for extensionId:
+	 --   * predefined standardized values
+	 --     (e.g. "=" if extensionData is exactly the data received from the terminal)
+	 --     The list of predefined values is available on the UIC FCB User Group GitHub.
+	 --   * "_" followed by any other value, defined by the security provider, in other cases.
+	 --     (the security provider being UicBarcodeHeader.level2SignedData.level1Data.securityProviderNum/IA5)
+     dynamicContentResponseToChallenge SEQUENCE OF ExtensionData OPTIONAL,
+  
+     -- Proprietary data defined bilaterally
+	 --   (same ExtensionData type as in UicRailTicketData).
+	 -- extensionId identifies the content of extensionData,
+	 --   it shall be set to "_" + RICS + addon chosen by the issuer identified by its RICS code
+	 -- ##########################################################################################
+     -- # 
+     -- # List of predefined values that can be used for the extensionId data element used in
+     -- #   UicDynamicContentData.dynamicContentResponseToChallenge.
+     -- #
+     -- # Version 1.0 - Draft #2 (2021-06-04)
+     -- #
+     -- # This file is available on the UIC FCB User Group GitHub:
+     -- #   https://github.com/UnionInternationalCheminsdeFer/UIC-barcode
+     -- # Please check this link to see if a more recent version of this file is available.
+     -- # 
+     -- ##########################################################################################
+
+     -- ..................+.......................................................................
+     -- extensionId value | extensionData content
+     -- ..................+.......................................................................
+     -- "="               | Exactly the data received from the control device
+     -- ..................+.......................................................................
+     -- "UTF"             | UTF-8 encoded text provided by the train staff to the traveler
+     -- ..................+.......................................................................
+     -- "PHC"             | Hash value of a phone identifier that is available in the ticket
+     --                   | control data provided in an annotation according to UIC IRS 90918-4
+     --                   | (e.g. via ETCD). 
+     -- ..................+.......................................................................
+     -- "EPC"             | Hash value of an electronic passport that is available in the ticket
+     --                   | control data provided in an annotation according to UIC IRS 90918-4
+     --                   | (e.g. via ETCD). 
+     --                   | The control app can read the passport at the time of control.
+     -- ..................+.......................................................................
+     -- "_" + RICS + addon| Proprietary data, defined by the issuer identified by its RICS code.
+     --                   | (addon being defined by this issuer)
+     -- ..................+.......................................................................
+	 
+     dynamicContentExtension ExtensionData OPTIONAL,
+	 
+     ...
+   }
+
+   -- ##########################################################################################
+   -- # Generic type for timestamp, with a precision to the second.
+   -- #
+   -- # Day is the number of the day in the year (1 = January 1st, 2 = January 2nd...)
+   -- # 
+   -- # Time is the number of seconds of the day (from 0 = 0:00:00 to 86399 = 23:59:59)
+   -- ##########################################################################################
+   TimeStampData ::= SEQUENCE {
+     day   INTEGER (1..366),
+     time  INTEGER (0..86399)
+   }
+
+   -- ##########################################################################################
+   -- # Generic type for geo coordinates.
+   -- ##########################################################################################
+   GeoCoordinateType ::= SEQUENCE {
+     geoUnit             GeoUnitType             DEFAULT milliDegree,
+     coordinateSystem    GeoCoordinateSystemType DEFAULT wgs84, 
+     hemisphereLongitude HemisphereLongitudeType DEFAULT north,       -- separate hemisphere flag reduces the data size 
+     hemisphereLatitude  HemisphereLatitudeType  DEFAULT east,        -- separate hemisphere flag reduces the data size   
+     longitude           INTEGER,
+     latitude            INTEGER,
+     accuracy            GeoUnitType             OPTIONAL
+   }
+    
+  GeoCoordinateSystemType ::= ENUMERATED { 	
+     wgs84 (0), -- WGS 84 standard system
+     grs80 (1)  -- (outdated) GRS 80 coordinate system
+   }  								
+    								
+   GeoUnitType ::= ENUMERATED {   	
+     microDegree      (0), -- approx. 11 cm on earth surface                                                    
+     tenthmilliDegree (1), -- 1 / 10000 degree is approx. 11 meter on earth surface   
+     milliDegree      (2), -- approx 110 meter on earth surface 
+     centiDegree      (3),   
+     deciDegree       (4)
+   }
+    				
+   HemisphereLongitudeType ::= ENUMERATED { 	
+     north (0), 
+     south (1) 
+   }
+
+   HemisphereLatitudeType ::= ENUMERATED { 	
+     east (0), 
+     west (1)  
+   }	
+
+   -- ########################################################################################### 
+   -- # Generic extension element.
+   -- #
+   -- # extensionId identifies the content of extensionData.
+   -- ########################################################################################### 
+   ExtensionData	::= SEQUENCE 	{	
+	   extensionId   IA5String, 
+	   extensionData OCTET STRING
+   }						
+END			
