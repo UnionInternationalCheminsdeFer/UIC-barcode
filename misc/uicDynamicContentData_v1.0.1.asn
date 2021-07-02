@@ -53,6 +53,25 @@ ASN-Module DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 	 --     The list of predefined values is available on the UIC FCB User Group GitHub.
 	 --   * "_" followed by any other value, defined by the security provider, in other cases.
 	 --     (the security provider being UicBarcodeHeader.level2SignedData.level1Data.securityProviderNum/IA5)
+	 
+     -- ..................+.......................................................................
+     -- "="               | Exactly the data received from the control device
+     -- ..................+.......................................................................
+     -- "UTF"             | UTF-8 encoded text provided by the train staff to the traveler
+     -- ..................+.......................................................................
+     -- "PHC"             | Hash value of a phone identifier that is available in the ticket
+     --                   | control data provided in an annotation according to UIC IRS 90918-4
+     --                   | (e.g. via ETCD). 
+     -- ..................+.......................................................................
+     -- "EPC"             | Hash value of an electronic passport that is available in the ticket
+     --                   | control data provided in an annotation according to UIC IRS 90918-4
+     --                   | (e.g. via ETCD). 
+     --                   | The control app can read the passport at the time of control.
+     -- ..................+.......................................................................
+     -- "_" + RICS + addon| Proprietary data, defined by the issuer identified by its RICS code.
+     --                   | (addon being defined by this issuer)
+     -- ..................+.......................................................................
+	 
      dynamicContentResponseToChallenge SEQUENCE OF ExtensionData OPTIONAL,
   
      -- Proprietary data defined bilaterally
@@ -75,23 +94,7 @@ ASN-Module DEFINITIONS AUTOMATIC TAGS ::= BEGIN
      -- ..................+.......................................................................
      -- extensionId value | extensionData content
      -- ..................+.......................................................................
-     -- "="               | Exactly the data received from the control device
-     -- ..................+.......................................................................
-     -- "UTF"             | UTF-8 encoded text provided by the train staff to the traveler
-     -- ..................+.......................................................................
-     -- "PHC"             | Hash value of a phone identifier that is available in the ticket
-     --                   | control data provided in an annotation according to UIC IRS 90918-4
-     --                   | (e.g. via ETCD). 
-     -- ..................+.......................................................................
-     -- "EPC"             | Hash value of an electronic passport that is available in the ticket
-     --                   | control data provided in an annotation according to UIC IRS 90918-4
-     --                   | (e.g. via ETCD). 
-     --                   | The control app can read the passport at the time of control.
-     -- ..................+.......................................................................
-     -- "_" + RICS + addon| Proprietary data, defined by the issuer identified by its RICS code.
-     --                   | (addon being defined by this issuer)
-     -- ..................+.......................................................................
-	 
+ 
      dynamicContentExtension ExtensionData OPTIONAL,
 	 
      ...
