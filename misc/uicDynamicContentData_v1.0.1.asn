@@ -37,23 +37,15 @@ ASN-Module DEFINITIONS AUTOMATIC TAGS ::= BEGIN
      --   (same GeoCoordinateType type as in UicRailTicketData)
      dynamicContentGeoCoordinate GeoCoordinateType OPTIONAL,
   
-     -- Response from the mobile to any data received from the terminal.
-     --   The data received from the terminal may be a random number, or any other information.
-	 --   The response may be the received data itself, possibly completed with other information
-     --     (e.g. IMEI, mobile phone number, user identifier assigned by the phone-app...),
-	 --     the whole being returned as is, or hashed, or modified in some way.
-	 --
-     -- The type used is a SEQUENCE OF ExtensionData
-	 --   (the same ExtensionData type as in UicRailTicketData, as it is fully adapted),
-	 --   in which extensionId identifies the content of extensionData.
-	 --
-	 -- Two types of value are possible for extensionId:
-	 --   * predefined standardized values
-	 --     (e.g. "=" if extensionData is exactly the data received from the terminal)
-	 --     The list of predefined values is available on the UIC FCB User Group GitHub.
-	 --   * "_" followed by any other value, defined by the security provider, in other cases.
-	 --     (the security provider being UicBarcodeHeader.level2SignedData.level1Data.securityProviderNum/IA5)
-	 
+     -- ##########################################################################################
+     -- #  
+     -- # List of predefined values that can be used for the extensionId data element used in
+     -- #   UicDynamicContentData.dynamicContentResponseToChallenge.
+     -- #
+     -- ##########################################################################################
+     -- ..................+.......................................................................
+     -- extensionId value | extensionData content
+     -- ..................+.......................................................................	 
      -- ..................+.......................................................................
      -- "="               | Exactly the data received from the control device
      -- ..................+.......................................................................
@@ -78,23 +70,6 @@ ASN-Module DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 	 --   (same ExtensionData type as in UicRailTicketData).
 	 -- extensionId identifies the content of extensionData,
 	 --   it shall be set to "_" + RICS + addon chosen by the issuer identified by its RICS code
-	 -- ##########################################################################################
-     -- # 
-     -- # List of predefined values that can be used for the extensionId data element used in
-     -- #   UicDynamicContentData.dynamicContentResponseToChallenge.
-     -- #
-     -- # Version 1.0 - Draft #2 (2021-06-04)
-     -- #
-     -- # This file is available on the UIC FCB User Group GitHub:
-     -- #   https://github.com/UnionInternationalCheminsdeFer/UIC-barcode
-     -- # Please check this link to see if a more recent version of this file is available.
-     -- # 
-     -- ##########################################################################################
-
-     -- ..................+.......................................................................
-     -- extensionId value | extensionData content
-     -- ..................+.......................................................................
- 
      dynamicContentExtension ExtensionData OPTIONAL,
 	 
      ...
