@@ -5,7 +5,7 @@ import java.lang.reflect.Field;
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
-import java.nio.charset.StandardCharsets;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -87,7 +87,7 @@ class StringCoder implements Decoder, Encoder {
             BitBuffer stringbuffer = ByteBitBuffer.createInfinite();
             
             //char array replaced - begin
-            byte[] stringasbytearray = string.getBytes(StandardCharsets.UTF_8);
+            byte[] stringasbytearray = string.getBytes(Charset.forName("UTF-8"));
             
             for (byte b: stringasbytearray){
             	UperEncoder.encodeConstrainedInt(stringbuffer, b & 0xff, 0, 255);
@@ -179,7 +179,7 @@ class StringCoder implements Decoder, Encoder {
             }
             byte[] contentBytes = UperEncoder.bytesFromCollection(content);
             UperEncoder.logger.debug(String.format("Content bytes (hex): %s", UperEncoder.hexStringFromBytes(contentBytes)));   
-            String resultStr = StandardCharsets.UTF_8.decode(ByteBuffer.wrap(contentBytes)).toString();
+            String resultStr = Charset.forName("UTF-8").decode(ByteBuffer.wrap(contentBytes)).toString();
             UperEncoder.logger.debug(String.format("Decoded as %s", resultStr));   
             T result = UperEncoder.instantiate(classOfT, resultStr);
             return result;
@@ -211,7 +211,7 @@ class StringCoder implements Decoder, Encoder {
                 }
                 UperEncoder.encodeConstrainedInt(
                         bitbuffer,
-                        StandardCharsets.US_ASCII.encode(CharBuffer.wrap(new char[] { c })).get() & 0xff,
+                        Charset.forName("US-ASCII").encode(CharBuffer.wrap(new char[] { c })).get() & 0xff,
                         0,
                         127);
                 return;
@@ -219,7 +219,7 @@ class StringCoder implements Decoder, Encoder {
                 if (restriction.alphabet() != DefaultAlphabet.class) {
                     throw new UnsupportedOperationException("alphabet for UTF8 is not supported yet.");
                 }
-                ByteBuffer buffer = StandardCharsets.UTF_8.encode(CharBuffer.wrap(new char[] { c }));
+                ByteBuffer buffer = Charset.forName("UTF-8").encode(CharBuffer.wrap(new char[] { c }));
                 for (int i = 0; i < buffer.limit(); i++) {
                     UperEncoder.encodeConstrainedInt(bitbuffer, buffer.get() & 0xff, 0, 255);
                 }
@@ -249,7 +249,7 @@ class StringCoder implements Decoder, Encoder {
                     } else {
                         UperEncoder.encodeConstrainedInt(
                                 bitbuffer,
-                                StandardCharsets.US_ASCII.encode(CharBuffer.wrap(new char[] { c }))
+                                Charset.forName("US-ASCII").encode(CharBuffer.wrap(new char[] { c }))
                                         .get() & 0xff,
                                 0,
                                 126);
@@ -258,7 +258,7 @@ class StringCoder implements Decoder, Encoder {
                 } else {
                     UperEncoder.encodeConstrainedInt(
                             bitbuffer,
-                            StandardCharsets.US_ASCII.encode(CharBuffer.wrap(new char[] { c }))
+                            Charset.forName("US-ASCII").encode(CharBuffer.wrap(new char[] { c }))
                                     .get() & 0xff,
                             0,
                             126);
@@ -280,7 +280,7 @@ class StringCoder implements Decoder, Encoder {
                 }
                 byte charByte = (byte) UperEncoder.decodeConstrainedInt(bitqueue, UperEncoder.newRange(0, 127, false));
                 byte[] bytes = new byte[] { charByte };
-                String result = StandardCharsets.US_ASCII.decode(ByteBuffer.wrap(bytes)).toString();
+                String result = Charset.forName("US-ASCII").decode(ByteBuffer.wrap(bytes)).toString();
                 if (result.length() != 1) { 
                 	throw new AssertionError("decoded more than one char (" + result + ")"); 
                 }
@@ -307,7 +307,7 @@ class StringCoder implements Decoder, Encoder {
                     } else {  // Encode normally
                         byte charByte = (byte) UperEncoder.decodeConstrainedInt(bitqueue, UperEncoder.newRange(0, 126, false));
                         byte[] bytes = new byte[] { charByte };
-                        String result = StandardCharsets.US_ASCII.decode(ByteBuffer.wrap(bytes)).toString();
+                        String result = Charset.forName("US-ASCII").decode(ByteBuffer.wrap(bytes)).toString();
                         if (result.length() != 1) { throw new AssertionError(
                                 "decoded more than one char (" + result + ")");
                         }
@@ -316,7 +316,7 @@ class StringCoder implements Decoder, Encoder {
                 } else {  // Encode normally
                     byte charByte = (byte) UperEncoder.decodeConstrainedInt(bitqueue, UperEncoder.newRange(0, 126, false));
                     byte[] bytes = new byte[] { charByte };
-                    String result = StandardCharsets.US_ASCII.decode(ByteBuffer.wrap(bytes)).toString();
+                    String result = Charset.forName("US-ASCII").decode(ByteBuffer.wrap(bytes)).toString();
                     if (result.length() != 1) {
                         throw new AssertionError("decoded more than one char (" + result + ")");
                     }

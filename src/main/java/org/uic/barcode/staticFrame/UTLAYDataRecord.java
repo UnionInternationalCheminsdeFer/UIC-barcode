@@ -7,7 +7,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
-import java.nio.charset.StandardCharsets;
+import java.nio.charset.Charset;
 
 import org.uic.barcode.staticFrame.ticketLayoutBarcode.FormatType;
 import org.uic.barcode.staticFrame.ticketLayoutBarcode.LayoutElement;
@@ -43,7 +43,7 @@ public class UTLAYDataRecord extends DataRecord {
 		for (int i = 0; i < length; i++){
 			bytes[i] = byteData[i + offset];
 		}
-		return StandardCharsets.UTF_8.decode(ByteBuffer.wrap(bytes)).toString();
+		return Charset.forName("UTF-8").decode(ByteBuffer.wrap(bytes)).toString();
 	}
 
 	/**
@@ -59,7 +59,7 @@ public class UTLAYDataRecord extends DataRecord {
 		for (int i = 0; i < length; i++){
 			bytes[i] = byteData[i + offset];
 		}
-		return StandardCharsets.ISO_8859_1.decode(ByteBuffer.wrap(bytes)).toString();
+		return Charset.forName("ISO-8859-1").decode(ByteBuffer.wrap(bytes)).toString();
 	}
 	
 	/**
