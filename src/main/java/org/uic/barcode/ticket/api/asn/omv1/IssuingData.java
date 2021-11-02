@@ -326,7 +326,7 @@ public class IssuingData extends Object {
 		this.issuingYear = new Long( cal.get(Calendar.YEAR));
 		this.issuingDay = new Long (cal.get(Calendar.DAY_OF_YEAR));
 		int time =  cal.get(Calendar.HOUR_OF_DAY) * 60 + cal.get(Calendar.MINUTE);
-		if (time > 0) {
+		if (time >= 0) {
 			this.issuingTime = new Long (time );
 		}
 		
