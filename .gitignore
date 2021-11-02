@@ -184,3 +184,5 @@ local.properties
 .project
 
 .classpath
+/ticket.api.test/
+/ticket.test.api/
