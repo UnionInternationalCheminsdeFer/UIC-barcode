@@ -1,6 +1,5 @@
 package org.uic.barcode.dynamicFrame;
 
-import org.uic.barcode.asn1.datatypes.Asn1Default;
 import org.uic.barcode.asn1.datatypes.CharacterRestriction;
 import org.uic.barcode.asn1.datatypes.RestrictedString;
 import org.uic.barcode.asn1.datatypes.Sequence;
@@ -20,7 +19,6 @@ public class DataType {
 	 *  -- FCB2  FCB version 2
 	 *  -- RICS  company code + ...
 	 **/
-	@Asn1Default("FCB1")
 	@RestrictedString(CharacterRestriction.IA5String)
 	public String format;
 	

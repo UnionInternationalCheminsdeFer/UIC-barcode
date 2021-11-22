@@ -34,7 +34,7 @@ public class Level1DataType {
 	
 	/** The key id. */
 	@FieldOrder(order = 2)
-	@IntRange(minValue=1,maxValue=99999)
+	@IntRange(minValue=0,maxValue=99999)
 	@Asn1Optional public Long	keyId;
 	
 	
