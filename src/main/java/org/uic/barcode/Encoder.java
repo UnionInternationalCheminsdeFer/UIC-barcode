@@ -100,7 +100,7 @@ public class Encoder {
 				DataType ticketData = new DataType();
 				
 				UicRailTicketCoder uicTicketCoder = new UicRailTicketCoder();
-				if (fcbVersion == 1) {
+				if (fcbVersion == 1 || fcbVersion == 13) {
 					ticketData.setFormat(Constants.DATA_TYPE_FCB_VERSION_1);
 				} else if (fcbVersion == 2) {
 					ticketData.setFormat(Constants.DATA_TYPE_FCB_VERSION_2);
