@@ -100,7 +100,13 @@ public class Encoder {
 				DataType ticketData = new DataType();
 				
 				UicRailTicketCoder uicTicketCoder = new UicRailTicketCoder();
-				ticketData.setFormat(Constants.DATA_TYPE_FCB_VERSION_1);
+				if (fcbVersion == 1) {
+					ticketData.setFormat(Constants.DATA_TYPE_FCB_VERSION_1);
+				} else if (fcbVersion == 2) {
+					ticketData.setFormat(Constants.DATA_TYPE_FCB_VERSION_2);
+				} else if (fcbVersion == 3) {
+					ticketData.setFormat(Constants.DATA_TYPE_FCB_VERSION_3);
+				}
 				ticketData.setData(new OctetString(uicTicketCoder.encode(ticket, fcbVersion)));
 				dynamicFrame.getLevel2SignedData().getLevel1Data().getData().add(ticketData);
 				
