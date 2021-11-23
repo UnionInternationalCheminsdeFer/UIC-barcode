@@ -691,17 +691,6 @@ public final class UperEncoder {
         return sb.toString();
     }
 
-    public static byte[] bytesFromBinaryString(String s) {
-        int len = s.length();
-        byte[] result = new byte[(len + Byte.SIZE - 1) / Byte.SIZE];
-        char c;
-        for (int i = 0; i < len; i++)
-            if ((c = s.charAt(i)) == '1') result[i / Byte.SIZE] = (byte) (result[i / Byte.SIZE] | (0x80 >>> (i % Byte.SIZE)));
-            else if (c != '0')
-                throw new IllegalArgumentException();
-        return result;
-    }
-
     private static BitBuffer bitBufferFromBinaryString(String s) {
         ByteBitBuffer result = ByteBitBuffer.allocate(s.length());
         for (int i = 0; i < s.length(); i++) {
