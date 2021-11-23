@@ -24,7 +24,7 @@ import org.uic.barcode.test.utils.SimpleUICTestTicket;
 import org.uic.barcode.ticket.EncodingFormatException;
 import org.uic.barcode.ticket.api.spec.IUicRailTicket;
 
-public class DynamicFrameFcb3Test {
+public class DynamicFrameFcbVersion3Test {
 	
 	public String signatureAlgorithmOID = null;
 	public String elipticCurve = null;
@@ -87,7 +87,6 @@ public class DynamicFrameFcb3Test {
         
         assert(encoded != null);
 		
-
 		
 	}
 	
@@ -145,7 +144,7 @@ public class DynamicFrameFcb3Test {
         
         assert(dec.getDynamicHeader().getFormat().equals("U1"));
         
-        assert(dec.getDynamicHeader().getDynamicDataFDC1().getDataType().getFormat().equals("FCB3"));
+        assert(dec.getDynamicHeader().getLevel2SignedData().getLevel1Data().getData().get(0).getFormat().equals("FCB3"));
         
                
         SimpleUICTestTicket.compare(ticket, dec.getUicTicket());     
