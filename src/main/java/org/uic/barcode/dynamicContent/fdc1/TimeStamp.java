@@ -1,16 +1,17 @@
 package org.uic.barcode.dynamicContent.fdc1;
 
 import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.time.temporal.ChronoField;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.TimeZone;
 
 import org.uic.barcode.asn1.datatypes.FieldOrder;
 import org.uic.barcode.asn1.datatypes.IntRange;
 import org.uic.barcode.asn1.datatypes.Sequence;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class TimeStamp.
  */
@@ -20,16 +21,10 @@ public class TimeStamp {
 
 	/*
     -- Moment of generation of the dynamic content, expressed in UTC :
-    -- * dynamicContentDay is the number of days from issuing date
-    --     (UicRailTicketData.issuingDetail.issuingYear and issuingDay)
-	--     The range 0..1070 allows a validity equal to that of the validFrom (700) plus 
-	--       validUntil (370) elements of the different transport documents of UicRailTicketData.
+    -- * dynamicContentDay is the number of day in the year
     -- * dynamicContentTime is the number of seconds of the day
     --     (from 0 = 0:00:00 to 86399 = 23:59:59)
-    -- These two elements shall be either both present, either both absent
-    dynamicContentDay   INTEGER (0..366),
-     *    
-     */
+    */
 	@FieldOrder(order = 0)
 	@IntRange(minValue=1, maxValue=366)
 	public Long day;
@@ -46,7 +41,7 @@ public class TimeStamp {
 	 * Instantiates a new time stamp and sets the time-stamp to now.
 	 */
 	public TimeStamp() {
-		Instant now = Instant.now();
+		ZonedDateTime now = ZonedDateTime.now(ZoneId.of("UTC"));
 		day = new Long(now.get(ChronoField.DAY_OF_YEAR));
 		secondOfDay = new Long(now.get(ChronoField.SECOND_OF_DAY));
 	}
@@ -55,7 +50,7 @@ public class TimeStamp {
 	 * Sets the the time-stamp to now.
 	 */
 	public void setNow() {
-		Instant now = Instant.now();
+		ZonedDateTime now = ZonedDateTime.now(ZoneId.of("UTC"));
 		day = new Long(now.get(ChronoField.DAY_OF_YEAR));
 		secondOfDay = new Long(now.get(ChronoField.SECOND_OF_DAY));		
 	}
@@ -102,25 +97,26 @@ public class TimeStamp {
 	 * @return the date and time of content creation in UTC
 	 */
 	public Date getTimeAsDate() {
-		
-		Calendar cal = Calendar.getInstance();
-		int dayOfYear = cal.get(Calendar.DAY_OF_YEAR);
-		
+			
+		ZonedDateTime now = Instant.now().atZone(ZoneOffset.UTC);
+		int dayOfYear = now.getDayOfYear();
+				
 		if (dayOfYear - day.intValue() > 250) {
-			cal.add(Calendar.YEAR, 1);
+			now = now.plusDays(1);
 		}
 		if (day.intValue() - dayOfYear > 250) {
-			cal.add(Calendar.YEAR, -1);
+			now = now.minusDays(1);
 		}
-			
-		cal.setTimeZone(TimeZone.getTimeZone("UTC"));
-		cal.set(Calendar.SECOND,0);
-		cal.set(Calendar.HOUR,0);
-		cal.set(Calendar.MINUTE,0);
-		cal.set(Calendar.DAY_OF_YEAR, day.intValue());
-		cal.add(Calendar.SECOND, secondOfDay.intValue());
+
+		now = now.withDayOfYear(1);
+		now = now.withSecond(0);
+		now = now.withHour(0);
+		now = now.withMinute(0);
+		now = now.withDayOfYear(dayOfYear);
+		now = now.plusSeconds(secondOfDay);
 		
-		return cal.getTime();
+		return Date.from(now.toInstant());
+	
 	}
 	
 	/**
@@ -129,15 +125,14 @@ public class TimeStamp {
 	 * @param dateUTC the current date and time in  UTC
 	 */
 	public void setDateTime(Date dateUTC) {
-			
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(dateUTC);
 		
-		day = Long.valueOf(cal.get(Calendar.DAY_OF_YEAR));
+		ZonedDateTime date = dateUTC.toInstant().atZone(ZoneOffset.UTC);
+		
+		day = (long) date.getDayOfYear();
 	
-		secondOfDay = (long) cal.get(Calendar.SECOND);
-		secondOfDay = secondOfDay + 60 * (long) cal.get(Calendar.MINUTE);
-		secondOfDay = secondOfDay + 60 * 60 * (long) cal.get(Calendar.HOUR_OF_DAY);			
+		secondOfDay = (long) date.getSecond();
+		secondOfDay = secondOfDay + 60 * (long) date.getMinute();
+		secondOfDay = secondOfDay + 60 * 60 * (long) date.getHour();			
 		
 	}
 

@@ -10,6 +10,11 @@ import java.security.NoSuchProviderException;
 import java.security.SecureRandom;
 import java.security.Security;
 import java.security.SignatureException;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.zip.DataFormatException;
 
 import org.bouncycastle.jce.ECNamedCurveTable;
@@ -19,6 +24,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.uic.barcode.Decoder;
 import org.uic.barcode.Encoder;
+import org.uic.barcode.dynamicContent.fdc1.TimeStamp;
 import org.uic.barcode.dynamicContent.fdc1.UicDynamicContentDataFDC1;
 import org.uic.barcode.dynamicFrame.Constants;
 import org.uic.barcode.test.utils.SimpleUICTestTicket;
@@ -33,6 +39,11 @@ public class DynamicFrameDynamicContentTest {
 	
 	public KeyPair keyPairLevel1 = null;
 	public KeyPair keyPairLevel2 = null;
+	
+	public byte[] passIdHash = "PassId".getBytes();
+	public byte[] phoneIdHash = "myPhone".getBytes();
+	
+	ZonedDateTime originalTimeStamp = ZonedDateTime.now(ZoneId.of("UTC"));
 	
 	public IUicRailTicket testFCBticket = null;
 	
@@ -87,6 +98,12 @@ public class DynamicFrameDynamicContentTest {
 			UicDynamicContentDataFDC1 dcd = new UicDynamicContentDataFDC1();
 			dcd.setChallengeString("CHALLENGE");
 			dcd.setAppId("MyApp");
+			dcd.setPhoneIdHash(phoneIdHash);
+			dcd.setPassIdHash(passIdHash);
+			TimeStamp ts = new TimeStamp();
+			ts.setDateTime(Date.from(originalTimeStamp.toInstant()));
+			dcd.setTimeStamp(ts);
+			
 			enc.setDynamicContentDataUIC1(dcd);			
 			enc.signLevel2(keyPairLevel2.getPrivate());
 		} catch (Exception e) {
@@ -133,6 +150,12 @@ public class DynamicFrameDynamicContentTest {
 			UicDynamicContentDataFDC1 dcd = new UicDynamicContentDataFDC1();
 			dcd.setChallengeString("CHALLENGE");
 			dcd.setAppId("MyApp");
+			dcd.setPhoneIdHash(phoneIdHash);
+			dcd.setPassIdHash(passIdHash);
+			TimeStamp ts = new TimeStamp();
+			ts.setDateTime(Date.from(originalTimeStamp.toInstant()));
+			dcd.setTimeStamp(ts);
+			
 			enc.setDynamicContentDataUIC1(dcd);			
 			enc.signLevel2(keyPairLevel2.getPrivate());
 		} catch (Exception e) {
@@ -182,10 +205,21 @@ public class DynamicFrameDynamicContentTest {
          
         assert(level2check == Constants.LEVEL2_VALIDATION_OK);
         
-        assert(dec.getDynamicHeader().getDynamicDataFDC1().getChallengeString().equals("CHALLENGE"));
+        UicDynamicContentDataFDC1 dynamicData = dec.getDynamicHeader().getDynamicDataFDC1();
         
-        assert(dec.getDynamicHeader().getDynamicDataFDC1().getAppId().equals("MyApp"));
+        assert(dynamicData.getChallengeString().equals("CHALLENGE"));
         
+        assert(dynamicData.getAppId().equals("MyApp"));
+               
+        assert(Arrays.equals(dynamicData.getPassIdHash(),passIdHash));
+        
+        assert(Arrays.equals(dynamicData.getPhoneIdHash(),phoneIdHash));
+        
+        Date timeStamp = dynamicData.getTimeStamp().getTimeAsDate();
+        ZonedDateTime retrievedTimeStamp = timeStamp.toInstant().atZone(ZoneId.of("UTC"));
+        long diff = ChronoUnit.SECONDS.between(originalTimeStamp, retrievedTimeStamp);
+  
+        assert(diff == 0);
 	}	
 	
 	public KeyPair generateECDSAKeys(String keyAlgorithmName, String paramName)  throws NoSuchAlgorithmException, NoSuchProviderException, InvalidAlgorithmParameterException{
