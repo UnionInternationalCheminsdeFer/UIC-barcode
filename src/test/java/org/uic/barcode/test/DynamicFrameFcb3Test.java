@@ -24,7 +24,7 @@ import org.uic.barcode.test.utils.SimpleUICTestTicket;
 import org.uic.barcode.ticket.EncodingFormatException;
 import org.uic.barcode.ticket.api.spec.IUicRailTicket;
 
-public class DynamicFrameFCB3Test {
+public class DynamicFrameFcb3Test {
 	
 	public String signatureAlgorithmOID = null;
 	public String elipticCurve = null;
