@@ -24,6 +24,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.uic.barcode.Decoder;
 import org.uic.barcode.Encoder;
+import org.uic.barcode.dynamicContent.fdc1.GeoCoordinateSystemType;
+import org.uic.barcode.dynamicContent.fdc1.GeoCoordinateType;
 import org.uic.barcode.dynamicContent.fdc1.TimeStamp;
 import org.uic.barcode.dynamicContent.fdc1.UicDynamicContentDataFDC1;
 import org.uic.barcode.dynamicFrame.Constants;
@@ -104,6 +106,11 @@ public class DynamicFrameDynamicContentTest {
 			ts.setDateTime(Date.from(originalTimeStamp.toInstant()));
 			dcd.setTimeStamp(ts);
 			
+			GeoCoordinateType geo = new GeoCoordinateType();
+			geo.setLatitude(123456L);
+			geo.setLongitude(823456L);
+			dcd.setGeoCoordinate(geo);
+			
 			enc.setDynamicContentDataUIC1(dcd);			
 			enc.signLevel2(keyPairLevel2.getPrivate());
 		} catch (Exception e) {
@@ -152,6 +159,12 @@ public class DynamicFrameDynamicContentTest {
 			dcd.setAppId("MyApp");
 			dcd.setPhoneIdHash(phoneIdHash);
 			dcd.setPassIdHash(passIdHash);
+			
+			GeoCoordinateType geo = new GeoCoordinateType();
+			geo.setLatitude(123456L);
+			geo.setLongitude(823456L);
+			dcd.setGeoCoordinate(geo);
+			
 			TimeStamp ts = new TimeStamp();
 			ts.setDateTime(Date.from(originalTimeStamp.toInstant()));
 			dcd.setTimeStamp(ts);
@@ -214,6 +227,9 @@ public class DynamicFrameDynamicContentTest {
         assert(Arrays.equals(dynamicData.getPassIdHash(),passIdHash));
         
         assert(Arrays.equals(dynamicData.getPhoneIdHash(),phoneIdHash));
+        
+		assert(dynamicData.getGeoCoordinate().getLatitude() == 123456L);
+		assert(dynamicData.getGeoCoordinate().getLongitude() == 823456L);
         
         Date timeStamp = dynamicData.getTimeStamp().getTimeAsDate();
         ZonedDateTime retrievedTimeStamp = timeStamp.toInstant().atZone(ZoneId.of("UTC"));
