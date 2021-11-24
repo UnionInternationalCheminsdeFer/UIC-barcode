@@ -162,7 +162,6 @@ public final class UperEncoder {
 
     static {
         encoders.add(new IntCoder());
-        //encoders.add(new BigIntCoder());
         encoders.add(new ByteCoder());
         encoders.add(new BooleanCoder());
         encoders.add(new SequenceCoder());
@@ -173,7 +172,6 @@ public final class UperEncoder {
         encoders.add(new StringCoder());
 
         decoders.add(new IntCoder());
-        //decoders.add(new BigIntCoder());
         decoders.add(new ByteCoder());
         decoders.add(new BooleanCoder());
         decoders.add(new SequenceCoder());
