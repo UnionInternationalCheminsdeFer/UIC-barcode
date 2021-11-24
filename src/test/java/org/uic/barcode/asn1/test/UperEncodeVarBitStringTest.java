@@ -3,18 +3,18 @@ package org.uic.barcode.asn1.test;
 import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 
 import org.junit.Test;
 import org.uic.barcode.asn1.datatypes.Asn1Optional;
-import org.uic.barcode.asn1.datatypes.Bitstring;
+import org.uic.barcode.asn1.datatypes.Asn1VarSizeBitstring;
 import org.uic.barcode.asn1.datatypes.FieldOrder;
-import org.uic.barcode.asn1.datatypes.FixedSize;
 import org.uic.barcode.asn1.datatypes.Sequence;
 import org.uic.barcode.asn1.uper.UperEncoder;
 
 
-public class UperEncodeBitStringTest {
+public class UperEncodeVarBitStringTest {
 
     /**
      * Example from the Standard on UPER. 
@@ -22,7 +22,7 @@ public class UperEncodeBitStringTest {
          World-Schema DEFINITIONS AUTOMATIC TAGS ::= 
          BEGIN
          TestRecord ::= [APPLICATION 0] IMPLICIT SEQUENCE {
-            value BIT STRING (SIZE(3)) OPTIONAL
+            value BIT STRING OPTIONAL,
          }
          END
          
@@ -39,20 +39,19 @@ public class UperEncodeBitStringTest {
     public static class TestRecord {
     	
     	@FieldOrder(order = 0)
-    	@Asn1Optional()
-    	@Bitstring()
-    	@FixedSize(3)
-    	ArrayList<Boolean> booleans = null;
+    	@Asn1Optional() Asn1VarSizeBitstring value;
 
         public TestRecord() {
             this(false,false,true);
         }
 
         public TestRecord(Boolean value1,Boolean value2,Boolean value3 ) {
-        	booleans = new ArrayList<Boolean>();
+        	List<Boolean> booleans = new ArrayList<Boolean>();
         	booleans.add(value1);
         	booleans.add(value2);
-        	booleans.add(value3);        	
+        	booleans.add(value3);
+        	this.value = new Asn1VarSizeBitstring(booleans);
+        	
         }
     }
 
@@ -62,7 +61,7 @@ public class UperEncodeBitStringTest {
         byte[] encoded = UperEncoder.encode(record);
         String hex = UperEncoder.hexStringFromBytes(encoded);
         UperEncoder.logger.log(Level.FINEST,String.format("data hex: %s", hex));
-        assertEquals("90",hex); 
+        assertEquals("8190",hex); 
     }
     
 
@@ -71,11 +70,11 @@ public class UperEncodeBitStringTest {
         byte[] encoded = UperEncoder.encode(record);
         String hex = UperEncoder.hexStringFromBytes(encoded);
         UperEncoder.logger.log(Level.FINEST,String.format("data hex: %s", hex));
-        assertEquals("90",hex); 
+        assertEquals("8190",hex); 
         TestRecord result = UperEncoder.decode(encoded, TestRecord.class);
-        assertEquals(result.booleans.get(0),record.booleans.get(0));   
-        assertEquals(result.booleans.get(1),record.booleans.get(1));   
-        assertEquals(result.booleans.get(2),record.booleans.get(2));
+        assertEquals(result.value.get(0),record.value.get(0));   
+        assertEquals(result.value.get(1),record.value.get(1));   
+        assertEquals(result.value.get(2),record.value.get(2));
         
     }    
 
