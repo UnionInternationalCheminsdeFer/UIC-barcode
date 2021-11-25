@@ -162,7 +162,6 @@ public final class UperEncoder {
 
     static {
         encoders.add(new IntCoder());
-        //encoders.add(new BigIntCoder());
         encoders.add(new ByteCoder());
         encoders.add(new BooleanCoder());
         encoders.add(new SequenceCoder());
@@ -173,7 +172,6 @@ public final class UperEncoder {
         encoders.add(new StringCoder());
 
         decoders.add(new IntCoder());
-        //decoders.add(new BigIntCoder());
         decoders.add(new ByteCoder());
         decoders.add(new BooleanCoder());
         decoders.add(new SequenceCoder());
@@ -689,17 +687,6 @@ public final class UperEncoder {
         for (int i = 0; i < Byte.SIZE * bytes.length; i++)
             sb.append((bytes[i / Byte.SIZE] << i % Byte.SIZE & 0x80) == 0 ? '0' : '1');
         return sb.toString();
-    }
-
-    public static byte[] bytesFromBinaryString(String s) {
-        int len = s.length();
-        byte[] result = new byte[(len + Byte.SIZE - 1) / Byte.SIZE];
-        char c;
-        for (int i = 0; i < len; i++)
-            if ((c = s.charAt(i)) == '1') result[i / Byte.SIZE] = (byte) (result[i / Byte.SIZE] | (0x80 >>> (i % Byte.SIZE)));
-            else if (c != '0')
-                throw new IllegalArgumentException();
-        return result;
     }
 
     private static BitBuffer bitBufferFromBinaryString(String s) {

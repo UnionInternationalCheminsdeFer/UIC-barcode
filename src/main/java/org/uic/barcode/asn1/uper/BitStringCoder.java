@@ -4,12 +4,12 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.List;
 
 import org.uic.barcode.asn1.datatypes.Asn1VarSizeBitstring;
 import org.uic.barcode.asn1.datatypes.Bitstring;
 import org.uic.barcode.asn1.datatypes.FixedSize;
 import org.uic.barcode.asn1.datatypes.SizeRange;
-import org.uic.barcode.asn1.uper.UperEncoder.Asn1ContainerFieldSorter;
 
 class BitStringCoder implements Decoder, Encoder {
 
@@ -29,18 +29,24 @@ class BitStringCoder implements Decoder, Encoder {
                 throw new UnsupportedOperationException(
                     "Bitstring with extensions is not implemented yet");
             }
-            FixedSize size = type.getAnnotation(FixedSize.class);
+            FixedSize size = annotations.getAnnotation(FixedSize.class);
             int position = bitbuffer.position();
             if (size != null) {
-                Asn1ContainerFieldSorter sorter = new Asn1ContainerFieldSorter(type);
-                if (sorter.ordinaryFields.size() != size.value()) { throw new AssertionError(
+            	if (!List.class.isAssignableFrom(type)) {
+            		throw new AssertionError("Field should be a list of booleans!"); 
+            	}
+            	
+            	List<Boolean> list = (List<Boolean>)obj;
+                if (list.size() != size.value()) { 
+                	throw new AssertionError(
                         "Declared size (" + size.value() +
-                                ") and number of fields (" + sorter.ordinaryFields.size() +
-                                ") do not match!"); }
-                for (Field f : sorter.ordinaryFields) {
+                                ") and number of fields (" + list.size() +
+                                ") do not match!"); 
+                }
+                for (Boolean f : list) {
                     try {
-                        bitbuffer.put(f.getBoolean(obj));
-                    } catch (IllegalArgumentException | IllegalAccessException e) {
+                        bitbuffer.put(f);
+                    } catch (IllegalArgumentException e) {
                         throw new IllegalArgumentException("can't encode" + obj, e);
                     }
                 }
@@ -100,26 +106,28 @@ class BitStringCoder implements Decoder, Encoder {
             if (fixedSize == null) { throw new UnsupportedOperationException(
                     "bitstrings of non-fixed size that do not extend Asn1VarSizeBitstring are not supported yet");
             }
-            Asn1ContainerFieldSorter sorter = new Asn1ContainerFieldSorter(classOfT);
-            if (fixedSize.value() != sorter.ordinaryFields.size()) { throw new IllegalArgumentException(
-                    "Fixed size annotation " + fixedSize.value()
-                            + " does not match the number of fields "
-                            + sorter.ordinaryFields.size() + " in " + classOfT.getName()); }
             if (UperEncoder.hasExtensionMarker(annotations)) {
                 boolean extensionPresent = bitbuffer.get();
                 if (extensionPresent) { throw new UnsupportedOperationException(
                         "extensions in fixed-size bitlist are not supported yet"); }
             }
             T result = UperEncoder.instantiate(classOfT);
-            for (Field f : sorter.ordinaryFields) {
-                boolean value = bitbuffer.get();
-                UperEncoder.logger.debug(String.format("Field %s set to %s", f.getName(), value));
-                try {
-                    f.set(result, value);
-                } catch (IllegalArgumentException | IllegalAccessException e) {
-                    throw new IllegalArgumentException("can't decode " + classOfT, e);
-                }
+            
+            Method addBooleanMethod;
+            try {
+                addBooleanMethod = classOfT.getDeclaredMethod("add", Object.class);
+                addBooleanMethod.setAccessible(true);
+            } catch (SecurityException | NoSuchMethodException e) {
+                throw new AssertionError("Can't find/access add " + e);
             }
+            
+            for (int i = 0; i < fixedSize.value(); i++) {
+                try {
+                    addBooleanMethod.invoke(result, bitbuffer.get());
+                } catch (IllegalArgumentException | InvocationTargetException | IllegalAccessException e) {
+                    throw new IllegalArgumentException("Can't invoke add", e);
+                }
+            }            
             return result;
         } else {
             UperEncoder.logger.debug("Bitlist(var-size)");

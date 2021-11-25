@@ -14,7 +14,6 @@ import java.security.spec.X509EncodedKeySpec;
 import org.uic.barcode.asn1.datatypes.Asn1Optional;
 import org.uic.barcode.asn1.datatypes.CharacterRestriction;
 import org.uic.barcode.asn1.datatypes.FieldOrder;
-import org.uic.barcode.asn1.datatypes.HasExtensionMarker;
 import org.uic.barcode.asn1.datatypes.RestrictedString;
 import org.uic.barcode.asn1.datatypes.Sequence;
 import org.uic.barcode.asn1.datatypesimpl.OctetString;
@@ -29,7 +28,6 @@ import org.uic.barcode.utils.AlgorithmNameResolver;
  * Implementation of the Draft under discussion, not final.
  */
 @Sequence
-@HasExtensionMarker
 public class DynamicFrame extends Object{
 	
 	public DynamicFrame() {}
@@ -152,7 +150,9 @@ public class DynamicFrame extends Object{
 			byte[] keyBytes = this.getLevel2SignedData().getLevel1Data().level2publicKey.toByteArray();
 			X509EncodedKeySpec keySpec = new X509EncodedKeySpec(keyBytes);
 			key = KeyFactory.getInstance(keyAlgName).generatePublic(keySpec);
-		} catch (InvalidKeySpecException | NoSuchAlgorithmException e1) {
+		} catch (InvalidKeySpecException e1) {
+			return Constants.LEVEL2_VALIDATION_KEY_ALG_NOT_IMPLEMENTED;	
+		} catch (NoSuchAlgorithmException e1) {
 			return Constants.LEVEL2_VALIDATION_KEY_ALG_NOT_IMPLEMENTED;	
 		}
 		

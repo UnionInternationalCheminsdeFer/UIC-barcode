@@ -33,7 +33,7 @@ public class UicRailTicketCoder {
 	public byte[] encode (IUicRailTicket uicRailTicket, int version) throws IOException, EncodingFormatException{
 
 		
-		if (version == 13) {
+		if (version == 13 || version == 1) {
 			
 			Api2OpenAsnEncoder uicEncoder = new Api2OpenAsnEncoder(); 		
 			

@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.uic.barcode</groupId>
   <artifactId>org.uic.barcode</artifactId>
-  <version>1.2.7-SNAPSHOT</version>
+  <version>1.2.8-SNAPSHOT</version>
   <packaging>jar</packaging>
   <name>UIC barcode</name>
   <description>encoding and decoding of bar code content according to UIC IRS 90918-9</description>
@@ -23,8 +23,8 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <version>2.3.2</version>
            <configuration>
-               <source>${jdk.version}</source>
-               <target>${jdk.version}</target>
+               <source>1.8</source>
+               <target>1.8</target>
            </configuration>
       </plugin>
       <plugin>

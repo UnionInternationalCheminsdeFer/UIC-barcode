@@ -161,13 +161,13 @@ public class UicDynamicContentDataFDC1  {
 		return null;
 	}
 
-	public void setPassIdHash(byte[] phoneIdHash) {
+	public void setPassIdHash(byte[] passIdHash) {
 		if (extensions == null) {
 			extensions = new SequenceOfExtension();
 		};
 		ExtensionData ed = new ExtensionData();
 		ed.setExtensionId("pass");
-		ed.setExtensionData(phoneIdHash);
+		ed.setExtensionData(passIdHash);
 		extensions.add(ed);
 	}
 

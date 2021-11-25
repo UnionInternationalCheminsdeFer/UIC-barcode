@@ -172,6 +172,8 @@ public class Decoder {
 					uicTicket = uicTicketCoder.decodeFromAsn(level1Content.getByteData(), 1);
 				} else if (level1Content.getFormat().equals("FCB2")) {
 					uicTicket = uicTicketCoder.decodeFromAsn(level1Content.getByteData(), 2);
+				} else if (level1Content.getFormat().equals("FCB3")) {
+					uicTicket = uicTicketCoder.decodeFromAsn(level1Content.getByteData(), 3);
 				}
 			}
 			

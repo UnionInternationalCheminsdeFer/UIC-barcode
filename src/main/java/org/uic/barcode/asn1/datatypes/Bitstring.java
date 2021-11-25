@@ -9,7 +9,7 @@ import java.lang.annotation.Target;
  * In UPER, a SEQUENCE OF Booleans would look exactly as bitstring, so this annotation can be
  * omitted for {@code List<Boolean>}.
  */
-@Target({ElementType.TYPE})
+@Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Bitstring {
 
