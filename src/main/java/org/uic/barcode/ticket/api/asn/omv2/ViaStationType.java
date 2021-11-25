@@ -55,7 +55,7 @@ public class ViaStationType extends Object {
 	@Asn1Optional public SequenceOfViaStationType route;
 
 	@FieldOrder(order = 5)
-	@Asn1Optional public Boolean border = false;
+	public Boolean border = false;
 
 	@FieldOrder(order = 6)
 	@Asn1Optional public SequenceOfCarrierNum carriersNum;

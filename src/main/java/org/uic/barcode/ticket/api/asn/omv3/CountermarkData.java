@@ -72,15 +72,15 @@ public class CountermarkData extends Object {
 
 	@FieldOrder(order = 8)
 	@IntRange(minValue=1,maxValue=200)
-	@Asn1Optional public Long numberOfCountermark;
+	public Long numberOfCountermark;
 
 	@FieldOrder(order = 9)
 	@IntRange(minValue=1,maxValue=200)
-	@Asn1Optional public Long totalOfCountermarks;
+	public Long totalOfCountermarks;
 
 	@FieldOrder(order = 10)
 	@RestrictedString(CharacterRestriction.UTF8String)
-	@Asn1Optional public String groupName;
+	String groupName;
 
 	@FieldOrder(order = 11)
 	@Asn1Default("stationUIC")
