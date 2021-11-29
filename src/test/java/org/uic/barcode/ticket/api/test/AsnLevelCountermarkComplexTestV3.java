@@ -7,7 +7,11 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.uic.barcode.asn1.uper.UperEncoder;
+import org.uic.barcode.ticket.api.asn.omv3.CountermarkData;
+import org.uic.barcode.ticket.api.asn.omv3.TravelClassType;
 import org.uic.barcode.ticket.api.asn.omv3.UicRailTicketData;
+import org.uic.barcode.ticket.api.asn.omv3.ViaStationType;
+import org.uic.barcode.ticket.api.asn.omv3.ZoneType;
 import org.uic.barcode.ticket.api.test.testtickets.CountermarkTestComplexTicketV3;
 
 
@@ -17,7 +21,7 @@ import org.uic.barcode.ticket.api.test.testtickets.CountermarkTestComplexTicketV
  * 
  * 
  */
-public class CountermarkComplexTestV3 {
+public class AsnLevelCountermarkComplexTestV3 {
 	
     
     
@@ -65,6 +69,49 @@ public class CountermarkComplexTestV3 {
 		ticket = UperEncoder.decode(content, UicRailTicketData.class);
 		
 		assert(ticket != null);
+		
+		assert(ticket.getControlDetail() != null);
+		
+		assert(ticket.getIssuingDetail() != null);
+		
+		assert(ticket.getTransportDocument() != null);
+		
+		assert(ticket.getTransportDocument().get(0).getTicket().getCounterMark() != null);
+		
+		CountermarkData cm = ticket.getTransportDocument().get(0).getTicket().getCounterMark();
+		
+		assert(cm.getClassCode().equals(TravelClassType.first));
+		assert(cm.getGroupName().equals("groupName"));
+		assert(cm.getInfoText().equals("counterMark"));
+		assert(cm.getNumberOfCountermark().equals(12L));
+		assert(cm.getTotalOfCountermarks().equals(24L));
+		assert(cm.getReturnIncluded().equals(false));
+		assert(cm.getValidRegion() != null);
+		assert(cm.getValidRegion().get(0).getViaStations() != null);
+		assert(cm.getValidRegion().get(1).getZones() != null);
+		
+		ZoneType zone = cm.getValidRegion().get(1).getZones();	
+		
+		assert(zone.getZoneId() != null);
+		assert(zone.getZoneId().get(0).equals(100L));
+		assert(zone.getZoneId().get(1).equals(200L));
+
+		ViaStationType via = cm.getValidRegion().get(0).getViaStations();
+		
+		assert(via.getBorder().equals(false));
+		assert(via.getSeriesId().equals(999L));
+		assert(via.getRoute().size() == 4);
+		assert(via.getRoute().get(0).getStationNum() == 123455L);
+		assert(via.getRoute().get(1).getStationNum() == 123456L);
+		assert(via.getRoute().get(2).getAlternativeRoutes().size() == 2);
+		assert(via.getRoute().get(2).getAlternativeRoutes().get(0).getRoute().size() == 2);
+		assert(via.getRoute().get(2).getAlternativeRoutes().get(1).getRoute().size() == 2);
+		assert(via.getRoute().get(2).getAlternativeRoutes().get(0).getRoute().get(0).getStationNum() == 23455L);
+		assert(via.getRoute().get(2).getAlternativeRoutes().get(0).getRoute().get(1).getStationNum() == 23456L);
+		assert(via.getRoute().get(3).getStationNum() == 123457L);
+		
+		assert(ticket.getTravelerDetail() != null);
+		
         
     }    
 		

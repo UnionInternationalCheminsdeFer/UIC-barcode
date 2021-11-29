@@ -19,12 +19,96 @@ import org.uic.barcode.ticket.api.asn.omv3.UicRailTicketData;
 
 	public class ParkingTestTicketV3 {
 		
+		/*
+		 * 
+value UicRailTicketData ::= {
+  issuingDetail {
+    issuingYear 2021,
+    issuingDay 63,
+    issuingTime 750,
+    specimen TRUE,
+    securePaperTicket FALSE,
+    activated TRUE,
+    currency "EUR",
+    currencyFract 2,
+    issuerPNR "issuerTestPNR",
+    issuedOnLine 12
+  },
+  travelerDetail {
+    traveler {
+      {
+        firstName "John",
+        secondName "Dow",
+        idCard "12345",
+        ticketHolder TRUE,
+        status {
+          {
+            customerStatusDescr "employee"
+          }
+        }
+      }
+    }
+  },
+  transportDocument {
+    {
+      ticket parkingGround : {
+        referenceIA5 "ACHE12345",
+        parkingGroundId "P47623",
+        fromParkingDate 1,
+        untilParkingDate 1,
+        location "Parking Frankfurt Main West",
+        stationCodeTable stationUIC,
+        stationNum 8000001,
+        specialInformation "outdoor parking",
+        numberPlate "AA-DE-12345",
+        price 500
+      }
+    }
+  },
+  controlDetail {
+    identificationByCardReference {
+      {
+        trailingCardIdNum 100
+      }
+    },
+    identificationByIdCard FALSE,
+    identificationByPassportId FALSE,
+    passportValidationRequired FALSE,
+    onlineValidationRequired FALSE,
+    ageCheckRequired FALSE,
+    reductionCardCheckRequired FALSE,
+    infoText "cd"
+  },
+  extension {
+    {
+      extensionId "1",
+      extensionData '82DA'H
+    },
+    {
+      extensionId "2",
+      extensionData '83DA'H
+    }
+  }
+}
+
+		 */
+		
 		public static UicRailTicketData getUicTestTicket() {
 			UicRailTicketData ticket = new UicRailTicketData();
 	    	populateTicket(ticket);
 			return ticket;
 		}
 		
+
+		public static String getEncodingHex() {
+			return "780440A3E5DD4374F3E7D72F2A9979F4A13A90086200B400104"
+					+ "4A6F686E03446F770562C99B46B01108CBB786CDFE72E501"
+					+ "0EA05604C187222B164CDA3506A0D1BB664CD70008DA830B"
+					+ "935B4B73390233930B735B33AB93A1026B0B4B7102BB2B9B"
+					+ "A01BD090087B7BABA3237B7B9103830B935B4B73385C182B"
+					+ "62455AC593368D40807D1200802016400098D90080588141"
+					+ "6D00B20283DA0";
+		}
 		
 		
 	    private static void populateTicket(UicRailTicketData ticket) {
@@ -141,6 +225,9 @@ import org.uic.barcode.ticket.api.asn.omv3.UicRailTicketData;
 			cr.setTrailingCardIdNum(100L);
 			return cr;
 		}
+
+
+
 
 
 

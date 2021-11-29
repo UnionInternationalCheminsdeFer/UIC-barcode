@@ -84,28 +84,24 @@ public class DelayConfirmation extends Object {
 	@Asn1Optional public String stationIA5;
 
 	@FieldOrder(order = 11)
-	@RestrictedString(CharacterRestriction.UTF8String)
-	@Asn1Optional public String stationNameUTF8;
+	@IntRange(minValue=1, maxValue=999, hasExtensionMarker=false)
+	public Long delay;
 
 	@FieldOrder(order = 12)
-	@IntRange(minValue=0, maxValue=999, hasExtensionMarker=false)
-	@Asn1Optional public Long delay;
+	public Boolean trainCancelled = false;
 
 	@FieldOrder(order = 13)
-	@Asn1Optional public Boolean trainCancelled = false;
-
-	@FieldOrder(order = 14)
 	@Asn1Default(value="travelerDelayConfirmation")
 	@Asn1Optional public ConfirmationTypeType confirmationType;
 
-	@FieldOrder(order = 15)
+	@FieldOrder(order = 14)
 	@Asn1Optional public SequenceOfTicketLinkType affectedTickets;
 
-	@FieldOrder(order = 16)
+	@FieldOrder(order = 15)
 	@RestrictedString(CharacterRestriction.UTF8String)
 	@Asn1Optional public String infoText;
 
-	@FieldOrder(order = 17)
+	@FieldOrder(order = 16)
 	@Asn1Optional public ExtensionData extension;
 	
 
@@ -163,11 +159,7 @@ public class DelayConfirmation extends Object {
 		return this.stationIA5;
 	}
 	
-	public String getStationNameUTF8() {
-		
-		return this.stationNameUTF8;
-	}
-	
+
 	public Long getDelay() {
 		
 		return this.delay;
@@ -253,11 +245,6 @@ public class DelayConfirmation extends Object {
 	public void setStationIA5(String stationIA5) {
 		
 		this.stationIA5 = stationIA5;
-	}
-
-	public void setStationNameUTF8(String stationNameUTF8) {
-		
-		this.stationNameUTF8 = stationNameUTF8;
 	}
 
 	public void setDelay(Long delay) {

@@ -19,10 +19,90 @@ import org.uic.barcode.ticket.api.asn.omv3.VoucherData;
 
 	public class VoucherTestTicketV3 {
 		
+		/*
+		 * rec1value UicRailTicketData ::= {
+  issuingDetail {
+    issuingYear 2021,
+    issuingDay 63,
+    issuingTime 600,
+    specimen TRUE,
+    securePaperTicket FALSE,
+    activated TRUE,
+    currency "EUR",
+    currencyFract 2,
+    issuerPNR "issuerTestPNR",
+    issuedOnLine 12
+  },
+  travelerDetail {
+    traveler {
+      {
+        firstName "John",
+        secondName "Dow",
+        idCard "12345",
+        ticketHolder TRUE,
+        status {
+          {
+            customerStatusDescr "employee"
+          }
+        }
+      }
+    }
+  },
+  transportDocument {
+    {
+      ticket voucher : {
+        referenceIA5 "ACHE12345",
+        productOwnerIA5 "COFFEEMACHINE",
+        validFromYear 2022,
+        validFromDay 1,
+        validUntilYear 2022,
+        validUntilDay 1,
+        value 500,
+        infoText "coffee voucher"
+      }
+    }
+  },
+  controlDetail {
+    identificationByCardReference {
+      {
+        trailingCardIdNum 100
+      }
+    },
+    identificationByIdCard FALSE,
+    identificationByPassportId FALSE,
+    passportValidationRequired FALSE,
+    onlineValidationRequired FALSE,
+    ageCheckRequired FALSE,
+    reductionCardCheckRequired FALSE,
+    infoText "cd"
+  },
+  extension {
+    {
+      extensionId "1",
+      extensionData '82DA'H
+    },
+    {
+      extensionId "2",
+      extensionData '83DA'H
+    }
+  }
+}
+
+		 */
+		
 		public static UicRailTicketData getUicTestTicket() {
 			UicRailTicketData ticket = new UicRailTicketData();
 	    	populateTicket(ticket);
 			return ticket;
+		}
+		
+		public static String getEncodingHex() {
+			
+			return "780440A3E4B14374F3E7D72F2A9979F4A13A90086200B4001044A6F686"
+					+ "E03446F770562C99B46B01108CBB786CDFE72E50108928260C39115"
+					+ "8B266D1A86C39F1A3458B360C391267450600830040807D0398DBD9"
+					+ "999959481D9BDD58DA195C9200802016400098D900805881416D00B"
+					+ "20283DA";
 		}
 			
 	    private static void populateTicket(UicRailTicketData ticket) {
@@ -135,6 +215,7 @@ import org.uic.barcode.ticket.api.asn.omv3.VoucherData;
 			cr.setTrailingCardIdNum(100L);
 			return cr;
 		}
+
 
 
 

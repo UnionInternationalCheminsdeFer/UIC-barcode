@@ -371,9 +371,7 @@ public class OpenAsn2ApiDecoderV3 implements Asn2ApiDecoder {
 			document.setStationCodeTable(IStationCodeTable.valueOf(asnDocument.getStationCodeTable().toString()));
 		}	
 		document.setStation(UicEncoderUtils.mapToString(asnDocument.getStationNum(),asnDocument.getStationIA5()));
-		
-		document.setStationName(asnDocument.getStationNameUTF8());
-		
+			
 		document.setArrivalDate(asnDocument.getPlannedArrivalDate());
 		document.setArrivalUTCoffset(asnDocument.getDepartureUTCOffset());
 

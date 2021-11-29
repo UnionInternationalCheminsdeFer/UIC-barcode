@@ -1,6 +1,7 @@
 package org.uic.barcode.ticketTestDB;
 
 
+import java.util.Iterator;
 import java.util.TimeZone;
 
 import org.junit.After;
@@ -10,8 +11,10 @@ import org.junit.Test;
 import org.uic.barcode.Decoder;
 import org.uic.barcode.asn1.uper.UperEncoder;
 import org.uic.barcode.staticFrame.ticketLayoutBarcode.TicketLayout;
+import org.uic.barcode.ticket.api.impl.SimpleTrainLink;
 import org.uic.barcode.ticket.api.spec.IOpenTicket;
 import org.uic.barcode.ticket.api.spec.IPassengerType;
+import org.uic.barcode.ticket.api.spec.IRegionalValidity;
 import org.uic.barcode.ticket.api.spec.ITariff;
 import org.uic.barcode.ticket.api.spec.ITrainLink;
 import org.uic.barcode.ticket.api.spec.ITraveler;
@@ -88,6 +91,7 @@ public class DecodeSparpreisTicketDBTest {
         assert(tariff.getNumberOfPassengers() == 1);
         assert(tariff.getPassengerType().equals(IPassengerType.adult));
         assert(tariff.getTariffDescription().equals("Super Sparpreis"));
+        
         
         ITrainLink tl = (ITrainLink) openTicket.getValidRegionList().iterator().next();
         Assert.assertNotNull(tl);

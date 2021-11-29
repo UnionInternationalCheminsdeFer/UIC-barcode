@@ -51,10 +51,11 @@ public class ParkingGroundData extends Object {
 
 	@FieldOrder(order = 3)
 	@IntRange(minValue=0,maxValue=370)
-	@Asn1Optional public Long fromParkingDate;
+	public Long fromParkingDate;
 
 	@FieldOrder(order = 4)
 	@IntRange(minValue=-1,maxValue=370)
+	@Asn1Default(value = "0")
 	@Asn1Optional public Long toParkingDate;
 
 	@FieldOrder(order = 5)
@@ -86,11 +87,10 @@ public class ParkingGroundData extends Object {
 	@Asn1Optional public CodeTableType stationCodeTable;
 
 	@FieldOrder(order = 12)
-	@IntRange(minValue=1,maxValue=9999999)
 	@Asn1Optional public Long stationNum;
 
 	@FieldOrder(order = 13)
-	@RestrictedString(CharacterRestriction.IA5String)
+	@RestrictedString(CharacterRestriction.UTF8String)
 	@Asn1Optional public String stationIA5;
 
 	@FieldOrder(order = 14)

@@ -7,8 +7,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.uic.barcode.asn1.uper.UperEncoder;
-import org.uic.barcode.ticket.api.asn.omv1.UicRailTicketData;
-import org.uic.barcode.ticket.api.test.testtickets.CountermarkTestComplexTicketV1;
+import org.uic.barcode.ticket.api.asn.omv3.UicRailTicketData;
+import org.uic.barcode.ticket.api.test.testtickets.StationPassageTestTicketV3;
 
 
 /**
@@ -17,7 +17,7 @@ import org.uic.barcode.ticket.api.test.testtickets.CountermarkTestComplexTicketV
  * 
  * 
  */
-public class CountermarkComplexTestV1 {
+public class AsnLevelStationPassageTestV3 {
 	
     
     
@@ -49,6 +49,21 @@ public class CountermarkComplexTestV1 {
 		TimeZone.setDefault(defaulttimeZone);
 	}
 	
+	@Test public void encoding() throws IllegalArgumentException, IllegalAccessException, ParseException {
+		
+		//get tickets
+		ticket = StationPassageTestTicketV3.getUicTestTicket();
+		byte[] encoded = UperEncoder.encode(ticket);
+						
+		assert(encoded != null);
+		assert(encoded.length > 20);
+		
+		String encodedHex = UperEncoder.hexStringFromBytes(encoded);
+		String expectedHex = StationPassageTestTicketV3.getEncodingHex();
+		
+		assert(expectedHex.equals(encodedHex));
+        
+    }  
     
 	/**
 	 * Test encode test tickets in UTC and decode in CET.
@@ -60,36 +75,21 @@ public class CountermarkComplexTestV1 {
 	@Test public void decoding()  {
 		
 		//get tickets
-		String hex = CountermarkTestComplexTicketV1.getEncodingHex();
+		String hex = StationPassageTestTicketV3.getEncodingHex();
 		byte[] content = UperEncoder.bytesFromHexString(hex);
 		ticket = UperEncoder.decode(content, UicRailTicketData.class);
 		
 		assert(ticket != null);
-        
-    }    
 		
-	@Test public void encoding() throws IllegalArgumentException, IllegalAccessException, ParseException {
-		
-		//get tickets
-		String hex = CountermarkTestComplexTicketV1.getEncodingHex();
-		byte[] content = UperEncoder.bytesFromHexString(hex);
-		ticket = UperEncoder.decode(content, UicRailTicketData.class);
-		
-		
-		//ticket = OpenTestComplexTicketV2.getUicTestTicket();
 		byte[] encoded = UperEncoder.encode(ticket);
-		
-		
-		
-		assert(encoded != null);
-		assert(encoded.length > 20);
-		
 		String encodedHex = UperEncoder.hexStringFromBytes(encoded);
-		String expectedHex = CountermarkTestComplexTicketV1.getEncodingHex();
+		String expectedHex = StationPassageTestTicketV3.getEncodingHex();
 		
 		assert(expectedHex.equals(encodedHex));
+
         
-    }   
+    }    
+		 
 	
 
 }

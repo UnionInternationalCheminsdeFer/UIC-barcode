@@ -13,6 +13,11 @@ import org.uic.barcode.asn1.uper.UperEncoder.Asn1ContainerFieldSorter;
 class SequenceCoder implements Decoder, Encoder {
 
     @Override public <T> boolean canEncode(T obj, Annotation[] extraAnnotations) {
+    	
+    	if (obj == null || obj.getClass() == null) {
+    		return false;
+    	}
+    	
         Class<?> type = obj.getClass();
         AnnotationStore annotations = new AnnotationStore(type.getAnnotations(), extraAnnotations);      
         
@@ -53,7 +58,12 @@ class SequenceCoder implements Decoder, Encoder {
                 	pos = String.format("Position: %d.%d", bitbuffer.position()/8 , bitbuffer.position() % 8);
                     UperEncoder.logger.debug(String.format("%s: Field %s", pos, f.getName()));
                     try {
-                        UperEncoder.encode2(bitbuffer, f.get(obj), f.getAnnotations());
+                    	Object o = f.get(obj);
+                    	if (o != null) {	
+                    		UperEncoder.encode2(bitbuffer, f.get(obj), f.getAnnotations());
+                    	} else {
+                    		throw new Asn1EncodingException("missing object " + f.getName());
+                    	}
                     } catch (Asn1EncodingException e) {
                         throw new Asn1EncodingException("." + f.getName(), e);
                     } catch (IllegalArgumentException e) {

@@ -124,6 +124,9 @@ public class ZoneType extends Object {
 
 	public byte[] getBinaryZoneId() {
 		
+		if (binaryZoneId == null) {
+			return null;
+		}
 		return binaryZoneId.toByteArray();
 		
 	}
