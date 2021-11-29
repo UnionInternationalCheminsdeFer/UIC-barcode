@@ -22,6 +22,87 @@ import org.uic.barcode.ticket.api.asn.omv3.UicRailTicketData;
 
 public class StationPassageTestTicketV3 {
 	
+	/*
+	 * 
+value UicRailTicketData ::= {
+  issuingDetail {
+    issuingYear 2018,
+    issuingDay 1,
+    issuingTime 600,
+    specimen TRUE,
+    securePaperTicket FALSE,
+    activated TRUE,
+    currency "EUR",
+    currencyFract 2,
+    issuerPNR "issuerTestPNR",
+    issuedOnLine 12
+  },
+  travelerDetail {
+    traveler {
+      {
+        firstName "John",
+        secondName "Dow",
+        idCard "12345",
+        ticketHolder TRUE,
+        status {
+          {
+            customerStatusDescr "senior"
+          }
+        }
+      }
+    },
+    groupName "myGroup"
+  },
+  transportDocument {
+    {
+      ticket stationPassage : {
+        productName "passage",
+        stationCodeTable stationUIC,
+        stationNameUTF8 {
+          "Amsterdam"
+        },
+        validFromDay 5,
+        validFromTime 0,
+        validUntilDay 5,
+        validUntilTime 1000,
+        numberOfDaysValid 5
+      }
+    }
+  },
+  controlDetail {
+    identificationByCardReference {
+      {
+        trailingCardIdNum 100
+      }
+    },
+    identificationByIdCard FALSE,
+    identificationByPassportId FALSE,
+    passportValidationRequired FALSE,
+    onlineValidationRequired FALSE,
+    ageCheckRequired FALSE,
+    reductionCardCheckRequired FALSE,
+    infoText "cd",
+    includedTickets {
+      {
+        productOwnerIA5 "test",
+        ticketType openTicket,
+        linkMode issuedTogether
+      }
+    }
+  },
+  extension {
+    {
+      extensionId "1",
+      extensionData '82DA'H
+    },
+    {
+      extensionId "2",
+      extensionData '83DA'H
+    }
+  }
+}
+	 */
+	
 	
 	public static UicRailTicketData getUicTestTicket() {
 		UicRailTicketData ticket = new UicRailTicketData();
@@ -29,7 +110,13 @@ public class StationPassageTestTicketV3 {
 		return ticket;
 	}
 	
-	
+	public static String getEncodingHex() {
+		return 
+		"7804404004B14374F3E7D72F2A9979F4A13A90086280B4001044A6F686E03446"
+		+ "F770562C99B46B01106E797769DFC81DB5E51DC9BDD5C00448088B40EE0C2E"
+		+ "6E6C2CECA021282DAE6E8CAE4C8C2DA5D000019F40082A60100402C800131B"
+		+ "20081013A65E7D00805881416D00B20283DA";
+	}	
 	
     private static void populateTicket(UicRailTicketData ticket) {
     	
@@ -178,6 +265,10 @@ public class StationPassageTestTicketV3 {
 		cr.setTrailingCardIdNum(100L);
 		return cr;
 	}
+
+
+
+
 
 
 

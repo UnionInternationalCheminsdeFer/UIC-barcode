@@ -7,22 +7,21 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.uic.barcode.asn1.uper.UperEncoder;
-import org.uic.barcode.ticket.api.asn.omv3.BoardingOrArrivalType;
-import org.uic.barcode.ticket.api.asn.omv3.PassData;
-import org.uic.barcode.ticket.api.asn.omv3.UicRailTicketData;
-import org.uic.barcode.ticket.api.test.testtickets.PassComplexTicketV3;
+import org.uic.barcode.ticket.api.asn.omv1.UicRailTicketData;
+import org.uic.barcode.ticket.api.test.testtickets.CountermarkTestComplexTicketV1;
 
 
 /**
- * The Class Test asn.1 encoding of a pass.
+ * The Class FipTimeZoneTestV3.
  * 
  * 
  * 
  */
-public class PassComplexTestV3 {
+public class AsnLevelCountermarkComplexTestV1 {
 	
     
-	   /** The ticket decoded 1. */
+    
+    /** The ticket decoded 1. */
     UicRailTicketData ticket = null;
         
     byte[] encodedInTimeZone1 = null; 
@@ -61,7 +60,7 @@ public class PassComplexTestV3 {
 	@Test public void decoding()  {
 		
 		//get tickets
-		String hex = PassComplexTicketV3.getEncodingHex();
+		String hex = CountermarkTestComplexTicketV1.getEncodingHex();
 		byte[] content = UperEncoder.bytesFromHexString(hex);
 		ticket = UperEncoder.decode(content, UicRailTicketData.class);
 		
@@ -72,11 +71,12 @@ public class PassComplexTestV3 {
 	@Test public void encoding() throws IllegalArgumentException, IllegalAccessException, ParseException {
 		
 		//get tickets
-		String hex = PassComplexTicketV3.getEncodingHex();
+		String hex = CountermarkTestComplexTicketV1.getEncodingHex();
 		byte[] content = UperEncoder.bytesFromHexString(hex);
 		ticket = UperEncoder.decode(content, UicRailTicketData.class);
 		
 		
+		//ticket = OpenTestComplexTicketV2.getUicTestTicket();
 		byte[] encoded = UperEncoder.encode(ticket);
 		
 		
@@ -85,25 +85,11 @@ public class PassComplexTestV3 {
 		assert(encoded.length > 20);
 		
 		String encodedHex = UperEncoder.hexStringFromBytes(encoded);
-		String expectedHex = PassComplexTicketV3.getEncodingHex();
+		String expectedHex = CountermarkTestComplexTicketV1.getEncodingHex();
 		
 		assert(expectedHex.equals(encodedHex));
-		
-		assert(ticket.getTransportDocument().get(0).getTicket().getPass() != null);
-		
-		PassData p = ticket.getTransportDocument().get(0).getTicket().getPass();
-		
-		
-		assert(p.getTrainValidity().getBordingOrArrival().equals(BoardingOrArrivalType.boarding));
-		assert(p.getTrainValidity().getIncludedCarriersNum().contains(1234L));
-		assert(p.getTrainValidity().getIncludedCarriersNum().contains(5678L));
-		assert(p.getTrainValidity().getValidFromDay() == 0L);
-		assert(p.getTrainValidity().getValidFromTime() == 1000L);
-		assert(p.getTrainValidity().getValidUntilDay() == 1L);
-		assert(p.getTrainValidity().getValidUntilTime() == 1000L);
-		
- 
         
     }   
 	
+
 }

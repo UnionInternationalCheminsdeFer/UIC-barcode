@@ -1,31 +1,124 @@
 package org.uic.barcode.ticket.api.test.testtickets;
 
 import org.uic.barcode.asn1.datatypes.Asn1BigInteger;
-import org.uic.barcode.ticket.api.asn.omv1.CardReferenceType;
-import org.uic.barcode.ticket.api.asn.omv1.ControlData;
-import org.uic.barcode.ticket.api.asn.omv1.CustomerStatusType;
-import org.uic.barcode.ticket.api.asn.omv1.DelayConfirmation;
-import org.uic.barcode.ticket.api.asn.omv1.DocumentData;
-import org.uic.barcode.ticket.api.asn.omv1.ExtensionData;
-import org.uic.barcode.ticket.api.asn.omv1.IssuingData;
-import org.uic.barcode.ticket.api.asn.omv1.SequenceOfCardReferenceType;
-import org.uic.barcode.ticket.api.asn.omv1.SequenceOfCustomerStatusType;
-import org.uic.barcode.ticket.api.asn.omv1.SequenceOfDocumentData;
-import org.uic.barcode.ticket.api.asn.omv1.SequenceOfExtensionData;
-import org.uic.barcode.ticket.api.asn.omv1.SequenceOfTicketLinkType;
-import org.uic.barcode.ticket.api.asn.omv1.SequenceOfTravelerType;
-import org.uic.barcode.ticket.api.asn.omv1.TicketDetailData;
-import org.uic.barcode.ticket.api.asn.omv1.TicketLinkType;
-import org.uic.barcode.ticket.api.asn.omv1.TravelerData;
-import org.uic.barcode.ticket.api.asn.omv1.TravelerType;
-import org.uic.barcode.ticket.api.asn.omv1.UicRailTicketData;
+import org.uic.barcode.ticket.api.asn.omv3.CardReferenceType;
+import org.uic.barcode.ticket.api.asn.omv3.ControlData;
+import org.uic.barcode.ticket.api.asn.omv3.CustomerStatusType;
+import org.uic.barcode.ticket.api.asn.omv3.DelayConfirmation;
+import org.uic.barcode.ticket.api.asn.omv3.DocumentData;
+import org.uic.barcode.ticket.api.asn.omv3.ExtensionData;
+import org.uic.barcode.ticket.api.asn.omv3.IssuingData;
+import org.uic.barcode.ticket.api.asn.omv3.SequenceOfCardReferenceType;
+import org.uic.barcode.ticket.api.asn.omv3.SequenceOfCustomerStatusType;
+import org.uic.barcode.ticket.api.asn.omv3.SequenceOfDocumentData;
+import org.uic.barcode.ticket.api.asn.omv3.SequenceOfExtensionData;
+import org.uic.barcode.ticket.api.asn.omv3.SequenceOfTicketLinkType;
+import org.uic.barcode.ticket.api.asn.omv3.SequenceOfTravelerType;
+import org.uic.barcode.ticket.api.asn.omv3.TicketDetailData;
+import org.uic.barcode.ticket.api.asn.omv3.TicketLinkType;
+import org.uic.barcode.ticket.api.asn.omv3.TravelerData;
+import org.uic.barcode.ticket.api.asn.omv3.TravelerType;
+import org.uic.barcode.ticket.api.asn.omv3.UicRailTicketData;
 
 	public class DelayTestTicketV3 {
+		
+		
+		/*
+		 * 
+		 * 
+value UicRailTicketData ::= {
+  issuingDetail {
+    issuingYear 2021,
+    issuingDay 63,
+    issuingTime 750,
+    specimen TRUE,
+    securePaperTicket FALSE,
+    activated TRUE,
+    currency "EUR",
+    currencyFract 2,
+    issuerPNR "issuerTestPNR",
+    issuedOnLine 12
+  },
+  travelerDetail {
+    traveler {
+      {
+        firstName "John",
+        secondName "Dow",
+        idCard "12345",
+        ticketHolder TRUE,
+        status {
+          {
+            customerStatusDescr "employee"
+          }
+        }
+      }
+    }
+  },
+  transportDocument {
+    {
+      ticket delayConfirmation : {
+        referenceIA5 "ABDJ12345",
+        trainNum 100,
+        departureYear 2022,
+        departureDay 12,
+        departureTime 1000,
+        stationCodeTable stationUIC,
+        stationNum 8000001,
+        delay 31,
+        trainCancelled FALSE,
+        confirmationType travelerDelayConfirmation,
+        affectedTickets {
+          {
+            referenceNum 801234567890,
+            productOwnerNum 1080,
+            ticketType openTicket,
+            linkMode issuedTogether
+          }
+        },
+        infoText "delay confirmation"
+      }
+    }
+  },
+  controlDetail {
+    identificationByCardReference {
+      {
+        trailingCardIdNum 100
+      }
+    },
+    identificationByIdCard FALSE,
+    identificationByPassportId FALSE,
+    passportValidationRequired FALSE,
+    onlineValidationRequired FALSE,
+    ageCheckRequired FALSE,
+    reductionCardCheckRequired FALSE,
+    infoText "cd"
+  },
+  extension {
+    {
+      extensionId "1",
+      extensionData '82DA'H
+    },
+    {
+      extensionId "2",
+      extensionData '83DA'H
+    }
+  }
+}
+
+		 */
 		
 		public static UicRailTicketData getUicTestTicket() {
 			UicRailTicketData ticket = new UicRailTicketData();
 	    	populateTicket(ticket);
 			return ticket;
+		}
+		
+		public static String getEncodingHex() {
+			return "780440A3E5DD4374F3E7D72F2A9979F4A13A90086200B4001044A6F686E03446F77"
+					+ "0562C99B46B01108CBB786CDFE72E50116AE4C130614494C593368D405901816"
+					+ "FA1E848001E009201802EA35350B4821B893232B630BC9031B7B73334B936B0B"
+					+ "A34B7B7240100402C800131B20100B10282DA01640507B4";
+			
 		}
 		
 		
@@ -77,15 +170,14 @@ import org.uic.barcode.ticket.api.asn.omv1.UicRailTicketData;
 			
 	    	TicketDetailData tdd = new TicketDetailData();
 	    	DelayConfirmation ticket = new DelayConfirmation();
-	    	ticket.setPlannedArrivalDay(0L);
+	    	ticket.setPlannedArrivalDay(12L);
 	    	ticket.setPlannedArrivalTime(1000L);
-	    	ticket.setDelay(30L);
+	    	ticket.setDelay(31L);
 	    	ticket.setInfoText("delay confirmation");
 	    	ticket.setAffectedTickets(getAffectedTickets());
 	    	ticket.setPlannedArrivalYear(2022L);
 	    	ticket.setReferenceIA5("ABDJ12345");
 	    	ticket.setStationNum(8000001L);
-	    	ticket.setStationNameUTF8("station of delay");
 	    	ticket.setTrainCancelled(false);
 	    	ticket.setTrainNum(Asn1BigInteger.toAsn1(100L));
 	    	tdd.setDelayConfirmation(ticket);
@@ -96,7 +188,6 @@ import org.uic.barcode.ticket.api.asn.omv1.UicRailTicketData;
 			
 			SequenceOfTicketLinkType lts = new SequenceOfTicketLinkType();
 			TicketLinkType t1 = new TicketLinkType();
-			t1.setReferenceNum(1080L);
 			t1.setReferenceNum(801234567890L);
 			t1.setProductOwnerNum(1080L);
 			lts.add(t1);
@@ -157,6 +248,9 @@ import org.uic.barcode.ticket.api.asn.omv1.UicRailTicketData;
 			cr.setTrailingCardIdNum(100L);
 			return cr;
 		}
+
+
+
 
 
 

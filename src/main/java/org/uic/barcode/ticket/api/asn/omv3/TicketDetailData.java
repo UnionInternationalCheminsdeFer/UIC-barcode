@@ -62,10 +62,10 @@ public class TicketDetailData extends Object {
 	public StationPassageData stationPassage;
 
 	@FieldOrder(order = 10)
-	public DelayConfirmation delayConfirmation;
-
+	public ExtensionData extension;	
+	
 	@FieldOrder(order = 11)
-	public ExtensionData extension;
+	public DelayConfirmation delayConfirmation;
 
 	public ReservationData getReservation() {
 		

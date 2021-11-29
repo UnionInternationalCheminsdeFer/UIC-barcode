@@ -24,6 +24,8 @@ package org.uic.barcode.ticket.api.asn.omv2;
 import org.uic.barcode.asn1.datatypes.Choice;
 import org.uic.barcode.asn1.datatypes.FieldOrder;
 import org.uic.barcode.asn1.datatypes.HasExtensionMarker;
+import org.uic.barcode.ticket.api.asn.omv2.DelayConfirmation;
+import org.uic.barcode.ticket.api.asn.omv2.ExtensionData;
 
 @Choice
 @HasExtensionMarker
@@ -62,10 +64,11 @@ public class TicketDetailData extends Object {
 	public StationPassageData stationPassage;
 
 	@FieldOrder(order = 10)
+	public ExtensionData extension;	
+	
+	@FieldOrder(order = 11)
 	public DelayConfirmation delayConfirmation;
 
-	@FieldOrder(order = 11)
-	public ExtensionData extension;
 
 	public ReservationData getReservation() {
 		

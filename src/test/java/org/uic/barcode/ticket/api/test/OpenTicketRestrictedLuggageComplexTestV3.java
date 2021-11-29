@@ -13,16 +13,16 @@ import org.uic.barcode.ticket.api.asn.omv3.OpenTicketData;
 import org.uic.barcode.ticket.api.asn.omv3.PassengerType;
 import org.uic.barcode.ticket.api.asn.omv3.TravelClassType;
 import org.uic.barcode.ticket.api.asn.omv3.UicRailTicketData;
-import org.uic.barcode.ticket.api.test.testtickets.OpenTestComplexTicketV3;
+import org.uic.barcode.ticket.api.test.testtickets.OpenLuggageRestrictionTestTicketV3;
 
 
 /**
- * The Class FipTimeZoneTestV3.
+ * 
  * 
  * 
  * 
  */
-public class OpenTicketComplexTestV3 {
+public class OpenTicketRestrictedLuggageComplexTestV3 {
 	
     
     
@@ -65,7 +65,7 @@ public class OpenTicketComplexTestV3 {
 	@Test public void decoding()  {
 		
 		//get tickets
-		String hex = OpenTestComplexTicketV3.getEncodingHex();
+		String hex = OpenLuggageRestrictionTestTicketV3.getEncodingHex();
 		byte[] content = UperEncoder.bytesFromHexString(hex);
 		ticket = UperEncoder.decode(content, UicRailTicketData.class);
 		
@@ -98,26 +98,30 @@ public class OpenTicketComplexTestV3 {
 		assert(inc.getTariffs().get(0).getRestrictedToRouteSection().getFromStationNum() == 8000001L);
 		assert(inc.getTariffs().get(0).getRestrictedToRouteSection().getToStationNum() == 8010000L);	
         
+		assert(ot.getLuggage() != null);
+		assert(ot.getLuggage().maxHandLuggagePieces == 2L);
+		assert(ot.getLuggage().getMaxNonHandLuggagePieces() == 1L);
+		assert(ot.getLuggage().getRegisteredLuggage().size() == 2);
+		assert(ot.getLuggage().getRegisteredLuggage().get(0).getMaxSize() == 100L);
+		assert(ot.getLuggage().getRegisteredLuggage().get(1).getMaxSize() == 101L);
+		assert(ot.getLuggage().getRegisteredLuggage().get(0).getMaxWeight() == 20L);
+		assert(ot.getLuggage().getRegisteredLuggage().get(1).getMaxWeight() == 21L);
+		assert(ot.getLuggage().getRegisteredLuggage().get(0).getRegistrationId().equals("IODHUV"));
+		assert(ot.getLuggage().getRegisteredLuggage().get(1).getRegistrationId().equals("XXDHUV"));
     }    
 		
 	@Test public void encoding() throws IllegalArgumentException, IllegalAccessException, ParseException {
 		
 		//get tickets
-		String hex = OpenTestComplexTicketV3.getEncodingHex();
-		byte[] content = UperEncoder.bytesFromHexString(hex);
-		ticket = UperEncoder.decode(content, UicRailTicketData.class);
+		ticket = OpenLuggageRestrictionTestTicketV3.getUicTestTicket();
 		
-		
-		//ticket = OpenTestComplexTicketV2.getUicTestTicket();
 		byte[] encoded = UperEncoder.encode(ticket);
-		
-		
 		
 		assert(encoded != null);
 		assert(encoded.length > 20);
 		
 		String encodedHex = UperEncoder.hexStringFromBytes(encoded);
-		String expectedHex = OpenTestComplexTicketV3.getEncodingHex();
+		String expectedHex = OpenLuggageRestrictionTestTicketV3.getEncodingHex();
 		
 		assert(expectedHex.equals(encodedHex));
         

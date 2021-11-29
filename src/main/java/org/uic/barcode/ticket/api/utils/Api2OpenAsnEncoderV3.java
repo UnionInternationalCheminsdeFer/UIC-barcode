@@ -320,7 +320,6 @@ public class Api2OpenAsnEncoderV3 implements Api2AsnEncoder {
 		
 		asnData.setInfoText(document.getInfoText());
 		
-		asnData.setStationNameUTF8(document.getStationName());		
 		
 		asnData.setExtension(encodeExtension(document.getExtension()));		
 		
@@ -984,6 +983,9 @@ public class Api2OpenAsnEncoderV3 implements Api2AsnEncoder {
 			}
 		}
 
+		asnData.setGroupName(document.getGroupName());
+		asnData.setNumberOfCountermark(new Long(document.getNumberOfCountermark()));
+		asnData.setTotalOfCountermarks(new Long(document.getTotalOfCountermarks()));
 
 					
 		asnData.setReferenceNum(UicEncoderUtils.getNum(document.getReference()));

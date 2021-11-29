@@ -89,7 +89,14 @@ public final class UperEncoder {
 
 
     static <T> void encode2(BitBuffer bitbuffer, T obj, Annotation[] extraAnnotations) throws Asn1EncodingException {
-        for (Encoder e : encoders) {
+ 
+    	if (obj == null) {
+    		logger.debug(String.format("Object missing"));
+    		return;
+    	}
+    	
+    	
+    	for (Encoder e : encoders) {
             if (e.canEncode(obj, extraAnnotations)) {
                 e.encode(bitbuffer, obj, extraAnnotations);
                 return;
