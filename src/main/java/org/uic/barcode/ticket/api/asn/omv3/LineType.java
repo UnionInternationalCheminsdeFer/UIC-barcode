@@ -28,7 +28,6 @@ import org.uic.barcode.asn1.datatypes.HasExtensionMarker;
 import org.uic.barcode.asn1.datatypes.IntRange;
 import org.uic.barcode.asn1.datatypes.RestrictedString;
 import org.uic.barcode.asn1.datatypes.Sequence;
-import org.uic.barcode.asn1.datatypesimpl.OctetString;
 import org.uic.barcode.asn1.datatypesimpl.SequenceOfUnrestrictedLong;
 
 @Sequence
@@ -71,10 +70,6 @@ public class LineType extends Object {
 
 	@FieldOrder(order = 8)
 	@Asn1Optional public Asn1BigInteger city;
-
-	@FieldOrder(order = 9)
-	@Asn1Optional public OctetString binaryZoneId;
-	
 
 
 	public Long getCarrierNum() {
@@ -126,11 +121,6 @@ public class LineType extends Object {
 		return Asn1BigInteger.toLong(this.city);
 	}
 
-	public byte[] getBinaryZoneId() {
-		
-		return binaryZoneId.toByteArray();
-	}
-
 	public void setCarrierNum(Long carrierNum) {
 
 		this.carrierNum = carrierNum;
@@ -174,11 +164,6 @@ public class LineType extends Object {
 	public void setCity(Long city) {
 
 		this.city = Asn1BigInteger.toAsn1(city);
-	}
-
-	public void setBinaryZoneId(byte[] binaryZoneId) {
-
-		this.binaryZoneId = new OctetString(binaryZoneId);
 	}
 
 

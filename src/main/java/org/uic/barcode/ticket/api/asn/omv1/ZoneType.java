@@ -76,6 +76,7 @@ public class ZoneType extends Object {
 	@Asn1Optional public OctetString binaryZoneId;
 
 	@FieldOrder(order = 10)
+	@RestrictedString(CharacterRestriction.IA5String)
 	@Asn1Optional public String nutsCode;
 	
 

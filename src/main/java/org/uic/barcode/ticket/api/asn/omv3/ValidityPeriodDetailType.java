@@ -19,10 +19,7 @@
  */
 package org.uic.barcode.ticket.api.asn.omv3;
 
-import java.util.Collection;
-
 import org.uic.barcode.asn1.datatypes.Asn1Optional;
-import org.uic.barcode.asn1.datatypes.Asn1SequenceOf;
 import org.uic.barcode.asn1.datatypes.FieldOrder;
 import org.uic.barcode.asn1.datatypes.Sequence;
 
@@ -37,17 +34,6 @@ public class ValidityPeriodDetailType extends Object {
 	@FieldOrder(order = 1)
 	@Asn1Optional public SequenceOfTimeRangeType excludedTimeRange;
 	
-	
-	public class SequenceOfTimeRangeType extends Asn1SequenceOf<TimeRangeType> {
-	    public SequenceOfTimeRangeType() { super(); }
-	    public SequenceOfTimeRangeType(Collection<TimeRangeType> coll) { super(coll); }
-	}		
-	
-	
-	public class SequenceOfValidityPeriodType extends Asn1SequenceOf<ValidityPeriodType> {
-	    public SequenceOfValidityPeriodType() { super(); }
-	    public SequenceOfValidityPeriodType(Collection<ValidityPeriodType> coll) { super(coll); }
-	}	
 
 	public SequenceOfValidityPeriodType getValidityPeriod() {
 

@@ -50,10 +50,10 @@ public class CustomerCardData extends Object {
 
 	@FieldOrder(order = 3)
 	@IntRange(minValue=2016,maxValue=2269)
-	@Asn1Optional public Long validFromYear;	
+	public Long validFromYear;	
 	
 	@FieldOrder(order = 4)
-	@IntRange(minValue=0,maxValue=700)
+	@IntRange(minValue=0,maxValue=370)
 	@Asn1Optional public Long validFromDay;
 	
 	@FieldOrder(order = 5)
@@ -68,7 +68,7 @@ public class CustomerCardData extends Object {
 	@Asn1Optional public TravelClassType classCode;
 
 	@FieldOrder(order = 8)
-	@IntRange(minValue=0,maxValue=1000)
+	@IntRange(minValue=1,maxValue=1000)
 	@Asn1Optional public Long cardType;
 
 	@FieldOrder(order = 9)
@@ -79,6 +79,7 @@ public class CustomerCardData extends Object {
 	@Asn1Optional public Asn1BigInteger customerStatus;
 
 	@FieldOrder(order = 11)
+	@RestrictedString(CharacterRestriction.IA5String)
 	@Asn1Optional public String customerStatusDescr;
 
 	@FieldOrder(order = 12)
