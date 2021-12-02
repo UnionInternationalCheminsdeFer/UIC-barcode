@@ -130,7 +130,7 @@ class StringCoder implements Decoder, Encoder {
             for (int i = 0; i < string.length(); i++) {
                 encodeChar(bitbuffer, string.charAt(i), restrictionAnnotation);
             }
-            UperEncoder.logger.debug(String.format("STRING %s size %d: %s", obj.getClass().getName(), bitbuffer.toBooleanString(position1, position2 - position1),bitbuffer.toBooleanStringFromPosition(position2)));
+            UperEncoder.logger.debug(String.format("STRING %s size %s: %s", obj.getClass().getName(), bitbuffer.toBooleanString(position1, position2 - position1),bitbuffer.toBooleanStringFromPosition(position2)));
             return;
         } else {
             int position1 = bitbuffer.position();

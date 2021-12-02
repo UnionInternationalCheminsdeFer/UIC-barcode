@@ -26,6 +26,7 @@ import org.uic.barcode.asn1.datatypes.Asn1Optional;
 import org.uic.barcode.asn1.datatypes.CharacterRestriction;
 import org.uic.barcode.asn1.datatypes.FieldOrder;
 import org.uic.barcode.asn1.datatypes.HasExtensionMarker;
+import org.uic.barcode.asn1.datatypes.IntRange;
 import org.uic.barcode.asn1.datatypes.RestrictedString;
 import org.uic.barcode.asn1.datatypes.Sequence;
 
@@ -37,6 +38,7 @@ public class CardReferenceType extends Object {
 	}
 
 	@FieldOrder(order = 0)
+	@IntRange(minValue=1,maxValue=32000)
 	@Asn1Optional public Asn1BigInteger cardIssuerNum;
 
 	@FieldOrder(order = 1)

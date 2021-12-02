@@ -1227,7 +1227,6 @@ public class Api2OpenAsnEncoderV3 implements Api2AsnEncoder {
 		if (document == null) return null;
 		LineType asnData =new LineType();
 
-		asnData.setBinaryZoneId(document.getBinaryZoneId());
 		asnData.setCarrierNum(UicEncoderUtils.getNum(document.getCarrier()));
 		asnData.setCarrierIA5(UicEncoderUtils.getIA5NonNum(document.getCarrier()));
 		if (document.getStationCodeTable() != IStationCodeTable.stationUIC && document.getStationCodeTable() != null){

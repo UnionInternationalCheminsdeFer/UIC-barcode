@@ -79,6 +79,7 @@ public class CustomerCardData extends Object {
 	@Asn1Optional public Asn1BigInteger customerStatus;
 
 	@FieldOrder(order = 11)
+	@RestrictedString(CharacterRestriction.IA5String)
 	@Asn1Optional public String customerStatusDescr;
 
 	@FieldOrder(order = 12)

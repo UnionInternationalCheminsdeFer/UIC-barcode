@@ -1483,7 +1483,7 @@ public class OpenAsn2ApiDecoderV3 implements Asn2ApiDecoder {
 		
 		ILine line = factory.createLine();
 
-		line.setBinaryZoneId(asnDocument.getBinaryZoneId());
+		
 		line.setCarrier(UicEncoderUtils.mapToString(asnDocument.getCarrierNum(),asnDocument.getCarrierIA5()));
 		if (asnDocument.getCity()!=null) {
 			line.setCity(asnDocument.getCity().intValue());

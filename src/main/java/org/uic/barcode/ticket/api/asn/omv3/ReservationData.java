@@ -152,6 +152,7 @@ public class ReservationData extends Object {
 	@Asn1Optional public TravelClassType classCode;
 
 	@FieldOrder(order = 28)
+	@RestrictedString(CharacterRestriction.IA5String)
 	@SizeRange(minValue = 1, maxValue = 2)
 	@Asn1Optional public String serviceLevel;
 

@@ -148,6 +148,7 @@ public class OpenTicketData extends Object {
 
 	@FieldOrder(order = 27)
 	@SizeRange(minValue = 1, maxValue = 2)
+	@RestrictedString(CharacterRestriction.IA5String)
 	@Asn1Optional public String serviceLevel;
 
 	@FieldOrder(order = 28)
