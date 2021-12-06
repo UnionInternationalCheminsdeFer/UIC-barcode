@@ -101,31 +101,4 @@ public class PlacesType extends Object {
 		this.placeNum = placeNum;
 	}
 
-	@Override
-	public boolean equals(Object anObject) {
-		if (this == anObject) return true;
-		if ((anObject == null) || (anObject.getClass() != this.getClass())) return false;
-
-		PlacesType comparator = (PlacesType)anObject;
-
-		if ((this.getCoach() != comparator.getCoach()) && ((this.getCoach() == null) || (! this.getCoach().equals(comparator.getCoach())))) return false;
-		if ((this.getPlaceString() != comparator.getPlaceString()) && ((this.getPlaceString() == null) || (! this.getPlaceString().equals(comparator.getPlaceString())))) return false;
-		if ((this.getPlaceDescription() != comparator.getPlaceDescription()) && ((this.getPlaceDescription() == null) || (! this.getPlaceDescription().equals(comparator.getPlaceDescription())))) return false;
-		if ((this.getPlaceIA5() != comparator.getPlaceIA5()) && ((this.getPlaceIA5() == null) || (! this.getPlaceIA5().equals(comparator.getPlaceIA5())))) return false;
-		if ((this.getPlaceNum() != comparator.getPlaceNum()) && ((this.getPlaceNum() == null) || (! this.getPlaceNum().equals(comparator.getPlaceNum())))) return false;
-		return true;
-	}
-
-	@Override
-	public int hashCode() {
-		int hash = 5477;
-
-		hash = 3547 * hash + (null == this.getCoach() ? 0 : this.getCoach().hashCode());
-		hash = 7321 * hash + (null == this.getPlaceString() ? 0 : this.getPlaceString().hashCode());
-		hash = 2083 * hash + (null == this.getPlaceDescription() ? 0 : this.getPlaceDescription().hashCode());
-		hash = 881 * hash + (null == this.getPlaceIA5() ? 0 : this.getPlaceIA5().hashCode());
-		hash = 6679 * hash + (null == this.getPlaceNum() ? 0 : this.getPlaceNum().hashCode());
-		return hash;
-	}
-
 }

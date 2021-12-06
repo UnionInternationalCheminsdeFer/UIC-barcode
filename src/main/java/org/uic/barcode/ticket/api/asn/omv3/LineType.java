@@ -53,7 +53,7 @@ public class LineType extends Object {
 	@Asn1Optional public CodeTableType stationCodeTable;
 
 	@FieldOrder(order = 4)
-	@IntRange(minValue=0,maxValue=9999999)
+	@IntRange(minValue=1,maxValue=9999999)
 	@Asn1Optional public Long entryStationNum;
 
 	@FieldOrder(order = 5)
@@ -61,7 +61,7 @@ public class LineType extends Object {
 	@Asn1Optional public String entryStationIA5;
 
 	@FieldOrder(order = 6)
-	@IntRange(minValue=0,maxValue=9999999)
+	@IntRange(minValue=1,maxValue=9999999)
 	@Asn1Optional public Long terminatingStationNum;
 
 	@FieldOrder(order = 7)

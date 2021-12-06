@@ -93,6 +93,16 @@ public class TrainLinkType extends Object {
 	public Long getDepartureTime() {
 		return this.departureTime;
 	}
+	
+	
+
+	public Long getDepartureUTCOffset() {
+		return departureUTCOffset;
+	}
+
+	public void setDepartureUTCOffset(Long departureUTCOffset) {
+		this.departureUTCOffset = departureUTCOffset;
+	}
 
 	public Long getFromStationNum() {
 		return this.fromStationNum;
