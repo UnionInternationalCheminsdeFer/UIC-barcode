@@ -24,15 +24,7 @@ public class UperEncodeOctetStringTest {
 		END
          
 		value TestRecord ::= { value '83DA'H }
-		
-		Encoding to the file 'data.uper' using PER UNALIGNED encoding rule...
-		TestRecord SEQUENCE [fieldcount (not encoded) = 1]
-  		value OCTET STRING [length = 2.0]
-    	0x83da
-		Total encoded length = 3.0
-		Encoded successfully in 3 bytes:
-		0283DA
-         
+		         
     </pre>
      */
     @Sequence

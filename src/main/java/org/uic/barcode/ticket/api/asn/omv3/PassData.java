@@ -80,6 +80,7 @@ public class PassData extends Object {
 
 	@FieldOrder(order = 9)
 	@IntRange(minValue=-367,maxValue=700)
+	@Asn1Default(value = "0")
 	@Asn1Optional public Long validFromDay;
 
 	@FieldOrder(order = 10)
