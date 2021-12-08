@@ -18,6 +18,7 @@ public class SequenceOfActivatedDays extends Asn1SequenceOf<Long> {
 		}
 	}
 	
+	@Deprecated
 	public static SequenceOfActivatedDays getSequence(List<Long> numList) {
 		if (numList == null || numList.isEmpty()) return null;
 		return new SequenceOfActivatedDays(numList);

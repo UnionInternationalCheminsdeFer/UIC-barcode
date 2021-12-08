@@ -23,6 +23,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 import org.uic.barcode.asn1.datatypes.Asn1BigInteger;
+import org.uic.barcode.asn1.datatypes.Asn1Default;
 import org.uic.barcode.asn1.datatypes.Asn1Optional;
 import org.uic.barcode.asn1.datatypes.CharacterRestriction;
 import org.uic.barcode.asn1.datatypes.FieldOrder;
@@ -58,6 +59,7 @@ public class CustomerCardData extends Object {
 	
 	@FieldOrder(order = 5)
 	@IntRange(minValue=0,maxValue=250)
+	@Asn1Default(value="0")
 	@Asn1Optional public Long validUntilYear;		
 
 	@FieldOrder(order = 6)

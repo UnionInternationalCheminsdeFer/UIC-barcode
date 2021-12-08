@@ -23,6 +23,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 import org.uic.barcode.asn1.datatypes.Asn1BigInteger;
+import org.uic.barcode.asn1.datatypes.Asn1Default;
 import org.uic.barcode.asn1.datatypes.Asn1Optional;
 import org.uic.barcode.asn1.datatypes.CharacterRestriction;
 import org.uic.barcode.asn1.datatypes.FieldOrder;
@@ -78,6 +79,7 @@ public class VoucherData extends Object {
 	public Long validUntilDay;
 
 	@FieldOrder(order = 10)
+	@Asn1Default("0")
 	@Asn1Optional public Long value;
 
 	@FieldOrder(order = 11)

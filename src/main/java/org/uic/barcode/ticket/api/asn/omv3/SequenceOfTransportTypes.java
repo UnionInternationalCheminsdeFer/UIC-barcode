@@ -19,6 +19,7 @@ public class SequenceOfTransportTypes extends Asn1SequenceOf<Long> {
 		}
 	}
 	
+	@Deprecated
 	public static SequenceOfTransportTypes getSequence(List<Long> numList) {
 		if (numList == null || numList.isEmpty()) return null;
 		return new SequenceOfTransportTypes(numList);
