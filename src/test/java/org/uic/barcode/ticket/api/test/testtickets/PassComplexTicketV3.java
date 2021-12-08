@@ -2,7 +2,6 @@ package org.uic.barcode.ticket.api.test.testtickets;
 
 import org.uic.barcode.asn1.datatypes.Asn1BigInteger;
 import org.uic.barcode.asn1.datatypesimpl.SequenceOfStringUTF8;
-import org.uic.barcode.asn1.datatypesimpl.SequenceOfUnrestrictedLong;
 import org.uic.barcode.ticket.api.asn.omv3.BoardingOrArrivalType;
 import org.uic.barcode.ticket.api.asn.omv3.CardReferenceType;
 import org.uic.barcode.ticket.api.asn.omv3.ControlData;
@@ -13,7 +12,6 @@ import org.uic.barcode.ticket.api.asn.omv3.IssuingData;
 import org.uic.barcode.ticket.api.asn.omv3.LinkMode;
 import org.uic.barcode.ticket.api.asn.omv3.PassData;
 import org.uic.barcode.ticket.api.asn.omv3.PassengerType;
-import org.uic.barcode.ticket.api.asn.omv3.RegionalValidityType;
 import org.uic.barcode.ticket.api.asn.omv3.RouteSectionType;
 import org.uic.barcode.ticket.api.asn.omv3.SequenceOfActivatedDays;
 import org.uic.barcode.ticket.api.asn.omv3.SequenceOfCardReferenceType;
@@ -37,7 +35,6 @@ import org.uic.barcode.ticket.api.asn.omv3.TravelerData;
 import org.uic.barcode.ticket.api.asn.omv3.TravelerType;
 import org.uic.barcode.ticket.api.asn.omv3.UicRailTicketData;
 import org.uic.barcode.ticket.api.asn.omv3.VatDetailType;
-import org.uic.barcode.ticket.api.asn.omv3.ZoneType;
 
 
 	public class PassComplexTicketV3 {

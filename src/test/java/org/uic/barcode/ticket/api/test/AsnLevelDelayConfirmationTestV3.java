@@ -1,6 +1,9 @@
 package org.uic.barcode.ticket.api.test;
 
+import java.text.DateFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.TimeZone;
 
 import org.junit.After;
@@ -56,6 +59,30 @@ public class AsnLevelDelayConfirmationTestV3 {
 		
 		//get tickets
 		ticket = DelayTestTicketV3.getUicTestTicket();
+		byte[] encoded = UperEncoder.encode(ticket);
+						
+		assert(encoded != null);
+		assert(encoded.length > 20);
+		
+		String encodedHex = UperEncoder.hexStringFromBytes(encoded);
+		String expectedHex = DelayTestTicketV3.getEncodingHex();
+		
+		assert(expectedHex.equals(encodedHex));
+        
+    }  
+	
+	@Test public void encodingDate() throws IllegalArgumentException, IllegalAccessException, ParseException {
+		
+		//get tickets
+		ticket = DelayTestTicketV3.getUicTestTicket();
+		
+		TimeZone current = TimeZone.getDefault();
+		DateFormat dateFormat = new SimpleDateFormat( "yyyy.MM.dd-HH:mm" );
+		Date d = dateFormat.parse("2022.01.12-16:40");
+		ticket.getTransportDocument().get(0).getTicket().getDelayConfirmation().setPlannedArrivalDate(d);
+		TimeZone.setDefault(current);
+		
+		
 		byte[] encoded = UperEncoder.encode(ticket);
 						
 		assert(encoded != null);
@@ -132,9 +159,11 @@ public class AsnLevelDelayConfirmationTestV3 {
 		assert(del.getAffectedTickets().get(0).getTicketType().equals(TicketType.openTicket));
 		assert(del.getAffectedTickets().get(0).getLinkMode().equals(LinkMode.issuedTogether));
 		
-		
-		
-
+		TimeZone current = TimeZone.getDefault();
+		DateFormat dateFormat = new SimpleDateFormat( "yyyy.MM.dd-HH:mm" );
+		String pd = dateFormat.format(del.getPlannedArrivalDate());
+		assert(pd.equals("2022.01.12-16:40"));
+		TimeZone.setDefault(current);
         
     }    
 		 

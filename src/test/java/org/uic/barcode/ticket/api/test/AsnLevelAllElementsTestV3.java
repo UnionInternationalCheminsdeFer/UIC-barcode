@@ -12,10 +12,12 @@ import org.uic.barcode.ticket.api.asn.omv3.IncludedOpenTicketType;
 import org.uic.barcode.ticket.api.asn.omv3.LineType;
 import org.uic.barcode.ticket.api.asn.omv3.BerthTypeType;
 import org.uic.barcode.ticket.api.asn.omv3.BoardingOrArrivalType;
+import org.uic.barcode.ticket.api.asn.omv3.CarCarriageReservationData;
 import org.uic.barcode.ticket.api.asn.omv3.CodeTableType;
 import org.uic.barcode.ticket.api.asn.omv3.CompartmentGenderType;
 import org.uic.barcode.ticket.api.asn.omv3.CompartmentPositionType;
 import org.uic.barcode.ticket.api.asn.omv3.ConfirmationTypeType;
+import org.uic.barcode.ticket.api.asn.omv3.CountermarkData;
 import org.uic.barcode.ticket.api.asn.omv3.CustomerCardData;
 import org.uic.barcode.ticket.api.asn.omv3.DelayConfirmation;
 import org.uic.barcode.ticket.api.asn.omv3.DocumentData;
@@ -25,6 +27,7 @@ import org.uic.barcode.ticket.api.asn.omv3.GeoCoordinateSystemType;
 import org.uic.barcode.ticket.api.asn.omv3.GeoUnitType;
 import org.uic.barcode.ticket.api.asn.omv3.HemisphereLatitudeType;
 import org.uic.barcode.ticket.api.asn.omv3.LinkMode;
+import org.uic.barcode.ticket.api.asn.omv3.LoadingDeckType;
 import org.uic.barcode.ticket.api.asn.omv3.OpenTicketData;
 import org.uic.barcode.ticket.api.asn.omv3.ParkingGroundData;
 import org.uic.barcode.ticket.api.asn.omv3.PassData;
@@ -32,6 +35,7 @@ import org.uic.barcode.ticket.api.asn.omv3.PassengerType;
 import org.uic.barcode.ticket.api.asn.omv3.PolygoneType;
 import org.uic.barcode.ticket.api.asn.omv3.PriceTypeType;
 import org.uic.barcode.ticket.api.asn.omv3.ReservationData;
+import org.uic.barcode.ticket.api.asn.omv3.RoofRackType;
 import org.uic.barcode.ticket.api.asn.omv3.ServiceType;
 import org.uic.barcode.ticket.api.asn.omv3.StationPassageData;
 import org.uic.barcode.ticket.api.asn.omv3.TicketType;
@@ -136,6 +140,30 @@ public class AsnLevelAllElementsTestV3 {
         
     }  	
 	
+	@Test public void encodingDecodingValues() throws IllegalArgumentException, IllegalAccessException, ParseException {
+		
+		//get ticket
+		ticket = AllElementsTestTicketV3.getUicTestTicket();
+		
+		assert(ticket != null);
+		
+		byte[] encoded = UperEncoder.encode(ticket);
+						
+		assert(encoded != null);
+		assert(encoded.length > 20);
+		
+		ticket = UperEncoder.decode(encoded, UicRailTicketData.class);
+		
+		
+		validateTicketContent(ticket);
+        
+    } 
+	
+	
+	
+	
+	
+	
 		 
 	private void validateTicketContent(UicRailTicketData t) {
 		assert (t != null);		
@@ -227,6 +255,7 @@ public class AsnLevelAllElementsTestV3 {
 		DocumentData d2 = t.getTransportDocument().get(1);
 		assert(d2 != null);
 		assert(d2.getTicket().getCarCarriageReservation() != null);
+		validateCarCarriage(d2.getTicket().getCarCarriageReservation());
 		assert(d2.getToken() != null);
 		assert(UperEncoder.hexStringFromBytes(d2.getToken().getToken()).equals("82DA"));
 		assert(d2.getToken().getTokenProviderIA5().equals("VDV"));
@@ -257,7 +286,7 @@ public class AsnLevelAllElementsTestV3 {
 		DocumentData d7 = t.getTransportDocument().get(6);
 		assert(d7 != null);
 		assert(d7.getTicket().getCounterMark() != null);
-		
+		validateCounterMark(d7.getTicket().getCounterMark());
 		
 		DocumentData d8 = t.getTransportDocument().get(7);
 		assert(d8 != null);
@@ -315,6 +344,87 @@ public class AsnLevelAllElementsTestV3 {
 	}
 
 
+
+
+
+	private void validateCounterMark(CountermarkData t) {
+		
+		assert(t != null);
+		
+		assert(t.getReferenceNum().longValue() ==        810123456789L);
+		assert(t.getReferenceIA5().equals("810123456789"));
+    	assert(t.getProductOwnerNum() == 	  23456);  
+    	assert(t.getProductOwnerIA5().equals(	  "23456"));    
+		assert(t.getProductIdNum() == 		  65535);   
+		assert(t.getProductIdIA5().equals(		  "123456"));    			
+		assert(t.getTicketReferenceIA5().equals(	 "810123456789"));		     
+		assert(t.getTicketReferenceNum() ==  810123456789L);
+		assert(t.getNumberOfCountermark() ==  12L);
+        assert(t.getTotalOfCountermarks() ==  24L);
+        assert(t.getGroupName().equals(	           "groupName"));
+		assert(t.getReturnIncluded() == false);	      
+			  
+		assert(t.getStationCodeTable().equals(CodeTableType.stationERA));
+		assert(t.getFromStationNum() == 8100001);
+		assert(t.getFromStationIA5().equals("8100001"));
+		assert(t.getToStationNum()   ==      8000002);
+		assert(t.getToStationIA5().equals(  "8100002"));
+		assert(t.getFromStationNameUTF8().equals(  "A-STATION")); 
+		assert(t.getToStationNameUTF8().equals(    "B-STATION"));				  
+
+		assert(t.getValidRegionDesc().equals("From A to B via C"));		   
+			  
+		assert(t.getValidRegion() != null);
+		assert(t.getValidRegion().size() == 1);
+		assert(t.getValidRegion().get(0).getViaStations() != null);
+	
+	    assert(t.getReturnDescription() != null);
+	    assert(t.getReturnDescription().getFromStationNum() ==  8100001);
+	    assert(t.getReturnDescription().getFromStationIA5().equals("8100001"));
+		assert(t.getReturnDescription().getToStationNum() ==         8000002);
+	    assert(t.getReturnDescription().getToStationIA5().equals(         "8100002"));
+	    assert(t.getReturnDescription().getFromStationNameUTF8().equals(  "A-STATION"));
+		assert(t.getReturnDescription().getToStationNameUTF8().equals(    "B-STATION")); 	
+		assert(t.getReturnDescription().getValidReturnRegionDesc().equals( "return"));
+		assert(t.getReturnDescription().getValidReturnRegion() != null);
+		assert(t.getReturnDescription().getValidReturnRegion().size() == 1);
+        
+	    assert(t.getValidFromDay() ==  700);
+	    assert(t.getValidFromTime() ==  0);
+	    assert(t.getValidFromUTCOffset() ==     60); 
+	    assert(t.getValidUntilDay() ==  370);
+	    assert(t.getValidUntilTime() ==  1439);
+	    assert(t.getValidUntilUTCOffset() ==    10);  
+		 		  
+		assert(t.getClassCode().equals(TravelClassType.first));		
+	
+    	assert(t.getCarriersNum() != null);
+    	assert(t.getCarriersNum().size() == 2);
+    	assert(t.getCarriersNum().get(0) == 1080);
+    	assert(t.getCarriersNum().get(1) == 1181);		
+    
+    	assert(t.getCarriersIA5() != null);
+    	assert(t.getCarriersIA5().size() == 2);
+    	assert(t.getCarriersIA5().get(0).equals("1080"));
+    	assert(t.getCarriersIA5().get(1).equals("1181"));		
+	
+        assert(t.getIncludedServiceBrands() != null);
+        assert(t.getIncludedServiceBrands().size() == 2);
+        assert(t.getIncludedServiceBrands().get(0) == 108);
+        assert(t.getIncludedServiceBrands().get(1) == 118);
+     
+        assert(t.getExcludedServiceBrands() != null);
+        assert(t.getExcludedServiceBrands().size() == 2);
+        assert(t.getExcludedServiceBrands().get(0) == 108);
+        assert(t.getExcludedServiceBrands().get(1) == 118);		
+	
+   
+        assert (t.getInfoText().equals("counterMark"));
+		
+		assert(t.getExtension() != null);
+
+		
+	}
 
 	private void validateDelay(DelayConfirmation t) {
 	    assert(t != null);
@@ -1039,6 +1149,80 @@ public class AsnLevelAllElementsTestV3 {
 	    assert(r.getInfoText().equals("reservation"));
 	    assert(r.getExtension() != null);
 	    
+	}
+	
+	
+	private void validateCarCarriage(CarCarriageReservationData r) {
+		
+	    assert(r.getTrainNum() == 123); 						
+	    assert(r.getTrainIA5().equals("123"));     						
+	    assert(r.getReferenceIA5().equals("810123456789"));	
+	    assert(r.getReferenceNum() == 810123456789L);			     		        															
+	    assert(r.getProductOwnerNum() == 23456);    
+	    assert(r.getProductOwnerIA5().equals("23456"));    
+	    assert(r.getProductIdNum() == 65535);    
+	    assert(r.getProductIdIA5().equals("123456")); 
+	    assert(r.getServiceBrand() == 100);
+	    assert(r.getServiceBrandAbrUTF8().equals("AZ"));      					   	
+	    assert(r.getServiceBrandNameUTF8().equals("special train"));     					    
+        
+        assert(r.getBeginLoadingDate() ==  10);
+        assert(r.getBeginLoadingTime() ==    0);
+        assert(r.getEndLoadingTime() ==      500);
+        assert(r.getLoadingUTCOffset() ==    30);
+        
+	    assert(r.getStationCodeTable().equals(CodeTableType.stationERA));
+	    assert(r.getFromStationNum() == 8100001);
+	    assert(r.getFromStationIA5().equals("8100001"));
+	    assert(r.getToStationNum()   ==      8000002);
+	    assert(r.getToStationIA5().equals(  "8100002"));
+	    assert(r.getFromStationNameUTF8().equals(  "A-STATION")); 
+	    assert(r.getToStationNameUTF8().equals(    "B-STATION"));         
+         
+	    assert(r.getCoach().equals("21"));
+	    assert(r.getPlace().equals("41"));
+	    assert(r.getCompartmentDetails() != null);
+	    	
+	    assert(r.getCompartmentDetails().getCoachType()	==	1L);    
+	    assert(r.getCompartmentDetails().getCompartmentType() ==	99L);    
+	    assert(r.getCompartmentDetails().getSpecialAllocation()	==	50L);   				    	
+	    assert(r.getCompartmentDetails().getCoachTypeDescr().equals("xwz"));  
+		assert(r.getCompartmentDetails().getCompartmentTypeDescr().equals("xwz"));  			
+		assert(r.getCompartmentDetails().getSpecialAllocationDescr().equals("xwz"));  		
+		assert(r.getCompartmentDetails().getPosition().equals(CompartmentPositionType.upperLevel));   	
+			        
+		assert(r.getNumberPlate().equals(          "AD-DE-123"));
+		assert(r.getTrailerPlate().equals(         "DX-AB-123"));
+		assert(r.getCarCategory()	==	          3L);
+        assert(r.getBoatCategory()	==	         5L);
+        assert(r.getTextileRoof()	==	         false);
+        assert(r.getRoofRackType().equals(RoofRackType.bicycleRack));
+        assert(r.getRoofRackHeight()	==	       20L);
+        assert(r.getAttachedBoats()	==	        2L);
+        assert(r.getAttachedBicycles()	==	     1L);
+        assert(r.getAttachedSurfboards()	==	   2L);
+        assert(r.getLoadingListEntry()	==	     421L);
+        assert(r.getLoadingDeck().equals(LoadingDeckType.upper));
+        
+	    assert(r.getCarrierNum()!= null);
+	    assert(r.getCarrierNum().size() == 2);
+	    assert(r.getCarrierNum().get(0) == 1080);
+	    assert(r.getCarrierNum().get(1) == 1181);
+	 
+	    assert(r.getCarrierIA5() != null);
+	    assert(r.getCarrierIA5().size() == 2);
+	    assert(r.getCarrierIA5().contains("1080"));
+	    assert(r.getCarrierIA5().contains("1181"));
+        
+        assert(r.getTariff() != null);
+        assert(r.getPriceType().equals(PriceTypeType.travelPrice));
+        assert(r.getPrice()	==	 12345L);
+        
+        assert(r.getVatDetails() != null);
+        
+        assert(r.getInfoText().equals("car carriage"));
+        assert(r.getExtension() != null);
+        
 	}
 
 	public static int getIndexOfDifference(String s1, String s2) {

@@ -97,6 +97,7 @@ public class PassData extends Object {
 	/** The valid from day. */
 	@FieldOrder(order = 9)
 	@IntRange(minValue=-1,maxValue=700)
+	@Asn1Default(value="0")
 	@Asn1Optional public Long validFromDay;
 
 	/** The valid from time. */
@@ -112,6 +113,7 @@ public class PassData extends Object {
 	/** The valid until day. */
 	@FieldOrder(order = 12)
 	@IntRange(minValue=0,maxValue=370)
+	@Asn1Default(value="0")
 	@Asn1Optional public Long validUntilDay;
 
 	/** The valid until time. */

@@ -67,10 +67,12 @@ public class FIPTicketData extends Object {
 
 	@FieldOrder(order = 6)
 	@IntRange(minValue=-1,maxValue=700)
+	@Asn1Default(value="0")
 	@Asn1Optional public Long validFromDay;
 
 	@FieldOrder(order = 7)
 	@IntRange(minValue=0,maxValue=370)
+	@Asn1Default(value="0")
 	@Asn1Optional public Long validUntilDay;
 
 	@FieldOrder(order = 8)

@@ -125,6 +125,7 @@ public class CountermarkData extends Object {
 
 	@FieldOrder(order = 22)
 	@IntRange(minValue=-367,maxValue=700)
+	@Asn1Default(value = "0")
 	@Asn1Optional public Long validFromDay;
 
 	@FieldOrder(order = 23)
@@ -137,6 +138,7 @@ public class CountermarkData extends Object {
 
 	@FieldOrder(order = 25)
 	@IntRange(minValue=-1,maxValue=370)
+	@Asn1Default(value = "0")
 	@Asn1Optional public Long validUntilDay;
 
 	@FieldOrder(order = 26)

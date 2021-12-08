@@ -19,6 +19,7 @@ public class SequenceOfServiceBrands extends Asn1SequenceOf<Long> {
 		}
 	}
 	
+	@Deprecated
 	public static SequenceOfServiceBrands getSequence(List<Long> numList) {
 		if (numList == null || numList.isEmpty()) return null;
 		return new SequenceOfServiceBrands(numList);
