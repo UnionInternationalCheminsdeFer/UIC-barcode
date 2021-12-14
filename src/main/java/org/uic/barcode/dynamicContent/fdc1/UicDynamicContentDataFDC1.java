@@ -51,6 +51,7 @@ public class UicDynamicContentDataFDC1  {
     //dynamicContentGeoCoordinate GeoCoordinateType OPTIONAL,
 	@FieldOrder(order = 2)	
 	@Asn1Optional public GeoCoordinateType geoCoordinate;
+	
     //-- Response from the mobile to any data received from the terminal.
     //--   The data received from the terminal may be a random number, or any other information.
     //--   The response may be the data itself, a hashing of this data, or any other response.
@@ -60,11 +61,12 @@ public class UicDynamicContentDataFDC1  {
 	// -- * "=" if the data included in extensionData is exactly the one that was transmitted by the terminal,
 	// -- * any other value (chosen by the issuer) in other cases.
     /** The challenge response. */
-
 	@FieldOrder(order = 3)
-	@Asn1Optional public SequenceOfExtension extensions;
+	@Asn1Optional public SequenceOfExtension dynamicContentResponseToChallenge;
 
 
+	@FieldOrder(order = 4)
+	@Asn1Optional public ExtensionData dynamicContentExtension;
 	
     //...
 
@@ -100,8 +102,8 @@ public class UicDynamicContentDataFDC1  {
 	}
 
 	public String getChallengeString() {
-		if (this.extensions != null) {
-			for (ExtensionData ed  : extensions) {
+		if (this.dynamicContentResponseToChallenge != null) {
+			for (ExtensionData ed  : dynamicContentResponseToChallenge) {
 				if (ed.getExtensionId().equals("=")) {
 					byte[] c = ed.getExtensionData();
 					try {
@@ -116,8 +118,8 @@ public class UicDynamicContentDataFDC1  {
 	}
 
 	public void setChallengeString(String challengeString) {
-		if (extensions == null) {
-			extensions = new SequenceOfExtension();
+		if (dynamicContentResponseToChallenge == null) {
+			dynamicContentResponseToChallenge = new SequenceOfExtension();
 		};
 		ExtensionData ed = new ExtensionData();
 		ed.setExtensionId("=");
@@ -126,12 +128,12 @@ public class UicDynamicContentDataFDC1  {
 		} catch (UnsupportedEncodingException e) {
 			return;
 		}
-		extensions.add(ed);
+		dynamicContentResponseToChallenge.add(ed);
 	}
 
 	public byte[] getPhoneIdHash() {
-		if (this.extensions != null) {
-			for (ExtensionData ed  : extensions) {
+		if (this.dynamicContentResponseToChallenge != null) {
+			for (ExtensionData ed  : dynamicContentResponseToChallenge) {
 				if (ed.getExtensionId().equals("phone")) {
 					return ed.getExtensionData();
 				}
@@ -141,18 +143,18 @@ public class UicDynamicContentDataFDC1  {
 	}
 
 	public void setPhoneIdHash(byte[] phoneIdHash) {
-		if (extensions == null) {
-			extensions = new SequenceOfExtension();
+		if (dynamicContentResponseToChallenge == null) {
+			dynamicContentResponseToChallenge = new SequenceOfExtension();
 		};
 		ExtensionData ed = new ExtensionData();
 		ed.setExtensionId("phone");
 		ed.setExtensionData(phoneIdHash);
-		extensions.add(ed);
+		dynamicContentResponseToChallenge.add(ed);
 	}
 
 	public byte[] getPassIdHash() {
-		if (this.extensions != null) {
-			for (ExtensionData ed  : extensions) {
+		if (this.dynamicContentResponseToChallenge != null) {
+			for (ExtensionData ed  : dynamicContentResponseToChallenge) {
 				if (ed.getExtensionId().equals("pass")) {
 					return ed.getExtensionData();
 				}
@@ -162,13 +164,13 @@ public class UicDynamicContentDataFDC1  {
 	}
 
 	public void setPassIdHash(byte[] passIdHash) {
-		if (extensions == null) {
-			extensions = new SequenceOfExtension();
+		if (dynamicContentResponseToChallenge == null) {
+			dynamicContentResponseToChallenge = new SequenceOfExtension();
 		};
 		ExtensionData ed = new ExtensionData();
 		ed.setExtensionId("pass");
 		ed.setExtensionData(passIdHash);
-		extensions.add(ed);
+		dynamicContentResponseToChallenge.add(ed);
 	}
 
 	public TimeStamp getTimeStamp() {
@@ -180,11 +182,11 @@ public class UicDynamicContentDataFDC1  {
 	}
 
 	public SequenceOfExtension getExtensions() {
-		return extensions;
+		return dynamicContentResponseToChallenge;
 	}
 
 	public void setExtensions(SequenceOfExtension extensions) {
-		this.extensions = extensions;
+		this.dynamicContentResponseToChallenge = extensions;
 	}
 	
 	public byte[] encode() {
@@ -197,6 +199,14 @@ public class UicDynamicContentDataFDC1  {
 
 	public void setAppId(String appId) {
 		this.appId = appId;
+	}
+
+	public ExtensionData getDynamicContentExtension() {
+		return dynamicContentExtension;
+	}
+
+	public void setDynamicContentExtension(ExtensionData dynamicContentExtension) {
+		this.dynamicContentExtension = dynamicContentExtension;
 	}
 
 	
