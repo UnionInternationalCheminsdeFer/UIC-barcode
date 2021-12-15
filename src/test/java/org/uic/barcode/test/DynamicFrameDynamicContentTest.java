@@ -24,7 +24,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.uic.barcode.Decoder;
 import org.uic.barcode.Encoder;
-import org.uic.barcode.dynamicContent.fdc1.GeoCoordinateSystemType;
 import org.uic.barcode.dynamicContent.fdc1.GeoCoordinateType;
 import org.uic.barcode.dynamicContent.fdc1.TimeStamp;
 import org.uic.barcode.dynamicContent.fdc1.UicDynamicContentDataFDC1;
