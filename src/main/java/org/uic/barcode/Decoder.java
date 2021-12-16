@@ -8,6 +8,7 @@ import java.security.PublicKey;
 import java.security.SignatureException;
 import java.util.zip.DataFormatException;
 
+import org.uic.barcode.dynamicContent.api.IUicDynamicContent;
 import org.uic.barcode.dynamicFrame.Constants;
 import org.uic.barcode.dynamicFrame.DataType;
 import org.uic.barcode.dynamicFrame.DynamicFrame;
@@ -237,6 +238,17 @@ public class Decoder {
 		return dynamicFrame;
 	}
 
+	/**
+	 * Gets the dynamic content.
+	 *
+	 * @return the dynamic header
+	 */
+	public IUicDynamicContent getDynamicContent() {
+		if (dynamicFrame == null) return null;
+		
+		return dynamicFrame.getDynamicContent();
+	}
+	
 	/**
 	 * Sets the dynamic header.
 	 *

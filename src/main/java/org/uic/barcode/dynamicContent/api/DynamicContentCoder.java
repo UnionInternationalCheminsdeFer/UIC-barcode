@@ -26,9 +26,11 @@ import org.uic.barcode.ticket.api.utils.UicEncoderUtils;
 
 public class DynamicContentCoder {
 	
+	public static String dynamicContentDataFDC1 = "FDC1";
+	
 	public static byte[] encode(IUicDynamicContent content, String format) throws EncodingFormatException {
 		
-		if (format != null && !format.equals("FDC1")) {
+		if (format != null && !format.equals(dynamicContentDataFDC1)) {
 			throw new EncodingFormatException("Format of dynamic content not supported!");
 		}
 				

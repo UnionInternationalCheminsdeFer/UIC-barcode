@@ -6,6 +6,7 @@ import java.security.Provider;
 import java.security.PublicKey;
 
 import org.uic.barcode.asn1.datatypesimpl.OctetString;
+import org.uic.barcode.dynamicContent.api.IUicDynamicContent;
 import org.uic.barcode.dynamicContent.fdc1.UicDynamicContentDataFDC1;
 import org.uic.barcode.dynamicFrame.Constants;
 import org.uic.barcode.dynamicFrame.DataType;
@@ -178,6 +179,15 @@ public class Encoder {
 		}
 	}
 	
+	public void setDynamicData(IUicDynamicContent content) throws EncodingFormatException {
+		if (dynamicFrame != null) {
+			if (dynamicFrame.getLevel2SignedData() == null) {
+				dynamicFrame.setLevel2SignedData(new Level2DataType());
+			}		
+			dynamicFrame.addDynamicContent(content);
+		}		
+	}
+	
 	public void setLevel2Data(DataType level2data) {
 		if (dynamicFrame != null) {
 			if (dynamicFrame.getLevel2SignedData() == null) {
@@ -199,6 +209,14 @@ public class Encoder {
 	public DataType getLevel2Data() {
 		if (dynamicFrame != null && dynamicFrame.getLevel2SignedData() != null) {
 			return dynamicFrame.getLevel2SignedData().getLevel2Data();
+		}
+		return null;
+	}
+	
+	
+	public IUicDynamicContent getDynamicContent() {
+		if (dynamicFrame != null && dynamicFrame.getLevel2SignedData() != null) {
+			return dynamicFrame.getDynamicContent();
 		}
 		return null;
 	}

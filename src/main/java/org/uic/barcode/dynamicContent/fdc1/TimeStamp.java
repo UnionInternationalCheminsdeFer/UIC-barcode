@@ -91,8 +91,11 @@ public class TimeStamp {
 		this.secondOfDay = time;
 	}
 	
+	
+	
+	
 	/**
-	 * Gets the time.
+	 * Gets the current date and time in UTC
 	 *
 	 * @return the date and time of content creation in UTC
 	 */
@@ -136,4 +139,6 @@ public class TimeStamp {
 		
 	}
 
+	
+	
 }
