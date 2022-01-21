@@ -10,11 +10,11 @@ import java.util.zip.DataFormatException;
 
 import org.uic.barcode.dynamicContent.api.IUicDynamicContent;
 import org.uic.barcode.dynamicFrame.Constants;
-import org.uic.barcode.dynamicFrame.DataType;
-import org.uic.barcode.dynamicFrame.DynamicFrame;
-import org.uic.barcode.dynamicFrame.Level1DataType;
-import org.uic.barcode.dynamicFrame.Level2DataType;
-import org.uic.barcode.dynamicFrame.SequenceOfDataType;
+import org.uic.barcode.dynamicFrame.api.IData;
+import org.uic.barcode.dynamicFrame.api.IDynamicFrame;
+import org.uic.barcode.dynamicFrame.api.ILevel1Data;
+import org.uic.barcode.dynamicFrame.api.ILevel2Data;
+import org.uic.barcode.dynamicFrame.api.SimpleDynamicFrame;
 import org.uic.barcode.staticFrame.StaticFrame;
 import org.uic.barcode.staticFrame.UFLEXDataRecord;
 import org.uic.barcode.staticFrame.UTLAYDataRecord;
@@ -34,7 +34,7 @@ public class Decoder {
 	
 	
 	/** The dynamic frame. */
-	private DynamicFrame dynamicFrame = null;
+	private IDynamicFrame dynamicFrame = null;
 	
 	/** The static frame. */
 	private StaticFrame staticFrame = null;
@@ -123,8 +123,9 @@ public class Decoder {
 	 * Validate level 2.
 	 *
 	 * @return the return code indicating errors
+	 * @throws EncodingFormatException 
 	 */
-	public int validateLevel2() {
+	public int validateLevel2() throws EncodingFormatException {
 		if (!isStaticHeader(data)) {
 			return dynamicFrame.validateLevel2() ;
 		} else {
@@ -137,7 +138,7 @@ public class Decoder {
 	 * @param prov - provider of the java security implementation in case a dedicated provider must be used
 	 * @return the return code indicating errors
 	 */
-	public int validateLevel2(Provider prov) {
+	public int validateLevel2(Provider prov) throws EncodingFormatException {
 		if (!isStaticHeader(data)) {
 			return dynamicFrame.validateLevel2(prov) ;
 		} else {
@@ -157,24 +158,25 @@ public class Decoder {
 	public void decode(byte[] data) throws IOException, EncodingFormatException, DataFormatException {
 		
 		if (!isStaticHeader(data)) {
+			
+			dynamicFrame = new SimpleDynamicFrame();
 						
-			dynamicFrame = DynamicFrame.decode(data);
+			dynamicFrame.decode(data);
 			
-			Level2DataType level2 = dynamicFrame.getLevel2SignedData();
+			ILevel2Data level2 = dynamicFrame.getLevel2Data();
 			
-			Level1DataType level1 = level2.getLevel1Data();
+			ILevel1Data level1 = level2.getLevel1Data();
 			
-			SequenceOfDataType dataList = level1.getData();
 			
-			for (DataType level1Content : dataList) {
+			for (IData level1Content : level1.getData()) {
 				
 				uicTicketCoder = new UicRailTicketCoder();
 				if (level1Content.getFormat().equals("FCB1")) {
-					uicTicket = uicTicketCoder.decodeFromAsn(level1Content.getByteData(), 1);
+					uicTicket = uicTicketCoder.decodeFromAsn(level1Content.getData(), 1);
 				} else if (level1Content.getFormat().equals("FCB2")) {
-					uicTicket = uicTicketCoder.decodeFromAsn(level1Content.getByteData(), 2);
+					uicTicket = uicTicketCoder.decodeFromAsn(level1Content.getData(), 2);
 				} else if (level1Content.getFormat().equals("FCB3")) {
-					uicTicket = uicTicketCoder.decodeFromAsn(level1Content.getByteData(), 3);
+					uicTicket = uicTicketCoder.decodeFromAsn(level1Content.getData(), 3);
 				}
 			}
 			
@@ -234,7 +236,7 @@ public class Decoder {
 	 *
 	 * @return the dynamic header
 	 */
-	public DynamicFrame getDynamicHeader() {
+	public IDynamicFrame getDynamicHeader() {
 		return dynamicFrame;
 	}
 
@@ -254,7 +256,7 @@ public class Decoder {
 	 *
 	 * @param dynamicHeader the new dynamic header
 	 */
-	public void setDynamicHeader(DynamicFrame dynamicHeader) {
+	public void setDynamicHeader(IDynamicFrame dynamicHeader) {
 		this.dynamicFrame = dynamicHeader;
 	}
 
@@ -276,9 +278,9 @@ public class Decoder {
 		this.staticFrame = staticFrame;
 	}
 
-	public DataType getLevel2Data() {
-		if (!isStaticHeader(data) && dynamicFrame.getLevel2SignedData() != null) {
-			return dynamicFrame.getLevel2SignedData().getLevel2Data();
+	public IData getLevel2Data() {
+		if (!isStaticHeader(data) && dynamicFrame.getLevel2Data() != null) {
+			return dynamicFrame.getLevel2Data().getLevel2Data();
 		}
 		return null;
 	}

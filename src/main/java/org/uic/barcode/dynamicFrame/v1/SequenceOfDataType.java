@@ -1,4 +1,4 @@
-package org.uic.barcode.dynamicFrame;
+package org.uic.barcode.dynamicFrame.v1;
 
 
 import java.util.Collection;

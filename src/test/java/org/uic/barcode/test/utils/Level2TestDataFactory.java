@@ -1,17 +1,17 @@
 package org.uic.barcode.test.utils;
 
-import org.uic.barcode.asn1.datatypesimpl.OctetString;
-import org.uic.barcode.dynamicFrame.DataType;
+import org.uic.barcode.dynamicFrame.api.IData;
+import org.uic.barcode.dynamicFrame.api.SimpleData;
 
 public class Level2TestDataFactory {
 	
-	public static DataType getLevel2SimpleTestData() {
+	public static IData getLevel2SimpleTestData() {
 		
 		String testContent = "2020.10.01T12:12.20";
 		
-		DataType level2Data = new DataType();
+		IData level2Data = new SimpleData();
 		level2Data.setFormat("TEST");
-		level2Data.setData(new OctetString(testContent.getBytes()));
+		level2Data.setData(testContent.getBytes());
 		
 		return level2Data;
 	}

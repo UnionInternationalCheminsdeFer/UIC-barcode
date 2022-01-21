@@ -5,15 +5,15 @@ import java.security.PrivateKey;
 import java.security.Provider;
 import java.security.PublicKey;
 
-import org.uic.barcode.asn1.datatypesimpl.OctetString;
 import org.uic.barcode.dynamicContent.api.IUicDynamicContent;
 import org.uic.barcode.dynamicContent.fdc1.UicDynamicContentDataFDC1;
 import org.uic.barcode.dynamicFrame.Constants;
-import org.uic.barcode.dynamicFrame.DataType;
-import org.uic.barcode.dynamicFrame.DynamicFrame;
-import org.uic.barcode.dynamicFrame.Level1DataType;
-import org.uic.barcode.dynamicFrame.Level2DataType;
-import org.uic.barcode.dynamicFrame.SequenceOfDataType;
+import org.uic.barcode.dynamicFrame.api.IData;
+import org.uic.barcode.dynamicFrame.api.IDynamicFrame;
+import org.uic.barcode.dynamicFrame.api.SimpleData;
+import org.uic.barcode.dynamicFrame.api.SimpleDynamicFrame;
+import org.uic.barcode.dynamicFrame.api.SimpleLevel1Data;
+import org.uic.barcode.dynamicFrame.api.SimpleLevel2Data;
 import org.uic.barcode.staticFrame.StaticFrame;
 import org.uic.barcode.staticFrame.UFLEXDataRecord;
 import org.uic.barcode.staticFrame.UHEADDataRecord;
@@ -34,7 +34,7 @@ import org.uic.barcode.ticket.api.spec.IUicRailTicket;
 public class Encoder {
 	
 	/** The dynamic frame. */
-	private DynamicFrame dynamicFrame = null;
+	private IDynamicFrame dynamicFrame = null;
 
 	/** The static frame. */
 	private StaticFrame staticFrame = null;
@@ -87,18 +87,19 @@ public class Encoder {
 			
 		} else if (barcodeType == UIC_BARCODE_TYPE_DOSIPAS) {
 			
-			dynamicFrame = new DynamicFrame();
-			dynamicFrame.setLevel2SignedData(new Level2DataType());
-			dynamicFrame.getLevel2SignedData().setLevel1Data(new Level1DataType());
-			dynamicFrame.getLevel2SignedData().getLevel1Data().setData(new SequenceOfDataType());
+			dynamicFrame = new SimpleDynamicFrame();
+			dynamicFrame.setLevel2Data(new SimpleLevel2Data());
+			dynamicFrame.getLevel2Data().setLevel1Data(new SimpleLevel1Data());
 			
 			if (ticket != null) {
 				
 				if (version == 1) {
-					dynamicFrame.setFormat("U1");
-				}
+					dynamicFrame.setFormat(Constants.DYNAMIC_BARCODE_FORMAT_VERSION_1);
+				} else if (version == 2) {
+					dynamicFrame.setFormat(Constants.DYNAMIC_BARCODE_FORMAT_VERSION_2);
+				} 
 				
-				DataType ticketData = new DataType();
+				IData ticketData = new SimpleData();
 				
 				UicRailTicketCoder uicTicketCoder = new UicRailTicketCoder();
 				if (fcbVersion == 1 || fcbVersion == 13) {
@@ -108,8 +109,8 @@ public class Encoder {
 				} else if (fcbVersion == 3) {
 					ticketData.setFormat(Constants.DATA_TYPE_FCB_VERSION_3);
 				}
-				ticketData.setData(new OctetString(uicTicketCoder.encode(ticket, fcbVersion)));
-				dynamicFrame.getLevel2SignedData().getLevel1Data().getData().add(ticketData);
+				ticketData.setData(uicTicketCoder.encode(ticket, fcbVersion));
+				dynamicFrame.getLevel2Data().getLevel1Data().addData(ticketData);
 				
 			}
 		}
@@ -151,8 +152,8 @@ public class Encoder {
 	 */
 	public void setLevel1Algs(String level1SigningAlg, String level1KeyAlg) {
 		if (dynamicFrame != null) {
-			dynamicFrame.getLevel2SignedData().getLevel1Data().setLevel1SigningAlg(level1SigningAlg);
-			dynamicFrame.getLevel2SignedData().getLevel1Data().setLevel1KeyAlg(level1KeyAlg);	
+			dynamicFrame.getLevel2Data().getLevel1Data().setLevel1SigningAlg(level1SigningAlg);
+			dynamicFrame.getLevel2Data().getLevel1Data().setLevel1KeyAlg(level1KeyAlg);	
 		}
 	}
 	
@@ -165,68 +166,62 @@ public class Encoder {
 	 */
 	public void setLevel2Algs(String level2SigningAlg, String level2KeyAlg, PublicKey publicKey) {
 		if (dynamicFrame != null) {
-			if (dynamicFrame.getLevel2SignedData() == null) {
-				dynamicFrame.setLevel2SignedData(new Level2DataType());
+			if (dynamicFrame.getLevel2Data() == null) {
+				dynamicFrame.setLevel2Data(new SimpleLevel2Data());
 			}
-			if (dynamicFrame.getLevel2SignedData().getLevel1Data() == null) {
-				dynamicFrame.getLevel2SignedData().setLevel1Data(new Level1DataType());	
+			if (dynamicFrame.getLevel2Data().getLevel1Data() == null) {
+				dynamicFrame.getLevel2Data().setLevel1Data(new SimpleLevel1Data());	
 			}
-			dynamicFrame.getLevel2SignedData().getLevel1Data().setLevel2SigningAlg(level2SigningAlg);
-			dynamicFrame.getLevel2SignedData().getLevel1Data().setLevel2KeyAlg(level2KeyAlg);
+			dynamicFrame.getLevel2Data().getLevel1Data().setLevel2SigningAlg(level2SigningAlg);
+			dynamicFrame.getLevel2Data().getLevel1Data().setLevel2KeyAlg(level2KeyAlg);
 			if (publicKey != null) {
-				dynamicFrame.getLevel2SignedData().getLevel1Data().setLevel2publicKey(new OctetString(publicKey.getEncoded()));
+				dynamicFrame.getLevel2Data().getLevel1Data().setLevel2publicKey(publicKey.getEncoded());
 			}
 		}
 	}
 	
 	public void setDynamicData(IUicDynamicContent content) throws EncodingFormatException {
 		if (dynamicFrame != null) {
-			if (dynamicFrame.getLevel2SignedData() == null) {
-				dynamicFrame.setLevel2SignedData(new Level2DataType());
+			if (dynamicFrame.getLevel2Data() == null) {
+				dynamicFrame.setLevel2Data(new SimpleLevel2Data());
 			}		
 			dynamicFrame.addDynamicContent(content);
 		}		
 	}
 	
-	public void setLevel2Data(DataType level2data) {
+	public void setLevel2Data(IData level2data) {
 		if (dynamicFrame != null) {
-			if (dynamicFrame.getLevel2SignedData() == null) {
-				dynamicFrame.setLevel2SignedData(new Level2DataType());
+			if (dynamicFrame.getLevel2Data() == null) {
+				dynamicFrame.setLevel2Data(new SimpleLevel2Data());
 			}		
-			dynamicFrame.getLevel2SignedData().setLevel2Data(level2data);
+			dynamicFrame.getLevel2Data().setLevel2Data(level2data);
 		}
 	}
 	
 	public void setDynamicContentDataUIC1(UicDynamicContentDataFDC1 dcd) {
 		if (dynamicFrame != null) {
-			if (dynamicFrame.getLevel2SignedData() == null) {
-				dynamicFrame.setLevel2SignedData(new Level2DataType());
+			if (dynamicFrame.getLevel2Data() == null) {
+				dynamicFrame.setLevel2Data(new SimpleLevel2Data());
 			}		
-			dynamicFrame.getLevel2SignedData().setLevel2Data(dcd.getDataType());
+			dynamicFrame.getLevel2Data().setLevel2Data(dcd.getApiDataType());
 		}
 	}
 		
-	public DataType getLevel2Data() {
-		if (dynamicFrame != null && dynamicFrame.getLevel2SignedData() != null) {
-			return dynamicFrame.getLevel2SignedData().getLevel2Data();
+	public IData getLevel2Data() {
+		if (dynamicFrame != null && dynamicFrame.getLevel2Data() != null) {
+			return dynamicFrame.getLevel2Data().getLevel2Data();
 		}
 		return null;
 	}
 	
 	
 	public IUicDynamicContent getDynamicContent() {
-		if (dynamicFrame != null && dynamicFrame.getLevel2SignedData() != null) {
+		if (dynamicFrame != null && dynamicFrame.getLevel2Data() != null) {
 			return dynamicFrame.getDynamicContent();
 		}
 		return null;
 	}
 	
-	public UicDynamicContentDataFDC1 getDynamicContentDataUIC1() {
-		if (dynamicFrame != null && dynamicFrame.getLevel2SignedData() != null) {
-			return dynamicFrame.getDynamicDataFDC1();
-		}
-		return null;
-	}
 
 	
 	/**
@@ -240,10 +235,10 @@ public class Encoder {
 	 */
 	public void signLevel1(String securityProvider,PrivateKey key,String signingAlg, String keyId) throws Exception {
 		if (dynamicFrame != null) {
-			dynamicFrame.getLevel2SignedData().getLevel1Data().setSecurityProvider(securityProvider);
-			dynamicFrame.getLevel2SignedData().getLevel1Data().setLevel1SigningAlg(signingAlg);
-			dynamicFrame.getLevel2SignedData().getLevel1Data().setKeyId(Long.parseLong(keyId));
-			dynamicFrame.getLevel2SignedData().signLevel1(key);
+			dynamicFrame.getLevel2Data().getLevel1Data().setSecurityProvider(securityProvider);
+			dynamicFrame.getLevel2Data().getLevel1Data().setLevel1SigningAlg(signingAlg);
+			dynamicFrame.getLevel2Data().getLevel1Data().setKeyId(Long.parseLong(keyId));
+			dynamicFrame.signLevel1(key);
 		} else if (staticFrame != null) {
 			staticFrame.setSignatureKey(keyId);
 			staticFrame.setSecurityProvider(securityProvider);
@@ -266,10 +261,11 @@ public class Encoder {
 	 */
 	public void signLevel1(String securityProvider,PrivateKey key,String signingAlg, String keyId, Provider prov) throws Exception {
 		if (dynamicFrame != null) {
-			dynamicFrame.getLevel2SignedData().getLevel1Data().setSecurityProvider(securityProvider);
-			dynamicFrame.getLevel2SignedData().getLevel1Data().setLevel1SigningAlg(signingAlg);
-			dynamicFrame.getLevel2SignedData().getLevel1Data().setKeyId(Long.parseLong(keyId));
-			dynamicFrame.getLevel2SignedData().signLevel1(key, prov);
+			dynamicFrame.getLevel2Data().getLevel1Data().setSecurityProvider(securityProvider);
+			dynamicFrame.getLevel2Data().getLevel1Data().setLevel1SigningAlg(signingAlg);
+			dynamicFrame.getLevel2Data().getLevel1Data().setKeyId(Long.parseLong(keyId));
+			dynamicFrame.signLevel1(key,prov);
+			//dynamicFrame.getLevel2Data().signLevel1(key, prov);
 		} else if (staticFrame != null) {
 			staticFrame.setSignatureKey(keyId);
 			staticFrame.setSecurityProvider(securityProvider);
@@ -299,7 +295,7 @@ public class Encoder {
 	 *
 	 * @return the dynamic frame
 	 */
-	public DynamicFrame getDynamicFrame() {
+	public IDynamicFrame getDynamicFrame() {
 		return dynamicFrame;
 	}
 	

@@ -108,7 +108,7 @@ public class DynamicContentCoderTest {
 		
 		assert(content.getTimeStamp() != null);
 		
-		assert(content.getTimeStamp().toString().equals("Wed Dec 15 12:30:00 CET 2021" ));
+		assert(content.getTimeStamp().toString().contains("04 12:30:00 CET"));
 		
 		
 	}

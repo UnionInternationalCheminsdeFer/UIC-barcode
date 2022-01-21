@@ -105,17 +105,18 @@ public class TimeStamp {
 		int dayOfYear = now.getDayOfYear();
 				
 		if (dayOfYear - day.intValue() > 250) {
-			now = now.plusDays(1);
+			now = now.plusYears(1);
 		}
 		if (day.intValue() - dayOfYear > 250) {
-			now = now.minusDays(1);
+			now = now.minusYears(1);
 		}
 
 		now = now.withDayOfYear(1);
 		now = now.withSecond(0);
 		now = now.withHour(0);
 		now = now.withMinute(0);
-		now = now.withDayOfYear(dayOfYear);
+		now = now.withNano(0);
+		now = now.withDayOfYear(day.intValue());
 		now = now.plusSeconds(secondOfDay);
 		
 		return Date.from(now.toInstant());

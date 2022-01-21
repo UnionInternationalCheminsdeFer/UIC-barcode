@@ -1,0 +1,245 @@
+value UicRailTicketData ::=  {     
+       issuingDetail {
+           securityProviderNum 1,
+           securityProviderIA5 "1",
+           issuerNum         32000,
+           issuerIA5         "1",
+           issuingYear       2018,
+           issuingDay        1,
+           issuingTime       600,
+           issuerName        "name",
+           specimen          TRUE,
+           securePaperTicket FALSE,
+           activated         TRUE,
+           currency          "SRF",
+           currencyFract     3,  
+           issuerPNR         "issuerTestPNR",
+           extension         { extensionId "1", extensionData '82DA'H },	 
+           issuedOnTrainNum  123,
+           issuedOnTrainIA5  "123",      
+           issuedOnLine      12,
+           pointOfSale       {
+                geoUnit             microDegree,
+                coordinateSystem    wgs84
+                hemisphereLongitude north,
+                hemisphereLatitude  east,
+                longitude           12345,
+                latitude            56789,
+                accuracy            microDegree
+           }
+       },
+       travelerDetail{
+            traveler {
+               {
+	               	firstName      "John",
+	       	     	secondName     "Little",
+	       	     	lastName       "Dow",
+	              	idCard         "12345",
+	              	passportId     "JDTS",
+	              	title          "PhD",
+	              	gender         male,
+	              	customerIdIA5  "DZE5gT",
+	              	customerIdNum  12345,
+		            yearOfBirth	   1901,     										
+		            dayOfBirth     331,
+		            ticketHolder   TRUE,
+		            passengerType  senior,
+		            passengerWithReducedMobility FALSE,
+		            countryOfResidence 101,
+		            countryOfPassport  102,
+		            countryOfIdCard    103,
+	       		    status  {
+	       		       {customerStatus 1, customerStatusDescr "senior" }
+	       		    }
+               }
+            },
+            preferredLanguage "EN",
+            groupName "myGroup"
+       },
+       transportDocument {
+            {
+		      ticket reservation : {
+				    trainNum			 12345, 						
+				    trainIA5       		 "12345", 	     						
+				    departureDate  		 2, 
+		            referenceIA5         "810123456789",	
+		            referenceNum         80123456789,			     		        															
+    			    productOwnerNum		 23456,    
+				    productOwnerIA5		 "23456",    
+				    productIdNum		 32000,    
+				    productIdIA5		 "123456", 
+				    serviceBrand    	 12,
+				    serviceBrandAbrUTF8  "TGV",      					   	
+				    serviceBrandNameUTF8 "Lyria",     					    
+				    service         	 couchette,		
+				    stationCodeTable     stationUIC,
+		            fromStationNum       8100001,
+		            fromStationIA5       "8100001",
+		            toStationNum         8000002,
+		            toStationIA5         "8100002",
+				    fromStationNameUTF8  "A-STATION", 
+				    toStationNameUTF8    "B-STATION", 
+				    departureTime 		 1439,             
+				    departureUTCOffset   -60,  
+				    arrivalDate		     20,  			
+				    arrivalTime		     0,  
+				    arrivalUTCOffset     10,   
+				    carrierNum          {1080, 1181},
+				    carrierIA5          {"1080", "1181"},
+				    classCode			first,
+				    serviceLevel		"A",   
+				    places {
+				      coach             "31A",
+				      placeString       "31-47",
+				      placeDescription  "Window",
+				      placeIA5          {"31A", "31B"}, 
+				      placeNum          {31, 32}
+				    },
+   			        additionalPlaces    {
+				      coach             "31A",
+				      placeString       "31-47",
+				      placeDescription  "Window",
+				      placeIA5          {"31A", "31B"}, 
+				      placeNum          {31, 32}
+				    },    
+					bicyclePlaces		{
+				      coach             "31A",
+				      placeString       "31-47",
+				      placeDescription  "Window",
+				      placeIA5          {"31A", "31B"}, 
+				      placeNum          {31, 32}
+				    },  
+					compartmentDetails  {
+				    	coachType				1,    
+				    	compartmentType			99,    
+				    	specialAllocation		50,   			  	
+				    	coachTypeDescr			"xwz",    
+				    	compartmentTypeDescr	"xwz",			
+				    	specialAllocationDescr	"xwz", 		
+				    	position                upperLevel 	
+					},
+				    numberOfOverbooked	        200,	      
+				    berth {
+				       {
+							berthType   		single,
+							numberOfBerths 		999,
+							gender 				female			       
+				       }
+				    },		
+		            tariff {
+		              {
+		              	numberOfPassengers 1,
+		              	passengerType      senior,
+		              	ageBelow           64,
+		              	ageAbove           60,
+		              	travelerid         { 1 },
+		              	restrictedToCountryOfResidence FALSE,
+                        restrictedToRouteSection {
+					       stationCodeTable	stationERA,              
+					       fromStationNum  		123,
+					       fromStationIA5      	"123",
+					       toStationNum      	234,     					                
+					       toStationIA5        	"234", 				                 
+					       fromStationNameUTF8 	"A",    
+					       toStationNameUTF8   	"B"
+					    },
+                        seriesDataDetails {
+						   supplyingCarrier    	12345,		
+						   offerIdentification 	99,  		
+						   series  				23456                     
+                        },
+		              	tariffIdNum        72,
+		              	tariffIdIA5        "72",
+		              	tariffDesc         "Leasure Fare",
+		              	reductionCard            {
+		              	   { 
+				               cardIssuerNum            1234,
+				               cardIssuerIA5            "1234",
+				               cardIdNum                5678,
+				               cardIdIA5                "5678",
+				               cardName                 "testcard",
+				               cardType                 123,
+				               leadingCardIdNum	        3456,                                     
+					           leadingCardIdIA5   	    "3456",
+				               trailingCardIdNum        100,
+				               trailingCardIdIA5        "100"
+			               }
+			            }
+		              }
+		            },
+		            priceType travelPrice,
+		            price 12345,
+		            vatDetail {
+		              {
+		                country 80,
+		                percentage 70,
+		                amount 10,
+		                vatId "IUDGTE"
+		              }
+		            },
+		            typeOfSupplement	9,				
+					numberOfSupplements	2,
+				    luggage {
+				          maxHandLuggagePieces    2,
+				          maxNonHandLuggagePieces 1,
+				          registeredLuggage {
+				            {
+				              registrationId "IODHUV",
+				              maxWeight      20,
+				              maxSize        100
+				            },
+				            {
+				              registrationId "XXDHUV",
+				              maxWeight      21,
+				              maxSize        101
+				            }
+				          }
+				    },
+				    infoText	"reservation",
+				    extension   {extensionId "1", extensionData '82DA'H}   		      
+		      }
+		    } 
+	   },
+       controlDetail {
+          identificationByCardReference {
+            { 
+               cardIssuerNum            1234,
+               cardIssuerIA5            "1234",
+               cardIdNum                5678,
+               cardIdIA5                "5678",
+               cardName                 "testcard",
+               cardType                 123,
+               leadingCardIdNum	        3456,                                     
+	           leadingCardIdIA5   	    "3456",
+               trailingCardIdNum        100,
+               trailingCardIdIA5        "100"
+            }
+          },
+ 	      identificationByIdCard	    FALSE,
+  	      identificationByPassportId    FALSE
+  	      identificationItem            12,
+          passportValidationRequired  	FALSE,
+    	  onlineValidationRequired    	FALSE,
+    	  randomDetailedValidationRequired 50,
+          ageCheckRequired            	FALSE ,  	
+  	      reductionCardCheckRequired  	FALSE,        
+          infoText                     "control",
+          includedTickets {
+ 			          {
+			            referenceIA5    "KDJET",
+			            referenceNum    801234567890,
+			            issuerName      "XYZ",
+			            issuerPNR       "LDWDUR45",
+			            productOwnerNum 1080,
+			            productOwnerIA5 "IEFHU",
+			            ticketType      openTicket,
+			            linkMode        issuedTogether
+			          }
+		  },
+          extension {extensionId "1", extensionData '82DA'H}          
+       }, 
+       extension {
+          { extensionId "1", extensionData '82DA'H },
+          { extensionId "2", extensionData '83DA'H }
+       }			
+   }	

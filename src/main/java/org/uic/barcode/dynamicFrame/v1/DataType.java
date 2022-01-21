@@ -1,4 +1,4 @@
-package org.uic.barcode.dynamicFrame;
+package org.uic.barcode.dynamicFrame.v1;
 
 import org.uic.barcode.asn1.datatypes.CharacterRestriction;
 import org.uic.barcode.asn1.datatypes.RestrictedString;

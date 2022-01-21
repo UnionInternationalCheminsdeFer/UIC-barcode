@@ -1,4 +1,4 @@
-package org.uic.barcode.dynamicFrame;
+package org.uic.barcode.dynamicFrame.v2;
 
 import java.security.InvalidKeyException;
 import java.security.KeyFactory;
@@ -14,6 +14,7 @@ import java.security.spec.X509EncodedKeySpec;
 import org.uic.barcode.asn1.datatypes.Asn1Optional;
 import org.uic.barcode.asn1.datatypes.CharacterRestriction;
 import org.uic.barcode.asn1.datatypes.FieldOrder;
+import org.uic.barcode.asn1.datatypes.HasExtensionMarker;
 import org.uic.barcode.asn1.datatypes.RestrictedString;
 import org.uic.barcode.asn1.datatypes.Sequence;
 import org.uic.barcode.asn1.datatypesimpl.OctetString;
@@ -21,17 +22,18 @@ import org.uic.barcode.asn1.uper.UperEncoder;
 import org.uic.barcode.dynamicContent.api.DynamicContentCoder;
 import org.uic.barcode.dynamicContent.api.IUicDynamicContent;
 import org.uic.barcode.dynamicContent.fdc1.UicDynamicContentDataFDC1;
+import org.uic.barcode.dynamicFrame.Constants;
 import org.uic.barcode.ticket.EncodingFormatException;
 import org.uic.barcode.utils.AlgorithmNameResolver;
 
 
-// TODO: Auto-generated Javadoc
 /**
  * The DynamicHeader for bar codes 
  * 
  * Implementation of the Draft under discussion, not final.
  */
 @Sequence
+@HasExtensionMarker
 public class DynamicFrame extends Object{
 	
 	/**
@@ -387,7 +389,10 @@ public class DynamicFrame extends Object{
 	 * @param dynamicData the dynamic data
 	 */
 	public void addLevel2DynamicData(UicDynamicContentDataFDC1 dynamicData) {
-		this.getLevel2SignedData().setLevel2Data( dynamicData.getDataType());	
+		DataType dt = new DataType();
+		dt.setByteData(dynamicData.getDataType().getByteData());
+		dt.setFormat(dynamicData.getDataType().getFormat());	
+		level2SignedData.setLevel2Data(dt);	
 	}
 	
 	/**

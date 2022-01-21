@@ -36,4 +36,6 @@ public class Constants {
 	public static int LEVEL1_VALIDATION_KEY_ALG_NOT_IMPLEMENTED = 5;		
 	public static int LEVEL1_VALIDATION_ENCODING_ERROR = 6;	
 	
+	public static String DYNAMIC_BARCODE_FORMAT_VERSION_1 = "U1";
+	public static String DYNAMIC_BARCODE_FORMAT_VERSION_2 = "U2";
 }

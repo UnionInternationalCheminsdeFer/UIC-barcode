@@ -21,7 +21,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.uic.barcode.asn1.uper.UperEncoder;
 import org.uic.barcode.dynamicFrame.Constants;
-import org.uic.barcode.dynamicFrame.DynamicFrame;
+import org.uic.barcode.dynamicFrame.v1.DynamicFrame;
 import org.uic.barcode.test.utils.SimpleDynamicFrameTestBarcode;
 
 public class DynamicFrameLOwLevelTest {
