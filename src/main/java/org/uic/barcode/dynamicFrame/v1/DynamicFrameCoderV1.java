@@ -100,6 +100,19 @@ public class DynamicFrameCoderV1 {
 		return UperEncoder.encode(asn);
 	}
 	
+	
+	public static byte[] getEncoded(String path, byte[] data) {
+		
+		if (path.endsWith("Level1Data")){
+			return UperEncoder.extract(data, "Level1DataType" ,DynamicFrame.class );
+		} else if (path.endsWith("Level2Data")){
+			return UperEncoder.extract(data, "Level2DataType" ,DynamicFrame.class );
+		}
+	
+		return null;
+	}
+	
+	
 	public static byte[] encode(ILevel2Data level2SignedData) throws EncodingFormatException {
 		
        Level2DataType asn = populateAsn(level2SignedData);
@@ -183,6 +196,8 @@ public class DynamicFrameCoderV1 {
 		
 		return asnLevel1;
 	}
+
+	
 	
 
 

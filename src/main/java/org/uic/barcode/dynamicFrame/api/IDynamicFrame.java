@@ -89,21 +89,23 @@ public interface IDynamicFrame{
 	 * 
 	 * Note:  an appropriate security provider (e.g. BC) must be registered before 
 	 *
-	 * @return the int
+	 * @param data the data content
+	 * @return the return error code
 	 * @throws EncodingFormatException 
 	 */	
-	public int validateLevel2() throws EncodingFormatException;
+	public int validateLevel2(byte[] data) throws EncodingFormatException;
 	
 	/**
 	 * Verify the level 2 signature
 	 * 
 	 * Note:  an appropriate security provider (e.g. BC) must be registered before 
 	 *
-	 * @param prov the prov
-	 * @return the int
+	 * @param prov the registered security provider
+     * @param data the data content
+	 * @return the return error code
 	 * @throws EncodingFormatException 
 	 */	
-	public int validateLevel2(Provider prov) throws EncodingFormatException;
+	public int validateLevel2(Provider prov, byte[] data) throws EncodingFormatException;
 
 	/**
 	 * Verify the level 1 signature
@@ -111,23 +113,25 @@ public interface IDynamicFrame{
 	 * Note:  an appropriate security provider (e.g. BC) must be registered before 
 	 *
 	 * @param key the key
-	 * @param prov the prov
-	 * @return the int
+	 * @param data the data content
+	 * @return the return error code
 	 * @throws EncodingFormatException 
 	 */
-	public int validateLevel1(PublicKey key, Provider prov) throws EncodingFormatException;
+	public int validateLevel1(PublicKey key, byte[] data) throws EncodingFormatException;
 	
-  
 	/**
 	 * Verify the level 1 signature
 	 * 
 	 * Note:  an appropriate security provider (e.g. BC) must be registered before 
 	 *
 	 * @param key the key
-	 * @return the int
+	 * @param prov the registered security provider 
+	 * @param the data content
+	 * @return the return error code
 	 * @throws EncodingFormatException 
 	 */
-	public int validateLevel1(PublicKey key) throws EncodingFormatException;
+	public int validateLevel1(PublicKey key, Provider prov,  byte[] data) throws EncodingFormatException;
+ 
 	
 	/**
 	 * Sign level 2 data without a specific security provider.

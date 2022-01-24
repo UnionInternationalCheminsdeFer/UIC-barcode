@@ -150,13 +150,24 @@ class SequenceCoder implements Decoder, Encoder {
 
     @Override public <T> T decode(BitBuffer bitbuffer,
             Class<T> classOfT,Field f1,
-            Annotation[] extraAnnotations) {
+            Annotation[] extraAnnotations,
+            AsnExtractor extractor) {
         UperEncoder.logger.debug(String.format("decode SEQUENCE %s",classOfT.getSimpleName()));
         AnnotationStore annotations = new AnnotationStore(classOfT.getAnnotations(),extraAnnotations);
         T result = UperEncoder.instantiate(classOfT);
-        Asn1ContainerFieldSorter sorter = new Asn1ContainerFieldSorter(classOfT);
+        Asn1ContainerFieldSorter sorter = new Asn1ContainerFieldSorter(classOfT);        
         boolean hasExtensionMarker = UperEncoder.hasExtensionMarker(annotations);
         boolean extensionPresent = false;
+        
+        //check Extraction
+        boolean extract = false;
+        if (extractor != null && !extractor.isStarted() && extractor.found(classOfT.getCanonicalName())) {
+        	extractor.startExtraction(bitbuffer.position());
+        	extract = true;
+        }
+        
+        
+        //start decodong
         if (hasExtensionMarker) {
             extensionPresent = bitbuffer.get();
             UperEncoder.logger.debug(String.format("with extension marker, extension %s", extensionPresent ? "present!" : "absent"));
@@ -175,7 +186,7 @@ class SequenceCoder implements Decoder, Encoder {
                 (UperEncoder.isOptional(f) && optionalFieldsMask.pop()))) {
                 UperEncoder.logger.debug(String.format("Field : %s", f.getName()));
                 try {
-                    f.set(result, UperEncoder.decodeAny(bitbuffer,f.getType(),f, f.getAnnotations()));
+                    f.set(result, UperEncoder.decodeAny(bitbuffer,f.getType(),f, f.getAnnotations(),extractor));
                 } catch (IllegalAccessException e) {
                     throw new IllegalArgumentException("can't access 'set method' for field " + f + " of class " + classOfT + " " + e, e);
                 }
@@ -196,6 +207,11 @@ class SequenceCoder implements Decoder, Encoder {
         if (!hasExtensionMarker) {
         	//done
         	sorter.revertAccess();
+        	
+            if (extract) {
+            	extractor.endExtraction(bitbuffer.position());
+            }
+            
         	return result; 
         }
         
@@ -222,7 +238,7 @@ class SequenceCoder implements Decoder, Encoder {
         				Class<?> classOfElement = field != null ? field.getType() : null;
         				if (field != null) {
         					try {
-        						Object decodedValue = UperEncoder.decodeAsOpenType(bitbuffer, classOfElement,field, field.getAnnotations());
+        						Object decodedValue = UperEncoder.decodeAsOpenType(bitbuffer, classOfElement,field, field.getAnnotations(),extractor);
         						if (field != null) {
         							field.set(result, decodedValue);
         						}
@@ -269,6 +285,11 @@ class SequenceCoder implements Decoder, Encoder {
         	} // end of extension handling
         }
         sorter.revertAccess();
+        
+        if (extract) {
+        	extractor.endExtraction(bitbuffer.position());
+        }
+        
         return result;       
     }
 

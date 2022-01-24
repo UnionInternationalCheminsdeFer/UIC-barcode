@@ -19,6 +19,7 @@ public interface BitBuffer {
     BitBuffer flip();
     String toBooleanString(int startIndex, int length);
     String toBooleanStringFromPosition(int startIndex);
+    byte[] fromBooleanString(String s);
     byte[] array();
     BitBuffer putByte(byte element);
     byte getByte();

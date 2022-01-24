@@ -3,7 +3,7 @@ package org.uic.barcode.asn1.uper;
 
 
 public class ByteBitBuffer implements BitBuffer {
-
+	
     byte[] bytes;
     byte[] mask = new byte[] {
      (byte) 0b1000_0000,
@@ -45,7 +45,8 @@ public class ByteBitBuffer implements BitBuffer {
         bytes = newbytes;
     }
 
-    @Override public BitBuffer put(int index, boolean element) {
+    @Override 
+    public BitBuffer put(int index, boolean element) {
         if (bytes.length <= index / 8) {
             if (isFinite) { throw new IndexOutOfBoundsException(); }
             else { grow(); }
@@ -58,21 +59,24 @@ public class ByteBitBuffer implements BitBuffer {
         return this;
     }
 
-    @Override public BitBuffer put(boolean element) {
+    @Override 
+    public BitBuffer put(boolean element) {
         put(position, element);
         position++;
         limit = limit < position ? position : limit;  // TODO: should it be here?
         return this;
     }
 
-    @Override public BitBuffer putByte(byte element) {
+    @Override 
+    public BitBuffer putByte(byte element) {
         for (int i = 0; i < 8; i++) {
             put((element & mask[i]) != 0);
         }
         return this;
     }
     
-    @Override public BitBuffer putByteArray(int index, byte[] data) {
+    @Override 
+    public BitBuffer putByteArray(int index, byte[] data) {
     	
     	for (int l = 0; l < data.length;l++) {
     		for (int i = 0; i < 8; i++) {
@@ -83,7 +87,8 @@ public class ByteBitBuffer implements BitBuffer {
     }
     
 
-    @Override public byte getByte() {
+    @Override 
+    public byte getByte() {
         byte result = 0;
         for (int i = 0; i < 8; i++) {
             result |= (get() ? 1 : 0) << (7 - i);
@@ -91,11 +96,13 @@ public class ByteBitBuffer implements BitBuffer {
         return result;
     }
 
-    @Override public int limit() {
+    @Override 
+    public int limit() {
         return limit;
     }
 
-    @Override public String toBooleanString(int startIndex, int length) {
+    @Override 
+    public String toBooleanString(int startIndex, int length) {
         StringBuilder sb = new StringBuilder(length);
         for (int i = startIndex; i < startIndex + length; i++) {
             sb.append(get(i) ? "1" : "0");
@@ -267,5 +274,12 @@ public class ByteBitBuffer implements BitBuffer {
 
 		return stringBuilder.toString().trim();
 	}
+	
+	public byte[] fromBooleanString(final String s) {
+		
+		return AsnUtils.fromBooleanString(s);
+
+    }
+
 
 }

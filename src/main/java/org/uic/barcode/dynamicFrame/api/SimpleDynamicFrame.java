@@ -12,6 +12,7 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Date;
 
+import org.uic.barcode.asn1.uper.AsnUtils;
 import org.uic.barcode.dynamicContent.api.DynamicContentCoder;
 import org.uic.barcode.dynamicContent.api.IUicDynamicContent;
 import org.uic.barcode.dynamicContent.fdc1.UicDynamicContentDataFDC1;
@@ -143,6 +144,22 @@ public class SimpleDynamicFrame implements IDynamicFrame {
 		return null;
 	}
 	
+	private byte[] getEncoded(String path, byte[] data) throws EncodingFormatException {
+		
+		if (Constants.DYNAMIC_BARCODE_FORMAT_VERSION_1.equals(format)) {
+			
+			return DynamicFrameCoderV1.getEncoded(path, data);
+			
+		} else if (Constants.DYNAMIC_BARCODE_FORMAT_VERSION_1.equals(format)) {
+			
+			return DynamicFrameCoderV2.getEncoded(path, data);
+			
+		}
+		
+		return null;
+	}
+	
+	
 	private byte[] encode(ILevel2Data level2SignedData2) throws EncodingFormatException {
 		
 		if (Constants.DYNAMIC_BARCODE_FORMAT_VERSION_1.equals(format)) {
@@ -213,9 +230,9 @@ public class SimpleDynamicFrame implements IDynamicFrame {
 	 * @return the int
 	 * @throws EncodingFormatException 
 	 */	
-	public int validateLevel2() throws EncodingFormatException {
+	public int validateLevel2(byte[] data) throws EncodingFormatException {
 
-		return validateLevel2(null);
+		return validateLevel2(null, data);
 	
 	}
 	
@@ -224,11 +241,11 @@ public class SimpleDynamicFrame implements IDynamicFrame {
 	 * 
 	 * Note:  an appropriate security provider (e.g. BC) must be registered before 
 	 *
-	 * @param prov the prov
-	 * @return the int
+	 * @param prov the registered security provider
+	 * @return the return error code
 	 * @throws EncodingFormatException 
 	 */	
-	public int validateLevel2(Provider prov) throws EncodingFormatException {
+	public int validateLevel2(Provider prov, byte[] data) throws EncodingFormatException {
 		
 		
 		String level2KeyAlg = this.getLevel2Data().getLevel1Data().getLevel2KeyAlg();
@@ -244,7 +261,7 @@ public class SimpleDynamicFrame implements IDynamicFrame {
 					
 		String keyAlgName = null;
 		try {
-			keyAlgName = AlgorithmNameResolver.getName(AlgorithmNameResolver.TYPE_KEY_GENERATOR_ALG, level2KeyAlg);
+			keyAlgName = AlgorithmNameResolver.getName(AlgorithmNameResolver.TYPE_KEY_GENERATOR_ALG, level2KeyAlg,prov);
 		} catch (Exception e1) {
 			return Constants.LEVEL2_VALIDATION_KEY_ALG_NOT_IMPLEMENTED;	
 		}
@@ -268,7 +285,7 @@ public class SimpleDynamicFrame implements IDynamicFrame {
 
 		String sigAlgName = null;
 		try {
-			sigAlgName = AlgorithmNameResolver.getName(AlgorithmNameResolver.TYPE_SIGNATURE_ALG,level2SigAlg);
+			sigAlgName = AlgorithmNameResolver.getName(AlgorithmNameResolver.TYPE_SIGNATURE_ALG,level2SigAlg,prov);
 		} catch (Exception e1) {
 			return Constants.LEVEL2_VALIDATION_SIG_ALG_NOT_IMPLEMENTED;
 		}
@@ -293,8 +310,14 @@ public class SimpleDynamicFrame implements IDynamicFrame {
 		}
 		
 		try {
-			byte[] data = encode(level2Data);
-			sig.update(data);
+			//TODO
+			//byte[] signedData = encode(level2Data);
+			//String s1 = AsnUtils.toBooleanString(signedData);
+			
+			byte[] signedData2 = getEncoded("Level2Data", data);
+			//String s2 = AsnUtils.toBooleanString(signedData);
+			
+			sig.update(signedData2);
 		} catch (SignatureException e) {
 			return Constants.LEVEL2_VALIDATION_SIG_ALG_NOT_IMPLEMENTED;
 		} catch (IllegalArgumentException e) {
@@ -325,7 +348,7 @@ public class SimpleDynamicFrame implements IDynamicFrame {
 	 * @return the int
 	 * @throws EncodingFormatException 
 	 */
-	public int validateLevel1(PublicKey key, Provider prov) throws EncodingFormatException {
+	public int validateLevel1(PublicKey key, Provider prov, byte[] data) throws EncodingFormatException {
 		
 		if (level2Data == null) {
 			return Constants.LEVEL1_VALIDATION_NO_SIGNATURE;
@@ -342,7 +365,7 @@ public class SimpleDynamicFrame implements IDynamicFrame {
 		//find the algorithm name for the signature OID
 		String algo = null;
 		try {
-			algo = AlgorithmNameResolver.getSignatureAlgorithmName(getLevel2Data().getLevel1Data().getLevel1SigningAlg());
+			algo = AlgorithmNameResolver.getSignatureAlgorithmName(getLevel2Data().getLevel1Data().getLevel1SigningAlg(), prov);
 		} catch (Exception e1) {
 			return Constants.LEVEL1_VALIDATION_SIG_ALG_NOT_IMPLEMENTED;
 		}	
@@ -368,7 +391,15 @@ public class SimpleDynamicFrame implements IDynamicFrame {
 		}
 		
 		try {
-			sig.update(encode(level2Data.getLevel1Data()));
+			
+			//byte[] encodedData = encode(level2Data.getLevel1Data());
+			//String s1 = AsnUtils.toBooleanString(encodedData);
+			//TODO
+			byte[]  encodedData2 = getEncoded("Level1Data", data);
+			//String s2 = AsnUtils.toBooleanString(encodedData2);
+			
+			sig.update(encodedData2);	
+			
 		} catch (SignatureException e) {
 			return Constants.LEVEL1_VALIDATION_SIG_ALG_NOT_IMPLEMENTED;
 		} catch (IllegalArgumentException e) {
@@ -402,9 +433,9 @@ public class SimpleDynamicFrame implements IDynamicFrame {
 	 * @return the int
 	 * @throws EncodingFormatException 
 	 */
-	public int validateLevel1(PublicKey key) throws EncodingFormatException {
+	public int validateLevel1(PublicKey key, byte[] data) throws EncodingFormatException {
 		
-		return validateLevel1(key, null);
+		return validateLevel1(key, null,data);
 
   	}
 	
@@ -416,13 +447,7 @@ public class SimpleDynamicFrame implements IDynamicFrame {
 	 */
 	public void signLevel2(PrivateKey key) throws Exception {
 		
-		//find the algorithm name for the signature OID
-		String algo = AlgorithmNameResolver.getSignatureAlgorithmName(level2Data.getLevel1Data().getLevel2SigningAlg());
-		Signature sig = Signature.getInstance(algo);
-		sig.initSign(key);
-		byte[] data = encode(level2Data);
-		sig.update(data);
-		level2Signature = sig.sign();
+		signLevel2(key, null);
 		
 	}
 
@@ -430,17 +455,22 @@ public class SimpleDynamicFrame implements IDynamicFrame {
 	 * Sign level 2 data.
 	 *
 	 * @param key the key
-	 * @param prov the security Provider
+	 * @param prov the registered security provider
 	 * @throws Exception the exception
 	 */
 	public void signLevel2(PrivateKey key, Provider prov) throws Exception {
 		
 		//find the algorithm name for the signature OID
-		String algo = AlgorithmNameResolver.getSignatureAlgorithmName(this.getLevel2Data().getLevel1Data().getLevel2SigningAlg());
-		Signature sig = Signature.getInstance(algo,prov);
+		String algo = AlgorithmNameResolver.getSignatureAlgorithmName(this.getLevel2Data().getLevel1Data().getLevel2SigningAlg(), prov);
+		Signature sig = null;
+		if (prov != null) {
+			sig = Signature.getInstance(algo,prov);
+		} else {
+			sig = Signature.getInstance(algo);
+		}
 		sig.initSign(key);
-		byte[] data = encode(level2Data);
-		sig.update(data);
+		byte[] signedData = encode(level2Data);
+		sig.update(signedData);
 		level2Signature = sig.sign();
 		
 	}
@@ -453,8 +483,7 @@ public class SimpleDynamicFrame implements IDynamicFrame {
 	 * @throws EncodingFormatException the encoding format exception
 	 */
 	public void addDynamicContent(IUicDynamicContent content) throws EncodingFormatException {
-		
-		
+				
 		level2Data.setLevel2Data(new SimpleData());
 		
 		level2Data.getLevel2Data().setFormat(DynamicContentCoder.dynamicContentDataFDC1);
@@ -501,19 +530,8 @@ public class SimpleDynamicFrame implements IDynamicFrame {
 	 */
 	public void signLevel1(PrivateKey key) throws Exception {
 		
-		if (level2Data == null) return;
+		signLevel1(key, null);
 		
-		ILevel1Data level1Data = level2Data.getLevel1Data();
-		
-		if (level1Data == null) return;
-		
-		//find the algorithm name for the signature OID
-		String algo = AlgorithmNameResolver.getSignatureAlgorithmName(level1Data.getLevel1SigningAlg());
-		Signature sig = Signature.getInstance(algo);
-		sig.initSign(key);
-		byte[] data = encode(level1Data);
-		sig.update(data);
-		level2Data.setLevel1Signature(sig.sign());
 	}
 
 	/**
@@ -538,16 +556,17 @@ public class SimpleDynamicFrame implements IDynamicFrame {
 		
 		//find the algorithm name for the signature OID
 		String algo = AlgorithmNameResolver.getSignatureAlgorithmName(level1Data.getLevel1SigningAlg());
-		Signature sig = Signature.getInstance(algo, prov);
+		Signature sig = null;
+		if (prov != null) {
+			sig = Signature.getInstance(algo, prov);
+		} else {
+			sig = Signature.getInstance(algo);
+		}
 		sig.initSign(key);
 				
 		byte[] data = encode(level1Data);
 		sig.update(data);
 		level2Data.setLevel1Signature(sig.sign());	
 	}
-
-
-
-	
 	
 }

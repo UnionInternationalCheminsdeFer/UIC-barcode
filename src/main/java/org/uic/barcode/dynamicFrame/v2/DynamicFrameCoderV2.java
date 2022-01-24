@@ -197,6 +197,17 @@ public class DynamicFrameCoderV2 {
 		
 		return asnLevel1;
 	}
+
+	public static byte[] getEncoded(String path, byte[] data) {
+		
+		if (path.endsWith("Level1Data")){
+			return UperEncoder.extract(data, "Level1DataType" ,DynamicFrame.class );
+		} else if (path.endsWith("Level2Data")){
+			return UperEncoder.extract(data, "Level2DataType" ,DynamicFrame.class );
+		}
+	
+		return null;
+	}
 	
 
 

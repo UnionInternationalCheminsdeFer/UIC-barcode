@@ -27,7 +27,7 @@ class IntCoder implements Encoder, Decoder {
     
     @Override public <T> T decode(BitBuffer bitbuffer,
             Class<T> classOfT, Field field,
-            Annotation[] extraAnnotations)  {
+            Annotation[] extraAnnotations, AsnExtractor extractor)  {
         AnnotationStore annotations = new AnnotationStore(classOfT.getAnnotations(),extraAnnotations);
     	String pos = String.format("Position: %d.%d", bitbuffer.position()/8 , bitbuffer.position() % 8);
         UperEncoder.logger.debug(String.format("%s: INTEGER",pos));

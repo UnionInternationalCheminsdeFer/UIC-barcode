@@ -97,7 +97,7 @@ class BitStringCoder implements Decoder, Encoder {
 
     @Override public <T> T decode(BitBuffer bitbuffer,
             Class<T> classOfT, Field field,
-            Annotation[] extraAnnotations) {
+            Annotation[] extraAnnotations, AsnExtractor extractor) {
         AnnotationStore annotations = new AnnotationStore(classOfT.getAnnotations(),
                 extraAnnotations);
         if (!Asn1VarSizeBitstring.class.isAssignableFrom(classOfT)) {

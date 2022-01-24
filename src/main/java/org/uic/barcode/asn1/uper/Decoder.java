@@ -5,6 +5,6 @@ import java.lang.reflect.Field;
 
 public interface Decoder {
     <T> boolean canDecode(Class<T> classOfT, Annotation[] extraAnnotations);
-    <T> T decode(BitBuffer bitbuffer, Class<T> classOfT,Field f, Annotation[] extraAnnotations);
+    <T> T decode(BitBuffer bitbuffer, Class<T> classOfT,Field f, Annotation[] extraAnnotations,AsnExtractor extractor);
     <T> T getDefault(Class<T> classOfT, Annotation[] extraAnnotations);
 }

@@ -95,7 +95,7 @@ class ChoiceCoder implements Decoder, Encoder {
 
     @Override public <T> T decode(BitBuffer bitbuffer,
             Class<T> classOfT, Field field1,
-            Annotation[] extraAnnotations) {
+            Annotation[] extraAnnotations, AsnExtractor extractor) {
         AnnotationStore annotations = new AnnotationStore(classOfT.getAnnotations(),extraAnnotations);
         UperEncoder.logger.debug(String.format("CHOICE: %s", classOfT.getName()));
         T result = UperEncoder.instantiate(classOfT);
@@ -120,7 +120,7 @@ class ChoiceCoder implements Decoder, Encoder {
                 Class<?> classOfElement = field != null ? field.getType() : null;                
                 if (field != null) {
                 	try {
-                		Object decodedValue = UperEncoder.decodeAsOpenType(bitbuffer, classOfElement,field, field.getAnnotations());
+                		Object decodedValue = UperEncoder.decodeAsOpenType(bitbuffer, classOfElement,field, field.getAnnotations(),extractor);
                 		if (field != null) {
                 			field.set(result, decodedValue);
                 		}
@@ -144,7 +144,7 @@ class ChoiceCoder implements Decoder, Encoder {
                 UperEncoder.newRange(0, sorter.ordinaryFields.size() - 1, false));
         Field f = sorter.ordinaryFields.get(index);
         UperEncoder.logger.debug(String.format("CHOICE: selected %s", f.getName()));
-        Object fieldValue = UperEncoder.decodeAny(bitbuffer, f.getType(),f, f.getAnnotations());
+        Object fieldValue = UperEncoder.decodeAny(bitbuffer, f.getType(),f, f.getAnnotations(),extractor);
         try {
             f.set(result, fieldValue);
         } catch (IllegalArgumentException | IllegalAccessException e) {
