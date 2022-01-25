@@ -3,7 +3,6 @@ package org.uic.barcode.dynamicFrame.api;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import org.uic.barcode.asn1.uper.UperEncoder;
 
 /**
  * The Class SignedDataType.

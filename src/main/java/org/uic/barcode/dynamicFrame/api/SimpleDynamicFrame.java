@@ -120,7 +120,7 @@ public class SimpleDynamicFrame implements IDynamicFrame {
 			
 			return DynamicFrameCoderV1.encode(this);
 			
-		} else if (Constants.DYNAMIC_BARCODE_FORMAT_VERSION_1.equals(format)) {
+		} else if (Constants.DYNAMIC_BARCODE_FORMAT_VERSION_2.equals(format)) {
 			
 			return DynamicFrameCoderV2.encode(this);
 			
@@ -135,13 +135,12 @@ public class SimpleDynamicFrame implements IDynamicFrame {
 			
 			return DynamicFrameCoderV1.encode(level1Data);
 			
-		} else if (Constants.DYNAMIC_BARCODE_FORMAT_VERSION_1.equals(format)) {
+		} else if (Constants.DYNAMIC_BARCODE_FORMAT_VERSION_2.equals(format)) {
 			
 			return DynamicFrameCoderV2.encode(level1Data);
 			
 		}
-		
-		return null;
+		throw new EncodingFormatException("Dynamic Header Version not supported: " + format);
 	}
 	
 	private byte[] getEncoded(String path, byte[] data) throws EncodingFormatException {
@@ -150,29 +149,29 @@ public class SimpleDynamicFrame implements IDynamicFrame {
 			
 			return DynamicFrameCoderV1.getEncoded(path, data);
 			
-		} else if (Constants.DYNAMIC_BARCODE_FORMAT_VERSION_1.equals(format)) {
+		} else if (Constants.DYNAMIC_BARCODE_FORMAT_VERSION_2.equals(format)) {
 			
 			return DynamicFrameCoderV2.getEncoded(path, data);
 			
 		}
 		
-		return null;
+		throw new EncodingFormatException("Dynamic Header Version not supported: " + format);
 	}
 	
 	
-	private byte[] encode(ILevel2Data level2SignedData2) throws EncodingFormatException {
+	private byte[] encode(ILevel2Data level2Data) throws EncodingFormatException {
 		
 		if (Constants.DYNAMIC_BARCODE_FORMAT_VERSION_1.equals(format)) {
 			
-			return DynamicFrameCoderV1.encode(level2SignedData2);
+			return DynamicFrameCoderV1.encode(level2Data);
 			
-		} else if (Constants.DYNAMIC_BARCODE_FORMAT_VERSION_1.equals(format)) {
+		} else if (Constants.DYNAMIC_BARCODE_FORMAT_VERSION_2.equals(format)) {
 			
-			return DynamicFrameCoderV2.encode(level2SignedData2);
+			return DynamicFrameCoderV2.encode(level2Data);
 			
 		}
 		
-		return null;
+		throw new EncodingFormatException("Dynamic Header Version not supported: " + format);
 	}
 	
 	/**
@@ -182,22 +181,24 @@ public class SimpleDynamicFrame implements IDynamicFrame {
 	 *
 	 * @param bytes the bytes
 	 * @return the dynamic header
+	 * @throws EncodingFormatException 
 	 */
-	public void decode(byte[] bytes) {
+	public void decode(byte[] bytes) throws EncodingFormatException {
 		
 		String format = getFormat(bytes);
 			
 		if (Constants.DYNAMIC_BARCODE_FORMAT_VERSION_1.equals(format)) {
 			
 			DynamicFrameCoderV1.decode(this,bytes);
+			return;
 			
 		} else if (Constants.DYNAMIC_BARCODE_FORMAT_VERSION_2.equals(format)) {
 		
 			DynamicFrameCoderV2.decode(this,bytes);
-			
+			return;
 		}
 		
-		
+		throw new EncodingFormatException("Dynamic Header Version not supported");
 
 	}
 	
@@ -211,12 +212,35 @@ public class SimpleDynamicFrame implements IDynamicFrame {
 	 * @return true, if is static header
 	 */
 	private static String getFormat(byte[] data) {
-		byte[] start = "U1".getBytes();
-		if (start[0] != data[0] || start[1]!= start[1]) {
+		
+		if (data == null || data.length < 4) return null;
+		
+		byte[] startBits = new byte[4];
+		startBits[0] = data[0];
+		startBits[1] = data[1];
+		startBits[2] = data[2];
+		startBits[3] = data[3];
+
+		String start = AsnUtils.toBooleanString(startBits);
+		
+		/*
+		 * bitshift: 
+		 * 
+		 * version 1:
+		 *    optional Level2Data 1 bit
+		 *    length of format:   8 bit
+		 * 
+		 * version 2:
+		 *    extensionIndicator  1 bit
+		 *    optional Level2Data 1 bit
+		 *    length of format:   8 bit
+		 */
+		
+		if (Constants.DYNAMIC_BARCODE_FORMAT_VERSION_1_BIN.equals(start.substring(9, 23))) {
 			return Constants.DYNAMIC_BARCODE_FORMAT_VERSION_1;
 		}
-		start = "U2".getBytes();
-		if (start[0] != data[0] || start[1]!= start[1]) {
+		
+		if (Constants.DYNAMIC_BARCODE_FORMAT_VERSION_2_BIN.equals(start.substring(10, 24))) {
 			return Constants.DYNAMIC_BARCODE_FORMAT_VERSION_2;
 		}
 		return null;
@@ -392,13 +416,9 @@ public class SimpleDynamicFrame implements IDynamicFrame {
 		
 		try {
 			
-			//byte[] encodedData = encode(level2Data.getLevel1Data());
-			//String s1 = AsnUtils.toBooleanString(encodedData);
-			//TODO
-			byte[]  encodedData2 = getEncoded("Level1Data", data);
-			//String s2 = AsnUtils.toBooleanString(encodedData2);
+			byte[]  encodedData = getEncoded("Level1Data", data);
 			
-			sig.update(encodedData2);	
+			sig.update(encodedData);	
 			
 		} catch (SignatureException e) {
 			return Constants.LEVEL1_VALIDATION_SIG_ALG_NOT_IMPLEMENTED;

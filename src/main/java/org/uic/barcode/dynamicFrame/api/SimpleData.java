@@ -1,12 +1,5 @@
 package org.uic.barcode.dynamicFrame.api;
 
-import org.uic.barcode.asn1.datatypes.CharacterRestriction;
-import org.uic.barcode.asn1.datatypes.HasExtensionMarker;
-import org.uic.barcode.asn1.datatypes.RestrictedString;
-import org.uic.barcode.asn1.datatypes.Sequence;
-import org.uic.barcode.asn1.datatypesimpl.OctetString;
-import org.uic.barcode.asn1.uper.UperEncoder;
-
 /**
  * The Class DataType.
  */

@@ -120,7 +120,7 @@ public class DynamicFrameCoderV2 {
 		
 		DynamicFrame asnFrame = new DynamicFrame();
 		
-		frame.setFormat(frame.getFormat());
+		asnFrame.setFormat(frame.getFormat());
 		
 		if (frame.getLevel2Signature() != null && frame.getLevel2Signature().length > 0) {
 			asnFrame.setLevel2Signature(new OctetString(frame.getLevel2Signature()));

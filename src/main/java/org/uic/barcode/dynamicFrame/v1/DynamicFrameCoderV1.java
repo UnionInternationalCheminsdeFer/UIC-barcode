@@ -113,9 +113,9 @@ public class DynamicFrameCoderV1 {
 	}
 	
 	
-	public static byte[] encode(ILevel2Data level2SignedData) throws EncodingFormatException {
+	public static byte[] encode(ILevel2Data level2Data) throws EncodingFormatException {
 		
-       Level2DataType asn = populateAsn(level2SignedData);
+       Level2DataType asn = populateAsn(level2Data);
 		
 		return UperEncoder.encode(asn);
 	}
@@ -150,10 +150,10 @@ public class DynamicFrameCoderV1 {
 		asnLevel2.setLevel1Data(asnLevel1);
 		
 		if (level2.getLevel2Data() != null) {
-			DataType data2 = new DataType();
-			data2.setFormat(level2.getLevel2Data().getFormat());
-			data2.setData(new OctetString(level2.getLevel2Data().getData()));
-			asnLevel2.setLevel2Data(data2);
+			DataType asnData = new DataType();
+			asnData.setFormat(level2.getLevel2Data().getFormat());
+			asnData.setData(new OctetString(level2.getLevel2Data().getData()));
+			asnLevel2.setLevel2Data(asnData);
 		}
 
 		return asnLevel2;

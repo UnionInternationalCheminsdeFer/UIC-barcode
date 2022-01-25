@@ -1,5 +1,7 @@
 package org.uic.barcode.asn1.uper;
 
+import java.math.BigInteger;
+
 public class AsnUtils {
 	
 
@@ -55,5 +57,19 @@ public class AsnUtils {
 	    boolean result = (bytes[index / 8] & mask[index % 8]) != 0;
 	    return result;
 	}
+	
+	public static byte[] shiftBytesToLeft(byte[] bytes, int shift) {
+		
+		// create from array
+		BigInteger bigInt = new BigInteger(bytes);
+
+		// shift
+		BigInteger shiftInt = bigInt.shiftLeft(shift);
+
+		// back to array
+		return shiftInt.toByteArray();
+
+	}
+	
 
 }

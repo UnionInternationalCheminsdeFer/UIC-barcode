@@ -79,8 +79,9 @@ public interface IDynamicFrame{
 	 *
 	 * @param bytes the bytes
 	 * @return the dynamic header
+	 * @throws EncodingFormatException 
 	 */
-	public void decode(byte[] bytes);
+	public void decode(byte[] bytes) throws EncodingFormatException;
 	
 
 	

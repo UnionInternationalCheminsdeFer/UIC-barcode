@@ -100,16 +100,16 @@ public class Level1DataType {
 	/** The End of validity year. */
 	@FieldOrder(order = 9)
 	@IntRange(minValue=2016,maxValue=2269)
-	public Long EndOfValidityYear;
+	@Asn1Optional public Long EndOfValidityYear;
 
 	/** The End of validity day. */
 	@FieldOrder(order = 10)
 	@IntRange(minValue=1,maxValue=366)
-	public Long EndOfValidityDay;
+	@Asn1Optional public Long EndOfValidityDay;
 
 	/** The End of validity time. */
 	@FieldOrder(order = 11)
-	@IntRange(minValue=0,maxValue=1440)
+	@IntRange(minValue=0,maxValue=1439)
 	@Asn1Optional public Long EndOfValidityTime;
 	
 	
@@ -309,25 +309,26 @@ public class Level1DataType {
 	}
 	
 	/**
-	 * Sets the end of validity date. The validity date has to be provided in UTC.
-	 *
+	 * Sets the end of validity date. 
 	 * @param date the new end of validity date
 	 */
 	public void setEndOfValidityDate(Date date){
 		
-		if (date == null) {
-			date = Calendar.getInstance().getTime();
-		}
+		if (date == null) return;
 		
+		TimeZone local = TimeZone.getDefault();
+		TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
+
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(date);
-		
+
 		this.EndOfValidityYear = new Long( cal.get(Calendar.YEAR));
 		this.EndOfValidityDay = new Long (cal.get(Calendar.DAY_OF_YEAR));
 		int time =  cal.get(Calendar.HOUR_OF_DAY) * 60 + cal.get(Calendar.MINUTE);
 		if (time >= 0) {
 			this.EndOfValidityTime = new Long (time );
 		}
+		TimeZone.setDefault(local);
 		
 	}
 	
@@ -339,6 +340,9 @@ public class Level1DataType {
 	public Date getEndOfValidityDate() {
 		
 		if (this.EndOfValidityYear == null || this.EndOfValidityDay == null) return null;
+		
+		TimeZone local = TimeZone.getDefault();
+		TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
 		
 		Calendar cal = Calendar.getInstance();
 		cal.clear();
@@ -356,6 +360,9 @@ public class Level1DataType {
 		}
 		
 		Date d = cal.getTime();
+		
+		TimeZone.setDefault(local);
+		
 		return d;
 	}
 
