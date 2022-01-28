@@ -52,10 +52,7 @@ ASN-Module DEFINITIONS AUTOMATIC TAGS ::= BEGIN
     	level2SignedData 	    Level2DataType,                
 
     	-- signature is calculated on the PER unaligned encoding of level2 signature data
-    	level2Signature         OCTET STRING OPTIONAL,
-   		...
-    	
-    	
+    	level2Signature         OCTET STRING OPTIONAL
    }
    
    Level2DataType	::= SEQUENCE {
@@ -65,8 +62,7 @@ ASN-Module DEFINITIONS AUTOMATIC TAGS ::= BEGIN
        	  -- signature is calculated on the PER unaligned encoding of level1 signature data
        	  level1Signature        OCTET STRING OPTIONAL,
        	
-       	  level2Data             DataType OPTIONAL,
-   		  ...
+       	  level2Data             DataType OPTIONAL
 
    }
    
@@ -98,17 +94,21 @@ ASN-Module DEFINITIONS AUTOMATIC TAGS ::= BEGIN
       	level2SigningAlg   OBJECT IDENTIFIER OPTIONAL,
         level2PublicKey    OCTET  STRING     OPTIONAL,
         
-        -- end of the validity of the bar code, after this date and time the bar code needs to be regenerated
+        -- end of the validity of the bar code, after this date and time the bar code needs to be regenerated 
+        -- by the provider of the ticket
         -- if end of validity is provided year day and time must be provided.
         -- year, day, time are in UTC
-        -- the provider of the bar code must ensure that the end of validity of the bar code is 
-        --     before the end of validity of the key pair used on level 2
+        -- the provider of the bar code should ensure that the endOfValidity given here does not exceed 
+        --     the validity of the key pair used on level 2.
    		endOfValidityYear 		INTEGER (2016..2269) OPTIONAL,    	
    		-- number of the day in the year (1.1. = 1)
    		endOfValidityDay		INTEGER (1..366) OPTIONAL, 
    		-- The number of the minutes of the day 
-   		endOfValidityTime		INTEGER (0..1439) OPTIONAL, 
-   		...
+   		endOfValidityTime		INTEGER (0..1439) OPTIONAL,
+   		
+   		-- validity duration in seconds of the bar code shown with reference to the time stamp  dynamicContentTimeStamp 
+   		--          in the dynamic data included in the level2Data
+   		validityDuration        INTEGER (1..3600) OPTIONAL
    }
 
    DataType ::= SEQUENCE {
@@ -118,8 +118,7 @@ ASN-Module DEFINITIONS AUTOMATIC TAGS ::= BEGIN
     	-- or proprietary:
     	--  _RICS company code + addon       	
        	dataFormat	    IA5String,      	
-    	data	    	OCTET STRING,
-   		...
+    	data	    	OCTET STRING
    }
 
 

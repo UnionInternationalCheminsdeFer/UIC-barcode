@@ -11,15 +11,15 @@ public interface ILevel1Data {
 
 
 	/**
-	 * Sets the security provider 
+	 * Sets the security provider .
 	 *
-	 * @param securityProviderNum the new security provider 
+	 * @param securityProvider the new security provider
 	 */
 	public void setSecurityProvider(String securityProvider);
 	
 
 	/**
-	 * Gets the security provider
+	 * Gets the security provider.
 	 *
 	 * @return the security provider
 	 */
@@ -68,7 +68,7 @@ public interface ILevel1Data {
 	public void addData(IData data);
 
 	/**
-	 * Gets the level 2 key alg.
+	 * Gets the level 2 key algorithm OID.
 	 *
 	 * @return the level 2 key alg
 	 */
@@ -76,7 +76,7 @@ public interface ILevel1Data {
 	
 
 	/**
-	 * Sets the level 2 key alg.
+	 * Sets the level 2 key algorithm OID.
 	 *
 	 * @param level2KeyAlg the new level 2 key alg
 	 */
@@ -92,7 +92,7 @@ public interface ILevel1Data {
 	
 
 	/**
-	 * Sets the level 1 signing alg.
+	 * Sets the level 1 signing algorithm OID.
 	 *
 	 * @param level1SigningAlg the new level 1 signing alg
 	 */
@@ -100,7 +100,7 @@ public interface ILevel1Data {
 	
 
 	/**
-	 * Gets the level 2 signing alg.
+	 * Gets the level 2 signing algorithm OID.
 	 *
 	 * @return the level 2 signing alg
 	 */
@@ -108,7 +108,7 @@ public interface ILevel1Data {
 	
 
 	/**
-	 * Sets the level 2 signing alg.
+	 * Sets the level 2 signing algorithm OID.
 	 *
 	 * @param level2SigningAlg the new level 2 signing alg
 	 */
@@ -133,14 +133,14 @@ public interface ILevel1Data {
 	
 	
 	/**
-	 * Gets the level 1 key alg.
+	 * Gets the level 1 key algorithm OID.
 	 *
 	 * @return the level 1 key alg
 	 */
 	public String getLevel1KeyAlg();
 	
 	/**
-	 * Sets the level 1 key alg.
+	 * Sets the level 1 key algorithm OID.
 	 *
 	 * @param level1KeyAlg the new level 1 key alg
 	 */
@@ -149,6 +149,13 @@ public interface ILevel1Data {
 	
 	/**
 	 * Sets the end of validity date. The validity date has to be provided in UTC.
+	 * 
+	 * 	 -- end of the validity of the bar code, after this date and time the bar code needs to be regenerated 
+     *   -- by the provider of the ticket
+     *   -- if end of validity is provided year day and time must be provided.
+     *   -- year, day, time are in UTC
+     *   -- the provider of the bar code should ensure that the endOfValidity given here does not exceed 
+     *   --     the validity of the key pair used on level 2.
 	 *
 	 * @param date the new end of validity date
 	 */
@@ -156,9 +163,40 @@ public interface ILevel1Data {
 	
 	
 	/**
-	 * Gets the end of validity date.
+	 * Gets the end of validity date and time.
+	 * 
+	 *  -- end of the validity of the bar code, after this date and time the bar code needs to be regenerated 
+     *   -- by the provider of the ticket
+     *   -- if end of validity is provided year day and time must be provided.
+     *   -- year, day, time are in UTC
+     *   -- the provider of the bar code should ensure that the endOfValidity given here does not exceed 
+     *   --     the validity of the key pair used on level 2.
 	 *
 	 * @return the end of validity date
 	 */
 	public Date getEndOfBarcodeValidity();
+	
+	
+	/**
+	 * Gets the validity duration of the bar code in seconds.
+	 * 
+	 *  -- validity duration in seconds of the bar code shown with reference to the time stamp  dynamicContentTimeStamp 
+   	 *  --          in the dynamic data included in the level2Data
+	 *
+	 * @return the validity duration
+	 */
+	public Long getValidityDuration();
+
+	
+	/**
+	 * Sets the validity validity duration of the bar code in seconds.
+	 * 
+	 *  -- validity duration in seconds of the bar code shown with reference to the time stamp  dynamicContentTimeStamp 
+   	 *  --          in the dynamic data included in the level2Data
+	 *
+	 * @param validityDuration the new validity duration
+	 */
+	public void setValidityDuration(Long validityDuration);
+	
+	
 }

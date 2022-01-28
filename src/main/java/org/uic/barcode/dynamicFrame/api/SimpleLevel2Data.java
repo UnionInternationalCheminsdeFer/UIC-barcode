@@ -2,15 +2,10 @@ package org.uic.barcode.dynamicFrame.api;
 
 import org.uic.barcode.asn1.datatypes.Asn1Optional;
 import org.uic.barcode.asn1.datatypes.FieldOrder;
-import org.uic.barcode.asn1.datatypes.HasExtensionMarker;
-import org.uic.barcode.asn1.datatypes.Sequence;
-import org.uic.barcode.asn1.uper.UperEncoder;
 
 /**
  * The Class DataType.
  */
-@Sequence
-@HasExtensionMarker
 public class SimpleLevel2Data implements ILevel2Data {
 
 	@FieldOrder(order = 0)
@@ -56,20 +51,6 @@ public class SimpleLevel2Data implements ILevel2Data {
 	public void setLevel2Data(IData level2Data) {
 		this.level2Data = level2Data;
 	}
-
-	
-	/**
-	 * Encode.
-	 * 
-	 * Encode the header as ASN.1 PER UNALIGNED byte array
-	 *
-	 * @return the byte[]
-	 */
-	public byte[] encode() {
-		return UperEncoder.encode(this);
-	}
-
-
 		
 	
 }

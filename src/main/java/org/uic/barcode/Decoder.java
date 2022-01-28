@@ -10,11 +10,11 @@ import java.util.zip.DataFormatException;
 
 import org.uic.barcode.dynamicContent.api.IUicDynamicContent;
 import org.uic.barcode.dynamicFrame.Constants;
+import org.uic.barcode.dynamicFrame.api.DynamicFrameCoder;
 import org.uic.barcode.dynamicFrame.api.IData;
 import org.uic.barcode.dynamicFrame.api.IDynamicFrame;
 import org.uic.barcode.dynamicFrame.api.ILevel1Data;
 import org.uic.barcode.dynamicFrame.api.ILevel2Data;
-import org.uic.barcode.dynamicFrame.api.SimpleDynamicFrame;
 import org.uic.barcode.staticFrame.StaticFrame;
 import org.uic.barcode.staticFrame.UFLEXDataRecord;
 import org.uic.barcode.staticFrame.UTLAYDataRecord;
@@ -80,7 +80,7 @@ public class Decoder {
 	 * @throws EncodingFormatException the encoding format exception
 	 */
 	public int validateLevel1(PublicKey key, String signingAlg) throws InvalidKeyException, NoSuchAlgorithmException, SignatureException, IllegalArgumentException, UnsupportedOperationException, IOException, EncodingFormatException {
-		if (!isStaticHeader(data)) {
+		if (dynamicFrame != null) {
 			return dynamicFrame.validateLevel1(key, data) ;
 		} else {
 			if (staticFrame.verifyByAlgorithmOid(key,signingAlg)) {
@@ -158,9 +158,7 @@ public class Decoder {
 		
 		if (!isStaticHeader(data)) {
 			
-			dynamicFrame = new SimpleDynamicFrame();
-						
-			dynamicFrame.decode(data);
+			dynamicFrame = DynamicFrameCoder.decode(data);
 			
 			ILevel2Data level2 = dynamicFrame.getLevel2Data();
 			
@@ -229,13 +227,13 @@ public class Decoder {
 	public TicketLayout getLayout() {
 		return layout;
 	}
-
+	
 	/**
 	 * Gets the dynamic header.
 	 *
 	 * @return the dynamic header
 	 */
-	public IDynamicFrame getDynamicHeader() {
+	public IDynamicFrame getDynamicFrame() {
 		return dynamicFrame;
 	}
 
@@ -284,7 +282,39 @@ public class Decoder {
 		return null;
 	}
 	
+	public byte[] getEncodedLevel1Data() throws IOException, EncodingFormatException {
+		if (!isStaticHeader(data)) {
+			return dynamicFrame.getLevel1DataBin();
+		} else if (staticFrame != null) {
+			return staticFrame.getDataForSignature();
+		} else {
+			throw new EncodingFormatException("Unknown Header");
+		}		
+	}
 	
+	public byte[] getLevel1Signature() throws IOException, EncodingFormatException {
+		
+		if (!isStaticHeader(data)) {
+			return dynamicFrame.getLevel2Data().getLevel1Signature();
+		} else if (staticFrame != null) {
+			return staticFrame.getDataForSignature();
+		} else {
+			throw new EncodingFormatException("Unknown Header");
+		}
+	}
 	
+	public String getLevel1KeyId() throws EncodingFormatException {
+		
+		if (dynamicFrame != null 
+			&& dynamicFrame.getLevel2Data() != null 
+			&& dynamicFrame.getLevel2Data().getLevel1Data() != null) {
+			return dynamicFrame.getLevel2Data().getLevel1Data().getKeyId().toString();
+		} else if (staticFrame != null) {
+			return staticFrame.getSignatureKey();
+		} else {
+			throw new EncodingFormatException("Unknown Header");
+		}
+		
+	}
 	
 }

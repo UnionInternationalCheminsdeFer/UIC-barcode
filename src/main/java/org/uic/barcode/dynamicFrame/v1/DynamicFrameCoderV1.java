@@ -3,6 +3,7 @@ package org.uic.barcode.dynamicFrame.v1;
 import org.uic.barcode.asn1.datatypesimpl.OctetString;
 import org.uic.barcode.asn1.uper.UperEncoder;
 import org.uic.barcode.dynamicFrame.v1.DynamicFrame;
+import org.uic.barcode.dynamicFrame.v1.Level1DataType;
 import org.uic.barcode.ticket.EncodingFormatException;
 import org.uic.barcode.dynamicFrame.api.IData;
 import org.uic.barcode.dynamicFrame.api.IDynamicFrame;
@@ -29,6 +30,14 @@ public class DynamicFrameCoderV1 {
 			populateApi(frame.getLevel2Data(), asnFrame.getLevel2SignedData());	
 		}
 					
+	}
+	
+	public static ILevel1Data decodeLevel1(byte[] bytes) {
+		
+		Level1DataType asnData = UperEncoder.decode(bytes,Level1DataType.class);	
+			
+		return populateApi(asnData);	
+
 	}
 
 	private static void populateApi(ILevel2Data level2, Level2DataType asnLevel2) {
@@ -113,7 +122,7 @@ public class DynamicFrameCoderV1 {
 	}
 	
 	
-	public static byte[] encode(ILevel2Data level2Data) throws EncodingFormatException {
+	public static byte[] encodeLevel2Data(ILevel2Data level2Data) throws EncodingFormatException {
 		
        Level2DataType asn = populateAsn(level2Data);
 		
@@ -198,6 +207,14 @@ public class DynamicFrameCoderV1 {
 	}
 
 	
+	public static byte[] encodeLevel1(IDynamicFrame frame) throws EncodingFormatException {
+		
+		Level1DataType asnLevel1Data = populateAsn(frame.getLevel2Data().getLevel1Data());
+		
+		return UperEncoder.encode(asnLevel1Data);	
+		
+	}
+
 	
 
 

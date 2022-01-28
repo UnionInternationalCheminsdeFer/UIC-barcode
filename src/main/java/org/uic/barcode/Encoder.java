@@ -8,12 +8,16 @@ import java.security.PublicKey;
 import org.uic.barcode.dynamicContent.api.IUicDynamicContent;
 import org.uic.barcode.dynamicContent.fdc1.UicDynamicContentDataFDC1;
 import org.uic.barcode.dynamicFrame.Constants;
+import org.uic.barcode.dynamicFrame.api.DynamicFrameCoder;
 import org.uic.barcode.dynamicFrame.api.IData;
 import org.uic.barcode.dynamicFrame.api.IDynamicFrame;
+import org.uic.barcode.dynamicFrame.api.ILevel1Data;
 import org.uic.barcode.dynamicFrame.api.SimpleData;
 import org.uic.barcode.dynamicFrame.api.SimpleDynamicFrame;
 import org.uic.barcode.dynamicFrame.api.SimpleLevel1Data;
 import org.uic.barcode.dynamicFrame.api.SimpleLevel2Data;
+import org.uic.barcode.dynamicFrame.v1.DynamicFrameCoderV1;
+import org.uic.barcode.dynamicFrame.v2.DynamicFrameCoderV2;
 import org.uic.barcode.staticFrame.StaticFrame;
 import org.uic.barcode.staticFrame.UFLEXDataRecord;
 import org.uic.barcode.staticFrame.UHEADDataRecord;
@@ -114,6 +118,48 @@ public class Encoder {
 				
 			}
 		}
+	}
+	
+	/**
+	 * Instantiates a new encoder for a level 2 encoding.
+	 *
+	 * @param level1Data the level 1 data (binary as signed)
+	 * @param signatureLevel1 the signature of the level 1 data 
+	 * @param version the version of the bar code 
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws EncodingFormatException the encoding format exception
+	 */
+	public Encoder(byte[] level1DataBin, byte[] signatureLevel1, int version) throws IOException, EncodingFormatException {
+		
+			
+		dynamicFrame = new SimpleDynamicFrame();
+		dynamicFrame.setLevel2Data(new SimpleLevel2Data());
+			
+		if (version == 1) {
+			
+			dynamicFrame.setFormat(Constants.DYNAMIC_BARCODE_FORMAT_VERSION_1);
+			
+			ILevel1Data l1 = DynamicFrameCoderV1.decodeLevel1(level1DataBin);
+			
+			dynamicFrame.getLevel2Data().setLevel1Data(l1);
+			
+			dynamicFrame.getLevel2Data().setLevel1Signature(signatureLevel1);
+			
+		} else if (version == 2) {
+			
+			dynamicFrame.setFormat(Constants.DYNAMIC_BARCODE_FORMAT_VERSION_2);
+			
+			ILevel1Data l1 = DynamicFrameCoderV2.decodeLevel1(level1DataBin);
+			
+			dynamicFrame.getLevel2Data().setLevel1Data(l1);
+			
+			dynamicFrame.getLevel2Data().setLevel1Signature(signatureLevel1);
+			
+		} else {
+			throw new EncodingFormatException("Version of the dynamic header not supported");
+		}
+		
+				
 	}
 	
 	
@@ -265,7 +311,6 @@ public class Encoder {
 			dynamicFrame.getLevel2Data().getLevel1Data().setLevel1SigningAlg(signingAlg);
 			dynamicFrame.getLevel2Data().getLevel1Data().setKeyId(Long.parseLong(keyId));
 			dynamicFrame.signLevel1(key,prov);
-			//dynamicFrame.getLevel2Data().signLevel1(key, prov);
 		} else if (staticFrame != null) {
 			staticFrame.setSignatureKey(keyId);
 			staticFrame.setSecurityProvider(securityProvider);
@@ -321,7 +366,7 @@ public class Encoder {
 	 */
 	public byte[] encode() throws IOException, Exception {
 		if (dynamicFrame != null) {
-			return dynamicFrame.encode();
+			return DynamicFrameCoder.encode(dynamicFrame);
 		} else if (staticFrame != null) {
 			return staticFrame.encode();
 		}
@@ -329,7 +374,15 @@ public class Encoder {
 	}
 
 
-
+	public byte[] getEncodedLevel1Data() throws IOException, EncodingFormatException {
+		if (dynamicFrame != null) {
+			return DynamicFrameCoder.encodeLevel1(dynamicFrame);
+		} else if (staticFrame != null) {
+			return staticFrame.getDataForSignature();
+		} else {
+			throw new EncodingFormatException("Unknown Header");
+		}		
+	}
 
 	
 	

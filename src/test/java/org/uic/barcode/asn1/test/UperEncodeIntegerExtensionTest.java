@@ -2,8 +2,6 @@ package org.uic.barcode.asn1.test;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.logging.Level;
-
 import org.junit.Test;
 import org.uic.barcode.asn1.datatypes.Asn1BigInteger;
 import org.uic.barcode.asn1.datatypes.FieldOrder;

@@ -5,9 +5,7 @@ import static org.junit.Assert.assertEquals;
 import java.util.logging.Level;
 
 import org.junit.Test;
-import org.uic.barcode.asn1.datatypes.CharacterRestriction;
 import org.uic.barcode.asn1.datatypes.FieldOrder;
-import org.uic.barcode.asn1.datatypes.RestrictedString;
 import org.uic.barcode.asn1.datatypes.Sequence;
 import org.uic.barcode.asn1.datatypesimpl.SequenceOfStringIA5;
 import org.uic.barcode.asn1.uper.UperEncoder;

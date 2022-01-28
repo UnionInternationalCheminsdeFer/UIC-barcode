@@ -6,7 +6,6 @@ import java.util.List;
 import org.uic.barcode.ticket.api.spec.IExtension;
 import org.uic.barcode.ticket.api.spec.IGeoCoordinate;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Interface IUicDynamicContent.
  */

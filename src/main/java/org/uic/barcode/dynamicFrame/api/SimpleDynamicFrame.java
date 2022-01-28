@@ -12,7 +12,7 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Date;
 
-import org.uic.barcode.asn1.uper.AsnUtils;
+import org.uic.barcode.asn1.uper.UperEncoder;
 import org.uic.barcode.dynamicContent.api.DynamicContentCoder;
 import org.uic.barcode.dynamicContent.api.IUicDynamicContent;
 import org.uic.barcode.dynamicContent.fdc1.UicDynamicContentDataFDC1;
@@ -40,7 +40,7 @@ public class SimpleDynamicFrame implements IDynamicFrame {
 	}
 
 	/** The format. */
-	public String format = Constants.DYNAMIC_BARCODE_FORMAT_DEFAULT;
+	public String format = null;
 	
 	/** The level 2 signed data. */
 	/*level 2 data*/
@@ -115,136 +115,15 @@ public class SimpleDynamicFrame implements IDynamicFrame {
 	 * @throws EncodingFormatException 
 	 */
 	public byte[] encode() throws EncodingFormatException {
-			
-		if (Constants.DYNAMIC_BARCODE_FORMAT_VERSION_1.equals(format)) {
-			
-			return DynamicFrameCoderV1.encode(this);
-			
-		} else if (Constants.DYNAMIC_BARCODE_FORMAT_VERSION_2.equals(format)) {
-			
-			return DynamicFrameCoderV2.encode(this);
-			
-		}
 		
-		return null;
-	}
-	
-	private byte[] encode(ILevel1Data level1Data) throws EncodingFormatException {
-		
-		if (Constants.DYNAMIC_BARCODE_FORMAT_VERSION_1.equals(format)) {
+		return DynamicFrameCoder.encode(this);
 			
-			return DynamicFrameCoderV1.encode(level1Data);
-			
-		} else if (Constants.DYNAMIC_BARCODE_FORMAT_VERSION_2.equals(format)) {
-			
-			return DynamicFrameCoderV2.encode(level1Data);
-			
-		}
-		throw new EncodingFormatException("Dynamic Header Version not supported: " + format);
-	}
-	
-	private byte[] getEncoded(String path, byte[] data) throws EncodingFormatException {
-		
-		if (Constants.DYNAMIC_BARCODE_FORMAT_VERSION_1.equals(format)) {
-			
-			return DynamicFrameCoderV1.getEncoded(path, data);
-			
-		} else if (Constants.DYNAMIC_BARCODE_FORMAT_VERSION_2.equals(format)) {
-			
-			return DynamicFrameCoderV2.getEncoded(path, data);
-			
-		}
-		
-		throw new EncodingFormatException("Dynamic Header Version not supported: " + format);
-	}
-	
-	
-	private byte[] encode(ILevel2Data level2Data) throws EncodingFormatException {
-		
-		if (Constants.DYNAMIC_BARCODE_FORMAT_VERSION_1.equals(format)) {
-			
-			return DynamicFrameCoderV1.encode(level2Data);
-			
-		} else if (Constants.DYNAMIC_BARCODE_FORMAT_VERSION_2.equals(format)) {
-			
-			return DynamicFrameCoderV2.encode(level2Data);
-			
-		}
-		
-		throw new EncodingFormatException("Dynamic Header Version not supported: " + format);
-	}
-	
-	/**
-	 * Decode.
-	 *
-	 * Decode the header from an ASN.1 PER UNALIGNED encoded byte array
-	 *
-	 * @param bytes the bytes
-	 * @return the dynamic header
-	 * @throws EncodingFormatException 
-	 */
-	public void decode(byte[] bytes) throws EncodingFormatException {
-		
-		String format = getFormat(bytes);
-			
-		if (Constants.DYNAMIC_BARCODE_FORMAT_VERSION_1.equals(format)) {
-			
-			DynamicFrameCoderV1.decode(this,bytes);
-			return;
-			
-		} else if (Constants.DYNAMIC_BARCODE_FORMAT_VERSION_2.equals(format)) {
-		
-			DynamicFrameCoderV2.decode(this,bytes);
-			return;
-		}
-		
-		throw new EncodingFormatException("Dynamic Header Version not supported");
 
+		
 	}
 	
 
-
 	
-	/**
-	 * Checks if is static header.
-	 *
-	 * @param data the data
-	 * @return true, if is static header
-	 */
-	private static String getFormat(byte[] data) {
-		
-		if (data == null || data.length < 4) return null;
-		
-		byte[] startBits = new byte[4];
-		startBits[0] = data[0];
-		startBits[1] = data[1];
-		startBits[2] = data[2];
-		startBits[3] = data[3];
-
-		String start = AsnUtils.toBooleanString(startBits);
-		
-		/*
-		 * bitshift: 
-		 * 
-		 * version 1:
-		 *    optional Level2Data 1 bit
-		 *    length of format:   8 bit
-		 * 
-		 * version 2:
-		 *    extensionIndicator  1 bit
-		 *    optional Level2Data 1 bit
-		 *    length of format:   8 bit
-		 */
-		
-		if (Constants.DYNAMIC_BARCODE_FORMAT_VERSION_1_BIN.equals(start.substring(9, 23))) {
-			return Constants.DYNAMIC_BARCODE_FORMAT_VERSION_1;
-		}
-		
-		if (Constants.DYNAMIC_BARCODE_FORMAT_VERSION_2_BIN.equals(start.substring(10, 24))) {
-			return Constants.DYNAMIC_BARCODE_FORMAT_VERSION_2;
-		}
-		return null;
-	}
 	
 	/**
 	 * Verify the level 2 signature
@@ -334,13 +213,7 @@ public class SimpleDynamicFrame implements IDynamicFrame {
 		}
 		
 		try {
-			//TODO
-			//byte[] signedData = encode(level2Data);
-			//String s1 = AsnUtils.toBooleanString(signedData);
-			
-			byte[] signedData2 = getEncoded("Level2Data", data);
-			//String s2 = AsnUtils.toBooleanString(signedData);
-			
+			byte[] signedData2 = getLevel2DataBin();
 			sig.update(signedData2);
 		} catch (SignatureException e) {
 			return Constants.LEVEL2_VALIDATION_SIG_ALG_NOT_IMPLEMENTED;
@@ -416,7 +289,7 @@ public class SimpleDynamicFrame implements IDynamicFrame {
 		
 		try {
 			
-			byte[]  encodedData = getEncoded("Level1Data", data);
+			byte[]  encodedData = getLevel1DataBin();			
 			
 			sig.update(encodedData);	
 			
@@ -489,7 +362,7 @@ public class SimpleDynamicFrame implements IDynamicFrame {
 			sig = Signature.getInstance(algo);
 		}
 		sig.initSign(key);
-		byte[] signedData = encode(level2Data);
+		byte[] signedData = DynamicFrameCoder.encodeLevel2Data(this);
 		sig.update(signedData);
 		level2Signature = sig.sign();
 		
@@ -584,9 +457,49 @@ public class SimpleDynamicFrame implements IDynamicFrame {
 		}
 		sig.initSign(key);
 				
-		byte[] data = encode(level1Data);
+		byte[] data = DynamicFrameCoder.encodeLevel1(this);
 		sig.update(data);
 		level2Data.setLevel1Signature(sig.sign());	
 	}
+
+	@Override
+	public byte[] getLevel1Signature() {
+		return getLevel2Data().getLevel1Signature();
+	}
+
+	@Override
+	public byte[] getLevel1DataBin() throws EncodingFormatException {
+		
+		if (Constants.DYNAMIC_BARCODE_FORMAT_VERSION_1.equals(format)) {
+			
+			return DynamicFrameCoderV1.encode(getLevel2Data().getLevel1Data());
+			
+		} else if (Constants.DYNAMIC_BARCODE_FORMAT_VERSION_2.equals(format)) {
+			
+			return DynamicFrameCoderV2.encode(getLevel2Data().getLevel1Data());
+			
+		}
+		
+		throw new EncodingFormatException("Dynamic Header Version not supported");
+
+	}
+	
+	
+	public byte[] getLevel2DataBin() throws EncodingFormatException {
+		
+		if (Constants.DYNAMIC_BARCODE_FORMAT_VERSION_1.equals(format)) {
+			
+			return DynamicFrameCoderV1.encodeLevel2Data(getLevel2Data());
+			
+		} else if (Constants.DYNAMIC_BARCODE_FORMAT_VERSION_2.equals(format)) {
+			
+			return DynamicFrameCoderV2.encodeLevel2Data(getLevel2Data());
+			
+		}
+		
+		throw new EncodingFormatException("Dynamic Header Version not supported");
+
+	}
+
 	
 }

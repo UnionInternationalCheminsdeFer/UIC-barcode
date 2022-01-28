@@ -218,7 +218,7 @@ public class DynamicFrameDynamicContentTest {
          
         assert(level2check == Constants.LEVEL2_VALIDATION_OK);
         
-        IUicDynamicContent dynamicData = dec.getDynamicHeader().getDynamicContent();
+        IUicDynamicContent dynamicData = dec.getDynamicFrame().getDynamicContent();
         
         assert(dynamicData.getChallengeString().equals("CHALLENGE"));
         

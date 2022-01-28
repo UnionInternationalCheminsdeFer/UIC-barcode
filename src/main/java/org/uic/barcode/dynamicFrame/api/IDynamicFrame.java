@@ -8,9 +8,9 @@ import org.uic.barcode.dynamicContent.fdc1.UicDynamicContentDataFDC1;
 import org.uic.barcode.ticket.EncodingFormatException;
 
 
+
 /**
- * The DynamicHeader for bar codes 
- * 
+ * The DynamicHeader for bar codes .
  */
 public interface IDynamicFrame{
 	
@@ -41,7 +41,7 @@ public interface IDynamicFrame{
 	/**
 	 * Sets the level 2 signed data.
 	 *
-	 * @param level2SignedData the new level 2 signed data
+	 * @param level2Data the new level 2 data
 	 */
 	public void setLevel2Data(ILevel2Data level2Data);
 
@@ -61,29 +61,6 @@ public interface IDynamicFrame{
 	 */
 	public void setLevel2Signature(byte[] level2Signature);
 	
-
-	/**
-	 * Encode.
-	 * 
-	 * Encode the header as ASN.1 PER UNALIGNED byte array
-	 *
-	 * @return the byte[]
-	 * @throws EncodingFormatException 
-	 */
-	public byte[] encode() throws EncodingFormatException;
-	
-	/**
-	 * Decode.
-	 *
-	 * Decode the header from an ASN.1 PER UNALIGNED encoded byte array
-	 *
-	 * @param bytes the bytes
-	 * @return the dynamic header
-	 * @throws EncodingFormatException 
-	 */
-	public void decode(byte[] bytes) throws EncodingFormatException;
-	
-
 	
 	/**
 	 * Verify the level 2 signature
@@ -92,7 +69,7 @@ public interface IDynamicFrame{
 	 *
 	 * @param data the data content
 	 * @return the return error code
-	 * @throws EncodingFormatException 
+	 * @throws EncodingFormatException the encoding format exception
 	 */	
 	public int validateLevel2(byte[] data) throws EncodingFormatException;
 	
@@ -102,9 +79,9 @@ public interface IDynamicFrame{
 	 * Note:  an appropriate security provider (e.g. BC) must be registered before 
 	 *
 	 * @param prov the registered security provider
-     * @param data the data content
+	 * @param data the data content
 	 * @return the return error code
-	 * @throws EncodingFormatException 
+	 * @throws EncodingFormatException the encoding format exception
 	 */	
 	public int validateLevel2(Provider prov, byte[] data) throws EncodingFormatException;
 
@@ -116,7 +93,7 @@ public interface IDynamicFrame{
 	 * @param key the key
 	 * @param data the data content
 	 * @return the return error code
-	 * @throws EncodingFormatException 
+	 * @throws EncodingFormatException the encoding format exception
 	 */
 	public int validateLevel1(PublicKey key, byte[] data) throws EncodingFormatException;
 	
@@ -126,10 +103,10 @@ public interface IDynamicFrame{
 	 * Note:  an appropriate security provider (e.g. BC) must be registered before 
 	 *
 	 * @param key the key
-	 * @param prov the registered security provider 
-	 * @param the data content
+	 * @param prov the registered security provider
+	 * @param data the data
 	 * @return the return error code
-	 * @throws EncodingFormatException 
+	 * @throws EncodingFormatException the encoding format exception
 	 */
 	public int validateLevel1(PublicKey key, Provider prov,  byte[] data) throws EncodingFormatException;
  
@@ -183,9 +160,8 @@ public interface IDynamicFrame{
 	 * Note:  an appropriate security provider (e.g. BC) must be registered before 
 	 *
 	 * @param key the key
-	 * @return 
 	 * @return the byte[]
-	 * @throws Exception 
+	 * @throws Exception the exception
 	 */
 	public void signLevel1(PrivateKey key) throws Exception;
 	
@@ -195,13 +171,36 @@ public interface IDynamicFrame{
 	 * Note:  an appropriate security provider (e.g. BC) must be registered before 
 	 *
 	 * @param key the key
-	 * @param security provider - security provider that must be sued to create the signature
-	 * @return 
+	 * @param prov the prov
 	 * @return the byte[]
-	 * @throws Exception 
+	 * @throws Exception the exception
 	 */
 	public void signLevel1(PrivateKey key, Provider prov) throws Exception;
+
+
+	/**
+	 * Gets the signature of the level 1 data.
+	 *
+	 * @return the level 1 signature
+	 */
+	public byte[] getLevel1Signature();
+
+
+	/**
+	 * Gets the level 1 data in binary as they are signed by the level 1 signature.
+	 *
+	 * @return the level 1 data binary
+	 * @throws EncodingFormatException the encoding format exception
+	 */
+	public byte[] getLevel1DataBin() throws EncodingFormatException;
 	
+	/**
+	 * Gets the level 2 data in binary as they are signed by the level 1 signature.
+	 *
+	 * @return the level 2 data binary
+	 * @throws EncodingFormatException the encoding format exception
+	 */
+	public byte[] getLevel2DataBin() throws EncodingFormatException;
 	
 	
 }

@@ -34,11 +34,20 @@ public class DynamicFrameCoderV2 {
 		}
 		
 	}
+	
+	public static ILevel1Data decodeLevel1(byte[] bytes) {
+		
+		Level1DataType asnData = UperEncoder.decode(bytes,Level1DataType.class);	
+			
+		return populateApi(asnData);	
+
+	}
+
 
 	private static void populateApi(ILevel2Data level2, Level2DataType asnLevel2) {
 		
 		if (asnLevel2 == null) return;
-		
+				
 		level2.setLevel1Signature(asnLevel2.getLevel1SignatureBytes());
 		
 		if (asnLevel2.getLevel1Data() != null) {
@@ -89,6 +98,8 @@ public class DynamicFrameCoderV2 {
 			level1.setEndOfBarcodeValidity(asnLevel1.getEndOfValidityDate());
 		}
 		
+		level1.setValidityDuration(asnLevel1.getValidityDuration());
+		
 		return level1;
 	}
 	
@@ -109,7 +120,7 @@ public class DynamicFrameCoderV2 {
 		return UperEncoder.encode(asn);
 	}
 	
-	public static byte[] encode(ILevel2Data level2SignedData) throws EncodingFormatException {
+	public static byte[] encodeLevel2Data(ILevel2Data level2SignedData) throws EncodingFormatException {
 		
        Level2DataType asn = populateAsn(level2SignedData);
 		
@@ -194,6 +205,8 @@ public class DynamicFrameCoderV2 {
 		
 		asnLevel1.setEndOfValidityDate(level1.getEndOfBarcodeValidity());
 		
+		asnLevel1.setValidityDuration(level1.getValidityDuration());
+		
 		
 		return asnLevel1;
 	}
@@ -207,6 +220,14 @@ public class DynamicFrameCoderV2 {
 		}
 	
 		return null;
+	}
+
+	public static byte[] encodeLevel1(IDynamicFrame frame) throws EncodingFormatException {
+		
+		Level1DataType asnLevel1Data = populateAsn(frame.getLevel2Data().getLevel1Data());
+		
+		return UperEncoder.encode(asnLevel1Data);	
+		
 	}
 	
 

@@ -1,7 +1,6 @@
 package org.uic.barcode.dynamicFrame.v2;
 
 import org.uic.barcode.asn1.datatypes.CharacterRestriction;
-import org.uic.barcode.asn1.datatypes.HasExtensionMarker;
 import org.uic.barcode.asn1.datatypes.RestrictedString;
 import org.uic.barcode.asn1.datatypes.Sequence;
 import org.uic.barcode.asn1.datatypesimpl.OctetString;
@@ -11,7 +10,6 @@ import org.uic.barcode.asn1.uper.UperEncoder;
  * The Class DataType.
  */
 @Sequence
-@HasExtensionMarker
 public class DataType {
 
 

@@ -6,7 +6,6 @@ import java.security.Signature;
 
 import org.uic.barcode.asn1.datatypes.Asn1Optional;
 import org.uic.barcode.asn1.datatypes.FieldOrder;
-import org.uic.barcode.asn1.datatypes.HasExtensionMarker;
 import org.uic.barcode.asn1.datatypes.Sequence;
 import org.uic.barcode.asn1.datatypesimpl.OctetString;
 import org.uic.barcode.asn1.uper.UperEncoder;
@@ -16,7 +15,6 @@ import org.uic.barcode.utils.AlgorithmNameResolver;
  * The Class DataType.
  */
 @Sequence
-@HasExtensionMarker
 public class Level2DataType {
 
 	@FieldOrder(order = 0)

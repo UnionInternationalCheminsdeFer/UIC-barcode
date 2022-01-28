@@ -143,9 +143,9 @@ public class DynamicFrameV2FcbVersion3Test {
 		
         assert(signatureCheck == Constants.LEVEL1_VALIDATION_OK);
         
-        assert(dec.getDynamicHeader().getFormat().equals("U2"));
+        assert(dec.getDynamicFrame().getFormat().equals("U2"));
         
-        for (IData data : dec.getDynamicHeader().getLevel2Data().getLevel1Data().getData()) {
+        for (IData data : dec.getDynamicFrame().getLevel2Data().getLevel1Data().getData()) {
         	assert(data.getFormat().equals("FCB3") );
         }
                

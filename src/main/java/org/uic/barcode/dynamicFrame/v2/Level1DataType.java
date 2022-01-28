@@ -7,7 +7,6 @@ import java.util.TimeZone;
 import org.uic.barcode.asn1.datatypes.Asn1Optional;
 import org.uic.barcode.asn1.datatypes.CharacterRestriction;
 import org.uic.barcode.asn1.datatypes.FieldOrder;
-import org.uic.barcode.asn1.datatypes.HasExtensionMarker;
 import org.uic.barcode.asn1.datatypes.IntRange;
 import org.uic.barcode.asn1.datatypes.RestrictedString;
 import org.uic.barcode.asn1.datatypes.Sequence;
@@ -16,12 +15,10 @@ import org.uic.barcode.asn1.uper.UperEncoder;
 import org.uic.barcode.ticket.EncodingFormatException;
 import org.uic.barcode.ticket.api.utils.UicEncoderUtils;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class SignedDataType.
  */
 @Sequence
-@HasExtensionMarker
 public class Level1DataType {
 	
 	/** 
@@ -100,18 +97,22 @@ public class Level1DataType {
 	/** The End of validity year. */
 	@FieldOrder(order = 9)
 	@IntRange(minValue=2016,maxValue=2269)
-	@Asn1Optional public Long EndOfValidityYear;
+	@Asn1Optional public Long endOfValidityYear;
 
 	/** The End of validity day. */
 	@FieldOrder(order = 10)
 	@IntRange(minValue=1,maxValue=366)
-	@Asn1Optional public Long EndOfValidityDay;
+	@Asn1Optional public Long endOfValidityDay;
 
 	/** The End of validity time. */
 	@FieldOrder(order = 11)
 	@IntRange(minValue=0,maxValue=1439)
-	@Asn1Optional public Long EndOfValidityTime;
+	@Asn1Optional public Long endOfValidityTime;
 	
+	/** The validity duration in seconds. */
+	@FieldOrder(order = 12)
+	@IntRange(minValue=1,maxValue=3600)
+	@Asn1Optional public Long validityDuration;
 	
 	
 	
@@ -322,11 +323,11 @@ public class Level1DataType {
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(date);
 
-		this.EndOfValidityYear = new Long( cal.get(Calendar.YEAR));
-		this.EndOfValidityDay = new Long (cal.get(Calendar.DAY_OF_YEAR));
+		this.endOfValidityYear = new Long( cal.get(Calendar.YEAR));
+		this.endOfValidityDay = new Long (cal.get(Calendar.DAY_OF_YEAR));
 		int time =  cal.get(Calendar.HOUR_OF_DAY) * 60 + cal.get(Calendar.MINUTE);
 		if (time >= 0) {
-			this.EndOfValidityTime = new Long (time );
+			this.endOfValidityTime = new Long (time );
 		}
 		TimeZone.setDefault(local);
 		
@@ -339,7 +340,7 @@ public class Level1DataType {
 	 */
 	public Date getEndOfValidityDate() {
 		
-		if (this.EndOfValidityYear == null || this.EndOfValidityDay == null) return null;
+		if (this.endOfValidityYear == null || this.endOfValidityDay == null) return null;
 		
 		TimeZone local = TimeZone.getDefault();
 		TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
@@ -347,13 +348,13 @@ public class Level1DataType {
 		Calendar cal = Calendar.getInstance();
 		cal.clear();
 		cal.setTimeZone(TimeZone.getTimeZone("UTC"));
-		cal.set(Calendar.YEAR, this.EndOfValidityYear.intValue());
-		cal.set(Calendar.DAY_OF_YEAR, this.EndOfValidityDay.intValue());
+		cal.set(Calendar.YEAR, this.endOfValidityYear.intValue());
+		cal.set(Calendar.DAY_OF_YEAR, this.endOfValidityDay.intValue());
 		
-		if (this.EndOfValidityTime != null) {
+		if (this.endOfValidityTime != null) {
 		
-			int hours = this.EndOfValidityTime.intValue() / 60;
-			int minutes = this.EndOfValidityTime.intValue() % 60;
+			int hours = this.endOfValidityTime.intValue() / 60;
+			int minutes = this.endOfValidityTime.intValue() % 60;
 			cal.set(Calendar.HOUR_OF_DAY, hours);
 			cal.set(Calendar.MINUTE,minutes);
 
@@ -364,6 +365,16 @@ public class Level1DataType {
 		TimeZone.setDefault(local);
 		
 		return d;
+	}
+	
+	
+
+	public Long getValidityDuration() {
+		return validityDuration;
+	}
+
+	public void setValidityDuration(Long validityDuration) {
+		this.validityDuration = validityDuration;
 	}
 
 	/**

@@ -87,6 +87,7 @@ public class DynamicFrameV2ValidityDateTest {
 		TimeZone.setDefault(local);
 
 		enc.getDynamicFrame().getLevel2Data().getLevel1Data().setEndOfBarcodeValidity(endDate);
+		enc.getDynamicFrame().getLevel2Data().getLevel1Data().setValidityDuration(100L);
 		
 		try {
 			enc.signLevel1("1080", keyPair.getPrivate(), signatureAlgorithmOID, "1");
@@ -132,6 +133,7 @@ public class DynamicFrameV2ValidityDateTest {
 		TimeZone.setDefault(local);
 		
 		enc.getDynamicFrame().getLevel2Data().getLevel1Data().setEndOfBarcodeValidity(endDate);
+		enc.getDynamicFrame().getLevel2Data().getLevel1Data().setValidityDuration(100L);
 		
 		try {
 			enc.signLevel1("1080", keyPair.getPrivate(), signatureAlgorithmOID, "1");
@@ -171,13 +173,13 @@ public class DynamicFrameV2ValidityDateTest {
 		
         assert(signatureCheck == Constants.LEVEL1_VALIDATION_OK);
         
-        assert(dec.getDynamicHeader().getFormat().equals("U2"));
+        assert(dec.getDynamicFrame().getFormat().equals("U2"));
         
-        for (IData data : dec.getDynamicHeader().getLevel2Data().getLevel1Data().getData()) {
+        for (IData data : dec.getDynamicFrame().getLevel2Data().getLevel1Data().getData()) {
         	assert(data.getFormat().equals("FCB3") );
         }
                
-        Date endDate2 = dec.getDynamicHeader().getLevel2Data().getLevel1Data().getEndOfBarcodeValidity();
+        Date endDate2 = dec.getDynamicFrame().getLevel2Data().getLevel1Data().getEndOfBarcodeValidity();
         
 		
 		TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
@@ -185,6 +187,8 @@ public class DynamicFrameV2ValidityDateTest {
         TimeZone.setDefault(local);
         
         assert("2021.03.04-12:30".equals(date2));
+        
+        assert(100L == dec.getDynamicFrame().getLevel2Data().getLevel1Data().getValidityDuration());
         
 	}	
 	

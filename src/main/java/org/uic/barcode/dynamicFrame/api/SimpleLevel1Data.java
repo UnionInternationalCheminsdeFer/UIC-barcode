@@ -63,6 +63,7 @@ public class SimpleLevel1Data implements ILevel1Data {
 	public Date endOfBarcodeValidity = null;
 	
 	
+	public Long validityDuration = null;
 	
 	
 	
@@ -250,4 +251,14 @@ public class SimpleLevel1Data implements ILevel1Data {
 		dataList.add(data);
 		
 	}
+
+	public Long getValidityDuration() {
+		return validityDuration;
+	}
+
+	public void setValidityDuration(Long validityDuration) {
+		this.validityDuration = validityDuration;
+	}
+	
+	
 }
