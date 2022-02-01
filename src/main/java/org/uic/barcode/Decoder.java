@@ -79,9 +79,35 @@ public class Decoder {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 * @throws EncodingFormatException the encoding format exception
 	 */
+	public int validateLevel1(PublicKey key) throws InvalidKeyException, NoSuchAlgorithmException, SignatureException, IllegalArgumentException, UnsupportedOperationException, IOException, EncodingFormatException {
+		if (dynamicFrame != null) {
+			return dynamicFrame.validateLevel1(key) ;
+		} else {
+			if (staticFrame != null) {
+				return Constants.LEVEL1_VALIDATION_SIG_ALG_NOT_IMPLEMENTED;
+			} else {
+				return Constants.LEVEL1_VALIDATION_FRAUD;
+			}
+		}
+	}
+	
+	/**
+	 * Validate level 1.
+	 *
+	 * @param key the public key
+	 * @param signingAlg the signing algorithm OID
+	 * @return the return code indicating errors
+	 * @throws InvalidKeyException the invalid key exception
+	 * @throws NoSuchAlgorithmException the no such algorithm exception
+	 * @throws SignatureException the signature exception
+	 * @throws IllegalArgumentException the illegal argument exception
+	 * @throws UnsupportedOperationException the unsupported operation exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws EncodingFormatException the encoding format exception
+	 */
 	public int validateLevel1(PublicKey key, String signingAlg) throws InvalidKeyException, NoSuchAlgorithmException, SignatureException, IllegalArgumentException, UnsupportedOperationException, IOException, EncodingFormatException {
 		if (dynamicFrame != null) {
-			return dynamicFrame.validateLevel1(key, data) ;
+			return dynamicFrame.validateLevel1(key, signingAlg) ;
 		} else {
 			if (staticFrame.verifyByAlgorithmOid(key,signingAlg)) {
 				return Constants.LEVEL1_VALIDATION_OK;
@@ -108,7 +134,7 @@ public class Decoder {
 	 */
 	public int validateLevel1(PublicKey key, String signingAlg, Provider provider) throws InvalidKeyException, NoSuchAlgorithmException, SignatureException, IllegalArgumentException, UnsupportedOperationException, IOException, EncodingFormatException {
 		if (!isStaticHeader(data)) {
-			return dynamicFrame.validateLevel1(key, provider, data) ;
+			return dynamicFrame.validateLevel1(key, provider) ;
 		} else {
 			if (staticFrame.verifyByAlgorithmOid(key,signingAlg, provider)) {
 				return Constants.LEVEL1_VALIDATION_OK;
@@ -126,7 +152,7 @@ public class Decoder {
 	 */
 	public int validateLevel2() throws EncodingFormatException {
 		if (!isStaticHeader(data)) {
-			return dynamicFrame.validateLevel2(null, data) ;
+			return dynamicFrame.validateLevel2() ;
 		} else {
 			return Constants.LEVEL2_VALIDATION_NO_SIGNATURE;
 		}
@@ -139,7 +165,7 @@ public class Decoder {
 	 */
 	public int validateLevel2(Provider prov) throws EncodingFormatException {
 		if (!isStaticHeader(data)) {
-			return dynamicFrame.validateLevel2(prov,data) ;
+			return dynamicFrame.validateLevel2(prov) ;
 		} else {
 			return Constants.LEVEL2_VALIDATION_NO_SIGNATURE;
 		}
@@ -163,7 +189,6 @@ public class Decoder {
 			ILevel2Data level2 = dynamicFrame.getLevel2Data();
 			
 			ILevel1Data level1 = level2.getLevel1Data();
-			
 			
 			for (IData level1Content : level1.getData()) {
 				

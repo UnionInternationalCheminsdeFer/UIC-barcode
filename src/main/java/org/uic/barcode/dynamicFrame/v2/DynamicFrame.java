@@ -1,16 +1,8 @@
 package org.uic.barcode.dynamicFrame.v2;
 
-import java.security.InvalidKeyException;
-import java.security.KeyFactory;
-import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.Provider;
-import java.security.PublicKey;
 import java.security.Signature;
-import java.security.SignatureException;
-import java.security.spec.InvalidKeySpecException;
-import java.security.spec.X509EncodedKeySpec;
-
 import org.uic.barcode.asn1.datatypes.Asn1Optional;
 import org.uic.barcode.asn1.datatypes.CharacterRestriction;
 import org.uic.barcode.asn1.datatypes.FieldOrder;
@@ -21,7 +13,6 @@ import org.uic.barcode.asn1.uper.UperEncoder;
 import org.uic.barcode.dynamicContent.api.DynamicContentCoder;
 import org.uic.barcode.dynamicContent.api.IUicDynamicContent;
 import org.uic.barcode.dynamicContent.fdc1.UicDynamicContentDataFDC1;
-import org.uic.barcode.dynamicFrame.Constants;
 import org.uic.barcode.ticket.EncodingFormatException;
 import org.uic.barcode.utils.AlgorithmNameResolver;
 
@@ -131,199 +122,6 @@ public class DynamicFrame extends Object{
 		return UperEncoder.decode(bytes, DynamicFrame.class);	
 	}
 	
-	/**
-	 * Verify the level 2 signature
-	 * 
-	 * Note:  an appropriate security provider (e.g. BC) must be registered before 
-	 *
-	 * @return the int
-	 */	
-	public int validateLevel2() {
-
-		return validateLevel2(null);
-	
-	}
-	
-	/**
-	 * Verify the level 2 signature
-	 * 
-	 * Note:  an appropriate security provider (e.g. BC) must be registered before 
-	 *
-	 * @param prov the prov
-	 * @return the int
-	 */	
-	public int validateLevel2(Provider prov) {
-		
-		
-		String level2KeyAlg = this.getLevel2SignedData().getLevel1Data().level2KeyAlg;
-
-	 
-		if (level2KeyAlg == null || level2KeyAlg.length() == 0) {
-			return Constants.LEVEL2_VALIDATION_NO_KEY;
-		}
-		
-		if (this.level2Signature.toByteArray() == null || this.level2Signature.toByteArray().length == 0) {
-			return Constants.LEVEL2_VALIDATION_NO_SIGNATURE;
-		}
-					
-		String keyAlgName = null;
-		try {
-			keyAlgName = AlgorithmNameResolver.getName(AlgorithmNameResolver.TYPE_KEY_GENERATOR_ALG, level2KeyAlg);
-		} catch (Exception e1) {
-			return Constants.LEVEL2_VALIDATION_KEY_ALG_NOT_IMPLEMENTED;	
-		}
-		if (keyAlgName == null || keyAlgName.length() == 0) {
-			return Constants.LEVEL2_VALIDATION_KEY_ALG_NOT_IMPLEMENTED;	
-		}
-		
-		PublicKey key = null;
-		try {
-			byte[] keyBytes = this.getLevel2SignedData().getLevel1Data().level2publicKey.toByteArray();
-			X509EncodedKeySpec keySpec = new X509EncodedKeySpec(keyBytes);
-			key = KeyFactory.getInstance(keyAlgName).generatePublic(keySpec);
-		} catch (InvalidKeySpecException e1) {
-			return Constants.LEVEL2_VALIDATION_KEY_ALG_NOT_IMPLEMENTED;	
-		} catch (NoSuchAlgorithmException e1) {
-			return Constants.LEVEL2_VALIDATION_KEY_ALG_NOT_IMPLEMENTED;	
-		}
-		
-		//find the algorithm name for the signature OID
-		String level2SigAlg = this.getLevel2SignedData().getLevel1Data().level2SigningAlg;
-
-		String sigAlgName = null;
-		try {
-			sigAlgName = AlgorithmNameResolver.getName(AlgorithmNameResolver.TYPE_SIGNATURE_ALG,level2SigAlg);
-		} catch (Exception e1) {
-			return Constants.LEVEL2_VALIDATION_SIG_ALG_NOT_IMPLEMENTED;
-		}
-		if (sigAlgName == null) {
-			return Constants.LEVEL2_VALIDATION_SIG_ALG_NOT_IMPLEMENTED;
-		}
-		
-		Signature sig;
-		try {
-			if (prov == null) {
-				sig = Signature.getInstance(sigAlgName);
-			} else {
-				sig = Signature.getInstance(sigAlgName, prov);
-			}
-		} catch (NoSuchAlgorithmException e) {
-			return Constants.LEVEL2_VALIDATION_SIG_ALG_NOT_IMPLEMENTED;
-		}
-		try {
-			sig.initVerify(key);
-		} catch (InvalidKeyException e) {
-			return Constants.LEVEL2_VALIDATION_SIG_ALG_NOT_IMPLEMENTED;
-		}
-		
-		try {
-			byte[] data = UperEncoder.encode(level2SignedData);
-			sig.update(data);
-		} catch (SignatureException e) {
-			return Constants.LEVEL2_VALIDATION_SIG_ALG_NOT_IMPLEMENTED;
-		} catch (IllegalArgumentException e) {
-			return Constants.LEVEL2_VALIDATION_ENCODING_ERROR;
-		} catch (UnsupportedOperationException e) {
-			return Constants.LEVEL2_VALIDATION_ENCODING_ERROR;
-		}
-		
-		byte[] signature = level2Signature.toByteArray();
-		try {
-			if (sig.verify(signature)){
-				return Constants.LEVEL2_VALIDATION_OK;
-			} else {
-				return Constants.LEVEL2_VALIDATION_FRAUD;
-			}
-		} catch (SignatureException e) {
-			return Constants.LEVEL2_VALIDATION_SIG_ALG_NOT_IMPLEMENTED;
-		}
-  	}
-	
-	/**
-	 * Verify the level 1 signature
-	 * 
-	 * Note:  an appropriate security provider (e.g. BC) must be registered before 
-	 *
-	 * @param key the key
-	 * @param prov the prov
-	 * @return the int
-	 */
-	public int validateLevel1(PublicKey key, Provider prov) {
-		
-		if (this.level2SignedData == null) {
-			return Constants.LEVEL1_VALIDATION_NO_SIGNATURE;
-		}
-		
-	
-		if (this.level2SignedData.level1Signature == null || this.level2SignedData.level1Signature.toByteArray().length == 0) {
-			return Constants.LEVEL1_VALIDATION_NO_SIGNATURE;
-		}
-		
-		byte[] signature = this.getLevel2SignedData().level1Signature.toByteArray();
-				
-		//find the algorithm name for the signature OID
-		String algo = null;
-		try {
-			algo = AlgorithmNameResolver.getSignatureAlgorithmName(getLevel2SignedData().getLevel1Data().level1SigningAlg);
-		} catch (Exception e1) {
-			return Constants.LEVEL1_VALIDATION_SIG_ALG_NOT_IMPLEMENTED;
-		}	
-		if (algo == null) {
-			return Constants.LEVEL1_VALIDATION_SIG_ALG_NOT_IMPLEMENTED;
-		}
-		
-		Signature sig;
-		try {
-			if (prov != null) {
-				sig = Signature.getInstance(algo, prov);
-			} else {
-				sig = Signature.getInstance(algo);
-
-			}
-		} catch (NoSuchAlgorithmException e) {
-			return Constants.LEVEL1_VALIDATION_SIG_ALG_NOT_IMPLEMENTED;
-		}
-		try {
-			sig.initVerify(key);
-		} catch (InvalidKeyException e) {
-			return Constants.LEVEL1_VALIDATION_SIG_ALG_NOT_IMPLEMENTED;
-		}
-		
-		try {
-			sig.update(this.level2SignedData.level1Data.encode());
-		} catch (SignatureException e) {
-			return Constants.LEVEL1_VALIDATION_SIG_ALG_NOT_IMPLEMENTED;
-		} catch (IllegalArgumentException e) {
-			return Constants.LEVEL1_VALIDATION_ENCODING_ERROR;
-		} catch (UnsupportedOperationException e) {
-			return Constants.LEVEL1_VALIDATION_ENCODING_ERROR;
-		}
-		
-
-		try {
-			if (sig.verify(signature)){
-				return Constants.LEVEL2_VALIDATION_OK;
-			} else {
-				return Constants.LEVEL2_VALIDATION_FRAUD;
-			}
-		} catch (SignatureException e) {
-			return Constants.LEVEL2_VALIDATION_SIG_ALG_NOT_IMPLEMENTED;
-		}
-  	}
-	
-	/**
-	 * Verify the level 1 signature
-	 * 
-	 * Note:  an appropriate security provider (e.g. BC) must be registered before 
-	 *
-	 * @param key the key
-	 * @return the int
-	 */
-	public int validateLevel1(PublicKey key) {
-		
-		return validateLevel1(key, null);
-
-  	}
 	
 	/**
 	 * Sign level 2 data without a specific security provider.

@@ -12,7 +12,6 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Date;
 
-import org.uic.barcode.asn1.uper.UperEncoder;
 import org.uic.barcode.dynamicContent.api.DynamicContentCoder;
 import org.uic.barcode.dynamicContent.api.IUicDynamicContent;
 import org.uic.barcode.dynamicContent.fdc1.UicDynamicContentDataFDC1;
@@ -57,6 +56,7 @@ public class SimpleDynamicFrame implements IDynamicFrame {
 	 *
 	 * @return the format
 	 */
+	@Override
 	public String getFormat() {
 		return format;
 	}
@@ -66,6 +66,7 @@ public class SimpleDynamicFrame implements IDynamicFrame {
 	 *
 	 * @param format the new format
 	 */
+	@Override
 	public void setFormat(String format) {
 		this.format = format;
 	}
@@ -75,6 +76,7 @@ public class SimpleDynamicFrame implements IDynamicFrame {
 	 *
 	 * @return the level 2 signed data
 	 */
+	@Override
 	public ILevel2Data getLevel2Data() {
 		return level2Data;
 	}
@@ -84,6 +86,7 @@ public class SimpleDynamicFrame implements IDynamicFrame {
 	 *
 	 * @param level2SignedData the new level 2 signed data
 	 */
+	@Override
 	public void setLevel2Data(ILevel2Data level2SignedData) {
 		this.level2Data = level2SignedData;
 	}
@@ -93,6 +96,7 @@ public class SimpleDynamicFrame implements IDynamicFrame {
 	 *
 	 * @return the level 2 signature
 	 */
+	@Override
 	public byte[] getLevel2Signature() {
 		return level2Signature;
 	}
@@ -102,28 +106,12 @@ public class SimpleDynamicFrame implements IDynamicFrame {
 	 *
 	 * @param level2Signature the new level 2 signature
 	 */
+	@Override
 	public void setLevel2Signature(byte[] level2Signature) {
 		this.level2Signature = level2Signature;
 	}
 
-	/**
-	 * Encode.
-	 * 
-	 * Encode the header as ASN.1 PER UNALIGNED byte array
-	 *
-	 * @return the byte[]
-	 * @throws EncodingFormatException 
-	 */
-	public byte[] encode() throws EncodingFormatException {
-		
-		return DynamicFrameCoder.encode(this);
-			
 
-		
-	}
-	
-
-	
 	
 	/**
 	 * Verify the level 2 signature
@@ -133,9 +121,9 @@ public class SimpleDynamicFrame implements IDynamicFrame {
 	 * @return the int
 	 * @throws EncodingFormatException 
 	 */	
-	public int validateLevel2(byte[] data) throws EncodingFormatException {
-
-		return validateLevel2(null, data);
+	@Override
+	public int validateLevel2() throws EncodingFormatException {
+		return validateLevel2(null);
 	
 	}
 	
@@ -148,10 +136,17 @@ public class SimpleDynamicFrame implements IDynamicFrame {
 	 * @return the return error code
 	 * @throws EncodingFormatException 
 	 */	
-	public int validateLevel2(Provider prov, byte[] data) throws EncodingFormatException {
+	@Override
+	public int validateLevel2(Provider prov) throws EncodingFormatException {
 		
+		if (getLevel2Data() == null
+				|| getLevel2Data().getLevel1Data() == null 
+				|| getLevel2Data().getLevel1Data().getLevel2KeyAlg() == null
+				|| getLevel2Data().getLevel1Data().getLevel2KeyAlg().length() == 0) {
+			return Constants.LEVEL2_VALIDATION_NO_KEY;
+		}
 		
-		String level2KeyAlg = this.getLevel2Data().getLevel1Data().getLevel2KeyAlg();
+		String level2KeyAlg = getLevel2Data().getLevel1Data().getLevel2KeyAlg();
 
 	 
 		if (level2KeyAlg == null || level2KeyAlg.length() == 0) {
@@ -235,34 +230,53 @@ public class SimpleDynamicFrame implements IDynamicFrame {
 		}
   	}
 	
-	/**
-	 * Verify the level 1 signature
-	 * 
-	 * Note:  an appropriate security provider (e.g. BC) must be registered before 
-	 *
-	 * @param key the key
-	 * @param prov the prov
-	 * @return the int
-	 * @throws EncodingFormatException 
-	 */
-	public int validateLevel1(PublicKey key, Provider prov, byte[] data) throws EncodingFormatException {
-		
-		if (level2Data == null) {
-			return Constants.LEVEL1_VALIDATION_NO_SIGNATURE;
-		}
-		
+	@Override
+	public int validateLevel1(PublicKey key, Provider prov) throws EncodingFormatException {
+		return validateLevel1(key, prov, null);
+
+  	}
 	
-		if (level2Data == null || 
-			level2Data.getLevel1Signature().length == 0) {
+	@Override
+	public int validateLevel1(PublicKey key) throws EncodingFormatException {
+		return validateLevel1(key, null, null);
+  	}
+	
+	@Override
+	public int validateLevel1(PublicKey key, String signatureAlgorithmOid) throws EncodingFormatException {
+		return validateLevel1(key, null, signatureAlgorithmOid);
+	}
+
+	@Override
+	public int validateLevel1(PublicKey key, Provider prov, String signatureAlgorithmOid) throws EncodingFormatException {
+
+		if (getLevel2Data() == null
+				|| getLevel2Data().getLevel1Signature() == null
+				|| getLevel2Data().getLevel1Signature() == null
+				|| getLevel2Data().getLevel1Signature().length == 0) {
 			return Constants.LEVEL1_VALIDATION_NO_SIGNATURE;
 		}
 		
 		byte[] signature = this.getLevel2Data().getLevel1Signature();
+
+	
+		//find the algorithm name for the signature OID		
+		String signingAlgorithmOid = null;
+		if (getLevel2Data() != null 
+				&& getLevel2Data().getLevel1Data() != null 
+				&& getLevel2Data().getLevel1Data().getLevel1SigningAlg() != null
+				&& getLevel2Data().getLevel1Data().getLevel1SigningAlg().length() > 0) {
+				signingAlgorithmOid = getLevel2Data().getLevel1Data().getLevel1SigningAlg();	
+		} else {
+			signingAlgorithmOid = signatureAlgorithmOid;
+		}
 				
+		if (signingAlgorithmOid == null || signingAlgorithmOid.length() == 0) {
+			return Constants.LEVEL1_VALIDATION_NO_SIGNATURE;
+		}				
 		//find the algorithm name for the signature OID
 		String algo = null;
 		try {
-			algo = AlgorithmNameResolver.getSignatureAlgorithmName(getLevel2Data().getLevel1Data().getLevel1SigningAlg(), prov);
+			algo = AlgorithmNameResolver.getSignatureAlgorithmName(signingAlgorithmOid, prov);
 		} catch (Exception e1) {
 			return Constants.LEVEL1_VALIDATION_SIG_ALG_NOT_IMPLEMENTED;
 		}	
@@ -301,47 +315,20 @@ public class SimpleDynamicFrame implements IDynamicFrame {
 			return Constants.LEVEL1_VALIDATION_ENCODING_ERROR;
 		}
 		
-
 		try {
 			if (sig.verify(signature)){
-				return Constants.LEVEL2_VALIDATION_OK;
+				return Constants.LEVEL1_VALIDATION_OK;
 			} else {
-				return Constants.LEVEL2_VALIDATION_FRAUD;
+				return Constants.LEVEL1_VALIDATION_FRAUD;
 			}
 		} catch (SignatureException e) {
-			return Constants.LEVEL2_VALIDATION_SIG_ALG_NOT_IMPLEMENTED;
+			return Constants.LEVEL1_VALIDATION_SIG_ALG_NOT_IMPLEMENTED;
 		}
-  	}
+	}
 	
-
-
-
-
-	/**
-	 * Verify the level 1 signature
-	 * 
-	 * Note:  an appropriate security provider (e.g. BC) must be registered before 
-	 *
-	 * @param key the key
-	 * @return the int
-	 * @throws EncodingFormatException 
-	 */
-	public int validateLevel1(PublicKey key, byte[] data) throws EncodingFormatException {
-		
-		return validateLevel1(key, null,data);
-
-  	}
-	
-	/**
-	 * Sign level 2 data without a specific security provider.
-	 *
-	 * @param key the key
-	 * @throws Exception the exception
-	 */
+	@Override
 	public void signLevel2(PrivateKey key) throws Exception {
-		
 		signLevel2(key, null);
-		
 	}
 
 	/**
@@ -351,6 +338,7 @@ public class SimpleDynamicFrame implements IDynamicFrame {
 	 * @param prov the registered security provider
 	 * @throws Exception the exception
 	 */
+	@Override
 	public void signLevel2(PrivateKey key, Provider prov) throws Exception {
 		
 		//find the algorithm name for the signature OID
@@ -375,6 +363,7 @@ public class SimpleDynamicFrame implements IDynamicFrame {
 	 * @param content the dynamic content
 	 * @throws EncodingFormatException the encoding format exception
 	 */
+	@Override
 	public void addDynamicContent(IUicDynamicContent content) throws EncodingFormatException {
 				
 		level2Data.setLevel2Data(new SimpleData());
@@ -390,6 +379,7 @@ public class SimpleDynamicFrame implements IDynamicFrame {
 	 *
 	 * @param dynamicData the dynamic data
 	 */
+	@Override
 	public void addLevel2DynamicData(UicDynamicContentDataFDC1 dynamicData) {
 		this.getLevel2Data().setLevel2Data(dynamicData.getApiDataType());	
 	}
@@ -399,6 +389,7 @@ public class SimpleDynamicFrame implements IDynamicFrame {
 	 *
 	 * @return the dynamic content
 	 */
+	@Override
 	public IUicDynamicContent getDynamicContent() {
 		
 		if (this.getLevel2Data() == null || 
@@ -421,6 +412,7 @@ public class SimpleDynamicFrame implements IDynamicFrame {
 	 * @return the byte[]
 	 * @throws Exception 
 	 */
+	@Override
 	public void signLevel1(PrivateKey key) throws Exception {
 		
 		signLevel1(key, null);
@@ -484,7 +476,7 @@ public class SimpleDynamicFrame implements IDynamicFrame {
 
 	}
 	
-	
+	@Override
 	public byte[] getLevel2DataBin() throws EncodingFormatException {
 		
 		if (Constants.DYNAMIC_BARCODE_FORMAT_VERSION_1.equals(format)) {
@@ -500,6 +492,8 @@ public class SimpleDynamicFrame implements IDynamicFrame {
 		throw new EncodingFormatException("Dynamic Header Version not supported");
 
 	}
+
+
 
 	
 }

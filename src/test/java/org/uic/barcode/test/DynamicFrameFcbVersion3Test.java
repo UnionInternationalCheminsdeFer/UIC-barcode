@@ -135,7 +135,7 @@ public class DynamicFrameFcbVersion3Test {
         
         int signatureCheck = 0;
 		try {
-			signatureCheck = dec.validateLevel1(keyPair.getPublic(),null);
+			signatureCheck = dec.validateLevel1(keyPair.getPublic());
 		} catch (InvalidKeyException | NoSuchAlgorithmException | SignatureException | IllegalArgumentException
 				| UnsupportedOperationException | IOException | EncodingFormatException e) {
 			assert(false);

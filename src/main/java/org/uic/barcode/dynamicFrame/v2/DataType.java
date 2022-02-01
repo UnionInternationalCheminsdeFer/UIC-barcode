@@ -1,6 +1,7 @@
 package org.uic.barcode.dynamicFrame.v2;
 
 import org.uic.barcode.asn1.datatypes.CharacterRestriction;
+import org.uic.barcode.asn1.datatypes.FieldOrder;
 import org.uic.barcode.asn1.datatypes.RestrictedString;
 import org.uic.barcode.asn1.datatypes.Sequence;
 import org.uic.barcode.asn1.datatypesimpl.OctetString;
@@ -20,9 +21,11 @@ public class DataType {
 	 *  -- RICS  company code + ...
 	 **/
 	@RestrictedString(CharacterRestriction.IA5String)
+	@FieldOrder(order = 0)
 	public String format;
 	
 	/** The data. */
+	@FieldOrder(order = 1)
 	public OctetString data;
 
 	/**

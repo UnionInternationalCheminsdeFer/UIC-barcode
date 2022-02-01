@@ -66,12 +66,10 @@ public interface IDynamicFrame{
 	 * Verify the level 2 signature
 	 * 
 	 * Note:  an appropriate security provider (e.g. BC) must be registered before 
-	 *
-	 * @param data the data content
 	 * @return the return error code
 	 * @throws EncodingFormatException the encoding format exception
 	 */	
-	public int validateLevel2(byte[] data) throws EncodingFormatException;
+	public int validateLevel2() throws EncodingFormatException;
 	
 	/**
 	 * Verify the level 2 signature
@@ -79,11 +77,10 @@ public interface IDynamicFrame{
 	 * Note:  an appropriate security provider (e.g. BC) must be registered before 
 	 *
 	 * @param prov the registered security provider
-	 * @param data the data content
 	 * @return the return error code
 	 * @throws EncodingFormatException the encoding format exception
 	 */	
-	public int validateLevel2(Provider prov, byte[] data) throws EncodingFormatException;
+	public int validateLevel2(Provider prov) throws EncodingFormatException;
 
 	/**
 	 * Verify the level 1 signature
@@ -95,7 +92,20 @@ public interface IDynamicFrame{
 	 * @return the return error code
 	 * @throws EncodingFormatException the encoding format exception
 	 */
-	public int validateLevel1(PublicKey key, byte[] data) throws EncodingFormatException;
+	public int validateLevel1(PublicKey key) throws EncodingFormatException;
+	
+	/**
+	 * Verify the level 1 signature
+	 * 
+	 * Note:  an appropriate security provider (e.g. BC) must be registered before 
+	 *
+	 * @param key the key
+	 * @param signatureAlgorithmOid the signature algorithmOid to be used in case it is not contained in the barcode
+	 * @return the return error code
+	 * @throws EncodingFormatException the encoding format exception
+	 */
+	public int validateLevel1(PublicKey key,String signatureAlgorithmOid) throws EncodingFormatException;
+
 	
 	/**
 	 * Verify the level 1 signature
@@ -104,12 +114,22 @@ public interface IDynamicFrame{
 	 *
 	 * @param key the key
 	 * @param prov the registered security provider
-	 * @param data the data
 	 * @return the return error code
 	 * @throws EncodingFormatException the encoding format exception
 	 */
-	public int validateLevel1(PublicKey key, Provider prov,  byte[] data) throws EncodingFormatException;
+	public int validateLevel1(PublicKey key, Provider prov) throws EncodingFormatException;
  
+	/**
+	 * Verify the level 1 signature
+	 * 
+	 * Note:  an appropriate security provider (e.g. BC) must be registered before 
+	 *
+	 * @param key the key
+	 * @param prov the registered security provider
+	 * @return the return error code
+	 * @throws EncodingFormatException the encoding format exception
+	 */
+	public int validateLevel1(PublicKey key, Provider prov, String signatureAlgorithmOid) throws EncodingFormatException;
 	
 	/**
 	 * Sign level 2 data without a specific security provider.
@@ -159,8 +179,8 @@ public interface IDynamicFrame{
 	 * 
 	 * Note:  an appropriate security provider (e.g. BC) must be registered before 
 	 *
-	 * @param key the key
-	 * @return the byte[]
+	 * @param key the private key
+	 * @return the signature
 	 * @throws Exception the exception
 	 */
 	public void signLevel1(PrivateKey key) throws Exception;
@@ -170,8 +190,8 @@ public interface IDynamicFrame{
 	 * 
 	 * Note:  an appropriate security provider (e.g. BC) must be registered before 
 	 *
-	 * @param key the key
-	 * @param prov the prov
+	 * @param key the private key
+	 * @param prov the security provider providing the signature implementation
 	 * @return the byte[]
 	 * @throws Exception the exception
 	 */
@@ -184,7 +204,6 @@ public interface IDynamicFrame{
 	 * @return the level 1 signature
 	 */
 	public byte[] getLevel1Signature();
-
 
 	/**
 	 * Gets the level 1 data in binary as they are signed by the level 1 signature.

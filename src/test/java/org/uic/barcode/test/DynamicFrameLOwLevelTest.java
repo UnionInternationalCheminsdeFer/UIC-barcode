@@ -84,17 +84,13 @@ public class DynamicFrameLOwLevelTest {
 
 	}
 	
-	@Test public void testDynamicHeaderBarcodeDecoding() {
+	@Test public void testDynamicHeaderBarcodeDecodingV1() {
 		
 		DynamicFrame barcode1 = SimpleDynamicFrameTestBarcode.getSimpleDynamicHeaderBarcode(algorithmOID, keyPair);
 		
         byte[] encoded = barcode1.encode();
         
 		DynamicFrame barcode = DynamicFrame.decode(encoded);
-		
-		int signatureCheck = barcode.validateLevel1(keyPair.getPublic());
-
-        assert(signatureCheck == Constants.LEVEL1_VALIDATION_OK);
         
         SimpleDynamicFrameTestBarcode.compareFrame(barcode1, barcode);
         
