@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.security.PrivateKey;
 import java.security.Provider;
 import java.security.PublicKey;
+import java.util.zip.DataFormatException;
 
 import org.uic.barcode.dynamicContent.api.IUicDynamicContent;
 import org.uic.barcode.dynamicContent.fdc1.UicDynamicContentDataFDC1;
@@ -134,6 +135,57 @@ public class Encoder {
 			
 		dynamicFrame = new SimpleDynamicFrame();
 		dynamicFrame.setLevel2Data(new SimpleLevel2Data());
+			
+		if (version == 1) {
+			
+			dynamicFrame.setFormat(Constants.DYNAMIC_BARCODE_FORMAT_VERSION_1);
+			
+			ILevel1Data l1 = DynamicFrameCoderV1.decodeLevel1(level1DataBin);
+			
+			dynamicFrame.getLevel2Data().setLevel1Data(l1);
+			
+			dynamicFrame.getLevel2Data().setLevel1Signature(signatureLevel1);
+			
+		} else if (version == 2) {
+			
+			dynamicFrame.setFormat(Constants.DYNAMIC_BARCODE_FORMAT_VERSION_2);
+			
+			ILevel1Data l1 = DynamicFrameCoderV2.decodeLevel1(level1DataBin);
+			
+			dynamicFrame.getLevel2Data().setLevel1Data(l1);
+			
+			dynamicFrame.getLevel2Data().setLevel1Signature(signatureLevel1);
+			
+		} else {
+			throw new EncodingFormatException("Version of the dynamic header not supported");
+		}
+		
+				
+	}
+	
+	
+	/**
+	 * Instantiates a new encoder for a level 2 encoding with tan encoded dynamic frame containing the level 1 data and signature.
+	 *
+	 * @param level1Data the level 1 data (binary as signed)
+	 * @param signatureLevel1 the signature of the level 1 data 
+	 * @param version the version of the bar code 
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws EncodingFormatException the encoding format exception
+	 * @throws DataFormatException 
+	 */
+	public Encoder(byte[] encoded, int version) throws IOException, EncodingFormatException, DataFormatException {
+		
+		Decoder decoder = new Decoder(encoded);
+		
+		if (decoder.getDynamicFrame() == null) {
+			throw new EncodingFormatException("No dynamic frame included");
+		}
+		
+			
+		dynamicFrame = decoder.getDynamicFrame();
+		byte[] level1DataBin = decoder.getEncodedLevel1Data();
+		byte[] signatureLevel1 = decoder.getLevel1Signature();
 			
 		if (version == 1) {
 			
