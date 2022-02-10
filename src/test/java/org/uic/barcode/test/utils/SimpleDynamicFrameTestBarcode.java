@@ -1,27 +1,26 @@
 package org.uic.barcode.test.utils;
 
 import java.security.KeyPair;
+import java.security.Signature;
 
+import org.uic.barcode.asn1.uper.UperEncoder;
 import org.uic.barcode.dynamicFrame.Constants;
-import org.uic.barcode.dynamicFrame.DataType;
-import org.uic.barcode.dynamicFrame.DynamicFrame;
-import org.uic.barcode.dynamicFrame.Level1DataType;
-import org.uic.barcode.dynamicFrame.Level2DataType;
-import org.uic.barcode.dynamicFrame.SequenceOfDataType;
+import org.uic.barcode.dynamicFrame.v1.DataType;
+import org.uic.barcode.dynamicFrame.v1.DynamicFrame;
+import org.uic.barcode.dynamicFrame.v1.Level1DataType;
+import org.uic.barcode.dynamicFrame.v1.Level2DataType;
+import org.uic.barcode.dynamicFrame.v1.SequenceOfDataType;
 import org.uic.barcode.ticket.EncodingFormatException;
 import org.uic.barcode.ticket.api.asn.omv1.UicRailTicketData;
 import org.uic.barcode.ticket.api.test.testtickets.SimpleUicTestTicket;
+import org.uic.barcode.utils.AlgorithmNameResolver;
 
 
 public class SimpleDynamicFrameTestBarcode {
 	
 	public static DynamicFrame getSimpleDynamicHeaderBarcode(String algorithm, KeyPair keyPair) {
 		
-		
-		
 		DynamicFrame barcode = null;
-		
-		
 		
 		try {
 			barcode = new DynamicFrame();
@@ -47,7 +46,12 @@ public class SimpleDynamicFrameTestBarcode {
 			level1Data.getData().add(data);
 
 			try {
-				level2Data.signLevel1(keyPair.getPrivate());
+				String algo = AlgorithmNameResolver.getSignatureAlgorithmName(level1Data.getLevel1SigningAlg());
+				Signature sig = Signature.getInstance(algo);
+				sig.initSign(keyPair.getPrivate());
+				byte[] data2 = UperEncoder.encode(level1Data);
+				sig.update(data2);
+				level2Data.setLevel1Signature(sig.sign());
 			} catch (Exception e) {
 				assert(false);
 			}

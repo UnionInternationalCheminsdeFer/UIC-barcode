@@ -150,7 +150,7 @@ class StringCoder implements Decoder, Encoder {
 
     @Override public <T> T decode(BitBuffer bitbuffer,
             Class<T> classOfT, Field field,
-            Annotation[] extraAnnotations) {
+            Annotation[] extraAnnotations, AsnExtractor extractor) {
         UperEncoder.logger.debug("decode String");
     	AnnotationStore annotations = new AnnotationStore(classOfT.getAnnotations(), extraAnnotations);
         RestrictedString restrictionAnnotation = annotations.getAnnotation(RestrictedString.class);

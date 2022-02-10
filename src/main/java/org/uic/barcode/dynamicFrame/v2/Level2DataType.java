@@ -1,4 +1,4 @@
-package org.uic.barcode.dynamicFrame;
+package org.uic.barcode.dynamicFrame.v2;
 
 import java.security.PrivateKey;
 import java.security.Provider;

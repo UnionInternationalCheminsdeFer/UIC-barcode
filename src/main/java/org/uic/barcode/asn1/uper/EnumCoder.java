@@ -82,7 +82,7 @@ class EnumCoder implements Decoder, Encoder {
 
     @Override public <T> T decode(BitBuffer bitbuffer,
             Class<T> classOfT, Field field,
-            Annotation[] extraAnnotations) {
+            Annotation[] extraAnnotations, AsnExtractor extractor) {
         AnnotationStore annotations = new AnnotationStore(classOfT.getAnnotations(), extraAnnotations);
         UperEncoder.logger.debug("ENUM");
         boolean extensionPresent = false;

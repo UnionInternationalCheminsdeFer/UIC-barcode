@@ -24,6 +24,26 @@ public class AlgorithmNameResolver {
     	
     }
     
+    public static String getSignatureAlgorithmName (String oid, Provider provider) throws Exception {
+    	
+    	if (provider != null) {
+    		 Service service = provider.getService(AlgorithmNameResolver.TYPE_SIGNATURE_ALG,oid);
+    		 return service.getAlgorithm();
+    	}
+    	
+    	
+ 		Provider[] provs = Security.getProviders();
+ 		for (Provider prov : provs) {
+ 		       Service service = prov.getService(AlgorithmNameResolver.TYPE_SIGNATURE_ALG,oid);
+ 		       if (service != null) {
+	    		   return service.getAlgorithm();
+ 		       }
+ 		}
+ 		return null;
+     	
+     }
+    
+    
     public static String getName (String type, String oid) throws Exception {
     	
 		Provider[] provs = Security.getProviders();
@@ -45,9 +65,22 @@ public class AlgorithmNameResolver {
     }
     	
     
-   public static String getName(String type, String oid, Provider prov) throws Exception {
+   public static String getName(String type, String oid, Provider provider) throws Exception {
 	   
-       	Service service = prov.getService(type,oid);
+	   Service service = null;
+	   if (provider == null) {
+		   
+			Provider[] provs = Security.getProviders();
+			for (Provider prov : provs) {
+			       service = prov.getService(type,oid);
+			}	   
+		   
+	   } else {
+		   service = provider.getService(type,oid);
+	   }
+	   
+	   
+       	
        	if (service != null) {
     	   return service.getAlgorithm();
        	}

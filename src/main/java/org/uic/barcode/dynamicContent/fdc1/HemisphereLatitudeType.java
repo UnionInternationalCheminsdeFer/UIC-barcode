@@ -19,7 +19,6 @@
  */
 package org.uic.barcode.dynamicContent.fdc1;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Enum HemisphereLatitudeType.
  */

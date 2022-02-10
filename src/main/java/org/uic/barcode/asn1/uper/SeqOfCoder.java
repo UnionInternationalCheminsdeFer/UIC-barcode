@@ -96,7 +96,7 @@ class SeqOfCoder implements Decoder, Encoder {
     @SuppressWarnings("unchecked")
 	@Override public <T> T decode(BitBuffer bitbuffer,
             Class<T> classOfT,Field field,
-            Annotation[] extraAnnotations)  {
+            Annotation[] extraAnnotations, AsnExtractor extractor)  {
         AnnotationStore annotations = new AnnotationStore(classOfT.getAnnotations(),
                 extraAnnotations);
         UperEncoder.logger.debug(String.format("SEQUENCE OF for %s", classOfT));
@@ -135,7 +135,7 @@ class SeqOfCoder implements Decoder, Encoder {
         	}
         }        
         for (int i = 0; i < size; i++) {
-            coll.add(UperEncoder.decodeAny(bitbuffer, classOfElements,field,  annotationArray));
+            coll.add(UperEncoder.decodeAny(bitbuffer, classOfElements,field,  annotationArray, extractor));
         }
         
         T result = null;

@@ -66,7 +66,7 @@ public final class UperEncoder {
     public static <T> T decode(byte[] bytes, Class<T> classOfT) throws IllegalArgumentException,
     UnsupportedOperationException {
     		BitBuffer bitQueue = bitBufferFromBinaryString(binaryStringFromBytes(bytes));
-    		T result = decodeAny(bitQueue, classOfT,null, new Annotation[] {});
+    		T result = decodeAny(bitQueue, classOfT,null, new Annotation[] {}, null);
     		if (bitQueue.remaining() > 7) {
     				throw new IllegalArgumentException("Can't fully decode "
     						+ classOfT.getName() + ", got (" + result.getClass().getName() + "): " + result
@@ -74,11 +74,43 @@ public final class UperEncoder {
     		}
     		return result;
     }
+    
+    public static <T> T decode(byte[] bytes, Class<T> classOfT,AsnExtractor extractor) throws IllegalArgumentException,
+    UnsupportedOperationException {
+    		BitBuffer bitQueue = bitBufferFromBinaryString(binaryStringFromBytes(bytes));
+    		T result = decodeAny(bitQueue, classOfT,null, new Annotation[] {}, extractor);
+    		if (bitQueue.remaining() > 7) {
+    				throw new IllegalArgumentException("Can't fully decode "
+    						+ classOfT.getName() + ", got (" + result.getClass().getName() + "): " + result
+    						+ "; remaining " + bitQueue.remaining() + "  bits: " + bitQueue);
+    		}
+    		return result;
+    }
+    
+    
+    public static <T> byte[] extract(byte[] bytes,String path,Class<T> classOfT) throws IllegalArgumentException, UnsupportedOperationException {
+ 
+    	    BitBuffer bitQueue = bitBufferFromBinaryString(binaryStringFromBytes(bytes));
+    	    
+    	    AsnExtractor extractor = new AsnExtractor(path,bitQueue);
+    	    
+    		T result = decodeAny(bitQueue, classOfT,null, new Annotation[] {}, extractor);
+    		if (bitQueue.remaining() > 7) {
+    				throw new IllegalArgumentException("Can't fully decode "
+    						+ classOfT.getName() + ", got (" + result.getClass().getName() + "): " + result
+    						+ "; remaining " + bitQueue.remaining() + "  bits: " + bitQueue);
+    		}
+    		return extractor.getResult();
+    }
+    
+    
+    
+    
 
-    public static <T> T decode(byte[] bytes, Class<T> classOfT, Field f) throws IllegalArgumentException,
+    public static <T> T decode(byte[] bytes, Class<T> classOfT, Field f,AsnExtractor extractor) throws IllegalArgumentException,
             UnsupportedOperationException {
         BitBuffer bitQueue = bitBufferFromBinaryString(binaryStringFromBytes(bytes));
-        T result = decodeAny(bitQueue, classOfT, f, new Annotation[] {});
+        T result = decodeAny(bitQueue, classOfT, f, new Annotation[] {}, extractor);
         if (bitQueue.remaining() > 7) {
             throw new IllegalArgumentException("Can't fully decode "
                 + classOfT.getName() + ", got (" + result.getClass().getName() + "): " + result
@@ -108,13 +140,13 @@ public final class UperEncoder {
                 + " with extra annotations " + Arrays.asList(extraAnnotations));
     }
 
-    static <T> T decodeAny(BitBuffer bitbuffer,Class<T> classOfT, Field f, Annotation[] extraAnnotations) {
+    static <T> T decodeAny(BitBuffer bitbuffer,Class<T> classOfT, Field f, Annotation[] extraAnnotations, AsnExtractor extractor) {
     	   	
         logger.debug(String.format(String.format("Decoding classOfT : %s",classOfT.getCanonicalName())));
         
         for (Decoder e : decoders) {
             if (e.canDecode(classOfT, extraAnnotations)) {
-                return e.decode(bitbuffer, classOfT,f, extraAnnotations);
+                return e.decode(bitbuffer, classOfT,f, extraAnnotations,extractor);
             }
         }
         
@@ -216,7 +248,7 @@ public final class UperEncoder {
         
     }
 
-    static <T> T decodeAsOpenType(BitBuffer bitbuffer, Class<T> classOfT,Field f, Annotation[] extraAnnotations) {
+    static <T> T decodeAsOpenType(BitBuffer bitbuffer, Class<T> classOfT,Field f, Annotation[] extraAnnotations,AsnExtractor extractor) {
         logger.debug(String.format("OPEN TYPE for %s. Encoding preceedes length determinant", classOfT != null ? classOfT.getName() : "null"));
         long numBytes = decodeLengthDeterminant(bitbuffer);
         BitBuffer openTypeBitBuffer = ByteBitBuffer.allocate((int)numBytes * 8);
@@ -225,7 +257,7 @@ public final class UperEncoder {
         }
         openTypeBitBuffer.flip();
         if (classOfT != null) {
-            T result = decodeAny(openTypeBitBuffer, classOfT, f, extraAnnotations);
+            T result = decodeAny(openTypeBitBuffer, classOfT, f, extraAnnotations, extractor);
             // Assert that padding bits are all 0.
             logger.debug(String.format("open type had padding bits"));
             for (int i = 0; i < openTypeBitBuffer.remaining(); i++) {

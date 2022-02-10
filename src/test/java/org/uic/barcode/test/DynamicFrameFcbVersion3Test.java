@@ -20,6 +20,7 @@ import org.junit.Test;
 import org.uic.barcode.Decoder;
 import org.uic.barcode.Encoder;
 import org.uic.barcode.dynamicFrame.Constants;
+import org.uic.barcode.dynamicFrame.api.IData;
 import org.uic.barcode.test.utils.SimpleUICTestTicket;
 import org.uic.barcode.ticket.EncodingFormatException;
 import org.uic.barcode.ticket.api.spec.IUicRailTicket;
@@ -134,7 +135,7 @@ public class DynamicFrameFcbVersion3Test {
         
         int signatureCheck = 0;
 		try {
-			signatureCheck = dec.validateLevel1(keyPair.getPublic(),null);
+			signatureCheck = dec.validateLevel1(keyPair.getPublic());
 		} catch (InvalidKeyException | NoSuchAlgorithmException | SignatureException | IllegalArgumentException
 				| UnsupportedOperationException | IOException | EncodingFormatException e) {
 			assert(false);
@@ -142,10 +143,11 @@ public class DynamicFrameFcbVersion3Test {
 		
         assert(signatureCheck == Constants.LEVEL1_VALIDATION_OK);
         
-        assert(dec.getDynamicHeader().getFormat().equals("U1"));
+        assert(dec.getDynamicFrame().getFormat().equals("U1"));
         
-        assert(dec.getDynamicHeader().getLevel2SignedData().getLevel1Data().getData().get(0).getFormat().equals("FCB3"));
-        
+        for (IData data : dec.getDynamicFrame().getLevel2Data().getLevel1Data().getData()) {
+        	assert(data.getFormat().equals("FCB3") );
+        }
                
         SimpleUICTestTicket.compare(ticket, dec.getUicTicket());     
         

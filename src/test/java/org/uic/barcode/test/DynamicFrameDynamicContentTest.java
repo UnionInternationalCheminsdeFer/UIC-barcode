@@ -24,7 +24,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.uic.barcode.Decoder;
 import org.uic.barcode.Encoder;
-import org.uic.barcode.dynamicContent.fdc1.GeoCoordinateSystemType;
+import org.uic.barcode.dynamicContent.api.IUicDynamicContent;
 import org.uic.barcode.dynamicContent.fdc1.GeoCoordinateType;
 import org.uic.barcode.dynamicContent.fdc1.TimeStamp;
 import org.uic.barcode.dynamicContent.fdc1.UicDynamicContentDataFDC1;
@@ -218,7 +218,7 @@ public class DynamicFrameDynamicContentTest {
          
         assert(level2check == Constants.LEVEL2_VALIDATION_OK);
         
-        UicDynamicContentDataFDC1 dynamicData = dec.getDynamicHeader().getDynamicDataFDC1();
+        IUicDynamicContent dynamicData = dec.getDynamicFrame().getDynamicContent();
         
         assert(dynamicData.getChallengeString().equals("CHALLENGE"));
         
@@ -229,9 +229,9 @@ public class DynamicFrameDynamicContentTest {
         assert(Arrays.equals(dynamicData.getPhoneIdHash(),phoneIdHash));
         
 		assert(dynamicData.getGeoCoordinate().getLatitude() == 123456L);
-		assert(dynamicData.getGeoCoordinate().getLongitude() == 823456L);
+		assert(dynamicData.getGeoCoordinate().getLongitude() == 103456L);
         
-        Date timeStamp = dynamicData.getTimeStamp().getTimeAsDate();
+        Date timeStamp = dynamicData.getTimeStamp();
         ZonedDateTime retrievedTimeStamp = timeStamp.toInstant().atZone(ZoneId.of("UTC"));
         long diff = ChronoUnit.SECONDS.between(originalTimeStamp, retrievedTimeStamp);
   

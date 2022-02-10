@@ -21,7 +21,7 @@ import org.junit.Test;
 import org.uic.barcode.Decoder;
 import org.uic.barcode.Encoder;
 import org.uic.barcode.dynamicFrame.Constants;
-import org.uic.barcode.dynamicFrame.DataType;
+import org.uic.barcode.dynamicFrame.api.IData;
 import org.uic.barcode.test.utils.Level2TestDataFactory;
 import org.uic.barcode.test.utils.SimpleUICTestTicket;
 import org.uic.barcode.ticket.EncodingFormatException;
@@ -89,7 +89,7 @@ public class DynamicFrameDoubleSignatureTest {
 		assert(enc != null);
 		
 		
-		DataType level2Data = Level2TestDataFactory.getLevel2SimpleTestData();
+		IData level2Data = Level2TestDataFactory.getLevel2SimpleTestData();
 		try {
 			enc.setLevel2Data(level2Data);
 			enc.signLevel2(keyPairLevel2.getPrivate());
@@ -131,15 +131,15 @@ public class DynamicFrameDoubleSignatureTest {
         signatureCheck = 0;
 		try {
 			signatureCheck = dec.validateLevel2();
-		} catch (IllegalArgumentException | UnsupportedOperationException e) {
+		} catch (Exception e) {
 			assert(false);
 		}
         assert(signatureCheck == Constants.LEVEL2_VALIDATION_OK);              
         
-        DataType level2DataDec = dec.getLevel2Data();
+        IData level2DataDec = dec.getLevel2Data();
         
         assert(level2Data.getFormat().equals(level2DataDec.getFormat()));
-        assert(Arrays.equals(level2Data.getData().toByteArray(),level2DataDec.getData().toByteArray()));        
+        assert(Arrays.equals(level2Data.getData(),level2DataDec.getData()));        
         
         SimpleUICTestTicket.compare(ticket, dec.getUicTicket());     
         

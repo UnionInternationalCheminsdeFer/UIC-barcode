@@ -21,7 +21,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.uic.barcode.asn1.uper.UperEncoder;
 import org.uic.barcode.dynamicFrame.Constants;
-import org.uic.barcode.dynamicFrame.DynamicFrame;
+import org.uic.barcode.dynamicFrame.v1.DynamicFrame;
 import org.uic.barcode.test.utils.SimpleDynamicFrameTestBarcode;
 
 public class DynamicFrameLOwLevelTest {
@@ -84,17 +84,13 @@ public class DynamicFrameLOwLevelTest {
 
 	}
 	
-	@Test public void testDynamicHeaderBarcodeDecoding() {
+	@Test public void testDynamicHeaderBarcodeDecodingV1() {
 		
 		DynamicFrame barcode1 = SimpleDynamicFrameTestBarcode.getSimpleDynamicHeaderBarcode(algorithmOID, keyPair);
 		
         byte[] encoded = barcode1.encode();
         
 		DynamicFrame barcode = DynamicFrame.decode(encoded);
-		
-		int signatureCheck = barcode.validateLevel1(keyPair.getPublic());
-
-        assert(signatureCheck == Constants.LEVEL1_VALIDATION_OK);
         
         SimpleDynamicFrameTestBarcode.compareFrame(barcode1, barcode);
         

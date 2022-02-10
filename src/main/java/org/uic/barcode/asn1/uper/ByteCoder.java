@@ -21,7 +21,7 @@ class ByteCoder implements Decoder, Encoder {
     @SuppressWarnings("unchecked")
 	@Override public <T> T decode(BitBuffer bitbuffer,
             Class<T> classOfT, Field field,
-            Annotation[] extraAnnotations) {
+            Annotation[] extraAnnotations, AsnExtractor extractor) {
         UperEncoder.logger.debug("BYTE");
         return (T) new Byte((byte) UperEncoder.decodeConstrainedInt(bitbuffer, UperEncoder.newRange(0, 255, false)));
     }

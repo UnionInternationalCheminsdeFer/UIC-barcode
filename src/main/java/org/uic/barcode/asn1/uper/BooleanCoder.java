@@ -22,7 +22,7 @@ class BooleanCoder implements Decoder, Encoder {
     @SuppressWarnings("unchecked")
 	@Override public <T> T decode(BitBuffer bitbuffer,
             Class<T> classOfT, Field field,
-            Annotation[] extraAnnotations) {
+            Annotation[] extraAnnotations, AsnExtractor extractor) {
     	Boolean result = new Boolean(bitbuffer.get());
         UperEncoder.logger.debug(String.format("BOOL: decoded as %s",result));
         return (T) result;
