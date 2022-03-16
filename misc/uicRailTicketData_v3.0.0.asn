@@ -1384,18 +1384,19 @@ ASN-Module DEFINITIONS AUTOMATIC TAGS ::= BEGIN
    }	
    
 						
-   --  ###########################################################################################
-   -- generic non standard extension element
-   --    the generic non - standard element contains:
-   --            - an extension id to distinguish different extensions
-   --            - the extension data as binary data
-   -- proprietary extensions are by definition proprietary. This standard provides
-   --           the means to identify these extensions 
-   --           within the data and to skip these data.
-   --           the evaluation of these data and the unique identification of the extensions 
-   --           via the extension id is in the 
-   --           responsibility of the railways which use these extensions.			
-   --  ########################################################################################### 
+   -- ########################################################################################### 
+   -- # Generic extension element.
+   -- #
+   -- # The value of 'extensionId' describes how 'extensionData' is encoded:
+   -- # "+" + [2-letters ISO 3166 country code] + [addon, chosen by the standardization body of that country]
+   -- #    means that 'extensionData' is a content defined by this national standardization body,
+   -- #    identified as 'addon' by this body.
+   -- # "_" + [4-digit RICS] + [addon, chosen by this company] means that 'extensionData' is a proprietary
+   -- #    content of the company identified by the RICS code, identified as 'addon' by this company.
+   -- # "*" + [addon] means that 'extensionData' is a content specific to this barcode,
+   -- #    identified as 'addon', with no further information on who defined it.
+   -- # Others values are reserved for future UIC use and shall not be used.
+   -- ###########################################################################################
    ExtensionData	::= SEQUENCE 	{	
 	   extensionId   IA5String, 
 	   extensionData OCTET STRING
