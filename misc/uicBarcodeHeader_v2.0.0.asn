@@ -1,6 +1,6 @@
 -- Author: ClemensGantert
 -- Created: Thu Jun 04 17:19:28 CEST 2020
-ASN-Module DEFINITIONS AUTOMATIC TAGS ::= BEGIN
+ASN-Module-Header DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 
 -- imports and exports
 -- EXPORTS ALL;
