@@ -43,33 +43,31 @@ ASN-Module DEFINITIONS AUTOMATIC TAGS ::= BEGIN
      -- #   UicDynamicContentData.dynamicContentResponseToChallenge.
      -- #
      -- ##########################################################################################
-     -- ..................+.......................................................................
-     -- extensionId value | extensionData content
-     -- ..................+.......................................................................	 
-     -- ..................+.......................................................................
-     -- "="               | Exactly the data received from the control device
-     -- ..................+.......................................................................
-     -- "UTF"             | UTF-8 encoded text provided by the train staff to the traveler
-     -- ..................+.......................................................................
-     -- "PHC"             | Hash value of a phone identifier that is available in the ticket
-     --                   | control data provided in an annotation according to UIC IRS 90918-4
-     --                   | (e.g. via ETCD). 
-     -- ..................+.......................................................................
-     -- "EPC"             | Hash value of an electronic passport that is available in the ticket
-     --                   | control data provided in an annotation according to UIC IRS 90918-4
-     --                   | (e.g. via ETCD). 
-     --                   | The control app can read the passport at the time of control.
-     -- ..................+.......................................................................
-     -- "_" + RICS + addon| Proprietary data, defined by the issuer identified by its RICS code.
-     --                   | (addon being defined by this issuer)
-     -- ..................+.......................................................................
+     -- ..........................................................................................
+     -- extensionId value    | extensionData content
+     -- .....................+....................................................................
+     -- "="                  | Exactly the data received from the control device
+     -- .....................+....................................................................
+     -- "UTF"                | UTF-8 encoded text provided by the train staff to the traveler
+     -- .....................+....................................................................
+     -- "PHC"                | Hash value of a phone identifier that is available in the ticket
+     --                      | control data provided in an annotation according to UIC IRS 90918-4
+     --                      | (e.g. via ETCD). 
+     -- .....................+....................................................................
+     -- "EPC"                | Hash value of an electronic passport that is available in the
+     --                      | ticketcontrol data provided in an annotation according to 
+     --                      | UIC IRS 90918-4 (e.g. via ETCD). 
+     --                      | The control app can read the passport at the time of control.
+     -- .....................+....................................................................
+     -- "+" + country + addon| Specific data. See the possible values for extensionId and the  
+     -- "_" + RICS + addon   | corresponding extensionData content in the comments above the 
+     -- "*" + addon          | definition of ExtensionData (below).
+     -- ..........................................................................................
+
 	 
      dynamicContentResponseToChallenge SEQUENCE OF ExtensionData OPTIONAL,
   
-     -- Proprietary data defined bilaterally
-	 --   (same ExtensionData type as in UicRailTicketData).
-	 -- extensionId identifies the content of extensionData,
-	 --   it shall be set to "_" + RICS + addon chosen by the issuer identified by its RICS code
+     -- Proprietary data defined bilaterally (same ExtensionData type as in UicRailTicketData).
      dynamicContentExtension ExtensionData OPTIONAL,
 	 
      ...
@@ -123,11 +121,20 @@ ASN-Module DEFINITIONS AUTOMATIC TAGS ::= BEGIN
      west (1)  
    }	
 
+   
    -- ########################################################################################### 
-   -- # Generic extension element.
+   -- # Generic extension element (same definition as in UicRailTicketData).
    -- #
-   -- # extensionId identifies the content of extensionData.
-   -- ########################################################################################### 
+   -- # The value of 'extensionId' describes how 'extensionData' is encoded:
+   -- # "+" + [2-letters ISO 3166 country code] + [addon, chosen by the standardization body of that country]
+   -- #    means that 'extensionData' is a content defined by this national standardization body,
+   -- #    identified as 'addon' by this body.
+   -- # "_" + [4-digit RICS] + [addon, chosen by this company] means that 'extensionData' is a proprietary
+   -- #    content of the company identified by the RICS code, identified as 'addon' by this company.
+   -- # "*" + [addon] means that 'extensionData' is a content specific to this barcode,
+   -- #    identified as 'addon', with no further information on who defined it.
+   -- # Others values are reserved for future UIC use and shall not be used.
+   -- ###########################################################################################
    ExtensionData	::= SEQUENCE 	{	
 	   extensionId   IA5String, 
 	   extensionData OCTET STRING

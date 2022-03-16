@@ -112,11 +112,21 @@ ASN-Module DEFINITIONS AUTOMATIC TAGS ::= BEGIN
    }
 
    DataType ::= SEQUENCE {
-    	-- Content of data format:
-    	-- FCBn (FCB1 = FCB version 1, FCB2 = FCB version 2)
-    	-- FDCn dynamic content
-    	-- or proprietary:
-    	--  _RICS company code + addon       	
+    	
+        -- The value of 'dataFormat' describes how 'data' is encoded:
+        -- "FCBn" means that 'data' is the Canonical Unaligned PER encoding 
+        --    of an ASN.1 element of type UicRailTicketData in major version n.
+        -- "FDCn" means that 'data' is the Canonical Unaligned PER encoding 
+        --    of an ASN.1 element of type UicDynamicContentData in major version n.
+        -- "+" + [2-letters ISO 3166 country code] + [addon, chosen by the standardization body of that country]
+        --    means that 'data' is a content defined by the national standardization body,
+        --    identified as 'addon' by this body.
+        -- "_" + [4-digit RICS] + [addon, chosen by this company] means that 'data' is a proprietary
+        --    content of the company identified by the RICS code, identified as 'addon' by this company.
+        -- "*" + [addon] means that 'data' is a content specific to this barcode,
+        --    with no further information on who defined it, identified as 'addon' by its issuer.
+        -- Others values are reserved for future UIC use and shall not be used. 	
+    	  	
        	dataFormat	    IA5String,      	
     	data	    	OCTET STRING
    }
