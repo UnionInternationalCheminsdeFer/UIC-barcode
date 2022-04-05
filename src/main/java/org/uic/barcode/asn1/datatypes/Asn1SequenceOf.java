@@ -3,8 +3,7 @@ package org.uic.barcode.asn1.datatypes;
 import java.lang.reflect.ParameterizedType;
 import java.util.*;
 
-import org.uic.barcode.logger.Logger;
-import org.uic.barcode.logger.LoggerFactory;
+import org.uic.barcode.asn1.uper.UperEncoder;
 
 
 /**
@@ -35,8 +34,7 @@ import org.uic.barcode.logger.LoggerFactory;
  * @param <T> type of elements contained.
  */
 public abstract class Asn1SequenceOf<T> extends AbstractList<T> {
-    private final static Logger logger = LoggerFactory.getLogger("asnLogger");
-
+ 
     private final List<T> bakingList;
 
     @Override public T get(int index) { return bakingList.get(index); }
@@ -45,7 +43,7 @@ public abstract class Asn1SequenceOf<T> extends AbstractList<T> {
 
     public Asn1SequenceOf() { this(new ArrayList<T>()); }
     public Asn1SequenceOf(Collection<T> coll) {
-        logger.debug(String.format("Instantiating Sequence Of %s with %s",
+        UperEncoder.logger.debug(String.format("Instantiating Sequence Of %s with %s",
                 ((ParameterizedType)getClass().getGenericSuperclass()).getActualTypeArguments()[0],
                 coll));
         bakingList = new ArrayList<>(coll);

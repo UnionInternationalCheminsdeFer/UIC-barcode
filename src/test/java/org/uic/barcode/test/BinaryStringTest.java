@@ -1,13 +1,18 @@
 package org.uic.barcode.test;
 
 import java.io.IOException;
+
+import org.junit.Before;
 import org.junit.Test;
 import org.uic.barcode.asn1.uper.AsnUtils;
+import org.uic.barcode.logger.LoggerFactory;
 import org.uic.barcode.ticket.EncodingFormatException;
 
 public class BinaryStringTest {
 	
-	
+	@Before public void prepare() {	
+		LoggerFactory.setActivateConsoleLog(true);
+	}
 
 	
 	@Test public void testBinaryString() throws IOException, EncodingFormatException{

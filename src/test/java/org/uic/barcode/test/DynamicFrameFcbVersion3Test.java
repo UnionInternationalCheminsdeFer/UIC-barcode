@@ -21,6 +21,7 @@ import org.uic.barcode.Decoder;
 import org.uic.barcode.Encoder;
 import org.uic.barcode.dynamicFrame.Constants;
 import org.uic.barcode.dynamicFrame.api.IData;
+import org.uic.barcode.logger.LoggerFactory;
 import org.uic.barcode.test.utils.SimpleUICTestTicket;
 import org.uic.barcode.ticket.EncodingFormatException;
 import org.uic.barcode.ticket.api.spec.IUicRailTicket;
@@ -37,6 +38,8 @@ public class DynamicFrameFcbVersion3Test {
 	
 	
 	@Before public void initialize() {
+		
+		LoggerFactory.setActivateConsoleLog(true);
 		
 		signatureAlgorithmOID = Constants.ECDSA_SHA256;
 		keyPairAlgorithmOID = Constants.KG_EC_256;

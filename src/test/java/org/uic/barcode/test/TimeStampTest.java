@@ -4,12 +4,17 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.uic.barcode.dynamicContent.fdc1.TimeStamp;
+import org.uic.barcode.logger.LoggerFactory;
 
 public class TimeStampTest {
 	
 	
+	@Before public void initialize() {
+		LoggerFactory.setActivateConsoleLog(true);
+	}
 	
 	@Test public void testDateConversion() {
 		

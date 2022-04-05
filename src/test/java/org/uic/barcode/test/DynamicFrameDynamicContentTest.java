@@ -29,6 +29,7 @@ import org.uic.barcode.dynamicContent.fdc1.GeoCoordinateType;
 import org.uic.barcode.dynamicContent.fdc1.TimeStamp;
 import org.uic.barcode.dynamicContent.fdc1.UicDynamicContentDataFDC1;
 import org.uic.barcode.dynamicFrame.Constants;
+import org.uic.barcode.logger.LoggerFactory;
 import org.uic.barcode.test.utils.SimpleUICTestTicket;
 import org.uic.barcode.ticket.EncodingFormatException;
 import org.uic.barcode.ticket.api.spec.IUicRailTicket;
@@ -51,6 +52,8 @@ public class DynamicFrameDynamicContentTest {
 	
 	
 	@Before public void initialize() {
+		
+		LoggerFactory.setActivateConsoleLog(true);
 		
 		signatureAlgorithmOID = Constants.ECDSA_SHA256;
 		keyPairAlgorithmOID = Constants.KG_EC_256;

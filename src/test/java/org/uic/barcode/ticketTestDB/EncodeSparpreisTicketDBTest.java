@@ -17,6 +17,7 @@ import org.uic.barcode.Decoder;
 import org.uic.barcode.Encoder;
 import org.uic.barcode.asn1.uper.UperEncoder;
 import org.uic.barcode.dynamicFrame.Constants;
+import org.uic.barcode.logger.LoggerFactory;
 import org.uic.barcode.staticFrame.StaticFrame;
 import org.uic.barcode.test.utils.TestUtils;
 import org.uic.barcode.ticket.EncodingFormatException;
@@ -46,6 +47,9 @@ public class EncodeSparpreisTicketDBTest {
 	 * @throws IOException 
 	 */
 	@Before public void prepare() throws IOException, EncodingFormatException, DataFormatException {
+
+		LoggerFactory.setActivateConsoleLog(true);
+		
 		defaulttimeZone = TimeZone.getDefault();
     	//decode in local CET time zone
 		TimeZone.setDefault(TimeZone.getTimeZone("CET"));

@@ -5,7 +5,9 @@ import static org.junit.Assert.assertEquals;
 import java.io.IOException;
 import java.math.BigInteger;
 
+import org.junit.Before;
 import org.junit.Test;
+import org.uic.barcode.logger.LoggerFactory;
 import org.uic.barcode.staticFrame.StaticFrame;
 import org.uic.barcode.test.utils.TestUtils;
 import org.uic.barcode.ticket.EncodingFormatException;
@@ -27,20 +29,15 @@ public class SignatureSplitTest {
   				134515671861986
 			}
 				
-				
-			Encoding using DER encoding rule
-			Signature SEQUENCE OF: tag = [UNIVERSAL 16] constructed; length = 18
-  				INTEGER: tag = [UNIVERSAL 2] primitive; length = 8
-    				340282366920938463
-  				INTEGER: tag = [UNIVERSAL 2] primitive; length = 6
-    				134515671861986
-			Encoded successfully in 20 bytes:  30120208 04B8ED02 83A6D3DF 02067A57 5ED68AE2 
-				
-
 	 * 
 	 * 
 	 */
 	
+	@Before public void initialize() {
+	
+		LoggerFactory.setActivateConsoleLog(true);
+	
+	}
 	
 	@Test public void testSplitSignature() throws IOException, EncodingFormatException{
 		

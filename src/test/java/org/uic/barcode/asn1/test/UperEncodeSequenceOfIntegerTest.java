@@ -6,11 +6,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.uic.barcode.asn1.datatypes.FieldOrder;
 import org.uic.barcode.asn1.datatypes.Sequence;
 import org.uic.barcode.asn1.datatypesimpl.SequenceOfUnrestrictedLong;
 import org.uic.barcode.asn1.uper.UperEncoder;
+import org.uic.barcode.logger.LoggerFactory;
 
 
 public class UperEncodeSequenceOfIntegerTest {
@@ -37,6 +39,9 @@ TestRecord ::= [APPLICATION 0] IMPLICIT SEQUENCE {
         }
     }
 
+	@Before public void prepare() {	
+		LoggerFactory.setActivateConsoleLog(true);
+	}
 
     @Test public void test() throws IllegalArgumentException, IllegalAccessException {
 

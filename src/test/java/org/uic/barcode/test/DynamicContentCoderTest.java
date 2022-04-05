@@ -9,6 +9,7 @@ import org.uic.barcode.asn1.uper.UperEncoder;
 import org.uic.barcode.dynamicContent.api.DynamicContentCoder;
 import org.uic.barcode.dynamicContent.api.IUicDynamicContent;
 import org.uic.barcode.dynamicContent.api.SimpleUicDynamicContent;
+import org.uic.barcode.logger.LoggerFactory;
 import org.uic.barcode.ticket.EncodingFormatException;
 import org.uic.barcode.ticket.api.impl.SimpleExtension;
 import org.uic.barcode.ticket.api.impl.SimpleGeoCoordinate;
@@ -20,6 +21,8 @@ public class DynamicContentCoderTest {
 	IUicDynamicContent content = null; 
 	
 	@Before public void initialize() {
+		
+		LoggerFactory.setActivateConsoleLog(true);
 		
 		content = new SimpleUicDynamicContent();		
 		

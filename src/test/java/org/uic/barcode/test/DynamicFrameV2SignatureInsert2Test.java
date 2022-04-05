@@ -26,6 +26,7 @@ import org.junit.Test;
 import org.uic.barcode.Decoder;
 import org.uic.barcode.Encoder;
 import org.uic.barcode.dynamicFrame.Constants;
+import org.uic.barcode.logger.LoggerFactory;
 import org.uic.barcode.test.utils.DynamicTestContent;
 import org.uic.barcode.test.utils.SimpleUICTestTicket;
 import org.uic.barcode.ticket.EncodingFormatException;
@@ -48,6 +49,8 @@ public class DynamicFrameV2SignatureInsert2Test {
 	ZonedDateTime originalTimeStamp = ZonedDateTime.now(ZoneId.of("UTC"));
 	
 	@Before public void initialize() {
+		
+		LoggerFactory.setActivateConsoleLog(true);
 		
 		signatureAlgorithmOID = Constants.ECDSA_SHA256;
 		keyPairAlgorithmOID = Constants.KG_EC_256;

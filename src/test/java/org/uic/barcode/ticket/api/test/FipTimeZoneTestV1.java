@@ -11,6 +11,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.uic.barcode.asn1.uper.UperEncoder;
+import org.uic.barcode.logger.LoggerFactory;
 import org.uic.barcode.ticket.EncodingFormatException;
 import org.uic.barcode.ticket.api.asn.omv1.UicRailTicketData;
 import org.uic.barcode.ticket.api.spec.IFipTicket;
@@ -88,6 +89,8 @@ public class FipTimeZoneTestV1 {
 	 * Prepare tickets.
 	 */
 	@Before public void prepare() {
+		
+		LoggerFactory.setActivateConsoleLog(true);
 		
 		defaulttimeZone = TimeZone.getDefault();
 		

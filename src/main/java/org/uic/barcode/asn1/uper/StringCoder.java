@@ -17,13 +17,9 @@ import org.uic.barcode.asn1.datatypes.DefaultAlphabet;
 import org.uic.barcode.asn1.datatypes.FixedSize;
 import org.uic.barcode.asn1.datatypes.RestrictedString;
 import org.uic.barcode.asn1.datatypes.SizeRange;
-import org.uic.barcode.logger.Logger;
-import org.uic.barcode.logger.LoggerFactory;
 
 
 class StringCoder implements Decoder, Encoder {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger("asnLogger");
 
     @Override public <T> boolean canEncode(T obj, Annotation[] extraAnnotations) {
         return obj instanceof String || obj instanceof Asn1String;
@@ -231,7 +227,7 @@ class StringCoder implements Decoder, Encoder {
                     try {
                         chars = UperEncoder.instantiate(restriction.alphabet()).chars().toCharArray();
                     } catch (IllegalArgumentException e) {
-                        LOGGER.info("Uninstantinatable alphabet ", e);
+                    	UperEncoder.logger.info("Uninstantinatable alphabet ", e);
                         throw new IllegalArgumentException("Uninstantinatable alphabet" + restriction.alphabet().getName());
                     }
                     if (BigInteger.valueOf(chars.length - 1).bitLength() < BigInteger.valueOf(126)
@@ -293,7 +289,7 @@ class StringCoder implements Decoder, Encoder {
                     try {
                         chars = UperEncoder.instantiate(restrictionAnnotation.alphabet()).chars().toCharArray();
                     } catch (IllegalArgumentException e) {
-                        LOGGER.info("Uninstantinatable alphabet ", e);
+                    	UperEncoder.logger.info("Uninstantinatable alphabet ", e);
                         throw new IllegalArgumentException("Uninstantinatable alphabet " + restrictionAnnotation.alphabet().getName());
                     }
                     if (BigInteger.valueOf(chars.length - 1).bitLength() < BigInteger.valueOf(126)

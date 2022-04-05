@@ -7,6 +7,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.uic.barcode.asn1.uper.UperEncoder;
+import org.uic.barcode.logger.LoggerFactory;
 import org.uic.barcode.ticket.api.asn.omv2.UicRailTicketData;
 import org.uic.barcode.ticket.api.test.testtickets.OpenTestComplexTicketV2;
 
@@ -34,6 +35,8 @@ public class OpenTicketComplexTestV2 {
 	 * Prepare tickets.
 	 */
 	@Before public void prepare() {
+		
+		LoggerFactory.setActivateConsoleLog(true);
 		
 		defaulttimeZone = TimeZone.getDefault();
 

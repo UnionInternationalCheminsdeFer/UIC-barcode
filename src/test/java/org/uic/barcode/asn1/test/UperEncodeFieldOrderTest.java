@@ -2,6 +2,7 @@ package org.uic.barcode.asn1.test;
 
 import static org.junit.Assert.assertEquals;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.uic.barcode.asn1.datatypes.Asn1Optional;
 import org.uic.barcode.asn1.datatypes.CharacterRestriction;
@@ -9,6 +10,7 @@ import org.uic.barcode.asn1.datatypes.FieldOrder;
 import org.uic.barcode.asn1.datatypes.RestrictedString;
 import org.uic.barcode.asn1.datatypes.Sequence;
 import org.uic.barcode.asn1.uper.UperEncoder;
+import org.uic.barcode.logger.LoggerFactory;
 
 
 public class UperEncodeFieldOrderTest {
@@ -46,6 +48,9 @@ public class UperEncodeFieldOrderTest {
         }
     }
 
+	@Before public void prepare() {	
+		LoggerFactory.setActivateConsoleLog(true);
+	}
 
     @Test public void test() throws IllegalArgumentException, IllegalAccessException {
 

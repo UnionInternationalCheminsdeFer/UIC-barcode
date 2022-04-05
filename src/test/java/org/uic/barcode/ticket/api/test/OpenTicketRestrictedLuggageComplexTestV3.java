@@ -8,6 +8,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.uic.barcode.asn1.uper.UperEncoder;
+import org.uic.barcode.logger.LoggerFactory;
 import org.uic.barcode.ticket.api.asn.omv3.IncludedOpenTicketType;
 import org.uic.barcode.ticket.api.asn.omv3.OpenTicketData;
 import org.uic.barcode.ticket.api.asn.omv3.PassengerType;
@@ -38,6 +39,8 @@ public class OpenTicketRestrictedLuggageComplexTestV3 {
 	 * Prepare tickets.
 	 */
 	@Before public void prepare() {
+		
+		LoggerFactory.setActivateConsoleLog(true);
 		
 		defaulttimeZone = TimeZone.getDefault();
 

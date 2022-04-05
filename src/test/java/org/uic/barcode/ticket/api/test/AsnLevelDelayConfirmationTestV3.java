@@ -10,6 +10,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.uic.barcode.asn1.uper.UperEncoder;
+import org.uic.barcode.logger.LoggerFactory;
 import org.uic.barcode.ticket.api.asn.omv3.LinkMode;
 import org.uic.barcode.ticket.api.asn.omv3.TicketType;
 import org.uic.barcode.ticket.api.asn.omv3.DelayConfirmation;
@@ -39,6 +40,8 @@ public class AsnLevelDelayConfirmationTestV3 {
 	 * Prepare tickets.
 	 */
 	@Before public void prepare() {
+		
+		LoggerFactory.setActivateConsoleLog(true);
 		
 		defaulttimeZone = TimeZone.getDefault();
 

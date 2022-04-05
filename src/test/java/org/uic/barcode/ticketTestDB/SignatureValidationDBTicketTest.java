@@ -18,6 +18,7 @@ import org.junit.Test;
 import org.uic.barcode.Decoder;
 import org.uic.barcode.asn1.uper.UperEncoder;
 import org.uic.barcode.dynamicFrame.Constants;
+import org.uic.barcode.logger.LoggerFactory;
 
 public class SignatureValidationDBTicketTest {
 	
@@ -27,6 +28,8 @@ public class SignatureValidationDBTicketTest {
 	 * Prepare tickets.
 	 */
 	@Before public void prepare() {
+		
+		LoggerFactory.setActivateConsoleLog(true);
 		
 		Security.addProvider(new BouncyCastleProvider());
 

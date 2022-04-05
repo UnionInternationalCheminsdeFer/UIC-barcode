@@ -4,11 +4,13 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.logging.Level;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.uic.barcode.asn1.datatypes.FieldOrder;
 import org.uic.barcode.asn1.datatypes.Sequence;
 import org.uic.barcode.asn1.datatypesimpl.SequenceOfStringUTF8;
 import org.uic.barcode.asn1.uper.UperEncoder;
+import org.uic.barcode.logger.LoggerFactory;
 
 
 public class UperEncodeSequenceOfUtf8StringTest {
@@ -59,6 +61,9 @@ Encoded successfully in 19 bytes:
 
     }
 
+	@Before public void prepare() {	
+		LoggerFactory.setActivateConsoleLog(true);
+	}
 
     @Test public void test() throws IllegalArgumentException, IllegalAccessException {
 
