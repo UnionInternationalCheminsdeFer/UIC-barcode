@@ -272,6 +272,7 @@ public class SimpleDynamicFrame implements IDynamicFrame {
 			return Constants.LEVEL1_VALIDATION_NO_SIGNATURE;
 		}
 		
+		
 		byte[] signature = this.getLevel2Data().getLevel1Signature();
 
 	
@@ -288,7 +289,13 @@ public class SimpleDynamicFrame implements IDynamicFrame {
 				
 		if (signingAlgorithmOid == null || signingAlgorithmOid.length() == 0) {
 			return Constants.LEVEL1_VALIDATION_NO_SIGNATURE;
-		}				
+		}		
+		
+		if (prov == null) {
+			prov = SecurityUtils.findSignatureProvider(key.getEncoded(), signingAlgorithmOid);
+		}
+
+		
 		//find the algorithm name for the signature OID
 		String algo = null;
 		try {
@@ -312,6 +319,7 @@ public class SimpleDynamicFrame implements IDynamicFrame {
 			return Constants.LEVEL1_VALIDATION_SIG_ALG_NOT_IMPLEMENTED;
 		}
 		try {
+			key = SecurityUtils.convert(key, prov);
 			sig.initVerify(key);
 		} catch (InvalidKeyException e) {
 			return Constants.LEVEL1_VALIDATION_SIG_ALG_NOT_IMPLEMENTED;

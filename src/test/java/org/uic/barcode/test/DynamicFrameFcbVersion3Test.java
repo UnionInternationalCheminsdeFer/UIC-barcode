@@ -159,13 +159,7 @@ public class DynamicFrameFcbVersion3Test {
         
 	}	
 	
-	public KeyPair generateECDSAKeys(String keyAlgorithmName, String paramName)  throws NoSuchAlgorithmException, NoSuchProviderException, InvalidAlgorithmParameterException{
-		ECParameterSpec ecSpec = ECNamedCurveTable.getParameterSpec(paramName);
-	    KeyPairGenerator g = KeyPairGenerator.getInstance(keyAlgorithmName, "BC");
-	    g.initialize(ecSpec, new SecureRandom());
-	    return g.generateKeyPair();	    
-    }
-		
+	
 	public KeyPair generateECKeys(String keyAlgorithmOid, String curve)  throws Exception{
 		
 		String keyAlgorithmName = "ECDSA";

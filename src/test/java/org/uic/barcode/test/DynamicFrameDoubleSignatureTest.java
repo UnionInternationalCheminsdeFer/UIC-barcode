@@ -5,6 +5,7 @@ import java.security.InvalidKeyException;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
+import java.security.Provider;
 import java.security.SecureRandom;
 import java.security.Security;
 import java.security.SignatureException;
@@ -37,6 +38,8 @@ public class DynamicFrameDoubleSignatureTest {
 	
 	public IUicRailTicket testFCBticket = null;
 	
+	public Provider provider = null;
+	
 	
 	@Before public void initialize() {
 		
@@ -44,10 +47,11 @@ public class DynamicFrameDoubleSignatureTest {
 		
 		signatureAlgorithmOID = Constants.ECDSA_SHA256;
 		keyPairAlgorithmOID = Constants.KG_EC_256;
-		elipticCurve = "secp256r1";
+		elipticCurve = "secp256k1";
 		
 	    testFCBticket = SimpleUICTestTicket.getUicTestTicket();
 		
+		provider = new BouncyCastleProvider();
 		Security.addProvider(new BouncyCastleProvider());
 
 		try {
@@ -155,7 +159,7 @@ public class DynamicFrameDoubleSignatureTest {
 	    KeyPairGenerator ecKPGen = KeyPairGenerator.getInstance("EC", "BC");
 	    ecKPGen.initialize(namedParamSpec, new SecureRandom());
 	    KeyPair keyPair = ecKPGen.generateKeyPair();
-	    KeyPair kp = new KeyPair(SecurityUtils.convertPublicKey(keyPair.getPublic()),SecurityUtils.convertPrivateKey(keyPair.getPrivate()));
+	    KeyPair kp = new KeyPair(SecurityUtils.convert(keyPair.getPublic(), provider),SecurityUtils.convert(keyPair.getPrivate(), provider));
 	    return kp;
     }
 

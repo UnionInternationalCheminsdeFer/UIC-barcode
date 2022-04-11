@@ -4,6 +4,7 @@ import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.Provider;
+import java.security.Provider.Service;
 import java.security.PublicKey;
 import java.security.Security;
 import java.security.spec.InvalidKeySpecException;
@@ -81,28 +82,22 @@ public class SecurityUtils {
  		return null;
 	}
 	
-
-	
-	public static PublicKey convertPublicKey(PublicKey key) {
-		
-		
-		PublicKey publicKey;
-		try {
-			publicKey = KeyFactory.getInstance("RSA").generatePublic(new X509EncodedKeySpec(key.getEncoded()));
-		} catch (InvalidKeySpecException | NoSuchAlgorithmException e) {
-			return key;
-		}
-		
-		return publicKey;
-		
-	}
 	
 	
 	public static PublicKey convert(PublicKey key, Provider provider) {
 		
 		PublicKey publicKey;
+		KeyFactory keyFactory = null;
+		
 		try {
-			publicKey = KeyFactory.getInstance("RSA", provider).generatePublic(new X509EncodedKeySpec(key.getEncoded()));
+			if (key.getAlgorithm() != null && key.getAlgorithm().toUpperCase().contains("EC") ) {
+				keyFactory = KeyFactory.getInstance("EC",provider);
+			} else if (key.getAlgorithm() != null && key.getAlgorithm().length() > 0 ) {
+				keyFactory = KeyFactory.getInstance("DSA",provider);
+			} else {
+				return key;
+			}
+			publicKey = keyFactory.generatePublic(new X509EncodedKeySpec(key.getEncoded()));
 		} catch (InvalidKeySpecException | NoSuchAlgorithmException e) {
 			return key;
 		}
@@ -113,17 +108,61 @@ public class SecurityUtils {
 	}
 	
 	
-	public static PrivateKey convertPrivateKey(PrivateKey key) {
-		
+	public static PrivateKey convert(PrivateKey key, Provider provider) {
 		
 		PrivateKey privateKey;
+		KeyFactory keyFactory = null;
+		
 		try {
-			privateKey = KeyFactory.getInstance("RSA").generatePrivate(new PKCS8EncodedKeySpec(key.getEncoded()));
+			if (key.getAlgorithm() != null && key.getAlgorithm().toUpperCase().contains("EC") ) {
+				keyFactory = KeyFactory.getInstance("EC",provider);
+			} else if (key.getAlgorithm() != null && key.getAlgorithm().length() > 0 ) {
+				keyFactory = KeyFactory.getInstance("DSA",provider);
+			} else {
+				return key;
+			}
+			privateKey = keyFactory.generatePrivate(new PKCS8EncodedKeySpec(key.getEncoded()));
 		} catch (InvalidKeySpecException | NoSuchAlgorithmException e) {
 			return key;
 		}
 		
 		return privateKey;
 		
+		
+	}
+
+	public static Provider findSignatureProvider(byte[] encoded, String oid) {
+		
+		KeyFactory keyFactory = null;
+		String signatureAlgorithmName = null;
+		
+		Provider[] provs = Security.getProviders();
+ 		for (Provider provider : provs) {
+ 			try {
+ 				Service service = provider.getService(AlgorithmNameResolver.TYPE_SIGNATURE_ALG, oid);
+ 				if (service != null) {
+ 					signatureAlgorithmName = service.getAlgorithm();
+ 					if (signatureAlgorithmName != null && signatureAlgorithmName.length() > 0) {
+ 						if (signatureAlgorithmName.toUpperCase().contains("EC") ) {
+ 							keyFactory = KeyFactory.getInstance("EC",provider);
+ 						} else {
+ 							keyFactory = KeyFactory.getInstance("DSA",provider);
+ 						}
+ 						if (keyFactory != null) {
+ 							X509EncodedKeySpec spec = new X509EncodedKeySpec(encoded);
+ 							//try to encode the key
+ 							keyFactory.generatePublic(spec);						
+ 						}
+ 					}
+ 				}
+			} catch (Exception e1) {
+				keyFactory = null;
+			} 
+ 		    if (keyFactory != null) {
+ 		    	return keyFactory.getProvider();
+ 		    }
+ 		}
+		
+		return null;
 	}
 }
