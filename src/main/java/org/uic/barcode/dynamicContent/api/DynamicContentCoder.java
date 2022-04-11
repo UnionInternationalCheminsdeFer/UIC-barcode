@@ -92,8 +92,12 @@ public class DynamicContentCoder {
 			
 			GeoCoordinateType asnPoint = new GeoCoordinateType();
 			
-			asnPoint.setLatitude(point.getLatitude());  
-			asnPoint.setLongitude(point.getLongitude());
+			if (point.getLatitude() != null) {
+				asnPoint.setLatitude(point.getLatitude());  
+			}
+			if (point.getLongitude() != null) {
+				asnPoint.setLongitude(point.getLongitude());
+			}
 			
 			if (point.getUnit() != IGeoUnitType.milliDegree && point.getUnit() != null){
 				asnPoint.setGeoUnit(GeoUnitType.valueOf(point.getUnit().name()));
@@ -169,8 +173,12 @@ public class DynamicContentCoder {
 		
 		IGeoCoordinate g = new SimpleGeoCoordinate();
 		
-		g.setLatitude(asnCoordinate.getLatitude());
-		g.setLongitude(asnCoordinate.getLongitude());
+		if (asnCoordinate.getLatitude() != null) {
+			g.setLatitude(asnCoordinate.getLatitude());
+		}
+		if (asnCoordinate.getLongitude() != null) {
+			g.setLongitude(asnCoordinate.getLongitude());
+		}
 		
 		if (asnCoordinate.getCoordinateSystem() != null) {
 			g.setSystem(IGeoCoordinateSystemType.valueOf(asnCoordinate.getCoordinateSystem().name()));
