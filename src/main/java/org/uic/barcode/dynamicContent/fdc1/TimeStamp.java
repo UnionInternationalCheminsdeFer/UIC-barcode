@@ -1,11 +1,11 @@
 package org.uic.barcode.dynamicContent.fdc1;
 
 import java.time.Instant;
-import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
-import java.time.temporal.ChronoField;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 
 import org.uic.barcode.asn1.datatypes.FieldOrder;
 import org.uic.barcode.asn1.datatypes.IntRange;
@@ -41,18 +41,22 @@ public class TimeStamp {
 	 * Instantiates a new time stamp and sets the time-stamp to now.
 	 */
 	public TimeStamp() {
-		ZonedDateTime now = ZonedDateTime.now(ZoneId.of("UTC"));
-		day = new Long(now.get(ChronoField.DAY_OF_YEAR));
-		secondOfDay = new Long(now.get(ChronoField.SECOND_OF_DAY));
+		setNow();
 	}
 	
 	/**
 	 * Sets the the time-stamp to now.
 	 */
 	public void setNow() {
-		ZonedDateTime now = ZonedDateTime.now(ZoneId.of("UTC"));
-		day = new Long(now.get(ChronoField.DAY_OF_YEAR));
-		secondOfDay = new Long(now.get(ChronoField.SECOND_OF_DAY));		
+	    Calendar c = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+	    day = (long) c.get(Calendar.DAY_OF_YEAR);
+	    long now = c.getTimeInMillis();
+	    c.set(Calendar.HOUR_OF_DAY, 0);
+	    c.set(Calendar.MINUTE, 0);
+	    c.set(Calendar.SECOND, 0);
+	    c.set(Calendar.MILLISECOND, 0);
+	    long passed = now - c.getTimeInMillis();
+	    secondOfDay = passed / 1000;
 	}
 	
 	/**
