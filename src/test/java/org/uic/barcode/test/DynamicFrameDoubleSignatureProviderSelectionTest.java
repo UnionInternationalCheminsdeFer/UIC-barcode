@@ -1,12 +1,10 @@
 package org.uic.barcode.test;
 
 import java.io.IOException;
-import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
 import java.security.Provider;
 import java.security.SecureRandom;
 import java.security.Security;
@@ -28,6 +26,7 @@ import org.uic.barcode.test.utils.Level2TestDataFactory;
 import org.uic.barcode.test.utils.SimpleUICTestTicket;
 import org.uic.barcode.ticket.EncodingFormatException;
 import org.uic.barcode.ticket.api.spec.IUicRailTicket;
+import org.uic.barcode.utils.AlgorithmNameResolver;
 
 public class DynamicFrameDoubleSignatureProviderSelectionTest {
 	
@@ -48,7 +47,7 @@ public class DynamicFrameDoubleSignatureProviderSelectionTest {
 		
 		signatureAlgorithmOID = Constants.ECDSA_SHA256;
 		keyPairAlgorithmOID = Constants.KG_EC_256;
-		elipticCurve = "secp256k1";
+		elipticCurve = "secp256r1";
 		
 	    testFCBticket = SimpleUICTestTicket.getUicTestTicket();
 			
@@ -152,16 +151,10 @@ public class DynamicFrameDoubleSignatureProviderSelectionTest {
         
 	}	
 	
-	public KeyPair generateECDSAKeys(String keyAlgorithmName, String paramName)  throws NoSuchAlgorithmException, NoSuchProviderException, InvalidAlgorithmParameterException{
-		ECParameterSpec ecSpec = ECNamedCurveTable.getParameterSpec(paramName);
-	    KeyPairGenerator g = KeyPairGenerator.getInstance(keyAlgorithmName, "BC");
-	    g.initialize(ecSpec, new SecureRandom());
-	    return g.generateKeyPair();	    
-    }
 		
 	public KeyPair generateECKeys(String keyAlgorithmOid, String curve)  throws Exception{
 		
-		String keyAlgorithmName = "ECDSA";
+		String keyAlgorithmName = AlgorithmNameResolver.getName(AlgorithmNameResolver.TYPE_KEY_GENERATOR_ALG, keyAlgorithmOid);
 		ECParameterSpec ecSpec = ECNamedCurveTable.getParameterSpec(curve);
 	    KeyPairGenerator g = KeyPairGenerator.getInstance(keyAlgorithmName, "BC");
 	    g.initialize(ecSpec, new SecureRandom());

@@ -47,7 +47,7 @@ public class DynamicFrameV2ValidityDateTest {
 		
 		signatureAlgorithmOID = Constants.ECDSA_SHA256;
 		keyPairAlgorithmOID = Constants.KG_EC_256;
-		elipticCurve = "secp256k1";
+		elipticCurve = "secp256r1";
 		
 	    testFCBticket = SimpleUICTestTicket.getUicTestTicket();
 		
