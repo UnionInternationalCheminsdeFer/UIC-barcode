@@ -172,6 +172,8 @@ public class DynamicContentCoder {
 
 	private static IGeoCoordinate getGeoCoordinate(GeoCoordinateType asnCoordinate) {
 		
+		if (asnCoordinate == null) return null;
+		
 		IGeoCoordinate g = new SimpleGeoCoordinate();
 		
 		if (asnCoordinate.getLatitude() != null) {
