@@ -162,8 +162,9 @@ public class DynamicContentCoder {
 		
 		content.setGeoCoordinate(getGeoCoordinate(asn.getGeoCoordinate()));
 		
-		content.setTimeStamp(asn.getTimeStamp().getTimeAsDate());
-		
+		if (asn.getTimeStamp() != null) {
+			content.setTimeStamp(asn.getTimeStamp().getTimeAsDate());
+		}
 
 		return content;
 
