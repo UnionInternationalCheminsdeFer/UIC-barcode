@@ -57,21 +57,25 @@ public class DynamicContentCoder {
 	
 
 	private static SequenceOfExtension getAsnContentExtensions(UicDynamicContentDataFDC1 asn, List<IExtension> dynamicContentResponseList) throws EncodingFormatException {
-		if (dynamicContentResponseList != null && !dynamicContentResponseList.isEmpty()){
+		if (dynamicContentResponseList == null || dynamicContentResponseList.isEmpty()){
+			return null;
+		}
 			
-			SequenceOfExtension asnList = asn.getExtensions();
-			if (asnList == null) asnList = new SequenceOfExtension();
-			for (IExtension extension : dynamicContentResponseList){
-				ExtensionData asnExtension = getAsnExtension(extension);
-				if (asnExtension!= null) {
-					asnList.add(asnExtension);
-				}
-			}
-			if (!asnList.isEmpty()){
-				return asnList;
+		SequenceOfExtension asnList = asn.getExtensions();
+		if (asnList == null) {
+			asnList = new SequenceOfExtension();
+		}
+		
+		for (IExtension extension : dynamicContentResponseList){
+			ExtensionData asnExtension = getAsnExtension(extension);
+			if (asnExtension!= null) {
+				asnList.add(asnExtension);
 			}
 		}
-	
+		if (!asnList.isEmpty()){
+			return asnList;
+		}
+			
 		return null;
 	}
 
