@@ -1,6 +1,7 @@
 package org.uic.barcode.ticket.api.test.testtickets;
 
 import org.uic.barcode.asn1.datatypes.Asn1BigInteger;
+import org.uic.barcode.asn1.uper.UperEncoder;
 import org.uic.barcode.ticket.api.asn.omv3.CardReferenceType;
 import org.uic.barcode.ticket.api.asn.omv3.ControlData;
 import org.uic.barcode.ticket.api.asn.omv3.CustomerStatusType;
@@ -118,6 +119,15 @@ value UicRailTicketData ::= {
 					+ "0562C99B46B01108CBB786CDFE72E50116AE4C130614494C593368D405901816"
 					+ "FA1E848001E009201802EA35350B4821B893232B630BC9031B7B73334B936B0B"
 					+ "A34B7B7240100402C800131B20100B10282DA01640507B4";
+			
+		}
+		
+		public static byte[] getEncodingBytes() {
+			
+			String hex = getEncodingHex();
+			
+			return UperEncoder.bytesFromHexString(hex);	
+			
 			
 		}
 		

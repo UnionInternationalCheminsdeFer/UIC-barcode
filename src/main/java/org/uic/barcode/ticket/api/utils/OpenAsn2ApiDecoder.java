@@ -356,11 +356,13 @@ public class OpenAsn2ApiDecoder implements Asn2ApiDecoder {
 	private IDelayConfirmation convertDelayConfirmation(DelayConfirmation asnDocument, Date issuingDate) {
 		
 		IDelayConfirmation document = factory.createDelayConfirmation();
-		document.setReference(UicEncoderUtils.mapToString(asnDocument.getReferenceNum().longValue(),asnDocument.getReferenceIA5()));		
+		document.setReference(UicEncoderUtils.mapToString(asnDocument.getReferenceNum(),asnDocument.getReferenceIA5()));		
 		
 	
 		document.setExtension(convertExtension(asnDocument.getExtension()));
 		document.setInfoText(asnDocument.getInfoText());		
+		
+		document.setTrain(UicEncoderUtils.mapToString(asnDocument.getTrainNum(), asnDocument.getTrainIA5()));
 		
  		if (asnDocument.getStationCodeTable()!=null){
 			document.setStationCodeTable(IStationCodeTable.valueOf(asnDocument.getStationCodeTable().name()));

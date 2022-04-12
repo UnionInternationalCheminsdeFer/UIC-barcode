@@ -1,4 +1,4 @@
-package org.uic.barcode.test;
+package org.uic.barcode.asn1.test;
 
 import java.io.IOException;
 

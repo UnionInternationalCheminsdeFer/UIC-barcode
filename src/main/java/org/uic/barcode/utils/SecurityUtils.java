@@ -11,22 +11,30 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 
+/**
+ * The Class SecurityUtils.
+ */
 public class SecurityUtils {
 	
-	public static KeyFactory findKeyFactory(String oid, byte[] keyBytes) {
+	/**
+	 * Find provider by public key.
+	 *
+	 * @param algorithmOid the algorithm oid used to generate the key
+	 * @param keyBytes the encoded bytes of the public key 
+	 * @return the provider
+	 */
+	public static Provider findPublicKeyProvider(String keyAlgorithmOid, byte[] keyBytes) {
+		
 		
 		X509EncodedKeySpec keySpec = new X509EncodedKeySpec(keyBytes);
 		
-		String name = null;
+		String name;
 		try {
-			name = AlgorithmNameResolver.getName(AlgorithmNameResolver.TYPE_KEY_GENERATOR_ALG, oid);
+			name = AlgorithmNameResolver.getAlgorithmName(AlgorithmNameResolver.TYPE_KEY_GENERATOR_ALG, keyAlgorithmOid, null);
 		} catch (Exception e2) {
 			return null;
 		}
-		if (name == null || name.length() == 0) {
-			return null;
-		}
-		
+			
 		KeyFactory keyFactory = null;
 		
  		Provider[] provs = Security.getProviders();
@@ -39,17 +47,23 @@ public class SecurityUtils {
  		    if (keyFactory != null) {
  		    	try {
  		    		keyFactory.generatePublic(keySpec);
- 		    		return keyFactory;
+ 		    		return provider;
  		    	} catch (Exception e) {
+ 		    		provider = null;
  		    		//try next
  		    	}
  		    }
  		}
-		return null;
-
+ 		
+ 		return null;
 	}
-	
 
+	/**
+	 * Find private key provider.
+	 *
+	 * @param key the private key
+	 * @return the provider
+	 */
 	public static Provider findPrivateKeyProvider(PrivateKey key) {
 		
 		String name = key.getAlgorithm();
@@ -84,6 +98,13 @@ public class SecurityUtils {
 	
 	
 	
+	/**
+	 * Convert.
+	 *
+	 * @param key the key
+	 * @param provider the provider
+	 * @return the public key
+	 */
 	public static PublicKey convert(PublicKey key, Provider provider) {
 		
 		PublicKey publicKey;
@@ -108,6 +129,13 @@ public class SecurityUtils {
 	}
 	
 	
+	/**
+	 * Convert.
+	 *
+	 * @param key the key
+	 * @param provider the provider
+	 * @return the private key
+	 */
 	public static PrivateKey convert(PrivateKey key, Provider provider) {
 		
 		PrivateKey privateKey;
@@ -131,6 +159,13 @@ public class SecurityUtils {
 		
 	}
 
+	/**
+	 * Find signature provider.
+	 *
+	 * @param encoded the encoded
+	 * @param oid the oid
+	 * @return the provider
+	 */
 	public static Provider findSignatureProvider(byte[] encoded, String oid) {
 		
 		KeyFactory keyFactory = null;
