@@ -653,7 +653,7 @@ public class OpenAsn2ApiDecoderV3 implements Asn2ApiDecoder {
 			}
 		}
 		
-		return null;
+		return document;
 	}
 	
 

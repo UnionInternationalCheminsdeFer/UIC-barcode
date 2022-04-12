@@ -18,7 +18,6 @@ public class SequenceOfTravelerId extends Asn1SequenceOf<Long> {
 		}
 	}
 	
-	@Deprecated
 	public static SequenceOfTravelerId getSequence(List<Long> numList) {
 		if (numList == null || numList.isEmpty()) return null;
 		return new SequenceOfTravelerId(numList);

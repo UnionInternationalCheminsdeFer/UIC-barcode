@@ -360,6 +360,7 @@ public class Api2OpenAsnEncoderV3 implements Api2AsnEncoder {
 		asnData.setCarrierNum(SequenceOfCarrierNum.getSequence(UicEncoderUtils.getNumList(document.getCarriers())));	
 		asnData.setCarrierIA5(UicEncoderUtils.getIA5NonNumList(document.getCarriers()));	
 		
+		asnData.setInfoText(document.getInfoText());
 		asnData.setExtension(encodeExtension(document.getExtension()));
 		
 		asnData.setCompartmentDetails(encodeCompartmentDetails(document.getCompartmentDetails()));
@@ -390,21 +391,21 @@ public class Api2OpenAsnEncoderV3 implements Api2AsnEncoder {
 		asnData.setToStationNameUTF8(document.getToStationName());				
 
 		
-		asnData.setAttachedBicycles(UicEncoderUtils.getRestrictedInt(document.getAttachedBicycles(),1,5));
-		asnData.setAttachedBoats(UicEncoderUtils.getRestrictedInt(document.getAttachedBoats(),1,2));
-		asnData.setAttachedSurfboards(UicEncoderUtils.getRestrictedInt(document.getAttachedSurfboards(),1,5));
+		asnData.setAttachedBicycles(UicEncoderUtils.getRestrictedInt(document.getAttachedBicycles(),0,4));
+		asnData.setAttachedBoats(UicEncoderUtils.getRestrictedInt(document.getAttachedBoats(),0,2));
+		asnData.setAttachedSurfboards(UicEncoderUtils.getRestrictedInt(document.getAttachedSurfboards(),0,5));
 		
 		if (document.getLoadingDeck() != ILoadingDeckType.upper && document.getLoadingDeck() != null){
 			asnData.setLoadingDeck(LoadingDeckType.valueOf(document.getLoadingDeck().name()));
 		}
 				
-		asnData.setLoadingListEntry(UicEncoderUtils.getRestrictedInt(document.getAttachedSurfboards(),1,200));
-		
-		asnData.setBoatCategory(UicEncoderUtils.getRestrictedInt(document.getBoatCategory(),1,6));
-		asnData.setCarCategory(UicEncoderUtils.getRestrictedInt(document.getCarCategory(),1,9));
+		asnData.setLoadingListEntry(UicEncoderUtils.getRestrictedInt(document.getLoadingListEntry(),0,999));	
+		asnData.setBoatCategory(UicEncoderUtils.getRestrictedInt(document.getBoatCategory(),0,6));
+		asnData.setCarCategory(UicEncoderUtils.getRestrictedInt(document.getCarCategory(),0,9));
+		asnData.setRoofRackHeight(UicEncoderUtils.getRestrictedInt(document.getRoofRackHeight(),0,99));
+
 		asnData.setCoach(UicEncoderUtils.getIA5(document.getCoach()));
 
-		asnData.setRoofRackHeight(UicEncoderUtils.getRestrictedInt(document.getRoofRackHeight(),1,99));
 		
 		if (document.getRoofRackType()!= IRoofRackType.norack && document.getRoofRackType() != null) {
 			asnData.setRoofRackType(RoofRackType.valueOf(document.getRoofRackType().name()));

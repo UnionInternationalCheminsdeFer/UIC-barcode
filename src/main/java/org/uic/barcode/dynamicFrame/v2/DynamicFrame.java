@@ -1,8 +1,5 @@
 package org.uic.barcode.dynamicFrame.v2;
 
-import java.security.PrivateKey;
-import java.security.Provider;
-import java.security.Signature;
 import org.uic.barcode.asn1.datatypes.Asn1Optional;
 import org.uic.barcode.asn1.datatypes.CharacterRestriction;
 import org.uic.barcode.asn1.datatypes.FieldOrder;
@@ -14,7 +11,6 @@ import org.uic.barcode.dynamicContent.api.DynamicContentCoder;
 import org.uic.barcode.dynamicContent.api.IUicDynamicContent;
 import org.uic.barcode.dynamicContent.fdc1.UicDynamicContentDataFDC1;
 import org.uic.barcode.ticket.EncodingFormatException;
-import org.uic.barcode.utils.AlgorithmNameResolver;
 
 
 /**
@@ -122,53 +118,5 @@ public class DynamicFrame extends Object{
 		return UperEncoder.decode(bytes, DynamicFrame.class);	
 	}
 	
-	
 
-	
-	/**
-	 * Adds the dynamic content and encodes it. (API level)
-	 *
-	 * @param content the dynamic content
-	 * @throws EncodingFormatException the encoding format exception
-	 */
-	public void addDynamicContent(IUicDynamicContent content) throws EncodingFormatException {
-		
-		
-		this.getLevel2SignedData().setLevel2Data(new DataType());
-		
-		this.getLevel2SignedData().getLevel2Data().setFormat(DynamicContentCoder.dynamicContentDataFDC1);
-			
-		this.getLevel2SignedData().getLevel2Data().setByteData(DynamicContentCoder.encode(content, DynamicContentCoder.dynamicContentDataFDC1));
-		
-	}
-	
-	/**
-	 * Adds the level 2 dynamic data. (ASN level)
-	 *
-	 * @param dynamicData the dynamic data
-	 */
-	public void addLevel2DynamicData(UicDynamicContentDataFDC1 dynamicData) {
-		DataType dt = new DataType();
-		dt.setByteData(dynamicData.getDataType().getByteData());
-		dt.setFormat(dynamicData.getDataType().getFormat());	
-		level2SignedData.setLevel2Data(dt);	
-	}
-	
-	/**
-	 * Gets the dynamic content.
-	 *
-	 * @return the dynamic content
-	 */
-	public IUicDynamicContent getDynamicContent() {
-		
-		if (this.getLevel2SignedData() == null || 
-				this.getLevel2SignedData().getLevel2Data() == null){
-				return null;
-		}
-		
-		return DynamicContentCoder.decode(this.getLevel2SignedData().getLevel2Data().getByteData());
-			
-	}
-	
-	
 }
