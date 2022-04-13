@@ -429,5 +429,10 @@ public interface IIncludedOpenTicket {
 	 * @param validUntilDateTime the new validUntil date time
 	 */
 	public void setValidUntilUTCoffset(Long validUntilUTCoffset) ;
+	
+	
+	public String getServiceLevel();
+	
+	public void setServiceLevel(String serviceLevel);
 
 }

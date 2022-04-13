@@ -18,6 +18,7 @@ import org.uic.barcode.ticket.api.asn.omv1.CardReferenceType;
 import org.uic.barcode.ticket.api.asn.omv1.CodeTableType;
 import org.uic.barcode.ticket.api.asn.omv1.CompartmentDetailsType;
 import org.uic.barcode.ticket.api.asn.omv1.CompartmentGenderType;
+import org.uic.barcode.ticket.api.asn.omv1.CompartmentPositionType;
 import org.uic.barcode.ticket.api.asn.omv1.ConfirmationTypeType;
 import org.uic.barcode.ticket.api.asn.omv1.ControlData;
 import org.uic.barcode.ticket.api.asn.omv1.CountermarkData;
@@ -91,11 +92,14 @@ import org.uic.barcode.ticket.api.asn.omv1.VatDetailType;
 import org.uic.barcode.ticket.api.asn.omv1.ViaStationType;
 import org.uic.barcode.ticket.api.asn.omv1.VoucherData;
 import org.uic.barcode.ticket.api.asn.omv1.ZoneType;
+import org.uic.barcode.ticket.api.asn.omv1.SequenceOfValidityPeriodType;
+import org.uic.barcode.ticket.api.asn.omv1.SequenceOfTimeRangeType;
 import org.uic.barcode.ticket.api.spec.IBerth;
 import org.uic.barcode.ticket.api.spec.ICarCarriageReservation;
 import org.uic.barcode.ticket.api.spec.ICardReference;
 import org.uic.barcode.ticket.api.spec.ICompartmentDetails;
 import org.uic.barcode.ticket.api.spec.ICompartmentGenderType;
+import org.uic.barcode.ticket.api.spec.ICompartmentPositionType;
 import org.uic.barcode.ticket.api.spec.IControlDetail;
 import org.uic.barcode.ticket.api.spec.ICounterMark;
 import org.uic.barcode.ticket.api.spec.ICustomerCard;
@@ -486,9 +490,25 @@ public class Api2OpenAsnEncoder implements Api2AsnEncoder {
 		asnData.setSpecialAllocation(UicEncoderUtils.getRestrictedInt(compartmentDetails.getSpecialAllocation(), 1,99));
 		asnData.setSpecialAllocationDescr(compartmentDetails.getSpecialAllocationDescr());
 
+		asnData.setPosition(convert(compartmentDetails.getPosition()));
 		return asnData;
 	}	
 	
+	private CompartmentPositionType convert(ICompartmentPositionType position) {
+		if (position == null) {
+			return null;
+		} else if (position.equals(ICompartmentPositionType.lowerLevel)) {
+			return CompartmentPositionType.lowerLevel;
+		} else if (position.equals(ICompartmentPositionType.upperLevel)) {
+			return CompartmentPositionType.upperLevel;
+		} else if (position.equals(ICompartmentPositionType.unspecified)) {
+			return CompartmentPositionType.unspecified;
+		}
+		return null;
+	}
+
+
+
 	/**
 	 * Encode berths.
 	 *
@@ -602,6 +622,10 @@ public class Api2OpenAsnEncoder implements Api2AsnEncoder {
 		asnData.setTypeOfSupplement(UicEncoderUtils.getRestrictedInt(document.getTypeOfSupplement(), 1, 9));
 		
 		asnData.setPlaces(encodePlaces(document.getPlaces()));
+		
+		if (document.getAdditionalPlaces() != null) {
+			asnData.setAdditionalPlaces(encodePlaces(document.getAdditionalPlaces()));
+		}		
 		asnData.setBicyclePlaces(encodePlaces(document.getBicyclePlaces()));
 		
 		
@@ -715,6 +739,11 @@ public class Api2OpenAsnEncoder implements Api2AsnEncoder {
 		if (document.getClassCode() != classCode){
 			asnData.setClassCode(convertTravelClass(document.getClassCode()));
 		}
+		
+		if (document.getServiceLevel() != null && document.getServiceLevel().length() > 0) {
+			asnData.setServiceLevel(document.getServiceLevel());
+		}
+		
 		if (document.getExternalIssuer() > 0) {
 			asnData.setExternalIssuerId(new Long(document.getExternalIssuer()));
 		}
@@ -886,6 +915,11 @@ public class Api2OpenAsnEncoder implements Api2AsnEncoder {
 		if (document.getClassCode() != ITravelClassType.second){
 			asnData.setClassCode(convertTravelClass(document.getClassCode()));
 		}
+		
+		if (document.getServiceLevel() != null && document.getServiceLevel().length() > 0) {
+			asnData.setServiceLevel(document.getServiceLevel());
+		}
+		
 		if (document.getExternalIssuer()>0) {
 			asnData.setExtIssuerId(new Long(document.getExternalIssuer()));
 		}
@@ -906,10 +940,13 @@ public class Api2OpenAsnEncoder implements Api2AsnEncoder {
 		if (document.getLuggageRestriction() != null) {
 			asnData.setLuggage(encodeLuggage(document.getLuggageRestriction()));
 		}
+
+		if (document.getReturnDescription() != null) {
+			asnData.setReturnDescription(encodeReturnDescription(document.getReturnDescription(),issuingDate));			
+		}
 		
 		if (document.isReturnIncluded()) {
 			asnData.setReturnIncluded(true);
-			asnData.setReturnDescription(encodeReturnDescription(document.getReturnDescription(),issuingDate));			
 		} else {
 			asnData.setReturnIncluded(false);
 		}
@@ -1013,12 +1050,11 @@ public class Api2OpenAsnEncoder implements Api2AsnEncoder {
 			asnData.setClassCode(convertTravelClass(document.getClassCode()));
 		}
 
-
+		if (document.getReturnDescription()!= null) {
+			asnData.setReturnDescription(encodeReturnDescription(document.getReturnDescription(),issuingDate));
+		}
 		if (document.isReturnIncluded()) {
 			asnData.setReturnIncluded(true);
-			if (document.getReturnDescription()!= null) {
-				asnData.setReturnDescription(encodeReturnDescription(document.getReturnDescription(),issuingDate));
-			}
 		} else {
 			asnData.setReturnIncluded(false);
 		}
@@ -1089,8 +1125,13 @@ public class Api2OpenAsnEncoder implements Api2AsnEncoder {
 		asnData.setRoute(encodeViaStationCollection(document.getRoute()));
 		
 		if (document.getRouteId() > 0){
-			asnData.setSeriesId(new Long(document.getRouteId()));
+			asnData.setRouteId(new Long(document.getRouteId()));
 		}
+		
+		if (document.getSeriesId() > 0) {
+			asnData.setSeriesId(new Long(document.getSeriesId()));
+		}
+		
 		return asnData;
 	}
 	
@@ -1194,7 +1235,8 @@ public class Api2OpenAsnEncoder implements Api2AsnEncoder {
 			} else {
 				DeltaCoordinates delta = new DeltaCoordinates();
 				delta.setLatitude(Asn1BigInteger.toAsn1(asnData.getFirstEdge().getLatitude() - edge.getLatitude()));
-				delta.setLatitude(Asn1BigInteger.toAsn1(asnData.getFirstEdge().getLongitude() - edge.getLongitude()));				
+				delta.setLongitude(Asn1BigInteger.toAsn1(asnData.getFirstEdge().getLongitude() - edge.getLongitude()));				
+                asnList.add(delta);
 			}			
 			
 		}		
@@ -1475,7 +1517,7 @@ public class Api2OpenAsnEncoder implements Api2AsnEncoder {
 		details.setSeries(UicEncoderUtils.getRestrictedInt(seriesDataDetails.getSeries(), 1, 99999));
 		details.setSupplyingCarrier(UicEncoderUtils.getRestrictedInt(seriesDataDetails.getSupplyingCarrier(), 1, 9999));
 		details.setOfferIdentification(UicEncoderUtils.getRestrictedInt(seriesDataDetails.getOfferIdentification(), 1, 99));
-		return null;
+		return details;
 	}
 
 	/**
@@ -1505,6 +1547,7 @@ public class Api2OpenAsnEncoder implements Api2AsnEncoder {
 		asnData.setReferenceIA5(UicEncoderUtils.getIA5NonNum(document.getReference()));	
 		
 		asnData.setInfoText(document.getInfoText());
+		asnData.setExtension(encodeExtension(document.getExtension()));
 		
 		asnData.setValidity(document.getValidFrom(), document.getValidUntil());
 
@@ -1620,7 +1663,10 @@ public class Api2OpenAsnEncoder implements Api2AsnEncoder {
 		
 		ValidityPeriodDetailType asnData = new ValidityPeriodDetailType();
 		
-		if (validityDetails.getTimeRanges() != null) {
+		if (validityDetails.getTimeRanges() != null && !validityDetails.getTimeRanges().isEmpty()) {
+			
+			asnData.setExcludedTimeRange(new SequenceOfTimeRangeType());
+
 			for (ITimeRange range : validityDetails.getTimeRanges()) {				
 			
 				if (range.getFromTime() == range.getUntilTime()){
@@ -1635,8 +1681,11 @@ public class Api2OpenAsnEncoder implements Api2AsnEncoder {
 			}
 		}
 		
-		if (validityDetails.getValidityRanges() != null) {
-			for (IValidityRange range : validityDetails.getValidityRanges()) {
+		if (validityDetails.getValidityRanges() != null && !validityDetails.getValidityRanges().isEmpty()) {
+			
+			asnData.setValidityPeriod(new SequenceOfValidityPeriodType());
+			
+			for (IValidityRange range : validityDetails.getValidityRanges()) {	
 							
 				ValidityPeriodType asnRange = new ValidityPeriodType();
 				
@@ -1689,9 +1738,8 @@ public class Api2OpenAsnEncoder implements Api2AsnEncoder {
 
 		asnData.setClassCode(convertTravelClass(document.getClassCode()));
 		
-		if (!document.isIncludesSupplements()){
-			asnData.setIncludesSupplements(false);
-		}
+		asnData.setIncludesSupplements(document.isIncludesSupplements());
+		
 		asnData.setNumberOfTravelDays(UicEncoderUtils.getRestrictedInt(document.getNumberOfTravelDates(), 1, 8));
 		
 		asnData.setValidityDates(document.getValidFrom(), document.getValidUntil(), issuingDate);

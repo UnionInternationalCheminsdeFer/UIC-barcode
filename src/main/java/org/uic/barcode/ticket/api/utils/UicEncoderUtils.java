@@ -329,6 +329,49 @@ public class UicEncoderUtils {
 		}		
 
 	}
+	
+	public static Long getRestrictedNum(String text, int min, int max) {
+		
+		if (text == null || text.length() == 0) {
+			return null;
+		}
+		
+		Long i;
+		try {
+			i = Long.parseLong(text);
+		} catch (NumberFormatException e) {
+			return null;
+		}
+		if (i < min || i > max) {
+			return null;
+		}
+		return i;
+
+	}
+
+	public static String getIA5RestrictedNonNum(String text, int min, int max) throws EncodingFormatException {
+		if (text == null || text.length() == 0) {
+			return null;
+		}		
+		
+		for (int i = 0; i < text.length(); i++){
+			int index = text.charAt(i);
+			if (index < 0 || index > 127) {
+				throw new EncodingFormatException("Wrong Characters in IA5 String encoding");
+			}
+		}
+
+		try {
+			long l = Long.parseLong(text);
+			if (l < min || l > max) {
+				return text;
+			} else {
+				return null;
+			}
+		} catch (NumberFormatException e) {
+			return text;
+		}	
+	}
 
 	/**
 	 * Gets the restricted int.
@@ -509,6 +552,8 @@ public class UicEncoderUtils {
 		return list;
 
 	}
+
+
 
 
 }

@@ -5,8 +5,10 @@ package org.uic.barcode.ticket.api.utils;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
+import org.uic.barcode.ticket.api.asn.omv3.CompartmentPositionType;
 import org.uic.barcode.ticket.api.asn.omv3.BerthDetailData;
 import org.uic.barcode.ticket.api.asn.omv3.CarCarriageReservationData;
 import org.uic.barcode.ticket.api.asn.omv3.CardReferenceType;
@@ -36,6 +38,7 @@ import org.uic.barcode.ticket.api.asn.omv3.ReservationData;
 import org.uic.barcode.ticket.api.asn.omv3.ReturnRouteDescriptionType;
 import org.uic.barcode.ticket.api.asn.omv3.RouteSectionType;
 import org.uic.barcode.ticket.api.asn.omv3.SeriesDetailType;
+import org.uic.barcode.ticket.api.asn.omv3.ServiceType;
 import org.uic.barcode.ticket.api.asn.omv3.StationPassageData;
 import org.uic.barcode.ticket.api.asn.omv3.TariffType;
 import org.uic.barcode.ticket.api.asn.omv3.TicketLinkType;
@@ -96,6 +99,7 @@ import org.uic.barcode.ticket.api.spec.IRoofRackType;
 import org.uic.barcode.ticket.api.spec.IRouteSection;
 import org.uic.barcode.ticket.api.spec.ISeriesDataDetails;
 import org.uic.barcode.ticket.api.spec.IServiceBrand;
+import org.uic.barcode.ticket.api.spec.IServiceType;
 import org.uic.barcode.ticket.api.spec.IStationCodeTable;
 import org.uic.barcode.ticket.api.spec.IStationPassage;
 import org.uic.barcode.ticket.api.spec.ITariff;
@@ -441,6 +445,10 @@ public class OpenAsn2ApiDecoderV3 implements Asn2ApiDecoder {
 			document.setArrivalUTCoffset(asnDocument.getDepartureUTCOffset());
 		}
 		
+		if (asnDocument.getService() != null) {
+			document.setService(convert(asnDocument.getService()));
+		}
+		
 		if(asnDocument.getClassCode()!=null){
 			document.setClassCode(ITravelClassType.valueOf(asnDocument.getClassCode().name()));
 		}
@@ -460,6 +468,11 @@ public class OpenAsn2ApiDecoderV3 implements Asn2ApiDecoder {
 		if (asnDocument.getPlaces()!=null) {
 			document.setPlaces(convertPlaces(asnDocument.getPlaces()));
 		}
+		
+		if (asnDocument.getAdditionalPlaces()!=null) {
+			document.setAdditionalPlaces(convertPlaces(asnDocument.getAdditionalPlaces()));
+		}
+		
 
 		if (asnDocument.getBicyclePlaces()!=null) {
 			document.setBicyclePlaces(convertPlaces(asnDocument.getBicyclePlaces()));
@@ -522,12 +535,20 @@ public class OpenAsn2ApiDecoderV3 implements Asn2ApiDecoder {
 	}
 
 
-
-
-
-
-
-
+	private IServiceType convert(ServiceType service) {
+		
+		if (service == null) {
+			return null;
+		} else if (service.equals(ServiceType.seat)) {
+			return IServiceType.seat;
+		} else if (service.equals(ServiceType.couchette)) {
+			return IServiceType.couchette;
+		} else if (service.equals(ServiceType.berth)) {
+			return IServiceType.berth;
+		}
+		
+		return null;
+	}
 
 	/**
 	 * Convert car carriage.
@@ -706,11 +727,24 @@ public class OpenAsn2ApiDecoderV3 implements Asn2ApiDecoder {
 		details.setCompartmentTypeDescr(asnDetails.getCompartmentTypeDescr());
 		details.setSpecialAllocationDescr(asnDetails.getSpecialAllocationDescr());
 
-		details.setPosition(ICompartmentPositionType.valueOf(asnDetails.getPosition().name()));
+		details.setPosition(convert(asnDetails.getPosition()));
 		
 		return details;
 	}
 
+	private ICompartmentPositionType convert(CompartmentPositionType position) {
+		if (position == null) {
+			return null;
+		} else if (position.equals(CompartmentPositionType.lowerLevel)) {
+			return ICompartmentPositionType.lowerLevel;
+		} else if (position.equals(CompartmentPositionType.upperLevel)) {
+			return ICompartmentPositionType.upperLevel;
+		} else if (position.equals(CompartmentPositionType.unspecified)) {
+			return ICompartmentPositionType.unspecified;
+		}
+		return null;
+	}
+	
 	/**
 	 * Convert places.
 	 *
@@ -802,6 +836,9 @@ public class OpenAsn2ApiDecoderV3 implements Asn2ApiDecoder {
 		document.setReference(UicEncoderUtils.mapToString(asnDocument.getReferenceNum(),asnDocument.getReferenceIA5()));		
 		document.setTicketReference(UicEncoderUtils.mapToString(asnDocument.getTicketReferenceNum(),asnDocument.getTicketReferenceIA5()));	
 		
+ 		if (asnDocument.getStationCodeTable()!=null){
+			document.setStationCodeTable(IStationCodeTable.valueOf(asnDocument.getStationCodeTable().name()));
+		}	
 		document.setFromStation(UicEncoderUtils.mapToString(asnDocument.getFromStationNum(),asnDocument.getFromStationIA5()));
 		document.setToStation(UicEncoderUtils.mapToString(asnDocument.getToStationNum(),asnDocument.getToStationIA5()));
 		
@@ -825,6 +862,28 @@ public class OpenAsn2ApiDecoderV3 implements Asn2ApiDecoder {
 		}
 		
 				
+        if (asnDocument.getCarriersNum()!=null && !asnDocument.getCarriersNum().isEmpty()){
+            for(Long carrier :asnDocument.getCarriersNum()){
+         	   document.addIncludedCarrier(carrier.toString());
+            }
+        }
+        if (asnDocument.getCarriersIA5()!=null && !asnDocument.getCarriersIA5().isEmpty()){
+            for(String carrier :asnDocument.getCarriersIA5()){
+         	   document.addIncludedCarrier(carrier);
+            }
+        }
+        
+        if (asnDocument.getIncludedServiceBrands()!=null && !asnDocument.getIncludedServiceBrands().isEmpty()){
+            for(Long number :asnDocument.getIncludedServiceBrands()){
+         	   document.addIncludedServiceBrand(number.intValue());
+            }
+       }
+       
+       if (asnDocument.getExcludedServiceBrands()!=null && !asnDocument.getExcludedServiceBrands().isEmpty()){
+           for(Long number :asnDocument.getExcludedServiceBrands()){
+        	   document.addExcludedServiceBrand(number.intValue());
+           }
+        }     
 		
 		document.setGroupName(asnDocument.getGroupName());
 		
@@ -937,6 +996,10 @@ public class OpenAsn2ApiDecoderV3 implements Asn2ApiDecoder {
 			document.setClassCode(ITravelClassType.valueOf(asnDocument.getClassCode().name()));
 		}
 		
+		if (asnDocument.getServiceLevel() != null && asnDocument.getServiceLevel().length() > 0) {
+			document.setServiceLevel(asnDocument.getServiceLevel());
+		}
+		
 		document.setValidFrom(asnDocument.getValidFromDate(issuingDate));
 		document.setValidUntil(asnDocument.getValidUntilDate(issuingDate));
 		
@@ -953,12 +1016,6 @@ public class OpenAsn2ApiDecoderV3 implements Asn2ApiDecoder {
 		document.setProductId(UicEncoderUtils.mapToString(asnDocument.getProductIdNum(),asnDocument.getProductIdIA5()));
 		document.setProductOwner(UicEncoderUtils.mapToString(asnDocument.getProductOwnerNum(),asnDocument.getProductOwnerIA5()));
 		document.setReference(UicEncoderUtils.mapToString(asnDocument.getReferenceNum(),asnDocument.getReferenceIA5()));		
-
-         if (asnDocument.getExcludedServiceBrands()!=null && !asnDocument.getExcludedServiceBrands().isEmpty()){
-             for(Long number :asnDocument.getExcludedServiceBrands()){
-          	   document.addExcludedServiceBrand(number.intValue());
-             }
-          }
 
          if (asnDocument.getCarriersNum()!=null && !asnDocument.getCarriersNum().isEmpty()){
              for(Long carrier :asnDocument.getCarriersNum()){
@@ -977,6 +1034,12 @@ public class OpenAsn2ApiDecoderV3 implements Asn2ApiDecoder {
           	   document.addIncludedServiceBrand(number.intValue());
              }
         }
+        
+        if (asnDocument.getExcludedServiceBrands()!=null && !asnDocument.getExcludedServiceBrands().isEmpty()){
+            for(Long number :asnDocument.getExcludedServiceBrands()){
+         	   document.addExcludedServiceBrand(number.intValue());
+            }
+         }
         
        if (asnDocument.getIncludedTransportTypes()!=null && !asnDocument.getIncludedTransportTypes().isEmpty()){
     	   for(Long number :asnDocument.getIncludedTransportTypes()){
@@ -1011,6 +1074,8 @@ public class OpenAsn2ApiDecoderV3 implements Asn2ApiDecoder {
 				document.addValidRegionList(convertValidRegion(validRegion, issuingDate));
 			}
 		}
+		
+		document.setReturnDescription(convertReturnDescription(asnDocument.getReturnDescription(), issuingDate));
 		
 		if (asnDocument.getIssuerAutorizationId() != null) {
 			document.setAuthorizationCode(asnDocument.getIssuerAutorizationId().intValue());
@@ -1075,6 +1140,10 @@ public class OpenAsn2ApiDecoderV3 implements Asn2ApiDecoder {
 			document.setClassCode(ITravelClassType.valueOf(asnDocument.getClassCode().name()));
 		} else {
 			document.setClassCode(classCode);
+		}
+		
+		if (asnDocument.getServiceLevel() != null && asnDocument.getServiceLevel().length() > 0) {
+			document.setServiceLevel(asnDocument.getServiceLevel());
 		}
 		
 		document.setValidFrom(asnDocument.getValidFromDate(issuingDate));
@@ -1149,6 +1218,8 @@ public class OpenAsn2ApiDecoderV3 implements Asn2ApiDecoder {
 		if (asnDocument.getExternalIssuerId()!=null){
 			document.setExternalIssuer(asnDocument.getExternalIssuerId().intValue());
 		}
+
+	       
 		return document;
 	}
 
@@ -1204,9 +1275,9 @@ public class OpenAsn2ApiDecoderV3 implements Asn2ApiDecoder {
 		document.setProductName(asnDocument.getProductName());		
 		document.setProductOwner(UicEncoderUtils.mapToString(asnDocument.getProductOwnerNum(),asnDocument.getProductOwnerIA5()));
 		
-		if (asnDocument.getStationNameUTF8()!= null && asnDocument.getStationNameUTF8().isEmpty() ) {
+		if (asnDocument.getStationNameUTF8()!= null && !asnDocument.getStationNameUTF8().isEmpty() ) {
 			for (String name : asnDocument.getStationNameUTF8()) {
-				document.addStation(name);
+				document.addStationName(name);
 			}
 		}
 		
@@ -1381,10 +1452,13 @@ public class OpenAsn2ApiDecoderV3 implements Asn2ApiDecoder {
 		}
 		if (asnDocument.getAlternativeRoutes()!= null && !asnDocument.getAlternativeRoutes().isEmpty()) {
 			for ( ViaStationType routeVia: asnDocument.getAlternativeRoutes()) {
-				via.addRouteStation(convertViaStation(routeVia));
+				via.getAlternativeRoutes().add(convertViaStation(routeVia));
 			}
 		}
-
+		
+		if (asnDocument.getSeriesId() != null) {
+			via.setSeriesId(asnDocument.getSeriesId().intValue());
+		}
 
 		return via;
 	}	
@@ -1438,6 +1512,14 @@ public class OpenAsn2ApiDecoderV3 implements Asn2ApiDecoder {
 		
 		zone.setNUTScode(asnDocument.getNutsCode());
 		
+		if (asnDocument.getZoneId() != null && !asnDocument.getZoneId().isEmpty()) {
+			Iterator<Long> it = asnDocument.getZoneId().iterator();
+			while (it.hasNext()) {
+				zone.addZoneId(it.next().intValue());
+			}
+		}
+		
+		
 		return zone;
 	}	
 	
@@ -1456,6 +1538,8 @@ public class OpenAsn2ApiDecoderV3 implements Asn2ApiDecoder {
 		IGeoCoordinate firstEdge = convertGeoCoordinate(asnPolygone.getFirstEdge());
 		
 		if (firstEdge == null)	return null;
+		
+		polygone.addEdge(firstEdge);
 				
 		if (asnPolygone.getEdges()!=null && !asnPolygone.getEdges().isEmpty()) {
 			for (DeltaCoordinates asnEdge :asnPolygone.getEdges()){
@@ -1630,17 +1714,26 @@ public class OpenAsn2ApiDecoderV3 implements Asn2ApiDecoder {
 		document.setValidFrom(asnDocument.getValidFromDate(issuingDate));
 		document.setValidUntil(asnDocument.getValidUntilDate(issuingDate));
 		
-		
-	
 		document.setProductId(UicEncoderUtils.mapToString(asnDocument.getProductIdNum(),asnDocument.getProductIdIA5()));
 		document.setProductOwner(UicEncoderUtils.mapToString(asnDocument.getProductOwnerNum(),asnDocument.getProductOwnerIA5()));
 		document.setReference(UicEncoderUtils.mapToString(asnDocument.getReferenceNum(),asnDocument.getReferenceIA5()));	
+		
+        if (asnDocument.getCarrierNum()!=null && !asnDocument.getCarrierNum().isEmpty()){
+            for(Long carrier :asnDocument.getCarrierNum()){
+         	   document.addCarrier(carrier.toString());
+            }
+        }
+        if (asnDocument.getCarrierIA5()!=null && !asnDocument.getCarrierIA5().isEmpty()){
+            for(String carrier :asnDocument.getCarrierIA5()){
+         	   document.addCarrier(carrier);
+            }
+         } 
 		
 		if (asnDocument.getActivatedDay() != null && !asnDocument.getActivatedDay().isEmpty()) {
 			document.getActivatedDays().addAll(asnDocument.getActivatedDays(issuingDate));
 		}
 		
-		if(asnDocument.getIncludesSupplements()!=null) {
+		if(asnDocument.getIncludesSupplements()!= null) {
 			document.setIncludesSupplements(asnDocument.getIncludesSupplements());
 		}
 		if(asnDocument.getNumberOfTravelDays()!=null){
@@ -1687,6 +1780,9 @@ public class OpenAsn2ApiDecoderV3 implements Asn2ApiDecoder {
 
 		if (asnDocument.getNumberOfDaysOfTravel() != null) {
 			document.setNumberOfDaysOfTravel(asnDocument.getNumberOfDaysOfTravel().intValue());
+		}
+		if (asnDocument.getNumberOfValidityDays() != null) {
+			document.setNumberOfValidityDays(asnDocument.getNumberOfValidityDays().intValue());
 		}
 		if (asnDocument.getNumberOfPossibleTrips() != null) {
 			document.setNumberOfPossibleTrips(asnDocument.getNumberOfPossibleTrips().intValue());
@@ -1958,6 +2054,9 @@ public class OpenAsn2ApiDecoderV3 implements Asn2ApiDecoder {
 				card.addIncludedService(new Integer(service.intValue()));	
 			}
 		}
+		
+		card.setExtension(convertExtension(asnDocument.getExtension()));			
+		
 		return card;
 	}
 
@@ -2211,6 +2310,12 @@ public class OpenAsn2ApiDecoderV3 implements Asn2ApiDecoder {
 		if (asnIssuingDetail.getPointOfSale() != null) {
 			issuingDetail.setPointOfSale(convertGeoCoordinate(asnIssuingDetail.getPointOfSale()));
 		}
+		
+		issuingDetail.setCurrency(asnIssuingDetail.getCurrency());
+		
+		if (asnIssuingDetail.getCurrencyFract() != null) {
+			issuingDetail.setCurrencyFraction(asnIssuingDetail.getCurrencyFract().intValue());
+		} 
 		
 	}
 	

@@ -81,10 +81,18 @@ public class SimpleIncludedOpenTicket implements IIncludedOpenTicket {
     
        
  	/** The info text. */
-	 protected String infoText;
+	protected String infoText;
 	 	
   	/** The extension. */
-	  protected IExtension   extension;
+	protected IExtension   extension;
+	  
+	protected String serviceLevel;  
+	
+    /** The included service brands. */
+    protected Collection<Integer>includedTransportTypes = new LinkedHashSet<Integer>();	
+	
+    /** The excluded service brands. */
+    protected Collection<Integer>excludedTransportTypes = new LinkedHashSet<Integer>();	   
 
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.IIncludedOpenTicket#getDepartureDate()
@@ -435,28 +443,35 @@ public class SimpleIncludedOpenTicket implements IIncludedOpenTicket {
 		this.validUntil = date;
 	}
 
+
 	@Override
 	public Collection<Integer> getExcludedTransportTypes() {
-		// TODO Auto-generated method stub
-		return null;
+		return excludedTransportTypes;
 	}
 
 	@Override
 	public void addExcludedTransportType(Integer excludedTransportType) {
-		// TODO Auto-generated method stub
-		
+		excludedTransportTypes.add(excludedTransportType);
 	}
 
 	@Override
 	public Collection<Integer> getIncludedTransportTypes() {
-		// TODO Auto-generated method stub
-		return null;
+		return includedTransportTypes;
 	}
 
 	@Override
 	public void addInludedTransportType(Integer includedTransportType) {
-		// TODO Auto-generated method stub
-		
+		includedTransportTypes.add(includedTransportType);		
+	}
+
+	@Override
+	public String getServiceLevel() {
+		return serviceLevel;
+	}
+
+	@Override
+	public void setServiceLevel(String serviceLevel) {
+		this.serviceLevel = serviceLevel;
 	}
 
 }

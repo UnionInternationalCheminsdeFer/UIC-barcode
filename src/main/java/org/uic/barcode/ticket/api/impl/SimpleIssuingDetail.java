@@ -51,6 +51,10 @@ public class SimpleIssuingDetail implements IIssuingDetail{
 	
 	/** The secure paper ticket. */
 	protected boolean securePaperTicket;
+	
+	protected String currency;
+	
+	protected Integer currencyFraction;
 
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.IIssuingDetail#getIssuer()
@@ -223,6 +227,26 @@ public class SimpleIssuingDetail implements IIssuingDetail{
 	 */
 	public void setSecurePaperTicket(boolean securePaperTicket) {
 		this.securePaperTicket = securePaperTicket;
+	}
+
+	@Override
+	public String getCurrency() {
+		return currency;
+	}
+
+	@Override
+	public void setCurrency(String currency) {
+		this.currency = currency;		
+	}
+
+	@Override
+	public Integer getCurrencyFraction() {
+		return currencyFraction;
+	}
+
+	@Override
+	public void setCurrencyFraction(Integer fraction) {
+		this.currencyFraction = fraction;		
 	}
 	
 	
