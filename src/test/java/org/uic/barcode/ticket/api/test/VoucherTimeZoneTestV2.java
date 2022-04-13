@@ -1,6 +1,5 @@
 package org.uic.barcode.ticket.api.test;
 
-import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -279,7 +278,7 @@ public class VoucherTimeZoneTestV2 {
         	encodedInTimeZone2 = encoder.encode(iTicketDecodedFromAsn1Case2);
         	encodedInTimeZone3 = encoder.encode(iTicketDecodedFromAsn1Case3);
 		} catch (EncodingFormatException e) {
-			e.printStackTrace();
+			assert(false);
 		}
 	}
 	
@@ -293,8 +292,8 @@ public class VoucherTimeZoneTestV2 {
         	iTicketDecodedCase1 = decoder.decodeFromAsn(encodedInTimeZone1);
         	iTicketDecodedCase2 = decoder.decodeFromAsn(encodedInTimeZone2);
         	iTicketDecodedCase3 = decoder.decodeFromAsn(encodedInTimeZone3);
-		} catch (IOException e) {
-			e.printStackTrace();
+		} catch (Exception e) {
+			assert(false);
 		} 
 	}
 	
@@ -308,8 +307,8 @@ public class VoucherTimeZoneTestV2 {
 			iTicketDecodedFromAsn1Case1 = decoder.decodeFromAsn(encoded1);
 			iTicketDecodedFromAsn1Case2 = decoder.decodeFromAsn(encoded2);
 			iTicketDecodedFromAsn1Case3 = decoder.decodeFromAsn(encoded3);
-		} catch (IOException e) {
-			e.printStackTrace();
+		} catch (Exception e) {
+			assert(false);
 		}
 		
 	}

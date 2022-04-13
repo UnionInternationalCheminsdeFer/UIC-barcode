@@ -434,7 +434,7 @@ public class PassTimeZoneTestV1 {
         	iTicketDecodedCase1 = decoder.decodeFromAsn(encodedInTimeZone1);
         	iTicketDecodedCase2 = decoder.decodeFromAsn(encodedInTimeZone2);
         	iTicketDecodedCase3 = decoder.decodeFromAsn(encodedInTimeZone3);
-		} catch (IOException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		} 
 	}
@@ -449,7 +449,7 @@ public class PassTimeZoneTestV1 {
 			iTicketDecodedFromAsn1Case1 = decoder.decodeFromAsn(encoded1);
 			iTicketDecodedFromAsn1Case2 = decoder.decodeFromAsn(encoded2);
 			iTicketDecodedFromAsn1Case3 = decoder.decodeFromAsn(encoded3);
-		} catch (IOException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		

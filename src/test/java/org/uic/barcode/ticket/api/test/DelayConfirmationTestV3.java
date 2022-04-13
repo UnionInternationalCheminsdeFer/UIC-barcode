@@ -91,7 +91,7 @@ public class DelayConfirmationTestV3 {
 		IUicRailTicket ticketDecoded = null;
 		try {
 			ticketDecoded = decoder.decodeFromAsn(DelayTestTicketV3.getEncodingBytes());
-		} catch (IOException e) {
+		} catch (Exception e) {
 			assert(false);
 		}
 		
@@ -159,7 +159,7 @@ public class DelayConfirmationTestV3 {
 		IUicRailTicket ticketDecoded2 = null;
 		try {
 			ticketDecoded2 = decoder.decodeFromAsn(encoded);
-		} catch (IOException e) {
+		} catch (Exception e) {
 			assert(false);
 		}
 				

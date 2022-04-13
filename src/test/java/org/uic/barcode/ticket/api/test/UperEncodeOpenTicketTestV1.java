@@ -2,7 +2,6 @@ package org.uic.barcode.ticket.api.test;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.IOException;
 import java.util.logging.Level;
 
 import org.junit.Before;
@@ -36,17 +35,15 @@ public class UperEncodeOpenTicketTestV1 {
         IUicRailTicket iTicket = null;
         try {
         	iTicket = decoder.decodeFromAsn(encoded);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (Exception e) {
+			assert(false);
 		}
         
         Api2OpenAsnEncoder encoder = new Api2OpenAsnEncoder();
         try {
         	encoded = encoder.encode(iTicket);
 		} catch (EncodingFormatException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			assert(false);
 		}
         
         assert(decodedTicket != null);

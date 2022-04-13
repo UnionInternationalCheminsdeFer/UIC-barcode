@@ -11,10 +11,10 @@ import org.junit.Test;
 import org.uic.barcode.asn1.uper.UperEncoder;
 import org.uic.barcode.logger.LoggerFactory;
 import org.uic.barcode.ticket.EncodingFormatException;
-import org.uic.barcode.ticket.api.asn.omv3.ConfirmationTypeType;
+import org.uic.barcode.ticket.api.asn.omv1.ConfirmationTypeType;
+import org.uic.barcode.ticket.api.asn.omv1.UicRailTicketData;
 import org.uic.barcode.ticket.api.spec.IBerth;
 import org.uic.barcode.ticket.api.spec.IBerthTypeType;
-import org.uic.barcode.ticket.api.spec.IBoardingOrArrivalType;
 import org.uic.barcode.ticket.api.spec.ICarCarriageReservation;
 import org.uic.barcode.ticket.api.spec.ICardReference;
 import org.uic.barcode.ticket.api.spec.ICompartmentGenderType;
@@ -62,11 +62,11 @@ import org.uic.barcode.ticket.api.spec.IVatDetail;
 import org.uic.barcode.ticket.api.spec.IViaStation;
 import org.uic.barcode.ticket.api.spec.IVoucher;
 import org.uic.barcode.ticket.api.spec.IZone;
-import org.uic.barcode.ticket.api.test.testtickets.AllElementsTestTicketV3;
+import org.uic.barcode.ticket.api.test.testtickets.AllElementsTestTicketV1;
 import org.uic.barcode.ticket.api.utils.Api2AsnEncoder;
-import org.uic.barcode.ticket.api.utils.Api2OpenAsnEncoderV3;
+import org.uic.barcode.ticket.api.utils.Api2OpenAsnEncoder;
 import org.uic.barcode.ticket.api.utils.Asn2ApiDecoder;
-import org.uic.barcode.ticket.api.utils.OpenAsn2ApiDecoderV3;
+import org.uic.barcode.ticket.api.utils.OpenAsn2ApiDecoder;
 
 
 /**
@@ -75,14 +75,14 @@ import org.uic.barcode.ticket.api.utils.OpenAsn2ApiDecoderV3;
  * 
  * 
  */
-public class AllElementsTestV3 {
+public class AllElementsTestV1 {
 	
 	   
     /** The decoder. */
-    Asn2ApiDecoder decoder = new OpenAsn2ApiDecoderV3();
+    Asn2ApiDecoder decoder = new OpenAsn2ApiDecoder();
     
     /** The encoder. */
-    Api2AsnEncoder encoder = new Api2OpenAsnEncoderV3();
+    Api2AsnEncoder encoder = new Api2OpenAsnEncoder();
        
        
     TimeZone defaulttimeZone = null;
@@ -123,8 +123,9 @@ public class AllElementsTestV3 {
 		
 		IUicRailTicket ticketDecoded = null;
 		try {
-			String hex = AllElementsTestTicketV3.getEncodingHex();
-			byte[] content = UperEncoder.bytesFromHexString(hex);
+			
+			UicRailTicketData rtd = AllElementsTestTicketV1.getUicTestTicket();
+			byte[] content = UperEncoder.encode(rtd);
 			ticketDecoded = decoder.decodeFromAsn(content);
 		} catch (Exception e) {
 			assert(false);
@@ -313,7 +314,7 @@ public class AllElementsTestV3 {
 		
 		assert(t.getReference().equals("810123456789"));
     	assert(t.getProductOwner().equals(	  "23456"));    
-		assert(t.getProductId().equals(		  "123456"));    			
+		assert(t.getProductId().equals(		  "23456"));    			
 		assert(t.getTicketReference().equals(	 "810123456789"));		     
 		assert(t.getNumberOfCountermark() ==  12L);
         assert(t.getTotalOfCountermarks() ==  24L);
@@ -425,7 +426,7 @@ public class AllElementsTestV3 {
 		
 	    assert(v.getReference().equals("810123456789"));		     		        															
 	    assert(v.getProductOwner().equals("COFFEEMACHINE"));    
-	    assert(v.getProductId().equals("123456")); 
+	    assert(v.getProductId().equals("23456")); 
 
 	    assert(v.getValidFrom() != null);
         assert(v.getValidUntil() != null);
@@ -441,7 +442,7 @@ public class AllElementsTestV3 {
 		
 	    assert(t.getReference().equals("810123456789"));		     		        															
 	    assert(t.getProductOwner().equals("23456"));    
-	    assert(t.getProductId().equals("123456")); 
+	    assert(t.getProductId().equals("23456")); 
 			      
 	    assert(t.getProductName().equals("passage"));
         assert(t.getStationCodeTable().equals(IStationCodeTable.stationUIC));
@@ -471,7 +472,7 @@ public class AllElementsTestV3 {
 		
 	    assert(t.getReference().equals("810123456789"));	
 	    assert(t.getProductOwner().equals("23456"));    
-	    assert(t.getProductId().equals("123456")); 
+	    assert(t.getProductId().equals("23456")); 
 		
        
 	    assert(t.getParkingGroundId().equals( 	  "IA5"));
@@ -499,7 +500,7 @@ public class AllElementsTestV3 {
 		
 	    assert(t.getReference().equals("810123456789"));	
 	    assert(t.getProductOwner().equals("23456"));    
-	    assert(t.getProductId().equals("123456")); 
+	    assert(t.getProductId().equals("23456")); 
 	    
  				   		
 	    assert(t.getValidFrom() != null);   		        	 
@@ -532,7 +533,7 @@ public class AllElementsTestV3 {
 		
 			assert(t.getReference().equals("810123456789"));
         	assert(t.getProductOwner().equals(	  "23456"));    
-			assert(t.getProductId().equals(		  "123456"));    			
+			assert(t.getProductId().equals(		  "23456"));    			
 			assert(t.getExternalIssuer() ==         12);
 			assert(t.getAuthorizationCode() == 13);	
 			assert(t.isReturnIncluded() == false);	      
@@ -622,19 +623,7 @@ public class AllElementsTestV3 {
 			validate(t.getIncludedAddOns().iterator().next());
 			
 			assert(t.getLuggageRestriction() != null);
-			
-			assert(t.getIncludedTransportTypes() != null);
-			assert(t.getIncludedTransportTypes().size() == 2);
-			assert(t.getIncludedTransportTypes().contains(10));
-			assert(t.getIncludedTransportTypes().contains(11));
-			
-					
-			assert(t.getExcludedTransportTypes() != null);
-			assert(t.getExcludedTransportTypes().size() == 2);
-			assert(t.getExcludedTransportTypes().contains(10));
-			assert(t.getExcludedTransportTypes().contains(18));
-			
-			
+				
 			
 			assert(t.getExtension() != null);
 		
@@ -737,27 +726,14 @@ public class AllElementsTestV3 {
 		          
 		    assert(t.getSeriesId() == 999);
 		    assert(t.getRouteId() == 21);
-		    	 	
-		
-            assert(t.getIncludedServiceBrands() != null);
-            assert(t.getIncludedServiceBrands().size() == 2);
-            Iterator<Integer> i4 = t.getIncludedServiceBrands().iterator();
-            assert(i4.next() == 108);
-            assert(i4.next() == 118);
-         
-            assert(t.getExcludedServiceBrands() != null);
-            assert(t.getExcludedServiceBrands().size() == 2);
-            i4 = t.getExcludedServiceBrands().iterator();
-            assert(i4.next() == 108);
-            assert(i4.next() == 118);
-		    
+		    	 		    
 		
 	}
 
 	private void validate(IIncludedOpenTicket d1) {
 
 		assert(d1.getProductOwner().equals("23456"));    
-		assert(d1.getProductId().equals("123456"));
+		assert(d1.getProductId().equals("23456"));
 		assert(d1.getExternalIssuer() ==     12);
 		assert(d1.getAuthorizationCode() == 13);		
 		assert(d1.getStationCodeTable().equals(IStationCodeTable.stationERA));    	         
@@ -789,17 +765,6 @@ public class AllElementsTestV3 {
         assert(d1.getTariffs().size() == 1);
                             
 		assert(d1.getInfoText().equals("included ticket"));
-				
-		assert(d1.getIncludedTransportTypes() != null);
-		assert(d1.getIncludedTransportTypes().size() == 2);
-		assert(d1.getIncludedTransportTypes().contains(10));
-		assert(d1.getIncludedTransportTypes().contains(11));
-		
-				
-		assert(d1.getExcludedTransportTypes() != null);
-		assert(d1.getExcludedTransportTypes().size() == 2);
-		assert(d1.getExcludedTransportTypes().contains(10));
-		assert(d1.getExcludedTransportTypes().contains(18));
 		
         assert(d1.getExtension() != null);
         		    	        
@@ -812,7 +777,7 @@ public class AllElementsTestV3 {
 
 		assert(p.getReference().equals("810123456789"));
         assert(p.getProductOwner().equals(	  "23456"));    
-		assert(p.getProductId().equals(		  "123456"));    			  
+		assert(p.getProductId().equals(		  "23456"));    			  
 		assert(p.getPassType() ==             2);
 		assert(p.getPassDescription().equals(  "Eurail FlexPass"));
 		assert(p.getClassCode().equals(ITravelClassType.first));
@@ -832,17 +797,6 @@ public class AllElementsTestV3 {
 	    assert(tr.getUntilTime() == 9);
 
 	    assert(p.getNumberOfValidityDays() == 5);
-        assert(p.getTrainValidity() != null);
-        
-        assert(p.getTrainValidity().getFromDate() != null);
-	    assert(p.getTrainValidity().getUntilDate() != null);
-	    assert(p.getTrainValidity().getIncludedCarriers() != null);
-	    assert(p.getTrainValidity().getIncludedCarriers().size() == 2);
-    	Iterator<String> i3 = p.getTrainValidity().getIncludedCarriers().iterator();
-    	assert(i3.next().equals("1234"));
-    	assert(i3.next().equals("5678"));	
-	    
-        assert(p.getTrainValidity().getBoardingOrArrival().equals(IBoardingOrArrivalType.boarding));
       
         assert(p.getNumberOfPossibleTrips() ==        3);
           assert(p.getNumberOfDaysOfTravel() ==         10);
@@ -903,7 +857,7 @@ public class AllElementsTestV3 {
 	    assert(r.getReference().equals("810123456789"));	   
 	    assert(r.getProductOwner().equals("23456"));    
 	    
-	    assert(r.getProductId().equals("123456")); 
+	    assert(r.getProductId().equals("23456")); 
 	    assert(r.getServiceBrand().getServiceBrand() == 12);
 	    assert(r.getServiceBrand().getServiceBrandAbbreviation().equals("TGV"));      					   	
 	    assert(r.getServiceBrand().getServiceBrandDescription().equals("Lyria"));     					    
@@ -967,7 +921,7 @@ public class AllElementsTestV3 {
 
  
 	    assert(t.getPassengerType().equals(IPassengerType.senior) );
-       	assert(t.getAgeBelow() ==           64);
+       	assert(t.getAgeBelow() ==           40);
        	assert(t.getAgeAbove() ==           60);
        	assert(t.getTravelerIds() != null);
        	assert(t.getTravelerIds().size() == 1);
@@ -982,7 +936,7 @@ public class AllElementsTestV3 {
 	    assert(t.getRestrictedToRouteSection().getToStationName().equals(   	"B"));
 
 	    assert(t.getSeriesDataDetails() != null);
-	    assert(t.getSeriesDataDetails().getSupplyingCarrier()   == 	12345);		
+	    assert(t.getSeriesDataDetails().getSupplyingCarrier()   == 	2345);		
 	    assert(t.getSeriesDataDetails().getOfferIdentification() ==	99);  		
 	    assert(t.getSeriesDataDetails().getSeries() ==	23456);                     
               
@@ -1056,7 +1010,7 @@ public class AllElementsTestV3 {
 	    assert(r.getTrain().equals("123"));     						
 	    assert(r.getReference().equals("810123456789"));	
 	    assert(r.getProductOwner().equals("23456"));    
-	    assert(r.getProductId().equals("123456")); 
+	    assert(r.getProductId().equals("23456")); 
 	    assert(r.getServiceBrand().getServiceBrand() == 100);
 	    assert(r.getServiceBrand().getServiceBrandAbbreviation().equals("AZ"));      					   	
 	    assert(r.getServiceBrand().getServiceBrandDescription().equals("special train"));     					    

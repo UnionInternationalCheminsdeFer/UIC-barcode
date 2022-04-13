@@ -1,6 +1,5 @@
 package org.uic.barcode.ticket.api.test;
 
-import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -90,7 +89,7 @@ public class CarCarriageTestV3 {
 		IUicRailTicket ticketDecoded = null;
 		try {
 			ticketDecoded = decoder.decodeFromAsn(CarCarriageReservationTestTicketV3.getEncodingBytes());
-		} catch (IOException e) {
+		} catch (Exception e) {
 			assert(false);
 		}
 		
@@ -147,7 +146,7 @@ public class CarCarriageTestV3 {
 		IUicRailTicket ticketDecoded2 = null;
 		try {
 			ticketDecoded2 = decoder.decodeFromAsn(encoded);
-		} catch (IOException e) {
+		} catch (Exception e) {
 			assert(false);
 		}
 				

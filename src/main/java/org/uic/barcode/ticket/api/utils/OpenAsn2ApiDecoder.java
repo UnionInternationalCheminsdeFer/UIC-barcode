@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import org.uic.barcode.ticket.EncodingFormatException;
 import org.uic.barcode.ticket.api.asn.omv1.BerthDetailData;
 import org.uic.barcode.ticket.api.asn.omv1.CarCarriageReservationData;
 import org.uic.barcode.ticket.api.asn.omv1.CardReferenceType;
@@ -132,8 +133,9 @@ public class OpenAsn2ApiDecoder implements Asn2ApiDecoder {
 	 * @param asnUicRailTicketData the asn uic rail ticket data
 	 * @return the decoded uic rail ticket
 	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws EncodingFormatException 
 	 */
-	public IUicRailTicket decodeFromAsn (UicRailTicketData asnUicRailTicketData) throws IOException{		
+	public IUicRailTicket decodeFromAsn (UicRailTicketData asnUicRailTicketData) throws IOException, EncodingFormatException{		
 					
 		IUicRailTicket uicRailTicket = factory.createUicRailTicket();
 		
@@ -149,8 +151,9 @@ public class OpenAsn2ApiDecoder implements Asn2ApiDecoder {
 	 * @param data byte array of the asn.1 encoded FCB data
 	 * @return the decoded uic rail ticket
 	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws EncodingFormatException 
 	 */
-	public IUicRailTicket decodeFromAsn (byte[] data) throws IOException{		
+	public IUicRailTicket decodeFromAsn (byte[] data) throws IOException, EncodingFormatException{		
 		
 		UicRailTicketData asnUicRailTicketData = UicRailTicketData.decode(data);
 							
@@ -171,8 +174,9 @@ public class OpenAsn2ApiDecoder implements Asn2ApiDecoder {
 	 *
 	 * @param uicRailTicket the uic rail ticket
 	 * @param asnUicRailTicketData the asn uic rail ticket data
+	 * @throws EncodingFormatException 
 	 */
-	protected void populateFromAsn1Model(IUicRailTicket uicRailTicket, UicRailTicketData asnUicRailTicketData) {
+	protected void populateFromAsn1Model(IUicRailTicket uicRailTicket, UicRailTicketData asnUicRailTicketData) throws EncodingFormatException {
 		
 		if (asnUicRailTicketData.getExtension()!= null && !asnUicRailTicketData.getExtension().isEmpty()) {
 			for (ExtensionData asnExtension : asnUicRailTicketData.getExtension()){
@@ -215,8 +219,9 @@ public class OpenAsn2ApiDecoder implements Asn2ApiDecoder {
 	 * @param asnTransportDocuments the asn transport documents
 	 * @param uicRailTicket the uic rail ticket
 	 * @param issuingDate the issuing date
+	 * @throws EncodingFormatException 
 	 */
-	protected void populateTravelDocuments(List<DocumentData> asnTransportDocuments,IUicRailTicket uicRailTicket, Date issuingDate) {
+	protected void populateTravelDocuments(List<DocumentData> asnTransportDocuments,IUicRailTicket uicRailTicket, Date issuingDate) throws EncodingFormatException {
 		
 		for ( DocumentData asnDocument : asnTransportDocuments){
 			
@@ -1658,12 +1663,15 @@ public class OpenAsn2ApiDecoder implements Asn2ApiDecoder {
 	 * @param asnDocument the asn document
 	 * @param issuingDate the issuing date
 	 * @return the i fip ticket
+	 * @throws EncodingFormatException 
 	 */
-	protected IFipTicket convertFipTicket(FIPTicketData asnDocument , Date issuingDate) {
+	protected IFipTicket convertFipTicket(FIPTicketData asnDocument , Date issuingDate) throws EncodingFormatException {
 		
 		if (asnDocument == null) return null;
 		
 		IFipTicket document = factory.createFipTicket();
+		
+		
 		if(asnDocument.getClassCode()!=null){
 			document.setClassCode(ITravelClassType.valueOf(asnDocument.getClassCode().name()));
 		}
@@ -1671,7 +1679,16 @@ public class OpenAsn2ApiDecoder implements Asn2ApiDecoder {
 		document.setValidFrom(asnDocument.getValidFromDate(issuingDate));
 		document.setValidUntil(asnDocument.getValidUntilDate(issuingDate));
 		
-		
+        if (asnDocument.getCarrierNum()!=null && !asnDocument.getCarrierNum().isEmpty()){
+            for(Long carrier :asnDocument.getCarrierNum()){
+         	   document.addCarrier(carrier.toString());
+            }
+        }
+        if (asnDocument.getCarrierIA5()!=null && !asnDocument.getCarrierIA5().isEmpty()){
+            for(String carrier :asnDocument.getCarrierIA5()){
+         	   document.addCarrier(carrier);
+            }
+         } 
 	
 		document.setProductId(UicEncoderUtils.mapToString(asnDocument.getProductIdNum(),asnDocument.getProductIdIA5()));
 		document.setProductOwner(UicEncoderUtils.mapToString(asnDocument.getProductOwnerNum(),asnDocument.getProductOwnerIA5()));
@@ -2199,6 +2216,13 @@ public class OpenAsn2ApiDecoder implements Asn2ApiDecoder {
 		if (asnIssuingDetail.getPointOfSale() != null) {
 			issuingDetail.setPointOfSale(convertGeoCoordinate(asnIssuingDetail.getPointOfSale()));
 		}
+		
+		
+		issuingDetail.setCurrency(asnIssuingDetail.getCurrency());
+		
+		if (asnIssuingDetail.getCurrencyFract() != null) {
+			issuingDetail.setCurrencyFraction(asnIssuingDetail.getCurrencyFract().intValue());
+		} 
 		
 	}
 	

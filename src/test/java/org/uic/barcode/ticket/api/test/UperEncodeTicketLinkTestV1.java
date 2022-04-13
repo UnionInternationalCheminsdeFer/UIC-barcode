@@ -2,7 +2,6 @@ package org.uic.barcode.ticket.api.test;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.IOException;
 import java.util.logging.Level;
 
 import org.junit.Before;
@@ -64,7 +63,7 @@ public class UperEncodeTicketLinkTestV1 {
         IUicRailTicket uicTicket = null;
 		try {
 			uicTicket = decoder.decodeFromAsn(decodedTicket);
-		} catch (IOException e) {
+		} catch (Exception e) {
 			assert (false);
 		}
         

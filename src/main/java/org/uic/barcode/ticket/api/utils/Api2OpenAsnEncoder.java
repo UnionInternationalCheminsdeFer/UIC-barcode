@@ -352,7 +352,10 @@ public class Api2OpenAsnEncoder implements Api2AsnEncoder {
 				
 		asnData.setProductOwnerNum(UicEncoderUtils.getNum(document.getProductOwner()));
 		asnData.setProductOwnerIA5(UicEncoderUtils.getIA5NonNum(document.getProductOwner()));
-			
+		
+		asnData.setProductIdNum(UicEncoderUtils.getRestrictedNum(document.getProductId(),0,65535));
+		asnData.setProductIdIA5(UicEncoderUtils.getIA5RestrictedNonNum(document.getProductId(),0,65535));				
+						
 		asnData.setReferenceNum(UicEncoderUtils.getNum(document.getReference()));
 		asnData.setReferenceIA5(UicEncoderUtils.getIA5NonNum(document.getReference()));	
 		
@@ -564,6 +567,9 @@ public class Api2OpenAsnEncoder implements Api2AsnEncoder {
 		
 		asnData.setProductOwnerNum(UicEncoderUtils.getNum(document.getProductOwner()));
 		asnData.setProductOwnerIA5(UicEncoderUtils.getIA5NonNum(document.getProductOwner()));
+		
+		asnData.setProductIdNum(UicEncoderUtils.getRestrictedNum(document.getProductId(),0,65535));
+		asnData.setProductIdIA5(UicEncoderUtils.getIA5RestrictedNonNum(document.getProductId(),0,65535));					
 			
 		asnData.setReferenceNum(UicEncoderUtils.getNum(document.getReference()));
 		asnData.setReferenceIA5(UicEncoderUtils.getIA5NonNum(document.getReference()));	
@@ -983,6 +989,8 @@ public class Api2OpenAsnEncoder implements Api2AsnEncoder {
 		asnData.setProductOwnerNum(UicEncoderUtils.getNum(document.getProductOwner()));  
 		asnData.setProductOwnerIA5(UicEncoderUtils.getIA5NonNum(document.getProductOwner())); 
 
+		asnData.setProductIdNum(UicEncoderUtils.getRestrictedNum(document.getProductId(),0,65535));
+		asnData.setProductIdIA5(UicEncoderUtils.getIA5RestrictedNonNum(document.getProductId(),0,65535));				
 			
 		asnData.setTicketReferenceNum(UicEncoderUtils.getNum(document.getTicketReference()));
 		asnData.setTicketReferenceIA5(UicEncoderUtils.getIA5NonNum(document.getTicketReference()));	
@@ -1365,6 +1373,10 @@ public class Api2OpenAsnEncoder implements Api2AsnEncoder {
 		
 		asnData.setProductOwnerNum(UicEncoderUtils.getNum(document.getProductOwner()));
 		asnData.setProductOwnerIA5(UicEncoderUtils.getIA5NonNum(document.getProductOwner())); 
+		
+		asnData.setProductIdNum(UicEncoderUtils.getRestrictedNum(document.getProductId(),0,65535));
+		asnData.setProductIdIA5(UicEncoderUtils.getIA5RestrictedNonNum(document.getProductId(),0,65535));				
+
 		
 		asnData.setReferenceNum(Asn1BigInteger.toAsn1(UicEncoderUtils.getNum(document.getReference()))); 
 		asnData.setReferenceIA5(UicEncoderUtils.getIA5NonNum(document.getReference()));	
@@ -2108,6 +2120,12 @@ public class Api2OpenAsnEncoder implements Api2AsnEncoder {
 		
 		if (data.getPointOfSale()!= null){
 			asnData.setPointOfSale(encodeGeoCoordinate(data.getPointOfSale()));
+		}
+		
+		asnData.setCurrency(data.getCurrency());
+
+		if (data.getCurrencyFraction() != null) {
+			asnData.setCurrencyFract(data.getCurrencyFraction().longValue());	
 		}
 		
 		return asnData;
