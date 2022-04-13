@@ -2,13 +2,18 @@ package org.uic.barcode.ticket.api.test;
 
 import java.util.Calendar;
 import java.util.TimeZone;
+
+import org.junit.Before;
 import org.junit.Test;
+import org.uic.barcode.logger.LoggerFactory;
 import org.uic.barcode.ticket.api.utils.DateTimeUtils;
 
 
 public class DateTimeUtilsTest{
 
-
+	@Before public void prepare() {
+		LoggerFactory.setActivateConsoleLog(true);
+	}
 
     @Test public void testDateDiff1() throws IllegalArgumentException, IllegalAccessException {
     	

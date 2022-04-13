@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.logging.Level;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.uic.barcode.asn1.datatypes.Asn1Optional;
 import org.uic.barcode.asn1.datatypes.FieldOrder;
@@ -11,6 +12,7 @@ import org.uic.barcode.asn1.datatypes.HasExtensionMarker;
 import org.uic.barcode.asn1.datatypes.IsExtension;
 import org.uic.barcode.asn1.datatypes.Sequence;
 import org.uic.barcode.asn1.uper.UperEncoder;
+import org.uic.barcode.logger.LoggerFactory;
 
 
 public class UperEncodeEnumExtensionTest {
@@ -105,6 +107,9 @@ public class UperEncodeEnumExtensionTest {
 		}		
     }
 
+	@Before public void prepare() {	
+		LoggerFactory.setActivateConsoleLog(true);
+	}
 
 
     @Test public void testExtension() throws IllegalArgumentException, IllegalAccessException {

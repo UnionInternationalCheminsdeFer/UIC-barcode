@@ -6,6 +6,7 @@ import org.uic.barcode.asn1.uper.UperEncoder;
 import org.uic.barcode.dynamicContent.fdc1.ExtensionData;
 import org.uic.barcode.dynamicContent.fdc1.TimeStamp;
 import org.uic.barcode.dynamicContent.fdc1.UicDynamicContentDataFDC1;
+import org.uic.barcode.logger.LoggerFactory;
 import org.uic.barcode.dynamicContent.fdc1.GeoCoordinateType;
 
 public class AsnLevelDynamicContentTest {
@@ -52,6 +53,10 @@ public class AsnLevelDynamicContentTest {
 	
 		
 		
+	}
+	
+	@Before public void prepare() {	
+		LoggerFactory.setActivateConsoleLog(true);
 	}
 
 	@Test public void testDynamicContentEncoding() {

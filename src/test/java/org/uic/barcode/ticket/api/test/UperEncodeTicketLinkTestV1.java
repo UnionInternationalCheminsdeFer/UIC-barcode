@@ -2,11 +2,12 @@ package org.uic.barcode.ticket.api.test;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.IOException;
 import java.util.logging.Level;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.uic.barcode.asn1.uper.UperEncoder;
+import org.uic.barcode.logger.LoggerFactory;
 import org.uic.barcode.ticket.api.asn.omv1.UicRailTicketData;
 import org.uic.barcode.ticket.api.spec.ILinkMode;
 import org.uic.barcode.ticket.api.spec.ITicketLink;
@@ -19,7 +20,9 @@ import org.uic.barcode.ticket.api.utils.OpenAsn2ApiDecoder;
 public class UperEncodeTicketLinkTestV1 {
 
  
-
+	@Before public void prepare() {
+		LoggerFactory.setActivateConsoleLog(true);
+	}
 
 
     @Test public void testEncodeTicket() throws IllegalArgumentException, IllegalAccessException {
@@ -60,7 +63,7 @@ public class UperEncodeTicketLinkTestV1 {
         IUicRailTicket uicTicket = null;
 		try {
 			uicTicket = decoder.decodeFromAsn(decodedTicket);
-		} catch (IOException e) {
+		} catch (Exception e) {
 			assert (false);
 		}
         

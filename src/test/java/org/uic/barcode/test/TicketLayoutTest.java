@@ -4,7 +4,9 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 
+import org.junit.Before;
 import org.junit.Test;
+import org.uic.barcode.logger.LoggerFactory;
 import org.uic.barcode.staticFrame.UTLAYDataRecord;
 import org.uic.barcode.staticFrame.ticketLayoutBarcode.LayoutElement;
 import org.uic.barcode.staticFrame.ticketLayoutBarcode.TicketLayout;
@@ -15,6 +17,9 @@ import org.uic.barcode.ticket.EncodingFormatException;
 
 public class TicketLayoutTest {
 	
+	@Before public void initialize() {
+		LoggerFactory.setActivateConsoleLog(true);
+	}
 	
 	@Test public void testTicketLayout() throws IOException, EncodingFormatException{
 		

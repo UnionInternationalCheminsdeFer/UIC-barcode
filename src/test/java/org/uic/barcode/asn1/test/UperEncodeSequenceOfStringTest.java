@@ -4,11 +4,13 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.logging.Level;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.uic.barcode.asn1.datatypes.FieldOrder;
 import org.uic.barcode.asn1.datatypes.Sequence;
 import org.uic.barcode.asn1.datatypesimpl.SequenceOfStringIA5;
 import org.uic.barcode.asn1.uper.UperEncoder;
+import org.uic.barcode.logger.LoggerFactory;
 
 
 public class UperEncodeSequenceOfStringTest {
@@ -37,7 +39,10 @@ public class UperEncodeSequenceOfStringTest {
 
     }
 
-
+	@Before public void prepare() {	
+		LoggerFactory.setActivateConsoleLog(true);
+	}
+	
     @Test public void test() throws IllegalArgumentException, IllegalAccessException {
 
     	TestRecord record = new TestRecord();

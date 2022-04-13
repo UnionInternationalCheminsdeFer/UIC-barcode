@@ -1,8 +1,5 @@
 package org.uic.barcode.dynamicFrame.v2;
 
-import java.security.PrivateKey;
-import java.security.Provider;
-import java.security.Signature;
 import org.uic.barcode.asn1.datatypes.Asn1Optional;
 import org.uic.barcode.asn1.datatypes.CharacterRestriction;
 import org.uic.barcode.asn1.datatypes.FieldOrder;
@@ -14,7 +11,6 @@ import org.uic.barcode.dynamicContent.api.DynamicContentCoder;
 import org.uic.barcode.dynamicContent.api.IUicDynamicContent;
 import org.uic.barcode.dynamicContent.fdc1.UicDynamicContentDataFDC1;
 import org.uic.barcode.ticket.EncodingFormatException;
-import org.uic.barcode.utils.AlgorithmNameResolver;
 
 
 /**
@@ -122,109 +118,5 @@ public class DynamicFrame extends Object{
 		return UperEncoder.decode(bytes, DynamicFrame.class);	
 	}
 	
-	
-	/**
-	 * Sign level 2 data without a specific security provider.
-	 *
-	 * @param key the key
-	 * @throws Exception the exception
-	 */
-	public void signLevel2(PrivateKey key) throws Exception {
-		
-		//find the algorithm name for the signature OID
-		String algo = AlgorithmNameResolver.getSignatureAlgorithmName(this.getLevel2SignedData().getLevel1Data().level2SigningAlg);
-		Signature sig = Signature.getInstance(algo);
-		sig.initSign(key);
-		byte[] data = level2SignedData.encode();
-		sig.update(data);
-		byte[] signature = sig.sign();
-		this.level2Signature = new OctetString(signature);
-		
-	}
 
-	/**
-	 * Sign level 2 data.
-	 *
-	 * @param key the key
-	 * @param prov the security Provider
-	 * @throws Exception the exception
-	 */
-	public void signLevel2(PrivateKey key, Provider prov) throws Exception {
-		
-		//find the algorithm name for the signature OID
-		String algo = AlgorithmNameResolver.getSignatureAlgorithmName(this.getLevel2SignedData().getLevel1Data().level2SigningAlg);
-		Signature sig = Signature.getInstance(algo,prov);
-		sig.initSign(key);
-		byte[] data = level2SignedData.encode();
-		sig.update(data);
-		this.level2Signature = new OctetString(sig.sign());
-		
-	}
-
-	
-	/**
-	 * Adds the dynamic content and encodes it. (API level)
-	 *
-	 * @param content the dynamic content
-	 * @throws EncodingFormatException the encoding format exception
-	 */
-	public void addDynamicContent(IUicDynamicContent content) throws EncodingFormatException {
-		
-		
-		this.getLevel2SignedData().setLevel2Data(new DataType());
-		
-		this.getLevel2SignedData().getLevel2Data().setFormat(DynamicContentCoder.dynamicContentDataFDC1);
-			
-		this.getLevel2SignedData().getLevel2Data().setByteData(DynamicContentCoder.encode(content, DynamicContentCoder.dynamicContentDataFDC1));
-		
-	}
-	
-	/**
-	 * Adds the level 2 dynamic data. (ASN level)
-	 *
-	 * @param dynamicData the dynamic data
-	 */
-	public void addLevel2DynamicData(UicDynamicContentDataFDC1 dynamicData) {
-		DataType dt = new DataType();
-		dt.setByteData(dynamicData.getDataType().getByteData());
-		dt.setFormat(dynamicData.getDataType().getFormat());	
-		level2SignedData.setLevel2Data(dt);	
-	}
-	
-	/**
-	 * Gets the dynamic content.
-	 *
-	 * @return the dynamic content
-	 */
-	public IUicDynamicContent getDynamicContent() {
-		
-		if (this.getLevel2SignedData() == null || 
-				this.getLevel2SignedData().getLevel2Data() == null){
-				return null;
-		}
-		
-		return DynamicContentCoder.decode(this.getLevel2SignedData().getLevel2Data().getByteData());
-			
-	}
-	
-	/**
-	 * Gets the dynamic data FDC 1.
-	 *
-	 * @return the dynamic data FDC 1
-	 */
-	public UicDynamicContentDataFDC1 getDynamicDataFDC1() {
-		
-		if (this.getLevel2SignedData() == null || 
-			this.getLevel2SignedData().getLevel2Data() == null){
-			return null;
-		}
-		
-		if ( UicDynamicContentDataFDC1.getFormat().equals(this.getLevel2SignedData().getLevel2Data().getFormat())) {
-			return UperEncoder.decode(this.getLevel2SignedData().getLevel2Data().getByteData(), UicDynamicContentDataFDC1.class);		
-		}
-		return null;
-		
-	}
-	
-	
 }

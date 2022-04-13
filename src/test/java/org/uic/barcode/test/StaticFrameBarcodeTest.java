@@ -18,6 +18,7 @@ import org.junit.Test;
 import org.uic.barcode.Decoder;
 import org.uic.barcode.Encoder;
 import org.uic.barcode.dynamicFrame.Constants;
+import org.uic.barcode.logger.LoggerFactory;
 import org.uic.barcode.staticFrame.ticketLayoutBarcode.TicketLayout;
 import org.uic.barcode.test.utils.SimpleTestTicketLayout;
 import org.uic.barcode.test.utils.SimpleUICTestTicket;
@@ -53,6 +54,8 @@ public class StaticFrameBarcodeTest {
 	 */
 	@Before public void initialize() {
 
+		LoggerFactory.setActivateConsoleLog(true);
+		
 		algorithmOID = Constants.DSA_SHA224;
 		keySize = 2048;
 	    testFCBticket = SimpleUICTestTicket.getUicTestTicket();

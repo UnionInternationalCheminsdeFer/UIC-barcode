@@ -57,21 +57,25 @@ public class DynamicContentCoder {
 	
 
 	private static SequenceOfExtension getAsnContentExtensions(UicDynamicContentDataFDC1 asn, List<IExtension> dynamicContentResponseList) throws EncodingFormatException {
-		if (dynamicContentResponseList != null && !dynamicContentResponseList.isEmpty()){
+		if (dynamicContentResponseList == null || dynamicContentResponseList.isEmpty()){
+			return null;
+		}
 			
-			SequenceOfExtension asnList = asn.getExtensions();
-			if (asnList == null) asnList = new SequenceOfExtension();
-			for (IExtension extension : dynamicContentResponseList){
-				ExtensionData asnExtension = getAsnExtension(extension);
-				if (asnExtension!= null) {
-					asnList.add(asnExtension);
-				}
-			}
-			if (!asnList.isEmpty()){
-				return asnList;
+		SequenceOfExtension asnList = asn.getExtensions();
+		if (asnList == null) {
+			asnList = new SequenceOfExtension();
+		}
+		
+		for (IExtension extension : dynamicContentResponseList){
+			ExtensionData asnExtension = getAsnExtension(extension);
+			if (asnExtension!= null) {
+				asnList.add(asnExtension);
 			}
 		}
-	
+		if (!asnList.isEmpty()){
+			return asnList;
+		}
+			
 		return null;
 	}
 
@@ -92,8 +96,12 @@ public class DynamicContentCoder {
 			
 			GeoCoordinateType asnPoint = new GeoCoordinateType();
 			
-			asnPoint.setLatitude(point.getLatitude());  
-			asnPoint.setLongitude(point.getLongitude());
+			if (point.getLatitude() != null) {
+				asnPoint.setLatitude(point.getLatitude());  
+			}
+			if (point.getLongitude() != null) {
+				asnPoint.setLongitude(point.getLongitude());
+			}
 			
 			if (point.getUnit() != IGeoUnitType.milliDegree && point.getUnit() != null){
 				asnPoint.setGeoUnit(GeoUnitType.valueOf(point.getUnit().name()));
@@ -158,8 +166,9 @@ public class DynamicContentCoder {
 		
 		content.setGeoCoordinate(getGeoCoordinate(asn.getGeoCoordinate()));
 		
-		content.setTimeStamp(asn.getTimeStamp().getTimeAsDate());
-		
+		if (asn.getTimeStamp() != null) {
+			content.setTimeStamp(asn.getTimeStamp().getTimeAsDate());
+		}
 
 		return content;
 
@@ -167,10 +176,16 @@ public class DynamicContentCoder {
 
 	private static IGeoCoordinate getGeoCoordinate(GeoCoordinateType asnCoordinate) {
 		
+		if (asnCoordinate == null) return null;
+		
 		IGeoCoordinate g = new SimpleGeoCoordinate();
 		
-		g.setLatitude(asnCoordinate.getLatitude());
-		g.setLongitude(asnCoordinate.getLongitude());
+		if (asnCoordinate.getLatitude() != null) {
+			g.setLatitude(asnCoordinate.getLatitude());
+		}
+		if (asnCoordinate.getLongitude() != null) {
+			g.setLongitude(asnCoordinate.getLongitude());
+		}
 		
 		if (asnCoordinate.getCoordinateSystem() != null) {
 			g.setSystem(IGeoCoordinateSystemType.valueOf(asnCoordinate.getCoordinateSystem().name()));

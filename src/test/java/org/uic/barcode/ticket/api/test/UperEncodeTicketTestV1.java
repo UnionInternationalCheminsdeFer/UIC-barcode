@@ -4,8 +4,10 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.logging.Level;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.uic.barcode.asn1.uper.UperEncoder;
+import org.uic.barcode.logger.LoggerFactory;
 import org.uic.barcode.ticket.api.asn.omv1.UicRailTicketData;
 import org.uic.barcode.ticket.api.test.testtickets.SimpleUicTestTicket;
 
@@ -85,7 +87,9 @@ public class UperEncodeTicketTestV1 {
     </pre>
      */
 
-
+	@Before public void prepare() {
+		LoggerFactory.setActivateConsoleLog(true);
+	}
 
     @Test public void testEncodeTicket() throws IllegalArgumentException, IllegalAccessException {
     	UicRailTicketData ticket = SimpleUicTestTicket.getUicTestTicket();

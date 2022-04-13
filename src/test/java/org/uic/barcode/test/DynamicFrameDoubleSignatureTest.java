@@ -1,31 +1,31 @@
 package org.uic.barcode.test;
 
 import java.io.IOException;
-import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
+import java.security.Provider;
 import java.security.SecureRandom;
 import java.security.Security;
 import java.security.SignatureException;
+import java.security.spec.ECGenParameterSpec;
 import java.util.Arrays;
 import java.util.zip.DataFormatException;
 
-import org.bouncycastle.jce.ECNamedCurveTable;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.bouncycastle.jce.spec.ECParameterSpec;
 import org.junit.Before;
 import org.junit.Test;
 import org.uic.barcode.Decoder;
 import org.uic.barcode.Encoder;
 import org.uic.barcode.dynamicFrame.Constants;
 import org.uic.barcode.dynamicFrame.api.IData;
+import org.uic.barcode.logger.LoggerFactory;
 import org.uic.barcode.test.utils.Level2TestDataFactory;
 import org.uic.barcode.test.utils.SimpleUICTestTicket;
 import org.uic.barcode.ticket.EncodingFormatException;
 import org.uic.barcode.ticket.api.spec.IUicRailTicket;
+import org.uic.barcode.utils.SecurityUtils;
 
 public class DynamicFrameDoubleSignatureTest {
 	
@@ -38,8 +38,12 @@ public class DynamicFrameDoubleSignatureTest {
 	
 	public IUicRailTicket testFCBticket = null;
 	
+	public Provider provider = null;
+	
 	
 	@Before public void initialize() {
+		
+		LoggerFactory.setActivateConsoleLog(true);
 		
 		signatureAlgorithmOID = Constants.ECDSA_SHA256;
 		keyPairAlgorithmOID = Constants.KG_EC_256;
@@ -47,6 +51,7 @@ public class DynamicFrameDoubleSignatureTest {
 		
 	    testFCBticket = SimpleUICTestTicket.getUicTestTicket();
 		
+		provider = new BouncyCastleProvider();
 		Security.addProvider(new BouncyCastleProvider());
 
 		try {
@@ -145,20 +150,17 @@ public class DynamicFrameDoubleSignatureTest {
         
 	}	
 	
-	public KeyPair generateECDSAKeys(String keyAlgorithmName, String paramName)  throws NoSuchAlgorithmException, NoSuchProviderException, InvalidAlgorithmParameterException{
-		ECParameterSpec ecSpec = ECNamedCurveTable.getParameterSpec(paramName);
-	    KeyPairGenerator g = KeyPairGenerator.getInstance(keyAlgorithmName, "BC");
-	    g.initialize(ecSpec, new SecureRandom());
-	    return g.generateKeyPair();	    
-    }
 		
 	public KeyPair generateECKeys(String keyAlgorithmOid, String curve)  throws Exception{
 		
-		String keyAlgorithmName = "ECDSA";
-		ECParameterSpec ecSpec = ECNamedCurveTable.getParameterSpec(curve);
-	    KeyPairGenerator g = KeyPairGenerator.getInstance(keyAlgorithmName, "BC");
-	    g.initialize(ecSpec, new SecureRandom());
-	    return g.generateKeyPair();	    
+		//ECNamedCurveGenParameterSpec namedParamSpec = new ECNamedCurveGenParameterSpec(elipticCurve);
+		
+	    ECGenParameterSpec namedParamSpec = new ECGenParameterSpec(elipticCurve);
+	    KeyPairGenerator ecKPGen = KeyPairGenerator.getInstance("EC", "BC");
+	    ecKPGen.initialize(namedParamSpec, new SecureRandom());
+	    KeyPair keyPair = ecKPGen.generateKeyPair();
+	    KeyPair kp = new KeyPair(SecurityUtils.convert(keyPair.getPublic(), provider),SecurityUtils.convert(keyPair.getPrivate(), provider));
+	    return kp;
     }
 
 

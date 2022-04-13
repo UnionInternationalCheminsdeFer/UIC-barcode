@@ -20,7 +20,6 @@ public class SequenceOfPlaceNum extends Asn1SequenceOf<Long> {
 		}
 	}
 	
-	@Deprecated
 	public static SequenceOfPlaceNum getSequence(List<Long> numList) {
 		if (numList == null || numList.isEmpty()) return null;
 		return new SequenceOfPlaceNum(numList);

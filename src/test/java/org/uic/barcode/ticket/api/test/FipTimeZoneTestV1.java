@@ -11,6 +11,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.uic.barcode.asn1.uper.UperEncoder;
+import org.uic.barcode.logger.LoggerFactory;
 import org.uic.barcode.ticket.EncodingFormatException;
 import org.uic.barcode.ticket.api.asn.omv1.UicRailTicketData;
 import org.uic.barcode.ticket.api.spec.IFipTicket;
@@ -88,6 +89,8 @@ public class FipTimeZoneTestV1 {
 	 * Prepare tickets.
 	 */
 	@Before public void prepare() {
+		
+		LoggerFactory.setActivateConsoleLog(true);
 		
 		defaulttimeZone = TimeZone.getDefault();
 		
@@ -321,7 +324,7 @@ public class FipTimeZoneTestV1 {
         	iTicketDecodedCase1 = decoder.decodeFromAsn(encodedInTimeZone1);
         	iTicketDecodedCase2 = decoder.decodeFromAsn(encodedInTimeZone2);
         	iTicketDecodedCase3 = decoder.decodeFromAsn(encodedInTimeZone3);
-		} catch (IOException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		} 
 	}
@@ -336,7 +339,7 @@ public class FipTimeZoneTestV1 {
 			iTicketDecodedFromAsn1Case1 = decoder.decodeFromAsn(encoded1);
 			iTicketDecodedFromAsn1Case2 = decoder.decodeFromAsn(encoded2);
 			iTicketDecodedFromAsn1Case3 = decoder.decodeFromAsn(encoded3);
-		} catch (IOException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		

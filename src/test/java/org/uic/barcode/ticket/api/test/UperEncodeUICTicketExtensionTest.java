@@ -4,10 +4,12 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.logging.Level;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.uic.barcode.asn1.datatypes.Asn1Optional;
 import org.uic.barcode.asn1.datatypes.Sequence;
 import org.uic.barcode.asn1.uper.UperEncoder;
+import org.uic.barcode.logger.LoggerFactory;
 import org.uic.barcode.ticket.api.asn.omv1.ExtensionData;
 import org.uic.barcode.ticket.api.asn.omv1.SequenceOfExtensionData;
 
@@ -35,20 +37,7 @@ public class UperEncodeUICTicketExtensionTest {
    		 }			
 		}
      
-Encoding to the file 'data.uper' using PER UNALIGNED encoding rule...
-TestRecord SEQUENCE [fieldcount (not encoded) = 1]
-  extensionList SEQUENCE OF [count = 2]
-    ExtensionData SEQUENCE [fieldcount (not encoded) = 2]
-      extensionId IA5String [length = 1.0]
-        "1"
-      extensionData OCTET STRING [length = 2.0]
-        0x82da
-    ExtensionData SEQUENCE [fieldcount (not encoded) = 2]
-      extensionId IA5String [length = 1.0]
-        "2"
-      extensionData OCTET STRING [length = 2.0]
-        0x83da
-Total encoded length = 10.7
+
 Encoded successfully in 11 bytes:
 8100B102 82DA0164 0507B4
     </pre>
@@ -66,6 +55,9 @@ Encoded successfully in 11 bytes:
         }
     }
 
+    @Before public void prepare() {
+    	LoggerFactory.setActivateConsoleLog(true);
+    }
 
     @Test public void testEncodeTicket() throws IllegalArgumentException, IllegalAccessException {
     	TestRecord ticket = new TestRecord();

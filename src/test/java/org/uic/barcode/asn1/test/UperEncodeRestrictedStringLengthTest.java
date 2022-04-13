@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.logging.Level;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.uic.barcode.asn1.datatypes.Asn1Optional;
 import org.uic.barcode.asn1.datatypes.CharacterRestriction;
@@ -12,6 +13,7 @@ import org.uic.barcode.asn1.datatypes.RestrictedString;
 import org.uic.barcode.asn1.datatypes.Sequence;
 import org.uic.barcode.asn1.datatypes.SizeRange;
 import org.uic.barcode.asn1.uper.UperEncoder;
+import org.uic.barcode.logger.LoggerFactory;
 
 
 public class UperEncodeRestrictedStringLengthTest {
@@ -51,6 +53,9 @@ public class UperEncodeRestrictedStringLengthTest {
         }
     }
 
+	@Before public void prepare() {	
+		LoggerFactory.setActivateConsoleLog(true);
+	}
 
     @Test public void testEncode1() throws IllegalArgumentException, IllegalAccessException {
         TestRecord record = new TestRecord("A");

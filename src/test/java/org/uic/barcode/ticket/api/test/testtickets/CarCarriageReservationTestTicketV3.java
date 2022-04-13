@@ -9,6 +9,7 @@ import org.uic.barcode.ticket.api.asn.omv3.IssuingData;
 import org.uic.barcode.ticket.api.asn.omv3.LoadingDeckType;
 import org.uic.barcode.ticket.api.asn.omv3.PriceTypeType;
 import org.uic.barcode.ticket.api.asn.omv3.RoofRackType;
+import org.uic.barcode.asn1.uper.UperEncoder;
 import org.uic.barcode.ticket.api.asn.omv3.CarCarriageReservationData;
 import org.uic.barcode.ticket.api.asn.omv3.SequenceOfCardReferenceType;
 import org.uic.barcode.ticket.api.asn.omv3.SequenceOfCarrierNum;
@@ -318,6 +319,10 @@ import org.uic.barcode.ticket.api.asn.omv3.VatDetailType;
 			CardReferenceType cr = new CardReferenceType();
 			cr.setTrailingCardIdNum(100L);
 			return cr;
+		}
+
+		public static byte[] getEncodingBytes() {
+			return UperEncoder.bytesFromHexString(getEncodingHex());
 		}
 
 

@@ -53,7 +53,7 @@ public class SimpleTraveler implements ITraveler {
 	protected IPassengerType passengerType;
 	
 	/** The passenger with reduced mobility. */
-	protected boolean 	passengerWithReducedMobility;
+	protected Boolean 	passengerWithReducedMobility;
 	
 	/** The country of residence. */
 	protected int 		countryOfResidence  = 0;

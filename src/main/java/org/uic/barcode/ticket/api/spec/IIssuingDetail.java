@@ -185,5 +185,12 @@ public interface IIssuingDetail {
 		
 	public boolean isSecurePaperTicket();
 	public void setSecurePaperTicket(boolean securePaperTicket); 
+	
+	public String getCurrency();
+	public void setCurrency(String currency);
+	
+	public Integer getCurrencyFraction();
+	public void setCurrencyFraction(Integer fraction);
+	
 
 }
