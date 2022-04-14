@@ -314,6 +314,7 @@ public class TravelerType extends Object {
 	public Date getDateOfBirth() {
 		
 		if (this.yearOfBirth == null) return null;
+		if (this.monthOfBirth == null) return null;
 		if (this.dayOfBirth == null) return null;
 		
 		Calendar cal = Calendar.getInstance();

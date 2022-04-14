@@ -217,7 +217,7 @@ public class UicEncoderUtils {
 	}
 	
 	/**
-	 * Gets the num list.
+	 * Gets the list of all numeric strings.
 	 *
 	 * @param list the list
 	 * @return the num list
@@ -244,9 +244,10 @@ public class UicEncoderUtils {
 		
 		return numList;		
 	}
+	
 
 	/**
-	 * Gets the i a5 non num list.
+	 * Gets the IA5 string list of all elements that are not nmeric.
 	 *
 	 * @param list the list
 	 * @return the i a5 non num list
@@ -274,8 +275,7 @@ public class UicEncoderUtils {
 		return ia5List;		
 	}
 	
-	
-	
+
 	
 	/**
 	 * Gets the i a5.
@@ -443,34 +443,6 @@ public class UicEncoderUtils {
 		return list;
 	}
 	
-	/**
-	 * Gets the restricted int list.
-	 *
-	 * @param intList the int list
-	 * @param min the min
-	 * @param max the max
-	 * @return the restricted int list
-	 * @throws EncodingFormatException the encoding format exception
-	 */
-	public static List<Integer> getRestrictedIntList(	Collection<Integer> intList, int min, int max) throws EncodingFormatException {
-		if (intList == null || intList.isEmpty()) return null;
-		
-		ArrayList<Integer> list = new ArrayList<Integer>();
-		
-		for (Integer i : intList){
-			if (i != 0){
-				
-				if (i < min || i > max){
-					throw new EncodingFormatException("Integer value exceeds boundaries");
-				}
-				
-				list.add(i);
-			}
-		}
-		
-		if (list.isEmpty()) return null;
-		return list;
-	}
 	
 	/**
 	 * Encode restricted integer collection.
