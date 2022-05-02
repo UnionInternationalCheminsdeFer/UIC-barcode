@@ -361,13 +361,15 @@ public class SimpleDynamicFrame implements IDynamicFrame {
 	 */
 	@Override
 	public void signLevel2(PrivateKey key, Provider prov) throws Exception {
+
+		if (prov == null) {
+			prov = SecurityUtils.findPrivateKeyProvider(key);
+		}
 		
 		//find the algorithm name for the signature OID
 		String algo = AlgorithmNameResolver.getSignatureAlgorithmName(this.getLevel2Data().getLevel1Data().getLevel2SigningAlg(), prov);
 		Signature sig = null;
-		if (prov == null) {
-			prov = SecurityUtils.findPrivateKeyProvider(key);
-		}
+
 		if (prov != null) {
 			sig = Signature.getInstance(algo,prov);
 		} else {
