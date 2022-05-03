@@ -84,6 +84,32 @@ public class TimeStampTest {
 		assert (secondOfDay2 >= secondOfDay - 1);
 		assert (secondOfDay2 <= secondOfDay + 1);
 	    
-	    
 	}
+	
+	@Test public void testSetDateTime() {
+		ZonedDateTime now = ZonedDateTime.now(ZoneId.of("UTC"));
+		Date dateNow = Date.from(now.toInstant());
+
+		TimeStamp ts = new TimeStamp();
+		ts.setDateTime(dateNow);
+
+		assert (ts.day.intValue() == now.get(ChronoField.DAY_OF_YEAR));
+		assert (ts.secondOfDay.intValue() == now.get(ChronoField.SECOND_OF_DAY));
+	}
+
+	@Test public void testGetTimeAsDate() {
+		ZonedDateTime now = ZonedDateTime.now(ZoneId.of("UTC")).withNano(0); // we ignore nano seconds
+		Date dateNow = Date.from(now.toInstant());
+
+		TimeStamp ts = new TimeStamp();
+		ts.setDateTime(dateNow);
+
+		Date resDate = ts.getTimeAsDate();
+
+		assert (resDate.getTime() == dateNow.getTime());
+		ZonedDateTime res = ZonedDateTime.ofInstant(resDate.toInstant(), ZoneId.of("UTC")).withNano(0);
+		assert (res.compareTo(now) == 0);
+
+	}
+	
 }
