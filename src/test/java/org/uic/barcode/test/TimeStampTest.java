@@ -63,7 +63,7 @@ public class TimeStampTest {
 	
 	@Test public void testDateConversion3() {
 		
-		//implemntation not available on older android versions:
+		//implementation not available on older android versions:
 		ZonedDateTime now = ZonedDateTime.now(ZoneId.of("UTC"));
 		long day = new Long(now.get(ChronoField.DAY_OF_YEAR));
 		long secondOfDay = new Long(now.get(ChronoField.SECOND_OF_DAY));		
