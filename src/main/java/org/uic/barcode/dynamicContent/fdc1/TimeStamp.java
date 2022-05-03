@@ -1,8 +1,5 @@
 package org.uic.barcode.dynamicContent.fdc1;
 
-import java.time.Instant;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
@@ -104,26 +101,26 @@ public class TimeStamp {
 	 * @return the date and time of content creation in UTC
 	 */
 	public Date getTimeAsDate() {
-			
-		ZonedDateTime now = Instant.now().atZone(ZoneOffset.UTC);
-		int dayOfYear = now.getDayOfYear();
-				
+		
+		Calendar now = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+		int dayOfYear = now.get(Calendar.DAY_OF_YEAR);
+
 		if (dayOfYear - day.intValue() > 250) {
-			now = now.plusYears(1);
+			now.add(Calendar.YEAR, 1);
 		}
 		if (day.intValue() - dayOfYear > 250) {
-			now = now.minusYears(1);
+			now.add(Calendar.YEAR, -1);
 		}
 
-		now = now.withDayOfYear(1);
-		now = now.withSecond(0);
-		now = now.withHour(0);
-		now = now.withMinute(0);
-		now = now.withNano(0);
-		now = now.withDayOfYear(day.intValue());
-		now = now.plusSeconds(secondOfDay);
-		
-		return Date.from(now.toInstant());
+		now.set(Calendar.DAY_OF_YEAR, 1);
+		now.set(Calendar.SECOND, 0);
+		now.set(Calendar.HOUR_OF_DAY, 0);
+		now.set(Calendar.MINUTE, 0);
+		now.set(Calendar.MILLISECOND, 0);
+		now.set(Calendar.DAY_OF_YEAR, day.intValue());
+		now.add(Calendar.SECOND, secondOfDay.intValue());
+
+		return now.getTime();
 	
 	}
 	
@@ -134,13 +131,15 @@ public class TimeStamp {
 	 */
 	public void setDateTime(Date dateUTC) {
 		
-		ZonedDateTime date = dateUTC.toInstant().atZone(ZoneOffset.UTC);
-		
-		day = (long) date.getDayOfYear();
-	
-		secondOfDay = (long) date.getSecond();
-		secondOfDay = secondOfDay + 60 * (long) date.getMinute();
-		secondOfDay = secondOfDay + 60 * 60 * (long) date.getHour();			
+		Calendar c = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+		c.setTime(dateUTC);
+
+		day = (long) c.get(Calendar.DAY_OF_YEAR);
+
+		secondOfDay = (long) c.get(Calendar.SECOND);
+		secondOfDay += 60L * c.get(Calendar.MINUTE);
+		secondOfDay += 3600L * c.get(Calendar.HOUR_OF_DAY);
+			
 		
 	}
 

@@ -68,7 +68,10 @@ public class SecurityUtils {
 		
 		String name = key.getAlgorithm();
 		byte[] keyBytes = key.getEncoded();
-				
+		
+		if (keyBytes == null || keyBytes.length == 0) {
+			return null;
+		}
 			
 		PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(keyBytes);
 		

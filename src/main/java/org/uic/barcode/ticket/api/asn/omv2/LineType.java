@@ -127,8 +127,11 @@ public class LineType extends Object {
 	}
 
 	public byte[] getBinaryZoneId() {
-		
-		return binaryZoneId.toByteArray();
+		if (binaryZoneId != null && binaryZoneId.size() > 0) {
+			return binaryZoneId.toByteArray();
+		} else {
+			return null;
+		}
 	}
 
 	public void setCarrierNum(Long carrierNum) {
@@ -177,8 +180,11 @@ public class LineType extends Object {
 	}
 
 	public void setBinaryZoneId(byte[] binaryZoneId) {
-
-		this.binaryZoneId = new OctetString(binaryZoneId);
+        if (binaryZoneId != null && binaryZoneId.length > 0) {
+        	this.binaryZoneId = new OctetString(binaryZoneId);
+        } else {
+        	this.binaryZoneId = null;
+        }
 	}
 
 

@@ -111,6 +111,12 @@ public class AlgorithmNameResolver {
     	
     	String name = null;
     	
+ 		if (map.get(type) != null) {
+ 			if (map.get(type).get(oid) != null) {
+ 				return map.get(type).get(oid);
+ 			}
+ 		}
+    	
     	if (provider != null) {
     		 Service service = provider.getService(type,oid);
     		 if (service != null) {
@@ -133,13 +139,7 @@ public class AlgorithmNameResolver {
  		    	 return name;
  		       }
  		}
- 		 		
- 		if (map.get(type) != null) {
- 			if (map.get(type).get(oid) != null) {
- 				return map.get(type).get(oid);
- 			}
- 		}
- 		
+		
  		
 		//fallback if the provider did not implement OIDs
 		if (oid.startsWith("1.2.840.10045.4")) {

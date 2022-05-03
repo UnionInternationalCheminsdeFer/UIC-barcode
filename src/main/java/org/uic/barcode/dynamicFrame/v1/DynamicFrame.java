@@ -122,44 +122,6 @@ public class DynamicFrame extends Object{
 		return UperEncoder.decode(bytes, DynamicFrame.class);	
 	}
 	
-	/**
-	 * Sign level 2 data without a specific security provider.
-	 *
-	 * @param key the key
-	 * @throws Exception the exception
-	 */
-	public void signLevel2(PrivateKey key) throws Exception {
-		
-		//find the algorithm name for the signature OID
-		String algo = AlgorithmNameResolver.getSignatureAlgorithmName(this.getLevel2SignedData().getLevel1Data().level2SigningAlg);
-		Signature sig = Signature.getInstance(algo);
-		sig.initSign(key);
-		byte[] data = level2SignedData.encode();
-		sig.update(data);
-		byte[] signature = sig.sign();
-		this.level2Signature = new OctetString(signature);
-		
-	}
-
-	/**
-	 * Sign level 2 data.
-	 *
-	 * @param key the key
-	 * @param prov the security Provider
-	 * @throws Exception the exception
-	 */
-	public void signLevel2(PrivateKey key, Provider prov) throws Exception {
-		
-		//find the algorithm name for the signature OID
-		String algo = AlgorithmNameResolver.getSignatureAlgorithmName(this.getLevel2SignedData().getLevel1Data().level2SigningAlg);
-		Signature sig = Signature.getInstance(algo,prov);
-		sig.initSign(key);
-		byte[] data = level2SignedData.encode();
-		sig.update(data);
-		this.level2Signature = new OctetString(sig.sign());
-		
-	}
-
 	
 	/**
 	 * Adds the dynamic content and encodes it. (API level)
