@@ -105,7 +105,7 @@ public class StationPassageData extends Object {
 
 	@FieldOrder(order = 17)
 	@Asn1Default(value="0")
-	@IntRange(minValue=-1,maxValue=370)
+	@IntRange(minValue=-1,maxValue=500)
 	@Asn1Optional public Long validUntilDay;
 
 	@FieldOrder(order = 18)

@@ -6,7 +6,7 @@ import java.util.List;
 import org.uic.barcode.asn1.datatypes.Asn1SequenceOf;
 import org.uic.barcode.asn1.datatypes.IntRange;
 
-@IntRange(minValue=0,maxValue=370)
+@IntRange(minValue=0,maxValue=500)
 public class SequenceOfActivatedDays extends Asn1SequenceOf<Long> {
     public SequenceOfActivatedDays() { super(); }
     public SequenceOfActivatedDays(Collection<Long> coll) { super(coll); }

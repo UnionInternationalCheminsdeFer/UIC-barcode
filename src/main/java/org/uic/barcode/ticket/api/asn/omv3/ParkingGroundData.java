@@ -54,7 +54,7 @@ public class ParkingGroundData extends Object {
 	public Long fromParkingDate;
 
 	@FieldOrder(order = 4)
-	@IntRange(minValue=0,maxValue=370)
+	@IntRange(minValue=0,maxValue=500)
 	@Asn1Default(value="0")
 	@Asn1Optional public Long toParkingDate;
 

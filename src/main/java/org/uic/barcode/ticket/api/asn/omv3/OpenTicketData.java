@@ -129,7 +129,7 @@ public class OpenTicketData extends Object {
 
 	@FieldOrder(order = 22)
 	@Asn1Default(value = "0")
-	@IntRange(minValue=-1,maxValue=370)
+	@IntRange(minValue=-1,maxValue=500)
 	@Asn1Optional public Long validUntilDay;
 
 	@FieldOrder(order = 23)

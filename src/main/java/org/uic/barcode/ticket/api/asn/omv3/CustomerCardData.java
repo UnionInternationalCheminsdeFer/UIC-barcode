@@ -54,7 +54,7 @@ public class CustomerCardData extends Object {
 	public Long validFromYear;	
 	
 	@FieldOrder(order = 4)
-	@IntRange(minValue=0,maxValue=370)
+	@IntRange(minValue=0,maxValue=500)
 	@Asn1Optional public Long validFromDay;
 	
 	@FieldOrder(order = 5)
@@ -63,7 +63,7 @@ public class CustomerCardData extends Object {
 	@Asn1Optional public Long validUntilYear;		
 
 	@FieldOrder(order = 6)
-	@IntRange(minValue=0,maxValue=370)
+	@IntRange(minValue=0,maxValue=500)
 	@Asn1Optional public Long validUntilDay;
 
 	@FieldOrder(order = 7)

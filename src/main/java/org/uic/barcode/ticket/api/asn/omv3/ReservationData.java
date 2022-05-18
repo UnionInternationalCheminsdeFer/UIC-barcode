@@ -50,7 +50,7 @@ public class ReservationData extends Object {
 
 	@FieldOrder(order = 2)
 	@Asn1Default(value="0")
-	@IntRange(minValue=-1,maxValue=370)
+	@IntRange(minValue=-1,maxValue=500)
 	@Asn1Optional public Long departureDate;
 
 	@FieldOrder(order = 3)
