@@ -67,7 +67,7 @@ public class VoucherData extends Object {
 	public Long validFromYear;
 
 	@FieldOrder(order = 7)
-	@IntRange(minValue=0,maxValue=370)
+	@IntRange(minValue=0,maxValue=500)
 	public Long validFromDay;
 
 	@FieldOrder(order = 8)
@@ -75,7 +75,7 @@ public class VoucherData extends Object {
 	public Long validUntilYear;
 
 	@FieldOrder(order = 9)
-	@IntRange(minValue=0,maxValue=370)
+	@IntRange(minValue=0,maxValue=500)
 	public Long validUntilDay;
 
 	@FieldOrder(order = 10)

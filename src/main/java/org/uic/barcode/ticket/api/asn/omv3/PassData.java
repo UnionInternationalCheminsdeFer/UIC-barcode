@@ -92,7 +92,7 @@ public class PassData extends Object {
 	@Asn1Optional public Long validFromUTCOffset;
 
 	@FieldOrder(order = 12)
-	@IntRange(minValue=-1,maxValue=370)
+	@IntRange(minValue=-1,maxValue=500)
 	@Asn1Default(value = "0")
 	@Asn1Optional public Long validUntilDay;
 
@@ -108,7 +108,7 @@ public class PassData extends Object {
 	@Asn1Optional public ValidityPeriodDetailType validityPeriodDetails;
 
 	@FieldOrder(order = 16)
-	@IntRange(minValue=0,maxValue=370)
+	@IntRange(minValue=0,maxValue=500)
 	@Asn1Optional public Long numberOfValidityDays;
 	
 	@FieldOrder(order = 17)

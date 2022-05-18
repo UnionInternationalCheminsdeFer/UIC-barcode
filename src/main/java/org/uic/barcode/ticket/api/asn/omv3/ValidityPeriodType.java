@@ -47,7 +47,7 @@ public class ValidityPeriodType extends Object {
 	@Asn1Optional public Long validFromUTCOffset;
 
 	@FieldOrder(order = 3)
-	@IntRange(minValue=-1,maxValue=370)
+	@IntRange(minValue=-1,maxValue=500)
 	@Asn1Default(value="0")
 	@Asn1Optional public Long validUntilDay;
 

@@ -51,7 +51,7 @@ public class CarCarriageReservationData extends Object {
 	@Asn1Optional public String trainIA5;
 	
 	@FieldOrder(order = 2)
-	@IntRange(minValue=-1,maxValue=370)
+	@IntRange(minValue=-1,maxValue=500)
 	@Asn1Default(value="0")
 	@Asn1Optional public Long beginLoadingDate;
 

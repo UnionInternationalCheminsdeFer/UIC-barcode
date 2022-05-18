@@ -1660,7 +1660,7 @@ public class Api2OpenAsnEncoderV3 implements Api2AsnEncoder {
 		
 		asnData.setNumberOfDaysOfTravel(UicEncoderUtils.getRestrictedInt(document.getNumberOfDaysOfTravel(), 1, 250));
 		asnData.setNumberOfPossibleTrips(UicEncoderUtils.getRestrictedInt(document.getNumberOfPossibleTrips(), 1, 250));
-		asnData.setNumberOfValidityDays(UicEncoderUtils.getRestrictedInt(document.getNumberOfValidityDays(), 1, 370));
+		asnData.setNumberOfValidityDays(UicEncoderUtils.getRestrictedInt(document.getNumberOfValidityDays(), 1, 500));
 		asnData.setPassDescription(document.getPassDescription());
 		if (document.getPassType() > 0 ){
 			asnData.setPassType(new Long(document.getPassType()));
