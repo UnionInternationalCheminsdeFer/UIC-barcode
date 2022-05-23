@@ -6,6 +6,7 @@ import java.security.KeyFactory;
 import java.security.Provider;
 import java.security.PublicKey;
 import java.security.interfaces.ECPublicKey;
+import java.security.spec.ECFieldFp;
 import java.security.spec.ECGenParameterSpec;
 import java.security.spec.ECParameterSpec;
 import java.security.spec.ECPoint;
@@ -15,17 +16,40 @@ import java.security.spec.X509EncodedKeySpec;
 import java.util.Arrays;
 
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class ECKeyEncoder.
+ */
 public class ECKeyEncoder {
 	
 
+    /** The Constant X962_UNCOMPRESSED_POINT_INDICATOR. */
     private static final byte X962_UNCOMPRESSED_POINT_INDICATOR = 0x04;
+    
+    /** The Constant X962_ODD. */
     private static final byte X962_ODD = 0x02;
+    
+    /** The Constant X962_EVEN. */
     private static final byte X962_EVEN = 0x03;
     
+    /** The Constant ENCODING_X509. */
     public static final String ENCODING_X509 = "X509";
-    public static final String ENCODING_X962_UNCOMPESSED = "X962_UNCOMPRESSED";
-    public static final String ENCODING_X962_COMPRESSED = "X962_COMPRESSED";
     
+    /** The Constant ENCODING_X962_UNCOMPESSED. */
+    public static final String ENCODING_X962_UNCOMPESSED = "X962_UNCOMPRESSED";
+    
+    /** The Constant ENCODING_X962_COMPRESSED. */
+    public static final String ENCODING_X962_COMPRESSED = "X962_COMPRESSED";
+
+    
+    /**
+     * From encoded.
+     *
+     * @param keyBytes the encoded key
+     * @param oid the algorithm OID of the key algorithm
+     * @param provider the provider of the security implementation
+     * @return the public key
+     */
     public static PublicKey fromEncoded (byte[] keyBytes, String oid, Provider provider) {
     	
     	PublicKey key = null;
@@ -64,12 +88,7 @@ public class ECKeyEncoder {
     	
     	if (key != null) return key;
     	
-    	if (keyBytes[0] ==  X962_UNCOMPRESSED_POINT_INDICATOR) {
-    		
-    		
-    		
-    	}
-    	
+   	
     	//maybe a compressed  X9.62 eliptic key
     	if (keyBytes[0] == X962_ODD || keyBytes[0] == X962_EVEN) {
     		
@@ -82,11 +101,10 @@ public class ECKeyEncoder {
 				//get the curve parameters
 				AlgorithmParameters parameters = AlgorithmParameters.getInstance(keyAlgName, provider);
 				parameters.init(new ECGenParameterSpec(curveName));
-				ECParameterSpec ecParameters = parameters.getParameterSpec(ECParameterSpec.class);
-				EllipticCurve curve = ecParameters.getCurve();
+				ECParameterSpec ecParameters = parameters.getParameterSpec(ECParameterSpec.class);			
 				
 				//reconstruct the uncompressed version with the curve
-				byte[] uncompressed = decompressPubkey(keyBytes, curve);
+				byte[] uncompressed = decompressPubkey(keyBytes, ecParameters);
 				
 				//decode the uncompressed key
 				return fromUncompressedPoint(uncompressed, ecParameters);
@@ -125,7 +143,14 @@ public class ECKeyEncoder {
 
     
     
-    	public static byte[] getEncoded(PublicKey key, String encoding){
+    	/**
+	     * Gets the encoded.
+	     *
+	     * @param key the public key
+	     * @param encoding the encoding ("X509","X962_UNCOMPRESSED","X962_COMPRESSED")
+	     * @return the encoded key
+	     */
+	    public static byte[] getEncoded(PublicKey key, String encoding){
     		
     		if (encoding.equals(ENCODING_X509)) {
     			return key.getEncoded();
@@ -142,12 +167,17 @@ public class ECKeyEncoder {
     			if (key instanceof ECPublicKey) {
     			
 	        		ECPoint point = ((ECPublicKey) key).getW();
+	        		
+	    	    	int fieldSize = (((ECPublicKey)key).getParams().getCurve().getField().getFieldSize() + 7) / 8;
+	    	    	int keySizeBytes = fieldSize + 1;
+	    	    	final byte[] compressed = new byte[keySizeBytes];
+	  
+        		
 	   		   		
 	        		byte[] x = toUnsignedBytes(point.getAffineX());
 	        		
 	        		BigInteger y = point.getAffineY();
 	        		
-	                byte[] compressed = new byte[x.length + 1];
 	                
 	                //compression indicator
 	        		if (y.testBit(0)) {
@@ -155,7 +185,7 @@ public class ECKeyEncoder {
 	        		} else {
 	        			compressed[0] = 0x02;
 	        		}
-	                System.arraycopy(x, 0, compressed, 1, x.length);
+	    	    	System.arraycopy(x, 0, compressed, 1 + fieldSize - x.length, x.length);
 	                
 	                return compressed;
     			}
@@ -167,110 +197,117 @@ public class ECKeyEncoder {
     	}
     	
  
-	    private static ECPublicKey fromUncompressedPoint(
-	            final byte[] uncompressedPoint, final ECParameterSpec params)
+	    /**
+    	 * From uncompressed point.
+    	 *
+    	 * @param encoded the public key in uncompressed encoding
+    	 * @param params the elliptic curve parameters 
+    	 * @return the EC public key
+    	 * @throws Exception the exception
+    	 */
+    	private static ECPublicKey fromUncompressedPoint(
+	            final byte[] encoded, final ECParameterSpec params)
 	            throws Exception {
 
 	        int offset = 0;
-	        if (uncompressedPoint[offset++] != X962_UNCOMPRESSED_POINT_INDICATOR) {
-	            throw new IllegalArgumentException(
-	                    "Invalid uncompressedPoint encoding, no uncompressed point indicator");
+	        if (encoded[offset++] != X962_UNCOMPRESSED_POINT_INDICATOR) {
+	            throw new IllegalArgumentException("Invalid uncompressedPoint encoding, no uncompressed point indicator");
 	        }
 
 	        int keySizeBytes = (params.getOrder().bitLength() + Byte.SIZE - 1)
 	                / Byte.SIZE;
 
-	        if (uncompressedPoint.length != 1 + 2 * keySizeBytes) {
-	            throw new IllegalArgumentException(
-	                    "Invalid uncompressedPoint encoding, not the correct size");
+	        if (encoded.length != 1 + 2 * keySizeBytes) {
+	            throw new IllegalArgumentException("Invalid uncompressedPoint encoding, not the correct size");
 	        }
 
-	        final BigInteger x = new BigInteger(1, Arrays.copyOfRange(
-	                uncompressedPoint, offset, offset + keySizeBytes));
+	        final BigInteger x = new BigInteger(1, Arrays.copyOfRange(encoded, offset, offset + keySizeBytes));
 	        offset += keySizeBytes;
-	        final BigInteger y = new BigInteger(1, Arrays.copyOfRange(
-	                uncompressedPoint, offset, offset + keySizeBytes));
+	        final BigInteger y = new BigInteger(1, Arrays.copyOfRange(encoded, offset, offset + keySizeBytes));
 	        final ECPoint w = new ECPoint(x, y);
 	        final ECPublicKeySpec ecPublicKeySpec = new ECPublicKeySpec(w, params);
 	        final KeyFactory keyFactory = KeyFactory.getInstance("EC");
 	        return (ECPublicKey) keyFactory.generatePublic(ecPublicKeySpec);
 	    }
 
-	    private static byte[] toUncompressedPoint(final ECPublicKey publicKey) {
-
-	        int keySizeBytes = (publicKey.getParams().getOrder().bitLength() + Byte.SIZE - 1)
-	                / Byte.SIZE;
-
-	        final byte[] uncompressedPoint = new byte[1 + 2 * keySizeBytes];
-	        int offset = 0;
-	        uncompressedPoint[offset++] = 0x04;
-
-	        final byte[] x = publicKey.getW().getAffineX().toByteArray();
-	        if (x.length <= keySizeBytes) {
-	            System.arraycopy(x, 0, uncompressedPoint, offset + keySizeBytes
-	                    - x.length, x.length);
-	        } else if (x.length == keySizeBytes + 1 && x[0] == 0) {
-	            System.arraycopy(x, 1, uncompressedPoint, offset, keySizeBytes);
-	        } else {
-	            throw new IllegalStateException("x value is too large");
-	        }
-	        offset += keySizeBytes;
-
-	        final byte[] y = publicKey.getW().getAffineY().toByteArray();
-	        if (y.length <= keySizeBytes) {
-	            System.arraycopy(y, 0, uncompressedPoint, offset + keySizeBytes
-	                    - y.length, y.length);
-	        } else if (y.length == keySizeBytes + 1 && y[0] == 0) {
-	            System.arraycopy(y, 1, uncompressedPoint, offset, keySizeBytes);
-	        } else {
-	            throw new IllegalStateException("y value is too large");
-	        }
+	    
+	    /**
+    	 * To uncompressed point.
+    	 *
+    	 * @param publicKey the public key
+    	 * @return the encoded public key
+    	 */
+    	private static byte[] toUncompressedPoint(final ECPublicKey publicKey) {
+	    	
+	    	final byte[] xCoordBytes = toUnsignedBytes(publicKey.getW().getAffineX());
+	    	final byte[] yCoordBytes = toUnsignedBytes(publicKey.getW().getAffineY());
+	    	
+	    	int fieldSize = (publicKey.getParams().getCurve().getField().getFieldSize() + 7) / 8;
+	    	int keySizeBytes = 2 * fieldSize + 1;
+	    	final byte[] uncompressedPoint = new byte[keySizeBytes];
+	    	
+	    	System.arraycopy(xCoordBytes, 0, uncompressedPoint, 1 + fieldSize - xCoordBytes.length, xCoordBytes.length);
+	    	System.arraycopy(yCoordBytes, 0, uncompressedPoint, 1 + 2 * fieldSize - yCoordBytes.length, yCoordBytes.length);
+	    	uncompressedPoint[0] = 0x04;
 
 	        return uncompressedPoint;
 	    }
 	    
-	    static final BigInteger MODULUS =
-	    	    new BigInteger("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEFFFFFC2F", 16);
-	    
-	    static final BigInteger POW = MODULUS.add(BigInteger.ONE).shiftRight(2);
 
-	    // Given a 33-byte compressed public key, this returns a 65-byte uncompressed key.
-	    private static byte[] decompressPubkey(byte[] compressedKey, EllipticCurve curve ) {
+	   
+	    /**
+    	 * Decompress public key.
+    	 *
+    	 * @param compressedKey the compressed public key
+    	 * @param ecParameters the elliptic curve parameters
+    	 * @return uncompressed encoded public key
+    	 */
+    	private static byte[] decompressPubkey(byte[] compressedKey, ECParameterSpec ecParameters ) {
 	    		    		
+	    		EllipticCurve curve = ecParameters.getCurve();
+	    	
 	    	    // Check array length and type indicator byte
-	    	    if (compressedKey.length != 33 || compressedKey[0] != 2 && compressedKey[0] != 3)
+	    	    if (compressedKey[0] != 2 && compressedKey[0] != 3) {
 	    	        throw new IllegalArgumentException();
+	    	    }
 
 	    	    final byte[] xCoordBytes = Arrays.copyOfRange(compressedKey, 1, compressedKey.length);
 	    	    final BigInteger xCoord = new BigInteger(1, xCoordBytes);  // Range [0, 2^256)	 
+	    	    
+	    	    ECFieldFp ecf = (ECFieldFp) curve.getField();
+	    	    BigInteger modulus = ecf.getP();
+	    	    BigInteger pow = modulus.add(BigInteger.ONE).shiftRight(2);
 	    	    
 	    	    
 	    	    BigInteger temp = xCoord.pow(2).add(curve.getA());
 	    	    temp = temp.multiply(xCoord);
 	    	    temp = temp.add(curve.getB());
-		        temp = temp.modPow(POW, MODULUS);
-	    	    
-	    	    //temp = sqrtMod(temp.add(curveParamB));
-		        
+		        temp = temp.modPow(pow, modulus);		        
 	    	    boolean tempIsOdd = temp.testBit(0);
 	    	    boolean yShouldBeOdd = compressedKey[0] == 3;
-	    	    if (tempIsOdd != yShouldBeOdd)
-	    	        temp = temp.negate().mod(MODULUS);
+	    	    if (tempIsOdd != yShouldBeOdd) {
+	    	        temp = temp.negate().mod(modulus);
+	    	    }
 	    	    final BigInteger yCoord = temp;
-
-	    	    // Copy the x coordinate into the new
-	    	    // uncompressed key, and change the type byte
-	    	    byte[] result = Arrays.copyOf(compressedKey, 65);
+	    	    
+	    	    final byte[] yCoordBytes = toUnsignedBytes(yCoord);
+	    	    
+		    	int fieldSize = (curve.getField().getFieldSize() + 7) / 8;
+		    	byte[] result = new byte[2 * fieldSize + 1];
+    	    	System.arraycopy(compressedKey, 0,result, 1 + fieldSize - compressedKey.length, compressedKey.length);
+    	    	System.arraycopy(yCoordBytes, 0,result, 1 + 2 * fieldSize - yCoordBytes.length, yCoordBytes.length);
+	    	    // set uncompressed key indicator
 	    	    result[0] = 0x04;
-
-	    	    // Carefully copy the y coordinate into uncompressed key
-	    	    final byte[] yCoordBytes = yCoord.toByteArray();
-	    	    for (int i = 0; i < 32 && i < yCoordBytes.length; i++)
-	    	        result[result.length - 1 - i] = yCoordBytes[yCoordBytes.length - 1 - i];
 
 	    	    return result;
 	    }
 	        
+		/**
+		 * To unsigned bytes.
+		 *
+		 * @param i the i
+		 * @return the unsigned bytes of the integer
+		 */
 		private static byte[] toUnsignedBytes(BigInteger i) {
 			byte[] b = i.abs().toByteArray();
 			//remove top sign bit  
