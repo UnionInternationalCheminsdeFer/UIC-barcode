@@ -97,8 +97,7 @@ public class ECKeyEncoder {
 		    	
 		    	//we need to know the curve!
 				String curveName = EllipticCurveNames.getInstance().getName(oid);
-				
-				//get the curve parameters
+
 				AlgorithmParameters parameters = AlgorithmParameters.getInstance(keyAlgName, provider);
 				parameters.init(new ECGenParameterSpec(curveName));
 				ECParameterSpec ecParameters = parameters.getParameterSpec(ECParameterSpec.class);			
@@ -107,7 +106,7 @@ public class ECKeyEncoder {
 				byte[] uncompressed = decompressPubkey(keyBytes, ecParameters);
 				
 				//decode the uncompressed key
-				return fromUncompressedPoint(uncompressed, ecParameters);
+				return fromUncompressedPoint(uncompressed, ecParameters, provider);
 
 			} catch (Exception e) {
 				key = null;
@@ -130,7 +129,7 @@ public class ECKeyEncoder {
     			ECParameterSpec ecParameters = parameters.getParameterSpec(ECParameterSpec.class);
 			
     			//decode the uncompressed key
-				return fromUncompressedPoint(keyBytes, ecParameters);
+				return fromUncompressedPoint(keyBytes, ecParameters, provider);
     		
     		} catch(Exception e) {
     			//failed
@@ -148,6 +147,7 @@ public class ECKeyEncoder {
 	     *
 	     * @param key the public key
 	     * @param encoding the encoding ("X509","X962_UNCOMPRESSED","X962_COMPRESSED")
+    	 * @param provider 
 	     * @return the encoded key
 	     */
 	    public static byte[] getEncoded(PublicKey key, String encoding){
@@ -206,7 +206,7 @@ public class ECKeyEncoder {
     	 * @throws Exception the exception
     	 */
     	private static ECPublicKey fromUncompressedPoint(
-	            final byte[] encoded, final ECParameterSpec params)
+	            final byte[] encoded, final ECParameterSpec params, Provider provider)
 	            throws Exception {
 
 	        int offset = 0;
@@ -226,7 +226,7 @@ public class ECKeyEncoder {
 	        final BigInteger y = new BigInteger(1, Arrays.copyOfRange(encoded, offset, offset + keySizeBytes));
 	        final ECPoint w = new ECPoint(x, y);
 	        final ECPublicKeySpec ecPublicKeySpec = new ECPublicKeySpec(w, params);
-	        final KeyFactory keyFactory = KeyFactory.getInstance("EC");
+	        final KeyFactory keyFactory = KeyFactory.getInstance("EC",provider);
 	        return (ECPublicKey) keyFactory.generatePublic(ecPublicKeySpec);
 	    }
 

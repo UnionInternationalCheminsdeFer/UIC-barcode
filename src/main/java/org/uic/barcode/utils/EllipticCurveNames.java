@@ -39,6 +39,7 @@ public class EllipticCurveNames {
 			me.oitToName.put("1.3.132.0.38", "sect571k1");
 			me.oitToName.put("1.3.132.0.39", "sect571r1");
 			me.oitToName.put("1.3.132.0.10", "secp256k1");
+			me.oitToName.put("1.2.840.10045.3.1.7", "secp256r1");
 
 		}
 		return me;
