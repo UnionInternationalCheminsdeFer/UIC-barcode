@@ -27,6 +27,7 @@ import org.uic.barcode.staticFrame.ticketLayoutBarcode.TicketLayout;
 import org.uic.barcode.ticket.EncodingFormatException;
 import org.uic.barcode.ticket.UicRailTicketCoder;
 import org.uic.barcode.ticket.api.spec.IUicRailTicket;
+import org.uic.barcode.utils.ECKeyEncoder;
 
 
 /**
@@ -274,6 +275,30 @@ public class Encoder {
 			dynamicFrame.getLevel2Data().getLevel1Data().setLevel2KeyAlg(level2KeyAlg);
 			if (publicKey != null) {
 				dynamicFrame.getLevel2Data().getLevel1Data().setLevel2publicKey(publicKey.getEncoded());
+			}
+		}
+	}
+	
+	/**
+	 * Sets the level 2 algorithm Is.
+	 *
+	 * @param level2SigningAlg the level 2 signing algorithm (OID)
+	 * @param level2KeyAlg the level 2 key algorithm (OID)
+	 * @param publicKey the public key of the level 2 signature
+	 * @param publicKeyEncodingFormat "X509", for elliptic curve keys only: "X962_UNCOMPRESSED", "X962_COMPRESSED" constants defined in class ECKeyEncoder.	
+	 **/
+	public void setLevel2Algs(String level2SigningAlg, String level2KeyAlg, PublicKey publicKey, String publicKeyEncodingFormat) {
+		if (dynamicFrame != null) {
+			if (dynamicFrame.getLevel2Data() == null) {
+				dynamicFrame.setLevel2Data(new SimpleLevel2Data());
+			}
+			if (dynamicFrame.getLevel2Data().getLevel1Data() == null) {
+				dynamicFrame.getLevel2Data().setLevel1Data(new SimpleLevel1Data());	
+			}
+			dynamicFrame.getLevel2Data().getLevel1Data().setLevel2SigningAlg(level2SigningAlg);
+			dynamicFrame.getLevel2Data().getLevel1Data().setLevel2KeyAlg(level2KeyAlg);
+			if (publicKey != null) {
+				dynamicFrame.getLevel2Data().getLevel1Data().setLevel2publicKey(ECKeyEncoder.getEncoded(publicKey, publicKeyEncodingFormat));
 			}
 		}
 	}

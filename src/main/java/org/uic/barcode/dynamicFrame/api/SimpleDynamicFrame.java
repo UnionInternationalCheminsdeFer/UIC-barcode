@@ -8,8 +8,6 @@ import java.security.Provider;
 import java.security.PublicKey;
 import java.security.Signature;
 import java.security.SignatureException;
-import java.security.spec.InvalidKeySpecException;
-import java.security.spec.X509EncodedKeySpec;
 import java.util.Date;
 
 import org.uic.barcode.dynamicContent.api.DynamicContentCoder;
@@ -20,6 +18,7 @@ import org.uic.barcode.dynamicFrame.v1.DynamicFrameCoderV1;
 import org.uic.barcode.dynamicFrame.v2.DynamicFrameCoderV2;
 import org.uic.barcode.ticket.EncodingFormatException;
 import org.uic.barcode.utils.AlgorithmNameResolver;
+import org.uic.barcode.utils.ECKeyEncoder;
 import org.uic.barcode.utils.SecurityUtils;
 
 
@@ -180,15 +179,12 @@ public class SimpleDynamicFrame implements IDynamicFrame {
 			} 
 			KeyFactory keyFactory = KeyFactory.getInstance(keyAlgName,provider);
 			if (keyFactory != null) {
-				X509EncodedKeySpec keySpec = new X509EncodedKeySpec(keyBytes);
-				key = keyFactory.generatePublic(keySpec);
+				key = ECKeyEncoder.fromEncoded(keyBytes,level2KeyAlg, provider);
 			} else {
 				return Constants.LEVEL2_VALIDATION_KEY_ALG_NOT_IMPLEMENTED;	
 			}
 			
-		} catch (InvalidKeySpecException e1) {
-			return Constants.LEVEL2_VALIDATION_KEY_ALG_NOT_IMPLEMENTED;	
-		} catch (NoSuchAlgorithmException e1) {
+		} catch (Exception e1) {
 			return Constants.LEVEL2_VALIDATION_KEY_ALG_NOT_IMPLEMENTED;	
 		}
 		

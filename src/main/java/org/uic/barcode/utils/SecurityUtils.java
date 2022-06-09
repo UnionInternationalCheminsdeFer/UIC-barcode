@@ -24,37 +24,16 @@ public class SecurityUtils {
 	 * @return the provider
 	 */
 	public static Provider findPublicKeyProvider(String keyAlgorithmOid, byte[] keyBytes) {
-		
-		
-		X509EncodedKeySpec keySpec = new X509EncodedKeySpec(keyBytes);
-		
-		String name;
-		try {
-			name = AlgorithmNameResolver.getAlgorithmName(AlgorithmNameResolver.TYPE_KEY_GENERATOR_ALG, keyAlgorithmOid, null);
-		} catch (Exception e2) {
-			return null;
-		}
-			
-		KeyFactory keyFactory = null;
-		
+				
  		Provider[] provs = Security.getProviders();
  		for (Provider provider : provs) {
  			try {
- 				keyFactory = KeyFactory.getInstance(name,provider);
-			} catch (NoSuchAlgorithmException e1) {
+ 				PublicKey key = ECKeyEncoder.fromEncoded(keyBytes, keyAlgorithmOid, provider);
+ 				if (key != null) return provider;
+			} catch (Exception e1) {
 				//try next
 			} 
- 		    if (keyFactory != null) {
- 		    	try {
- 		    		keyFactory.generatePublic(keySpec);
- 		    		return provider;
- 		    	} catch (Exception e) {
- 		    		provider = null;
- 		    		//try next
- 		    	}
- 		    }
  		}
- 		
  		return null;
 	}
 
