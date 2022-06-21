@@ -42,10 +42,10 @@ public class AsnExtractor {
 		
 		if (extractionStarted || extractionCompleted) return false;
 		
-		if (path != null && path.length() > 0 && className != null & className.length() > 0) {
-			if (className.endsWith(path)){
-				return true;
-			}
+		if (path != null && path.length() > 0 &&
+				className != null && className.length() > 0 &&
+				className.endsWith(path)) {
+			return true;
 		}
 		
 		return false;
