@@ -245,8 +245,20 @@ public class UHEADDataRecord extends DataRecord{
 				
 			String flagsElement = String.format("%01d",this.flags);
 			
+			String language1 = null;
+			String language2 = null;
+			if (this.language != null) {
+				language1 = String.format("%2s" ,this.language);
+			} else {
+				language1 = "  ";
+			}
+			if (this.additionalLanguage != null) {
+				language2 = String.format("%2s" ,this.additionalLanguage);
+			} else {
+				language2 = "  ";
+			}
 			
-			String languageElement =  String.format("%2s%2s" ,this.language, this.additionalLanguage);
+			String languageElement =  language1 + language2;
 			
 			try {
 				
