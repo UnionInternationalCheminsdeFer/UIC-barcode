@@ -29,7 +29,7 @@ class SeqOfCoder implements Decoder, Encoder {
 
         //CG pass annotations too each field encoding
         Annotation[] annotationArray = new Annotation[] {};
-        if (annotations != null & annotations.getAnnotations() != null && !annotations.getAnnotations().isEmpty()) {
+        if (annotations != null && annotations.getAnnotations() != null && !annotations.getAnnotations().isEmpty()) {
         	ArrayList<Annotation> fieldAnnotations = new ArrayList<Annotation>();
           	fieldAnnotations.addAll(annotations.getAnnotations());
             annotationArray = new Annotation[fieldAnnotations.size()];
