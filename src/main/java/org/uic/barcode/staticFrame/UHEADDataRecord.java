@@ -224,6 +224,16 @@ public class UHEADDataRecord extends DataRecord{
 	        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 	    	
   	     	String issuerElement = String.format("%4s", this.issuer);
+  	     	
+  	     	if (this.identifier == null || this.identifier.length() < 1) {
+  	     		throw new EncodingFormatException("Identifier in U_HEAD missing");
+  	     	}  
+  	     	
+  	     	if (this.identifier.length() > 20) {
+  	     		throw new EncodingFormatException("Identifier in U_HEAD too long (max. 20 byte)");
+  	     	}
+	     	
+  	     	
 
 			String idElement = String.format("%20s", this.identifier);
 			
