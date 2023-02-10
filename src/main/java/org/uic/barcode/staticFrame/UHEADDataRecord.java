@@ -222,8 +222,26 @@ public class UHEADDataRecord extends DataRecord{
 		protected void encodeContent() throws IOException, EncodingFormatException {
 			
 	        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-	    	
+	        
+	        if (this.issuer == null || this.issuer.length() < 1) {
+	        	throw new EncodingFormatException("Issuer in U_HEAD missing");
+	        }
+	        if (this.issuer.length() > 4) {
+	        	throw new EncodingFormatException("Issuer in U_HEAD too long (max 4 bytes)");
+	        }
+	        
+	        
   	     	String issuerElement = String.format("%4s", this.issuer);
+  	     	
+  	     	if (this.identifier == null || this.identifier.length() < 1) {
+  	     		throw new EncodingFormatException("Identifier in U_HEAD missing");
+  	     	}  
+  	     	
+  	     	if (this.identifier.length() > 20) {
+  	     		throw new EncodingFormatException("Identifier in U_HEAD too long (max. 20 bytes)");
+  	     	}
+	     	
+  	     	
 
 			String idElement = String.format("%20s", this.identifier);
 			
@@ -248,12 +266,20 @@ public class UHEADDataRecord extends DataRecord{
 			String language1 = null;
 			String language2 = null;
 			if (this.language != null) {
-				language1 = String.format("%2s" ,this.language);
+				if (this.language.length() > 2) {
+					language1 = String.format("%2s" ,this.language.substring(0, 2));
+				} else {
+					language1 = String.format("%2s" ,this.language);
+				}
 			} else {
 				language1 = "  ";
 			}
 			if (this.additionalLanguage != null) {
-				language2 = String.format("%2s" ,this.additionalLanguage);
+				if (this.additionalLanguage.length() > 2) {
+					language2 = String.format("%2s" ,this.additionalLanguage.substring(0, 2));	
+				} else {
+					language2 = String.format("%2s" ,this.additionalLanguage);	
+				}
 			} else {
 				language2 = "  ";
 			}
