@@ -506,7 +506,7 @@ public class StaticFrame {
 		inflater.setInput(inflaterInput);
 		while (!inflater.finished()) {  
 			int count = inflater.inflate(inflatedDataBuffer,0,2000);
-			if (inflater.needsDictionary()) {
+			if (inflater.needsDictionary() || count == 0) {
 				break;
 			}  
 		    outputStream.write(inflatedDataBuffer, 0, count);  
