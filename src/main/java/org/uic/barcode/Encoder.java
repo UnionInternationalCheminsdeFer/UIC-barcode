@@ -19,6 +19,7 @@ import org.uic.barcode.dynamicFrame.api.SimpleLevel1Data;
 import org.uic.barcode.dynamicFrame.api.SimpleLevel2Data;
 import org.uic.barcode.dynamicFrame.v1.DynamicFrameCoderV1;
 import org.uic.barcode.dynamicFrame.v2.DynamicFrameCoderV2;
+import org.uic.barcode.ssbFrame.SsbFrame;
 import org.uic.barcode.staticFrame.StaticFrame;
 import org.uic.barcode.staticFrame.UFLEXDataRecord;
 import org.uic.barcode.staticFrame.UHEADDataRecord;
@@ -45,12 +46,18 @@ public class Encoder {
 	/** The static frame. */
 	private StaticFrame staticFrame = null;
 	
+	/** The ssb frame. */
+	private SsbFrame ssbFrame = null;
+	
 
 	/** The UIC bar code type classic. */
 	public static String UIC_BARCODE_TYPE_CLASSIC = "UIC_CLASSIC";
 	
 	/** The UIC bar code type DOSIPAS. */
 	public static String UIC_BARCODE_TYPE_DOSIPAS = "UIC_DOSIPAS";	
+	
+	/** The UIC bar code type SSB. */
+	public static String UIC_BARCODE_TYPE_SSB = "UIC_SSB";	
 	
 	/**
 	 * Instantiates a new encoder.
@@ -119,6 +126,11 @@ public class Encoder {
 				dynamicFrame.getLevel2Data().getLevel1Data().addData(ticketData);
 				
 			}
+			
+		} else if (barcodeType == UIC_BARCODE_TYPE_SSB) {
+			
+			ssbFrame = new SsbFrame();
+
 		}
 	}
 	
@@ -369,6 +381,8 @@ public class Encoder {
 				staticFrame.getHeaderRecord().setIssuer(securityProvider);
 			}
 			staticFrame.signByAlgorithmOID(key,signingAlg);
+		} else if (ssbFrame != null) {
+			ssbFrame.signLevel1(key, null, keyId, signingAlg);
 		}
 	}
 	
@@ -395,6 +409,8 @@ public class Encoder {
 				staticFrame.getHeaderRecord().setIssuer(securityProvider);
 			}
 			staticFrame.signByAlgorithmOID(key,signingAlg,prov);
+		} else if (ssbFrame != null) {
+			ssbFrame.signLevel1(key, prov, keyId, signingAlg);
 		}
 	}
 	
@@ -459,6 +475,14 @@ public class Encoder {
 		} else {
 			throw new EncodingFormatException("Unknown Header");
 		}		
+	}
+
+	public SsbFrame getSsbFrame() {
+		return ssbFrame;
+	}
+
+	public void setSsbFrame(SsbFrame ssbFrame) {
+		this.ssbFrame = ssbFrame;
 	}
 
 	

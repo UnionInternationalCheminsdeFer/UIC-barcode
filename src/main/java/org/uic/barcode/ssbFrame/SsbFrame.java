@@ -7,6 +7,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.Provider;
 import java.security.PublicKey;
+import java.security.Security;
 import java.security.Signature;
 import java.security.SignatureException;
 import java.security.Provider.Service;
@@ -198,8 +199,10 @@ public class SsbFrame {
 		this.passData = passData;
 	}
 
-	public void signLevel1(PrivateKey key, Provider prov, String algorithmOid) throws Exception {
+	public void signLevel1(PrivateKey key, Provider prov, String keyId, String algorithmOid) throws Exception {
 		
+		
+		this.header.setKeyId(Integer.parseInt(keyId));
 		
 		byte[] data = getDataForSignature();
 		
@@ -207,7 +210,7 @@ public class SsbFrame {
 			//check for a provider supporting the key
 			prov = SecurityUtils.findPrivateKeyProvider(key);
 		}
-		
+			
 		//find the algorithm name for the signature OID
 		String algo = AlgorithmNameResolver.getSignatureAlgorithmName(algorithmOid, prov);
 		Signature sig = null;
@@ -261,10 +264,25 @@ public class SsbFrame {
 	public boolean verifyByAlgorithmOid(PublicKey key, String signingAlg, Provider prov) throws InvalidKeyException, NoSuchAlgorithmException, SignatureException, IllegalArgumentException, UnsupportedOperationException, IOException, EncodingFormatException {
 		//find the algorithm name for the signature OID
 		String algo = null;
-        Service service = prov.getService("Signature",signingAlg);
-	    if (service != null) {
-	    	algo = service.getAlgorithm();
-	    }
+		
+		if (prov != null) {
+			Service service = prov.getService("Signature",signingAlg);
+			if (service != null) {
+				algo = service.getAlgorithm();
+			}
+		} else {
+			Provider[] provs = Security.getProviders();
+			for (Provider p : provs) {
+			   if (algo == null) {
+				   Service service = p.getService("Signature",signingAlg);
+				   if (service != null) {
+					   algo = service.getAlgorithm();
+				   }
+			   }
+			}
+
+		}
+		
 		if (algo == null) {
 			throw new NoSuchAlgorithmException("No service for algorithm found: " + signingAlg);
 		}
@@ -279,4 +297,6 @@ public class SsbFrame {
 		
 		return sig.verify(signature);
 	}
+
+
 }
