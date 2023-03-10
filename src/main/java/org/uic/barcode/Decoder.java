@@ -213,6 +213,13 @@ public class Decoder {
 				} else {
 					throw e;
 				}
+			} catch (AssertionError e) {
+				dynamicFrame = null;
+				if (isSsbFrame(data)) {
+					decodeSsbFrame(data);
+				} else {
+					throw new EncodingFormatException(e.getMessage());
+				}
 			}
 					
 		} else if (isStaticHeader(data)){
@@ -292,7 +299,7 @@ public class Decoder {
 	 * @return true, if is static header
 	 */
 	private boolean isSsbFrame(byte[] data) {
-		if (data.length == 144) {
+		if (data.length == 114) {
 			return true;
 		} 
 		return false;

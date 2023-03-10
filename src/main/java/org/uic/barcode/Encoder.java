@@ -462,6 +462,8 @@ public class Encoder {
 			return DynamicFrameCoder.encode(dynamicFrame);
 		} else if (staticFrame != null) {
 			return staticFrame.encode();
+		} else if (ssbFrame != null) {
+			return ssbFrame.encode();
 		}
 		return null;
 	}

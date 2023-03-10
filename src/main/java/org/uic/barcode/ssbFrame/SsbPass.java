@@ -35,9 +35,9 @@ public class SsbPass extends SsbCommonTicketPart {
 	private String text = null;
 	
 	@Override
-	protected void decodeContent(byte[] bytes) {
+	protected int decodeContent(byte[] bytes, int offset) {
 		
-		int offset = decodeCommonPart(bytes);
+		offset = offset + decodeCommonPart(bytes);
 		
 		BitBuffer bits = new ByteBitBuffer(bytes);
 		
@@ -77,12 +77,13 @@ public class SsbPass extends SsbCommonTicketPart {
 		text = bits.getChar6String(offset, 240);
 		offset = offset + 240;
 		
+		return offset;
 	}
 
 	@Override
-	protected void encodeContent(byte[] bytes) {
+	protected int encodeContent(byte[] bytes, int offset) {
 		
-		int offset = encodeCommonPart(bytes);
+		offset = offset + encodeCommonPart(bytes, offset);
 		
 		BitBuffer bits = new ByteBitBuffer(bytes);
 		
@@ -121,6 +122,8 @@ public class SsbPass extends SsbCommonTicketPart {
 		
 		bits.putChar6String(offset, 240,text);
 		offset = offset + 240;		
+		
+		return offset;
 	}
 
 	public int getPassSubType() {

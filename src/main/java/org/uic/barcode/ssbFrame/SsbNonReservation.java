@@ -14,9 +14,9 @@ public class SsbNonReservation extends SsbCommonTicketPart {
 	
 
 	@Override
-	protected void decodeContent(byte[] bytes) {
+	protected int decodeContent(byte[] bytes, int offset) {
 		
-		int offset = decodeCommonPart(bytes);
+		offset = offset + decodeCommonPart(bytes);
 		
 		BitBuffer bits = new ByteBitBuffer(bytes);
 		
@@ -37,12 +37,14 @@ public class SsbNonReservation extends SsbCommonTicketPart {
 		text = bits.getChar6String(offset, 222);
 		offset = offset + 222;
 		
+		return offset;
+		
 	}
 
 	@Override
-	protected void encodeContent(byte[] bytes) {
+	protected int encodeContent(byte[] bytes, int offset) {
 		
-		int offset = encodeCommonPart(bytes);
+		offset = offset + encodeCommonPart(bytes, offset);
 		
 		BitBuffer bits = new ByteBitBuffer(bytes);
 		
@@ -55,13 +57,15 @@ public class SsbNonReservation extends SsbCommonTicketPart {
 		bits.putInteger(offset, 9, lastDayOfValidity);
 		offset = offset + 9;
 		
-		offset = stations.decode(offset, bytes);
+		offset = stations.encode(offset, bytes);
 		
 		bits.putInteger(offset, 14, infoCode);
 		offset = offset + 14;
 		
 		bits.putChar6String(offset, 222, text);
 		offset = offset + 222;
+		
+		return offset;
 		
 	}
 

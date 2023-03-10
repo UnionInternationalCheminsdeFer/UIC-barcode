@@ -20,7 +20,7 @@ import org.uic.barcode.utils.SecurityUtils;
 
 public class SsbFrame {
 	
-	private SsbHeader header = null;
+	private SsbHeader header = new SsbHeader();
 	
 	private byte[] signaturePart1 = null;
 	
@@ -42,33 +42,38 @@ public class SsbFrame {
 			throw new EncodingFormatException("Data size does not fit to SSB");
 		}
 		
-		header = new SsbHeader();
-		header.decode(bytes);
+		if (header == null) {
+			header = new SsbHeader();
+		}
+		
+		int offset = 0;
+		
+		offset = offset + header.decodeContent(bytes,0);
 		
 		if (header.getTicketType().equals(SsbTicketType.UIC_1_IRT_RES_BOA)) {
 			
 			reservationData = new SsbReservation();
-			reservationData.decode(bytes);	
+			offset = offset + reservationData.decodeContent(bytes,offset);	
 			
 		} else if (header.getTicketType().equals(SsbTicketType.UIC_2_NRT)) {
 			
 			nonReservationData = new SsbNonReservation();
-			nonReservationData.decode(bytes);
+			offset = offset + nonReservationData.decodeContent(bytes,offset);
 			
 		} else if (header.getTicketType().equals(SsbTicketType.UIC_3_GRP)) {
 			
 			groupData = new SsbGroup();
-			groupData.decode(bytes);
+			offset = offset + groupData.decodeContent(bytes, offset);
 
 		} else if (header.getTicketType().equals(SsbTicketType.UIC_4_RPT)) {
 
 			passData = new SsbPass();
-			passData.decode(bytes);
+			offset = offset + passData.decodeContent(bytes,offset);
 			
 		} else {
 			 
 			nonUicData = new SsbNonUic();
-			nonUicData.decode(bytes);
+			offset = offset + nonUicData.decodeContent(bytes,offset);
 			
 		}
 				
@@ -76,8 +81,8 @@ public class SsbFrame {
 		signaturePart2 = new byte[28];		
 		
 		for (int i = 0 ; i < 28;i++) {
-			signaturePart1[i] = bytes[59 + i];
-			signaturePart2[i] = bytes[59 + 28 + i];
+			signaturePart1[i] = bytes[58 + i];
+			signaturePart2[i] = bytes[58 + 28 + i];
 		}
 		
 	}
@@ -86,27 +91,48 @@ public class SsbFrame {
 		
 		byte[] bytes = new byte[114];
 		
-		header.encode(bytes);
+		int offset = header.encodeContent(bytes,0);
+		
+		
 		
 		if (nonUicData != null) {
-			nonUicData.encode(bytes);
+			offset = nonUicData.encodeContent(bytes, offset);
 		} else if (nonReservationData != null) {
-			nonReservationData.encode(bytes);
+			offset = nonReservationData.encodeContent(bytes, offset);
 		} else if (reservationData != null) {
-			reservationData.encode(bytes);
+			offset = reservationData.encodeContent(bytes, offset);
 		} else if (groupData != null) {
-			groupData.encode(bytes);
+			offset = groupData.encodeContent(bytes, offset);
 		} else if (passData != null) {
-			passData.encode(bytes);
+			offset = passData.encodeContent(bytes, offset);
 		} else {
 			throw new EncodingFormatException("Data Content for SSB missing");
 		};
 		
-		for (int i = 0 ; i < 28;i++) {
-			bytes[59 + i] = signaturePart1[i];
-			bytes[59 + 28 + i] = signaturePart2[i];
+		
+		if (signaturePart1.length > 28) {
+			throw new EncodingFormatException("Signature too large");
+		}
+		if (signaturePart2.length > 28) {
+			throw new EncodingFormatException("Signature too large");
 		}
 		
+		for (int i = 1 ; i < 29; i++) {
+			int sigInd = signaturePart1.length - i;
+			if (sigInd < signaturePart1.length && sigInd >= 0) {
+				bytes[58 + 28 - i] = signaturePart1[sigInd];
+			} else {
+				bytes[58 + 28 - i] = '\0';
+			}
+			sigInd = signaturePart2.length - i;
+			if (sigInd < signaturePart2.length && sigInd >= 0) {
+				bytes[58 + 28 + 28 - i] = signaturePart2[sigInd];
+			} else {
+				bytes[58 + 28 + 28 - i] = '\0';
+			}
+		}
+		
+				
 		return bytes;
 		
 	}
@@ -115,18 +141,19 @@ public class SsbFrame {
 		
 		byte[] bytes = new byte[58];
 		
-		header.encode(bytes);
+		int offset = header.encodeContent(bytes,0);
 		
+				
 		if (nonUicData != null) {
-			nonUicData.encode(bytes);
+			offset = nonUicData.encodeContent(bytes, offset);
 		} else if (nonReservationData != null) {
-			nonReservationData.encode(bytes);
+			offset = nonReservationData.encodeContent(bytes, offset);
 		} else if (reservationData != null) {
-			reservationData.encode(bytes);
+			offset = reservationData.encodeContent(bytes, offset);
 		} else if (groupData != null) {
-			groupData.encode(bytes);
+			offset = groupData.encodeContent(bytes, offset);
 		} else if (passData != null) {
-			passData.encode(bytes);
+			offset = passData.encodeContent(bytes, offset);
 		} else {
 			throw new EncodingFormatException("Data Content for SSB missing");
 		};
@@ -165,6 +192,10 @@ public class SsbFrame {
 
 	public void setNonUicData(SsbNonUic nonUicData) {
 		this.nonUicData = nonUicData;
+		this.nonReservationData = null;
+		this.reservationData = null;
+		this.groupData = null;
+		this.passData = null;		
 	}
 
 	public SsbNonReservation getNonReservationData() {
@@ -173,6 +204,11 @@ public class SsbFrame {
 
 	public void setNonReservationData(SsbNonReservation nonReservationData) {
 		this.nonReservationData = nonReservationData;
+		header.setTicketType(SsbTicketType.UIC_2_NRT);
+		this.reservationData = null;
+		this.nonUicData = null;
+		this.groupData = null;
+		this.passData = null;		
 	}
 
 	public SsbReservation getReservationData() {
@@ -180,6 +216,11 @@ public class SsbFrame {
 	}
 
 	public void setReservationData(SsbReservation reservationData) {
+		header.setTicketType(SsbTicketType.UIC_1_IRT_RES_BOA);
+		this.nonReservationData = null;
+		this.nonUicData = null;
+		this.groupData = null;
+		this.passData = null;
 		this.reservationData = reservationData;
 	}
 
@@ -189,6 +230,12 @@ public class SsbFrame {
 
 	public void setGroupData(SsbGroup groupData) {
 		this.groupData = groupData;
+		header.setTicketType(SsbTicketType.UIC_3_GRP);
+		this.nonReservationData = null;
+		this.nonUicData = null;
+		this.reservationData = null;
+		this.passData = null;
+		
 	}
 
 	public SsbPass getPassData() {
@@ -197,6 +244,11 @@ public class SsbFrame {
 
 	public void setPassData(SsbPass passData) {
 		this.passData = passData;
+		header.setTicketType(SsbTicketType.UIC_4_RPT);
+		this.nonReservationData = null;
+		this.nonUicData = null;
+		this.groupData = null;
+		this.reservationData = null;		
 	}
 
 	public void signLevel1(PrivateKey key, Provider prov, String keyId, String algorithmOid) throws Exception {

@@ -30,17 +30,17 @@ public class SsbReservation extends SsbCommonTicketPart {
 	
 
 	@Override
-	protected void decodeContent(byte[] bytes) {
+	protected int decodeContent(byte[] bytes, int offset) {
 		
-		int offset = decodeCommonPart(bytes);
+		offset = offset + decodeCommonPart(bytes);
 		
 		BitBuffer bits = new ByteBitBuffer(bytes);
 		
 		ticketSubType = bits.getInteger(offset, 2);
-		offset = offset + 4;
+		offset = offset + 2;
 		
 		stations = new SsbStations();
-		stations.decode(offset, bytes);
+		offset = stations.decode(offset, bytes);
 		
 		/*
 		 * 	Departure date : First day of validity from the issuing date	Num (<367)	9,000
@@ -60,7 +60,7 @@ public class SsbReservation extends SsbCommonTicketPart {
 		offset = offset + 11;
 		
 		train = bits.getChar6String(offset, 30);
-		offset = offset +30;
+		offset = offset + 30;
 		
 		coach = bits.getInteger(offset, 10);
 		offset = offset + 10;
@@ -76,17 +76,19 @@ public class SsbReservation extends SsbCommonTicketPart {
 		
 		text = bits.getChar6String(offset, 162);
 		offset = offset + 162;
+		
+		return offset;
 	}
 
 	@Override
-	protected void encodeContent(byte[] bytes) {
+	protected int encodeContent(byte[] bytes, int offset) {
 		
-		int offset = encodeCommonPart(bytes);
+		offset = offset + encodeCommonPart(bytes, offset);
 		
 		BitBuffer bits = new ByteBitBuffer(bytes);
 		
 		bits.putInteger(offset, 2,ticketSubType);
-		offset = offset + 4;
+		offset = offset + 2;
 
 		offset = stations.encode(offset, bytes);
 		
@@ -108,7 +110,7 @@ public class SsbReservation extends SsbCommonTicketPart {
 		offset = offset + 11;
 		
 		bits.putChar6String(offset, 30,train);
-		offset = offset +30;
+		offset = offset + 30;
 		
 		bits.putInteger(offset, 10,coach);
 		offset = offset + 10;
@@ -117,13 +119,15 @@ public class SsbReservation extends SsbCommonTicketPart {
 		offset = offset + 18;
 		
 		bits.put(offset, overbooking);
-		offset++;
+		offset++; 
 		
 		bits.putInteger(offset, 14, infoCode);
 		offset = offset + 14;
 		
 		bits.putChar6String(offset, 162, text);
 		offset = offset + 162;
+		
+		return offset;
 		
 	}
 

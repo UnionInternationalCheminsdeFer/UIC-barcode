@@ -46,14 +46,13 @@ public abstract class SsbCommonTicketPart extends SsbTicketPart {
 		return offset;
 	}
 	
-	protected int encodeCommonPart(byte[] bytes) {
+	protected int encodeCommonPart(byte[] bytes, int offset) {
 		
 		BitBuffer bits = new ByteBitBuffer(bytes);
-		
-		int offset = 27; // header offset
+
 		bits.putInteger(offset,7, numberOfAdults);
 		offset = offset + 7;
-		bits.putInteger(numberOfChildren,offset, 7); 
+		bits.putInteger(offset, 7, numberOfChildren); 
 		offset = offset + 7;
 		bits.put(offset,specimen);
 		offset++;

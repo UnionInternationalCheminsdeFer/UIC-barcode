@@ -27,7 +27,7 @@ public class SsbHeader extends SsbTicketPart {
 	public SsbHeader() {		
 	}
 
-	public void decodeContent(byte[] headerData) {
+	public int decodeContent(byte[] headerData, int offset) {
 		
 		BitBuffer bits = new ByteBitBuffer(headerData);
 
@@ -36,11 +36,11 @@ public class SsbHeader extends SsbTicketPart {
 		keyId = bits.getInteger(18, 4);
 		ticketType = SsbTicketType.values()[bits.getInteger(22, 5)];
 		
-		return;
+		return 4 + 14 + 4 + 5;
 
 	}
 	
-	public void encodeContent(byte[] bytes) {
+	public int encodeContent(byte[] bytes, int offset) {
 			
 		BitBuffer bits = new ByteBitBuffer(bytes);
 		
@@ -48,6 +48,8 @@ public class SsbHeader extends SsbTicketPart {
 		bits.putInteger(4, 14, issuer);
 		bits.putInteger(18, 4, keyId);
 		bits.putInteger(22, 5, ticketType.ordinal());
+		
+		return 4 + 14 + 4 + 5;
 		
 	}
 

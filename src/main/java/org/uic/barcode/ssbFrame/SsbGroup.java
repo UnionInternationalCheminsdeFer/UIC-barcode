@@ -18,9 +18,9 @@ public class SsbGroup extends SsbCommonTicketPart {
 	
 
 	@Override
-	protected void decodeContent(byte[] bytes) {
+	protected int decodeContent(byte[] bytes, int offset) {
 		
-		int offset = decodeCommonPart(bytes);
+		offset = offset + decodeCommonPart(bytes);
 		
 		BitBuffer bits = new ByteBitBuffer(bytes);
 		
@@ -44,15 +44,17 @@ public class SsbGroup extends SsbCommonTicketPart {
 		infoCode = bits.getInteger(offset, 14);
 		offset = offset + 14;
 		
-		text = bits.getChar6String(offset, 222);
-		offset = offset + 222;
+		text = bits.getChar6String(offset, 144);
+		offset = offset + 144;
+		
+		return offset;
 		
 	}
 
 	@Override
-	protected void encodeContent(byte[] bytes) {
+	protected int encodeContent(byte[] bytes, int offset) {
 		
-		int offset = encodeCommonPart(bytes);
+		offset = offset + encodeCommonPart(bytes, offset);
 		
 		BitBuffer bits = new ByteBitBuffer(bytes);
 		
@@ -65,7 +67,7 @@ public class SsbGroup extends SsbCommonTicketPart {
 		bits.putInteger(offset, 9, lastDayOfValidity);
 		offset = offset + 9;
 		
-		offset = stations.decode(offset, bytes);
+		offset = stations.encode(offset, bytes);
 		
 		bits.putChar6String(offset, 72,groupName);
 		offset = offset + 72;
@@ -77,8 +79,9 @@ public class SsbGroup extends SsbCommonTicketPart {
 		offset = offset + 14;
 		
 		bits.putChar6String(offset, 144, text);
-		offset = offset + 222;
+		offset = offset + 144;
 		
+		return offset;
 	}
 
 	public int getFirstDayOfValidity() {
