@@ -263,4 +263,52 @@ public class SecurityUtils {
 		return out.toByteArray();
 	}
 
+	public static byte[] recombineDsaSignature(byte[] sealdata) throws IOException {
+		
+		//check whether the encoding is wrong and the sealdata contain a signature
+		//remove trailing zeroes from the signature
+		BigInteger[] bInts = null;
+		try {
+			bInts = decodeSignatureIntegerSequence(sealdata);
+			byte[] sig = encodeSignatureIntegerSequence(bInts[0],bInts[1]);
+			//decoding the entire signature was ok, so there was no split
+			return sig;
+		} catch (Exception e) {
+			//the signature is correctly implemented, continue with recombination
+		}
+
+		// split the data into two blocks
+		int length = sealdata.length / 2;
+		byte[] rBytes = Arrays.copyOfRange(sealdata,      0, length);
+		byte[] sBytes = Arrays.copyOfRange(sealdata, length, length + length);	
+		
+		//convert to BigInteger to get rid of leading zeroes
+		BigInteger r = new BigInteger(1,rBytes);
+		BigInteger s = new BigInteger(1,sBytes);	
+		
+		//encode as DSA signature structure
+		//SEQUENCE OF --> tag 16
+		int sequenceTag = 16 + 32;  // (bits 6 = 1 constructed)
+		//INTEGER     --> tag 2
+		int integerTag = 2;
+		
+		byte[] b1 = r.toByteArray();
+        int lb1 = b1.length;     
+
+        byte[] b2 = s.toByteArray();	
+        int lb2 = b2.length;		
+        int sequenceLength = lb1 + lb2 + 4;
+		
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		out.write((byte) sequenceTag);
+		out.write((byte) sequenceLength);   
+		out.write((byte) integerTag);  
+		out.write((byte) lb1);  
+		out.write(b1);   
+		out.write((byte) integerTag);  
+		out.write((byte) lb2);  
+		out.write(b2);   
+		return out.toByteArray();		
+
+	}
 }

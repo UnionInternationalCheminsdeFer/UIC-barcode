@@ -1,5 +1,6 @@
 package org.uic.barcode.ssbFrame;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.security.InvalidKeyException;
@@ -76,16 +77,32 @@ public class SsbFrame {
 			offset = offset + nonUicData.decodeContent(bytes,offset);
 			
 		}
-				
-		signaturePart1 = new byte[28];
-		signaturePart2 = new byte[28];		
 		
-		for (int i = 0 ; i < 28;i++) {
-			signaturePart1[i] = bytes[58 + i];
-			signaturePart2[i] = bytes[58 + 28 + i];
+		byte[] signatureBytes = new byte[56];
+				
+		try {
+			//check for non-standard signature encoding
+			BigInteger[] bInts = SecurityUtils.decodeSignatureIntegerSequence(signatureBytes);
+			byte[] sig = SecurityUtils.encodeSignatureIntegerSequence(bInts[0],bInts[1]);
+			signaturePart1 = bInts[0].toByteArray();
+			signaturePart2 = bInts[1].toByteArray();	
+			//decoding the entire signature was ok, so there was no split
+		} catch (Exception e) {
+			//the signature is correctly implemented, continue with recombination
+			signaturePart1 = new byte[28];
+			signaturePart2 = new byte[28];	
+			
+			for (int i = 0 ; i < 28;i++) {
+				signaturePart1[i] = bytes[58 + i];
+				signaturePart2[i] = bytes[58 + 28 + i];
+			}
 		}
+
 		
 	}
+	
+
+
 	
 	public byte[] encode() throws EncodingFormatException {
 		
