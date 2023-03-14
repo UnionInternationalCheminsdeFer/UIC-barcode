@@ -2,6 +2,7 @@ package org.uic.barcode.ssbFrame;
 
 import org.uic.barcode.asn1.uper.BitBuffer;
 import org.uic.barcode.asn1.uper.ByteBitBuffer;
+import org.uic.barcode.ticket.EncodingFormatException;
 
 public class SsbReservation extends SsbCommonTicketPart {
 	
@@ -81,12 +82,15 @@ public class SsbReservation extends SsbCommonTicketPart {
 	}
 
 	@Override
-	protected int encodeContent(byte[] bytes, int offset) {
+	protected int encodeContent(byte[] bytes, int offset) throws EncodingFormatException {
 		
 		offset = offset + encodeCommonPart(bytes, offset);
 		
 		BitBuffer bits = new ByteBitBuffer(bytes);
 		
+		if (ticketSubType < 0 || ticketSubType > 3) {
+			throw new EncodingFormatException("SSB pass type too big");
+		}
 		bits.putInteger(offset, 2,ticketSubType);
 		offset = offset + 2;
 
@@ -103,27 +107,48 @@ public class SsbReservation extends SsbCommonTicketPart {
 			Open Tekst	6 Bit ASCII (27 Car)	162,000
 		 */
 		
+		if (departureDate < 0 || departureDate > 512) {
+			throw new EncodingFormatException("SSB departure date too big");
+		}
 		bits.putInteger(offset, 9, departureDate);
 		offset = offset + 9;
 		
+		if (departureTime < 0 || departureTime > 1440) {
+			throw new EncodingFormatException("SSB departure time too big");
+		}
 		bits.putInteger(offset, 11,departureTime);
 		offset = offset + 11;
 		
+		if (train.length() > 5) {
+			throw new EncodingFormatException("SSB train too big");
+		}
 		bits.putChar6String(offset, 30,train);
 		offset = offset + 30;
 		
+		if (coach < 0 || coach > 999) {
+			throw new EncodingFormatException("SSB coach too big");
+		}
 		bits.putInteger(offset, 10,coach);
 		offset = offset + 10;
 		
+		if (place.length() > 3) {
+			throw new EncodingFormatException("SSB coach too big");
+		}
 		bits.putChar6String(offset, 18,place);
 		offset = offset + 18;
 		
 		bits.put(offset, overbooking);
 		offset++; 
 		
+		if (infoCode < 0 || infoCode > 9999) {
+			throw new EncodingFormatException("SSB info code too big");
+		}
 		bits.putInteger(offset, 14, infoCode);
 		offset = offset + 14;
 		
+		if (text.length() > 27) {
+			throw new EncodingFormatException("SSB text too big");
+		}
 		bits.putChar6String(offset, 162, text);
 		offset = offset + 162;
 		

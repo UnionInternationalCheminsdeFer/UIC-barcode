@@ -2,6 +2,7 @@ package org.uic.barcode.ssbFrame;
 
 import org.uic.barcode.asn1.uper.BitBuffer;
 import org.uic.barcode.asn1.uper.ByteBitBuffer;
+import org.uic.barcode.ticket.EncodingFormatException;
 
 public class SsbHeader extends SsbTicketPart {
 	
@@ -40,13 +41,28 @@ public class SsbHeader extends SsbTicketPart {
 
 	}
 	
-	public int encodeContent(byte[] bytes, int offset) {
+	public int encodeContent(byte[] bytes, int offset) throws EncodingFormatException {
 			
 		BitBuffer bits = new ByteBitBuffer(bytes);
 		
+		if (version < 0 || version > 15) {
+			throw new EncodingFormatException("SSB Version too big");
+		}
+		
 		bits.putInteger(0, 4, version);
+		
+		if (issuer < 0 || issuer > 9999) {
+			throw new EncodingFormatException("SSB Issuer code too big");
+		}
+		
 		bits.putInteger(4, 14, issuer);
+		
+		if (keyId < 0 || keyId > 15) {
+			throw new EncodingFormatException("SSB Key Id too big");
+		}
+		
 		bits.putInteger(18, 4, keyId);
+		
 		bits.putInteger(22, 5, ticketType.ordinal());
 		
 		return 4 + 14 + 4 + 5;

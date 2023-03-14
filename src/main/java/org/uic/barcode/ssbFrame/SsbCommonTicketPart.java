@@ -2,6 +2,7 @@ package org.uic.barcode.ssbFrame;
 
 import org.uic.barcode.asn1.uper.BitBuffer;
 import org.uic.barcode.asn1.uper.ByteBitBuffer;
+import org.uic.barcode.ticket.EncodingFormatException;
 
 public abstract class SsbCommonTicketPart extends SsbTicketPart {
 	
@@ -46,22 +47,41 @@ public abstract class SsbCommonTicketPart extends SsbTicketPart {
 		return offset;
 	}
 	
-	protected int encodeCommonPart(byte[] bytes, int offset) {
+	protected int encodeCommonPart(byte[] bytes, int offset) throws EncodingFormatException {
 		
 		BitBuffer bits = new ByteBitBuffer(bytes);
-
+		
+		if (numberOfAdults < 0 || numberOfAdults > 99) {
+			throw new EncodingFormatException("SSB number of adults too big");
+		}
 		bits.putInteger(offset,7, numberOfAdults);
 		offset = offset + 7;
+		
+		if (numberOfChildren < 0 || numberOfChildren > 99) {
+			throw new EncodingFormatException("SSB number of children too big");
+		}		
 		bits.putInteger(offset, 7, numberOfChildren); 
 		offset = offset + 7;
+		
 		bits.put(offset,specimen);
 		offset++;
+		
 		bits.putInteger(offset, 6,classCode.ordinal());
 		offset = offset + 6;
+		
+		if (ticketNumber.length() > 14) {
+			throw new EncodingFormatException("SSB Ticket Number too long");
+		}	
 		bits.putChar6String(offset, 84, ticketNumber);
-		offset = offset + 84;
-		bits.putInteger(offset, 4, year);
+		offset = offset + 84; 
+		
+		
+		bits.putInteger(offset, 4, (year % 10));
 		offset = offset + 4;
+		
+		if (day > 512) {
+			throw new EncodingFormatException("SSB day too long");
+		}	
 		bits.putInteger(offset, 9, day);
 		offset = offset + 9;
 		

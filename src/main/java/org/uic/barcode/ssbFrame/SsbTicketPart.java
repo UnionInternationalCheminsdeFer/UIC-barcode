@@ -22,7 +22,7 @@ public abstract class SsbTicketPart {
 		encodeContent(bytes, 0);
 	}
 
-	protected abstract int encodeContent(byte[] bytes, int offset);
+	protected abstract int encodeContent(byte[] bytes, int offset) throws EncodingFormatException;
 	
 	
 	

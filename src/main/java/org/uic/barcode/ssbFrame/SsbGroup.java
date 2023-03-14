@@ -2,6 +2,7 @@ package org.uic.barcode.ssbFrame;
 
 import org.uic.barcode.asn1.uper.BitBuffer;
 import org.uic.barcode.asn1.uper.ByteBitBuffer;
+import org.uic.barcode.ticket.EncodingFormatException;
 
 public class SsbGroup extends SsbCommonTicketPart {
 
@@ -52,7 +53,7 @@ public class SsbGroup extends SsbCommonTicketPart {
 	}
 
 	@Override
-	protected int encodeContent(byte[] bytes, int offset) {
+	protected int encodeContent(byte[] bytes, int offset) throws EncodingFormatException {
 		
 		offset = offset + encodeCommonPart(bytes, offset);
 		
@@ -61,23 +62,41 @@ public class SsbGroup extends SsbCommonTicketPart {
 		bits.put(offset, isReturnJourney);
 		offset = offset++;
 		
+		if (firstDayOfValidity < 0 || firstDayOfValidity > 511) {
+			throw new EncodingFormatException("SSB first day of validity too big");
+		}
 		bits.putInteger(offset, 9, firstDayOfValidity);
 		offset = offset + 9;
 		
+		if (lastDayOfValidity < 0 || lastDayOfValidity > 511) {
+			throw new EncodingFormatException("SSB last day of validity too big");
+		}
 		bits.putInteger(offset, 9, lastDayOfValidity);
 		offset = offset + 9;
 		
 		offset = stations.encode(offset, bytes);
 		
+		if (groupName.length() > 12) {
+			throw new EncodingFormatException("SSB group name too big");
+		}
 		bits.putChar6String(offset, 72,groupName);
 		offset = offset + 72;
 		
+		if (counterMarkNumber < 0 || counterMarkNumber > 246) {
+			throw new EncodingFormatException("SSB number of countermark too big");
+		}
 		bits.putInteger(offset, 9,counterMarkNumber);
 		offset = offset + 9;
 		
+		if (infoCode < 0 || infoCode > 9999) {
+			throw new EncodingFormatException("SSB info code too big");
+		}
 		bits.putInteger(offset, 14, infoCode);
 		offset = offset + 14;
 		
+		if (text.length() > 24) {
+			throw new EncodingFormatException("SSB text too big");
+		}
 		bits.putChar6String(offset, 144, text);
 		offset = offset + 144;
 		

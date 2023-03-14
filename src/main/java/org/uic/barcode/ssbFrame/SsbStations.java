@@ -2,6 +2,7 @@ package org.uic.barcode.ssbFrame;
 
 import org.uic.barcode.asn1.uper.BitBuffer;
 import org.uic.barcode.asn1.uper.ByteBitBuffer;
+import org.uic.barcode.ticket.EncodingFormatException;
 
 public class SsbStations {
 	
@@ -23,9 +24,7 @@ public class SsbStations {
 	protected String departureStationCode = "      ";
 	protected SsbStationCodeTable codeTable = SsbStationCodeTable.NRT;
 	
-	
-	
-	public int encode(int offset, byte[] bytes) {
+	public int encode(int offset, byte[] bytes) throws EncodingFormatException {
 		
 		boolean isAlphaNumeric = false;
 		
@@ -42,16 +41,33 @@ public class SsbStations {
 		offset++;
 		
 		if (isAlphaNumeric) {
+			if (departureStationCode.length() > 6) {
+				throw new EncodingFormatException("SSB departure station too long");
+			}	
 			bits.putChar6String(offset,30, departureStationCode);
 			offset = offset + 30;
+			
+			if (arrivalStationCode.length() > 6) {
+				throw new EncodingFormatException("SSB arrival station too long");
+			}	
 			bits.putChar6String(offset,30, arrivalStationCode);
 			offset = offset + 30;
 		} else {
 			bits.putInteger(offset, 4, codeTable.ordinal());
 			offset = offset + 4;
-			bits.putInteger(offset, 28, Integer.parseInt(departureStationCode));
+			
+			int stationCode = Integer.parseInt(departureStationCode);
+			if (stationCode < 0 || stationCode > 9999999) {
+				throw new EncodingFormatException("SSB departure station code too long");
+			}	
+			bits.putInteger(offset, 28, stationCode);
 			offset = offset + 28;
-			bits.putInteger(offset, 28, Integer.parseInt(arrivalStationCode));
+			
+			stationCode = Integer.parseInt(arrivalStationCode);
+			if (stationCode < 0 || stationCode > 9999999) {
+				throw new EncodingFormatException("SSB arrival station code too long");
+			}	
+			bits.putInteger(offset, 28, stationCode);
 			offset = offset + 28;
 		}
 		

@@ -2,6 +2,7 @@ package org.uic.barcode.ssbFrame;
 
 import org.uic.barcode.asn1.uper.BitBuffer;
 import org.uic.barcode.asn1.uper.ByteBitBuffer;
+import org.uic.barcode.ticket.EncodingFormatException;
 
 public class SsbPass extends SsbCommonTicketPart {
 	
@@ -81,45 +82,78 @@ public class SsbPass extends SsbCommonTicketPart {
 	}
 
 	@Override
-	protected int encodeContent(byte[] bytes, int offset) {
+	protected int encodeContent(byte[] bytes, int offset) throws EncodingFormatException {
 		
 		offset = offset + encodeCommonPart(bytes, offset);
 		
 		BitBuffer bits = new ByteBitBuffer(bytes);
 		
+		if (passSubType < 0 || passSubType > 3) {
+			throw new EncodingFormatException("SSB pass type too big");
+		}
 		bits.putInteger(offset, 2,passSubType);
 		offset = offset + 2;
 		
+		if (firstDayOfValidity < 0 || firstDayOfValidity > 511) {
+			throw new EncodingFormatException("SSB first day of validity too big");
+		}
 		bits.putInteger(offset, 9,firstDayOfValidity);
 		offset = offset + 9;
 
+		if (maximumValidityDuration < 0 || maximumValidityDuration > 511) {
+			throw new EncodingFormatException("SSB validity duration too big");
+		}
 		bits.putInteger(offset, 9,maximumValidityDuration);
 		offset = offset + 9;
 
+		if (numberOfTravels < 0 || numberOfTravels > 94) {
+			throw new EncodingFormatException("SSB number of travels too big");
+		}
 		bits.putInteger(offset, 7, numberOfTravels);
 		offset = offset + 7;
 		
+		if (country_1 < 0 || country_1 > 100) {
+			throw new EncodingFormatException("SSB country 1 too big");
+		}
 		bits.putInteger(offset, 7,country_1);
 		offset = offset + 7;
 
+		if (country_2 < 0 || country_2 > 99) {
+			throw new EncodingFormatException("SSB country 2 too big");
+		}
 		bits.putInteger(offset, 7,country_2);
 		offset = offset + 7;
 		
+		if (country_3 < 0 || country_3 > 99) {
+			throw new EncodingFormatException("SSB country 3 too big");
+		}
 		bits.putInteger(offset, 7,country_3);
 		offset = offset + 7;
 		
+		if (country_4 < 0 || country_4 > 99) {
+			throw new EncodingFormatException("SSB country 4 too big");
+		}
 		bits.putInteger(offset, 7,country_4);
 		offset = offset + 7;
 		
+		if (country_5 < 0 || country_5 > 99) {
+			throw new EncodingFormatException("SSB country 5 too big");
+		}
 		bits.putInteger(offset, 7,country_5);
 		offset = offset + 7;
 		
 		bits.put(offset, hasSecondPage);
 		offset++;
 		
+		if (infoCode < 0 || infoCode > 9999) {
+			throw new EncodingFormatException("SSB info code too big");
+		}
 		bits.putInteger(offset, 14, infoCode);
 		offset = offset + 14;
 		
+		if (text.length() > 40) {
+			throw new EncodingFormatException("SSB text too big");
+		}
 		bits.putChar6String(offset, 240,text);
 		offset = offset + 240;		
 		
