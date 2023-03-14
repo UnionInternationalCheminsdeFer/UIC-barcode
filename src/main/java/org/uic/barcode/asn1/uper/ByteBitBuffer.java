@@ -125,6 +125,7 @@ public class ByteBitBuffer implements BitBuffer {
     public ByteBitBuffer(byte[] backingArray) {
         this.bytes = backingArray;
         this.isFinite = true;
+        this.limit = backingArray.length * 8;
     }
 
     private ByteBitBuffer(int initialCapacity) {
