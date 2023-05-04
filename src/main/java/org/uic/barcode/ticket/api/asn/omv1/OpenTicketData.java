@@ -59,7 +59,7 @@ public class OpenTicketData extends Object {
 	@Asn1Optional public String productOwnerIA5;
 
 	@FieldOrder(order = 4)
-	@IntRange(minValue=1,maxValue=32000)
+	@IntRange(minValue=0,maxValue=32000)
 	@Asn1Optional public Long productIdNum;
 
 	@FieldOrder(order = 5)

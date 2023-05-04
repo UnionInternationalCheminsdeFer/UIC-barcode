@@ -71,7 +71,7 @@ public class PassData extends Object {
 
 	/** The product id num. */
 	@FieldOrder(order = 4)
-	@IntRange(minValue=1,maxValue=32000)
+	@IntRange(minValue=0,maxValue=32000)
 	@Asn1Optional public Long productIdNum;
 
 	/** The product id IA 5. */
