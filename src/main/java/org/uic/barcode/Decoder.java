@@ -84,15 +84,22 @@ public class Decoder {
 	 * @throws EncodingFormatException the encoding format exception
 	 */
 	public int validateLevel1(PublicKey key) throws InvalidKeyException, NoSuchAlgorithmException, SignatureException, IllegalArgumentException, UnsupportedOperationException, IOException, EncodingFormatException {
-		if (dynamicFrame != null && dynamicFrame != null) {
+		if (dynamicFrame != null) {
 			return dynamicFrame.validateLevel1(key) ;
-		} else {
-			if (staticFrame != null) {
-				return Constants.LEVEL1_VALIDATION_SIG_ALG_NOT_IMPLEMENTED;
+		} else if (staticFrame != null) {
+			if (staticFrame.verifyByAlgorithmOid(key,null)) {
+				return Constants.LEVEL1_VALIDATION_OK;
+			} else {
+				return Constants.LEVEL1_VALIDATION_FRAUD;
+			}
+		} else if (ssbFrame!= null) {
+			if (ssbFrame.verifyByAlgorithmOid(key,null, null)) { 
+				return Constants.LEVEL1_VALIDATION_OK;
 			} else {
 				return Constants.LEVEL1_VALIDATION_FRAUD;
 			}
 		}
+		return Constants.LEVEL1_VALIDATION_NO_SIGNATURE;
 	}
 	
 	/**

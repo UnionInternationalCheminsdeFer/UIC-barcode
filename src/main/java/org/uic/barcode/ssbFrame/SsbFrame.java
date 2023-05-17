@@ -1,6 +1,5 @@
 package org.uic.barcode.ssbFrame;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.security.InvalidKeyException;
@@ -13,7 +12,6 @@ import java.security.Signature;
 import java.security.SignatureException;
 import java.security.Provider.Service;
 import java.util.Arrays;
-
 
 import org.uic.barcode.ticket.EncodingFormatException;
 import org.uic.barcode.utils.AlgorithmNameResolver;
@@ -83,7 +81,7 @@ public class SsbFrame {
 		try {
 			//check for non-standard signature encoding
 			BigInteger[] bInts = SecurityUtils.decodeSignatureIntegerSequence(signatureBytes);
-			byte[] sig = SecurityUtils.encodeSignatureIntegerSequence(bInts[0],bInts[1]);
+			SecurityUtils.encodeSignatureIntegerSequence(bInts[0],bInts[1]);
 			signaturePart1 = bInts[0].toByteArray();
 			signaturePart2 = bInts[1].toByteArray();	
 			//decoding the entire signature was ok, so there was no split
@@ -334,8 +332,20 @@ public class SsbFrame {
 		//find the algorithm name for the signature OID
 		String algo = null;
 		
+		
+		BigInteger r = new BigInteger(1,signaturePart1);
+		BigInteger s = new BigInteger(1,signaturePart2);
+		byte[] signature = SecurityUtils.encodeSignatureIntegerSequence(r,s);
+		
+		String signatureAlgorithmOid = signingAlg;
+		
+		// guess the signature algorithm based on the signature size
+		if ((signingAlg == null || signingAlg.length() < 1) && signature != null) {			
+			signatureAlgorithmOid = SecurityUtils.getDsaAlgorithm(signature);
+		}	
+		
 		if (prov != null) {
-			Service service = prov.getService("Signature",signingAlg);
+			Service service = prov.getService("Signature",signatureAlgorithmOid);
 			if (service != null) {
 				algo = service.getAlgorithm();
 			}
@@ -343,7 +353,7 @@ public class SsbFrame {
 			Provider[] provs = Security.getProviders();
 			for (Provider p : provs) {
 			   if (algo == null) {
-				   Service service = p.getService("Signature",signingAlg);
+				   Service service = p.getService("Signature",signatureAlgorithmOid);
 				   if (service != null) {
 					   algo = service.getAlgorithm();
 				   }
@@ -358,11 +368,6 @@ public class SsbFrame {
 		Signature sig = Signature.getInstance(algo);
 		sig.initVerify(key);
 		sig.update(getDataForSignature());
-		
-		BigInteger r = new BigInteger(1,signaturePart1);
-		BigInteger s = new BigInteger(1,signaturePart2);
-		
-		byte[] signature = SecurityUtils.encodeSignatureIntegerSequence(r,s);
 		
 		return sig.verify(signature);
 	}

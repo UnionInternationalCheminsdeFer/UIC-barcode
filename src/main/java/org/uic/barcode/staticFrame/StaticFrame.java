@@ -19,7 +19,9 @@ import java.util.zip.DataFormatException;
 import java.util.zip.Deflater;
 import java.util.zip.Inflater;
 
+import org.uic.barcode.dynamicFrame.Constants;
 import org.uic.barcode.ticket.EncodingFormatException;
+import org.uic.barcode.utils.SecurityUtils;
 
 
 /**
@@ -660,11 +662,20 @@ public class StaticFrame {
 	 * @throws IOException 
 	 */
 	public boolean verifyByAlgorithmOid(PublicKey key, String signingAlg) throws InvalidKeyException, NoSuchAlgorithmException, SignatureException, IllegalArgumentException, UnsupportedOperationException, IOException, EncodingFormatException {
+		
+		String signatureAlgorithmOid = signingAlg;
+		
+		
+		// guess the signature algorithm based on the signature size
+		if ((signingAlg == null || signingAlg.length() < 1) && this.getSignature() != null) {			
+			signatureAlgorithmOid = SecurityUtils.getDsaAlgorithm(this.getSignature());
+		}
+		
 		//find the algorithm name for the signature OID
 		String algo = null;
 		Provider[] provs = Security.getProviders();
 		for (Provider prov : provs) {
-	       Service service = prov.getService("Signature",signingAlg);
+	       Service service = prov.getService("Signature",signatureAlgorithmOid);
 	       if (service != null) {
 	    	   algo = service.getAlgorithm();
 	       }
@@ -776,7 +787,8 @@ public class StaticFrame {
 		if (algo == null) {
 			throw new NoSuchAlgorithmException("No service for algorthm found: " + signingAlg);
 		}
-		Signature sig = Signature.getInstance(algo);
+		Signature sig = Signature.getInstance(algo,prov);	
+		
 		sig.initSign(key);
 		signedData = getDataForSignature();
 		sig.update(signedData);
