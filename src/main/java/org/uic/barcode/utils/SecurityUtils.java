@@ -15,6 +15,8 @@ import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Arrays;
 
+import org.uic.barcode.dynamicFrame.Constants;
+
 /**
  * The Class SecurityUtils.
  */
@@ -23,8 +25,8 @@ public class SecurityUtils {
 	/**
 	 * Find provider by public key.
 	 *
-	 * @param algorithmOid the algorithm oid used to generate the key
-	 * @param keyBytes the encoded bytes of the public key 
+	 * @param keyAlgorithmOid the key algorithm oid
+	 * @param keyBytes the encoded bytes of the public key
 	 * @return the provider
 	 */
 	public static Provider findPublicKeyProvider(String keyAlgorithmOid, byte[] keyBytes) {
@@ -263,6 +265,13 @@ public class SecurityUtils {
 		return out.toByteArray();
 	}
 
+	/**
+	 * Recombine dsa signature.
+	 *
+	 * @param sealdata the sealdata
+	 * @return the byte[]
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	public static byte[] recombineDsaSignature(byte[] sealdata) throws IOException {
 		
 		//check whether the encoding is wrong and the sealdata contain a signature
@@ -310,5 +319,33 @@ public class SecurityUtils {
 		out.write(b2);   
 		return out.toByteArray();		
 
+	}
+	
+	/**
+	 * Gets the dsa algorithm allowed for ssb or static frame.
+	 *
+	 * @param bs the size of the signature
+	 * @return the dsa algorithm OID
+	 */
+	public static String getDsaAlgorithm(byte[] bs) {
+		
+		 BigInteger[] bInts = null;
+		 int size = 0;
+		 try {
+			bInts = decodeSignatureIntegerSequence(bs);
+			int sizeR = bInts[0].bitLength();
+			int sizeS = bInts[1].bitLength();
+			size = Math.max(sizeR,sizeS);
+		 } catch (Exception e) {
+			return null;
+		 }
+		
+		 if (size > 224) {
+		   return Constants.DSA_SHA256;
+		 } else if (size > 160) {
+		   return Constants.DSA_SHA224;
+		 } else {
+		   return Constants.DSA_SHA1;
+		 }
 	}
 }

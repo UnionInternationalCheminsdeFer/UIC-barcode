@@ -2132,6 +2132,12 @@ public class OpenAsn2ApiDecoder implements Asn2ApiDecoder {
 			controlDetails.setOnlineValidationRequired(asnControlDetails.getOnlineValidationRequired());
 		}
 
+		if (asnControlDetails.getPassportValidationRequired() !=null){
+			controlDetails.setPassportValidationRequired(asnControlDetails.getPassportValidationRequired());
+		} else {
+			controlDetails.setPassportValidationRequired(true);
+		}
+		
 		if (asnControlDetails.getRandomDetailedValidationRequired()!= null){
 			controlDetails.setRandomDetailedValidationRequired(asnControlDetails.getRandomDetailedValidationRequired().intValue());
 		}

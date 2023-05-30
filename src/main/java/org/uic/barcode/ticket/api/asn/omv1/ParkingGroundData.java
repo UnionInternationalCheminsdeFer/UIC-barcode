@@ -59,7 +59,7 @@ public class ParkingGroundData extends Object {
 	@Asn1Optional public Long toParkingDate;
 
 	@FieldOrder(order = 5)
-	@IntRange(minValue=1,maxValue=32000)
+	@IntRange(minValue=0,maxValue=32000)
 	@Asn1Optional public Long productOwnerNum;
 
 	@FieldOrder(order = 6)
