@@ -370,15 +370,26 @@ public class Encoder {
 	 */
 	public void signLevel1(String securityProvider,PrivateKey key,String signingAlg, String keyId) throws Exception {
 		if (dynamicFrame != null) {
-			dynamicFrame.getLevel2Data().getLevel1Data().setSecurityProvider(securityProvider);
+			if (securityProvider != null && securityProvider.length() > 0) {
+				dynamicFrame.getLevel2Data().getLevel1Data().setSecurityProvider(securityProvider);
+			}
 			dynamicFrame.getLevel2Data().getLevel1Data().setLevel1SigningAlg(signingAlg);
 			dynamicFrame.getLevel2Data().getLevel1Data().setKeyId(Long.parseLong(keyId));
 			dynamicFrame.signLevel1(key);
 		} else if (staticFrame != null) {
 			staticFrame.setSignatureKey(keyId);
 			staticFrame.setSecurityProvider(securityProvider);
-			if (staticFrame.getHeaderRecord()!= null && staticFrame.getHeaderRecord().getIssuer() == null) {
+			if (securityProvider != null &&
+				securityProvider.length() > 0 &&	
+				staticFrame.getHeaderRecord()!= null) {
 				staticFrame.getHeaderRecord().setIssuer(securityProvider);
+			}
+			if (securityProvider != null &&
+				securityProvider.length() > 0 &&	
+				staticFrame.getuFlex() != null && 
+				staticFrame.getuFlex().getTicket() != null &&
+				staticFrame.getuFlex().getTicket().getIssuerDetails() != null) {
+				staticFrame.getuFlex().getTicket().getIssuerDetails().setSecurityProvider(securityProvider);	
 			}
 			staticFrame.signByAlgorithmOID(key,signingAlg);
 		} else if (ssbFrame != null) {

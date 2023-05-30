@@ -19,7 +19,6 @@ import java.util.zip.DataFormatException;
 import java.util.zip.Deflater;
 import java.util.zip.Inflater;
 
-import org.uic.barcode.dynamicFrame.Constants;
 import org.uic.barcode.ticket.EncodingFormatException;
 import org.uic.barcode.utils.SecurityUtils;
 
