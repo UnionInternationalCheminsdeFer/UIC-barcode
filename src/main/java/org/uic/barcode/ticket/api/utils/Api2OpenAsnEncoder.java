@@ -2127,7 +2127,7 @@ public class Api2OpenAsnEncoder implements Api2AsnEncoder {
 
 		if (data.getSecurityProvider() != null) {
 			asnData.setSecurityProviderNum(UicEncoderUtils.getNum(data.getSecurityProvider()));
-			data.setSecurityProvider(data.getIssuer());
+			asnData.setSecurityProviderIA5(UicEncoderUtils.getIA5NonNum(data.getSecurityProvider()));
 		} else {
 			asnData.setSecurityProviderNum(UicEncoderUtils.getNum(data.getIssuer()));
 		}
