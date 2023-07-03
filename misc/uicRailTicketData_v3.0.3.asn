@@ -14,7 +14,7 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 	
 -- ##############################################################################################
 -- #	                                                                      
--- #   version 3.0.2       - value 3 in the UIC bar code version element 
+-- #   version 3.0.3       - value 3 in the UIC bar code version element 
 -- #                         (see element 2 in U_FLEX record definition in leaflet 918.9)
 -- #                       - country code for Kosovo
 -- #
