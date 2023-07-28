@@ -106,7 +106,7 @@ public abstract class DataRecord {
 		String dataSize =  new String(Arrays.copyOfRange(byteData, offset,  offset + 4));
 		offset = offset + 4;			
 		
-		int length = Integer.parseInt(dataSize) - 12;
+		int length = Integer.parseInt(dataSize.trim()) - 12;
 		this.setData(Arrays.copyOfRange(byteData, offset,  offset + length));
 		
 		decodeContent();

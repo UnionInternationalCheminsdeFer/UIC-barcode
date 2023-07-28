@@ -125,7 +125,7 @@ public class UTLAYDataRecord extends DataRecord {
 		
 		int elements = 0;
 		try {
-			elements = Integer.parseInt(numberValue);			
+			elements = Integer.parseInt(numberValue.trim());			
 		} catch(NumberFormatException e){
 			//Do Nothing			
 		}
@@ -138,7 +138,7 @@ public class UTLAYDataRecord extends DataRecord {
 			offset = offset + 2;			
 			int line = 0;
 			try {
-				line = Integer.parseInt(lineValue);			
+				line = Integer.parseInt(lineValue.trim());			
 			} catch(NumberFormatException e){
 				//Do Nothing			
 			}			
@@ -146,7 +146,7 @@ public class UTLAYDataRecord extends DataRecord {
 			offset = offset + 2;
 			int column = 0;
 			try {
-				column = Integer.parseInt(columnValue);			
+				column = Integer.parseInt(columnValue.trim());			
 			} catch(NumberFormatException e){
 				//Do Nothing			
 			}			
@@ -154,7 +154,7 @@ public class UTLAYDataRecord extends DataRecord {
 			offset = offset + 2;
 			int height = 0;
 			try {
-				height = Integer.parseInt(heightValue);			
+				height = Integer.parseInt(heightValue.trim());			
 			} catch(NumberFormatException e){
 				//Do Nothing			
 			}			
@@ -162,7 +162,7 @@ public class UTLAYDataRecord extends DataRecord {
 			offset = offset + 2;
 			int width = 0;
 			try {
-				width = Integer.parseInt(widthValue);			
+				width = Integer.parseInt(widthValue.trim());			
 			} catch(NumberFormatException e){
 				//Do Nothing			
 			}			
@@ -170,7 +170,7 @@ public class UTLAYDataRecord extends DataRecord {
 			offset = offset + 1;
 			int format = 0;
 			try {
-				format = Integer.parseInt(formatValue);			
+				format = Integer.parseInt(formatValue.trim());			
 			} catch(NumberFormatException e){
 				//Do Nothing			
 			}			
@@ -178,7 +178,7 @@ public class UTLAYDataRecord extends DataRecord {
 			offset = offset + 4;
 			int length = 0;
 			try {
-				length = Integer.parseInt(lengthValue);			
+				length = Integer.parseInt(lengthValue.trim());			
 			} catch(NumberFormatException e){
 				//Do Nothing			
 			}			
