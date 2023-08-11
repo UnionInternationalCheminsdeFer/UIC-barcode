@@ -417,6 +417,10 @@ public class IncludedOpenTicketType extends Object {
 			return null;
 		}		
 		
+		if (this.getValidUntilTime() == null) {
+			this.validUntilTime = 1439L;
+		}
+		
 		return DateTimeUtils.getDate(issuingDate, this.validFromDay + this.validUntilDay, this.validUntilTime);
 		
 	}
@@ -426,10 +430,11 @@ public class IncludedOpenTicketType extends Object {
 	}	
 	
 	public Date getUTCValidUntilDate(Date issuingDate){
+		this.getValidUntilDate(issuingDate);
 		if (this.validUntilUTCOffset == null) {
-			return DateTimeUtils.getUTCDate(issuingDate, this.validFromDay, this.validFromTime, this.validFromUTCOffset);
+			return DateTimeUtils.getUTCDate(issuingDate, this.validFromDay + this.validUntilDay, this.validFromTime, this.validFromUTCOffset);
 		} else {
-			return DateTimeUtils.getUTCDate(issuingDate, this.validFromDay, this.validUntilTime, this.validFromUTCOffset);
+			return DateTimeUtils.getUTCDate(issuingDate, this.validFromDay + this.validUntilDay, this.validUntilTime, this.validFromUTCOffset);
 		}
 	}
 

@@ -511,10 +511,13 @@ public class PassData extends Object {
 			this.validFromDay = 0L;
 		}
 		
+		if (this.validUntilTime == null) {
+			this.validUntilTime = 1439L;
+		}
+		
 		if (this.validUntilDay == null) {
 			return null;
 		}		
-		
 		
 		return DateTimeUtils.getDate(issuingDate, this.validFromDay + this.validUntilDay, this.validUntilTime);
 		
