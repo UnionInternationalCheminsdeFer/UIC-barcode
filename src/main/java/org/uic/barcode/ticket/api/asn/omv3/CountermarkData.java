@@ -554,6 +554,10 @@ public class CountermarkData extends Object {
 			return null;
 		}		
 		
+		if (this.getValidUntilTime() == null) {
+			this.validUntilTime = 1439L;
+		}
+		
 		
 		return DateTimeUtils.getDate(issuingDate, this.validFromDay + this.validUntilDay, this.validUntilTime);
 		
