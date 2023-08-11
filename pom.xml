@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.uic.barcode</groupId>
   <artifactId>org.uic.barcode</artifactId>
-  <version>1.4.3</version>
+  <version>1.4.4</version>
   <packaging>jar</packaging>
   <name>UIC barcode</name>
   <description>encoding and decoding of Aztec barcode content according to UIC IRS 90918-9</description>
