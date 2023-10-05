@@ -2051,7 +2051,7 @@ public class OpenAsn2ApiDecoderV3 implements Asn2ApiDecoder {
 		
 		if (asnDocument.getIncludedServices() != null && !asnDocument.getIncludedServices().isEmpty()){
 			for (Long service: asnDocument.getIncludedServices()){
-				card.addIncludedService(new Integer(service.intValue()));	
+				card.addIncludedService(Integer.valueOf(service.intValue()));	
 			}
 		}
 		

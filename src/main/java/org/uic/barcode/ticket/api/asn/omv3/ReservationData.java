@@ -314,7 +314,7 @@ public class ReservationData extends Object {
 	public Long getArrivalDate() {
 
 		if (arrivalDate == null) {
-			return new Long(0);
+			return Long.valueOf(0L);
 		}
 		
 		return this.arrivalDate;
@@ -397,7 +397,7 @@ public class ReservationData extends Object {
 	public Long getTypeOfSupplement() {
 
 		if (typeOfSupplement == null){
-			return new Long(0);
+			return 0L;
 		}
 		
 		
@@ -407,7 +407,7 @@ public class ReservationData extends Object {
 	public Long getNumberOfSupplements() {
 
 		if (numberOfSupplements == null) {
-			return new Long(0);
+			return 0L;
 		}
 		
 		return this.numberOfSupplements;

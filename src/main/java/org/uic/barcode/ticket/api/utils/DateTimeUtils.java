@@ -37,7 +37,7 @@ public class DateTimeUtils {
 		//long diff = localDate.getTime() - issuingDate.getTime();
 	    //long dayDiff = TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);		
 	    
-	    return new Long(diff);
+	    return Long.valueOf(diff);
 	    	
 	}
 	
@@ -64,7 +64,7 @@ public class DateTimeUtils {
 		long diff = localDate.getTime() - referenceDate.getTime();
 	    long dayDiff = TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);		
 	    
-	    return new Long(dayDiff);
+	    return Long.valueOf(dayDiff);
 	    	
 	}
 	
@@ -110,7 +110,7 @@ public class DateTimeUtils {
 		}
 		
 		int time =  cal.get(Calendar.HOUR_OF_DAY) * 60 + cal.get(Calendar.MINUTE);
-		return new Long (time );
+		return Long.valueOf(time);
 	}
 	
 	public static Long getTime (Date date) {
@@ -120,7 +120,7 @@ public class DateTimeUtils {
 		cal.setTime(date);
 	
 		int time =  cal.get(Calendar.HOUR_OF_DAY) * 60 + cal.get(Calendar.MINUTE);
-		return new Long (time );
+		return Long.valueOf(time );
 	}
 	
 	public static Date getDate(Date issuingDate, Long date, Long time){
@@ -177,7 +177,7 @@ public class DateTimeUtils {
 		 */
 		int minuteOffset = - cal.getTimeZone().getRawOffset()/ ( 1000 * 60 * 15 );
 		
-		return new Long (minuteOffset);
+		return Long.valueOf(minuteOffset);
 	
 	}
 

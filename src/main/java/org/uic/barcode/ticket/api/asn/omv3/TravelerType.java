@@ -305,9 +305,9 @@ public class TravelerType extends Object {
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(date);
 		
-		this.yearOfBirth = new Long( cal.get(Calendar.YEAR));
-		this.monthOfBirth = new Long(cal.get(Calendar.MONTH) + 1);
-		this.dayOfBirth = new Long (cal.get(Calendar.DAY_OF_MONTH));
+		this.yearOfBirth = Long.valueOf( cal.get(Calendar.YEAR));
+		this.monthOfBirth = Long.valueOf(cal.get(Calendar.MONTH) + 1);
+		this.dayOfBirth = Long.valueOf(cal.get(Calendar.DAY_OF_MONTH));
 
 	}
 	

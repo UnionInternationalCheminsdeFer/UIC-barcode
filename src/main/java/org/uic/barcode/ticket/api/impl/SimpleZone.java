@@ -136,7 +136,7 @@ public class SimpleZone implements IZone {
 	 * @see org.uic.ticket.api.spec.IZone#addZoneId(int)
 	 */
 	public void addZoneId(int zoneId) {
-		this.zoneIds.add(new Integer (zoneId));
+		this.zoneIds.add(Integer.valueOf(zoneId));
 	}
 
 	@Override

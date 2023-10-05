@@ -97,7 +97,7 @@ public class TrainValidityType extends Object {
 	public Long getValidFromDay() {
 		
 		if (validFromDay == null) {
-			return new Long(0);
+			return 0L;
 		}
 
 		return this.validFromDay;
@@ -111,7 +111,7 @@ public class TrainValidityType extends Object {
 	public Long getValidUntilDay() {
 		
 		if (validUntilDay == null) {
-			return new Long(0);
+			return 0L;
 		}
 
 		return this.validUntilDay;

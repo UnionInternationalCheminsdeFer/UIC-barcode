@@ -14,7 +14,7 @@ public class SequenceOfActivatedDays extends Asn1SequenceOf<Long> {
 	public SequenceOfActivatedDays(List<Long> numbers) {
 		super();
 		for (Long number: numbers){
-			this.add(new Long(number));
+			this.add(Long.valueOf(number));
 		}
 	}
 	

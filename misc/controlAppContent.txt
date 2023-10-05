@@ -1,0 +1,100 @@
+barcode data to be displayed in the UIC control App:
+
+ticket choice:  reservation,openTicket,pass,customerCard
+	
+	
+issuingData: securityProvider,issuing date-time,issuerName,
+			  specimen --> only displayed if value is "true",
+              ?securePaperTicket --> only displayed if value is "true"?
+              activated --> only displayed if value is "false"
+              currency,currencyFract --> used for formatting prices
+              issuerPNR
+   
+controlData:
+      	     passportValidationRequired --> only displayed if value is "true",
+      	     ageCheckRequired --> only displayed if value is "true",
+      	     reductionCardCheckRequired --> only displayed if value is "true",
+      	     
+?includedTickets?
+
+
+TravelerData:
+             groupName --> only displayed if provided
+             list of travelers
+             		- first + second + last name in one line
+             		- idCard/passportId --> only displayed if provided
+             		- date-of-birth 
+             		- passengerType
+             		- passengerWithReducedMobility --> only displayed if provided
+             		- countryOfResidence --> code list needed for display
+
+Reservation
+			train, departureDate and time as date-time, 
+			serviceBrandAbrUTF8  --> only displayed if provided    
+			service --> displayed from code list
+			fromStationNameUTF8,
+			toStationNameUTF8 
+			classCode --> displayed from code list  
+			serviceLevel --> displayed from code list, display code if not in list       		
+ 			places + additional places as "coach xyz, places 1,2,3,4"
+ 			bicycle places 
+ 			numberOfOverbooked --> displayed if > 0
+ 			berth --> display as one line per berthType type from code list + # + compartmentGender from code list
+            tariff
+            priceType --> Display from code list
+            price --> displayed with currency and fraction) (9.99 EUR)
+
+ 
+ 
+ 
+ TariffType:
+ 			numberOfPassengers + passengerType from code list
+            tariffDesc
+            reductionCard --> List of CardReference Type
+            
+            
+ CardReferenceType: to be displayed in one line:
+ 			cardName   
+ 			cardId --> display if provided
+ 			leadingCardId --> display if provided
+ 			trainingCardId --> display if provided
+ 			
+OpenTicket:
+  			returnIncluded --> displayed in case the value is "true"
+  			fromStationNameUTF8,
+  			toStationNameUTF8,
+  			validRegionDesc,
+  		    returnDescription -->   	
+  		    		fromStationNameUTF8,
+  					toStationNameUTF8,
+  					validRegionDesc,
+  			valid-from datetime,
+  			valid-until datetime
+  			classCode --> displayed from code list  				
+ 			serviceLevel --> displayed from code list, display code if not in list       		
+            tariff
+            price --> displayed with currency and fraction) (9.99 EUR)
+ 			
+Pass:
+			passType --> display from code list,
+			passDescription
+			classCode --> displayed from code list  
+			valid-from datetime,
+  			valid-until datetime,
+  			numberOfPossibleTrips,
+			countries -> Displayed from code list
+			infoText
+            tariff
+            price --> displayed with currency and fraction) (9.99 EUR)			
+			
+  			
+CustomerCard:
+			customer
+  			valid-from datetime,
+  			valid-until datetime,
+  			classCode --> displayed from code list  		
+			cardTypeDescr
+			customerStatusDescr
+
+  			
+                   	     
