@@ -42,7 +42,7 @@ public class IncludedOpenTicketType extends Object {
 	}
 
 	@FieldOrder(order = 0)
-	@IntRange(minValue=0,maxValue=32000)
+	@IntRange(minValue=1,maxValue=32000)
 	@Asn1Optional public Long productOwnerNum;
 
 	@FieldOrder(order = 1)
