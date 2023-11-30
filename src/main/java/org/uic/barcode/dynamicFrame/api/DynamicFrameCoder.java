@@ -49,10 +49,10 @@ public class DynamicFrameCoder {
 			
 			if (frame.getFormat() != null && frame.getFormat().equals(Constants.DYNAMIC_BARCODE_FORMAT_VERSION_1)) {
 				return frame;
-			} 
-		} catch(Exception e1) {
+			} 		
+		} catch (Throwable e) {
 		    frame = null;
-			// failed, try next 
+			// failed, try next 			
 		}
 		
 		frame = new SimpleDynamicFrame();
@@ -62,7 +62,7 @@ public class DynamicFrameCoder {
 			if (frame.getFormat() != null && frame.getFormat().equals(Constants.DYNAMIC_BARCODE_FORMAT_VERSION_2)) {
 				return frame;
 			} 
-		} catch(Exception e1) {
+		} catch(Throwable e) {
 			throw new EncodingFormatException("Dynamic Header Version not supported");
 			// failed
 		}

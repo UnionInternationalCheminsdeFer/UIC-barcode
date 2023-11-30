@@ -82,6 +82,7 @@ public class Decoder {
 	 * @throws UnsupportedOperationException the unsupported operation exception
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 * @throws EncodingFormatException the encoding format exception
+	 * @deprecated
 	 */
 	public int validateLevel1(PublicKey key) throws InvalidKeyException, NoSuchAlgorithmException, SignatureException, IllegalArgumentException, UnsupportedOperationException, IOException, EncodingFormatException {
 		if (dynamicFrame != null) {
@@ -115,6 +116,7 @@ public class Decoder {
 	 * @throws UnsupportedOperationException the unsupported operation exception
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 * @throws EncodingFormatException the encoding format exception
+	 * @deprecated
 	 */
 	public int validateLevel1(PublicKey key, String signingAlg) throws InvalidKeyException, NoSuchAlgorithmException, SignatureException, IllegalArgumentException, UnsupportedOperationException, IOException, EncodingFormatException {
 		if (dynamicFrame != null ) {
@@ -177,6 +179,7 @@ public class Decoder {
 	 *
 	 * @return the return code indicating errors
 	 * @throws EncodingFormatException 
+	 * @deprecated
 	 */
 	public int validateLevel2() throws EncodingFormatException {
 		if (!isStaticHeader(data) && dynamicFrame != null) {

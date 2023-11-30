@@ -234,6 +234,7 @@ public class Encoder {
 	 *     
 	 * @param key the key
 	 * @throws Exception the exception
+	 * @deprecated
 	 */
 	public void signLevel2(PrivateKey key) throws Exception {
 		if (dynamicFrame != null) {
@@ -367,6 +368,7 @@ public class Encoder {
 	 * @param signingAlg the signing algorithm (OID)
 	 * @param keyId the key id
 	 * @throws Exception the exception
+	 * @deprecated
 	 */
 	public void signLevel1(String securityProvider,PrivateKey key,String signingAlg, String keyId) throws Exception {
 		if (dynamicFrame != null) {
