@@ -388,7 +388,7 @@ public class UicEncoderUtils {
 		if (value < min || value > max) {
 			throw new EncodingFormatException("Integer value exceeds boundaries");
 		}
-		return new Long(value);
+		return Long.valueOf(value);
 	}	
 	
 	/**
@@ -407,7 +407,7 @@ public class UicEncoderUtils {
 		if (value < min || value > max) {
 			throw new EncodingFormatException("Integer value exceeds boundaries");
 		}
-		return new Long(value);
+		return Long.valueOf(value);
 	}
 
 	
@@ -419,7 +419,7 @@ public class UicEncoderUtils {
 	 */
 	public static Long getUnRestrictedInt(int value) {
 		if (value == 0) return null;
-		return new Long(value);
+		return Long.valueOf(value);
 	}	
 
 	/**

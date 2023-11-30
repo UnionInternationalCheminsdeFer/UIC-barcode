@@ -1,0 +1,17 @@
+viaStation --> route 
+	[
+		viaStation --> station(origin)
+		viaStation --> alternativeRoutes 
+						[
+						 	viaStation --> route  [
+						 	
+						 	],
+						 	viaStation --> route  [
+						 	
+						 	]	
+						]
+		...
+		viaStation --> station (destination)
+	]	
+		
+		

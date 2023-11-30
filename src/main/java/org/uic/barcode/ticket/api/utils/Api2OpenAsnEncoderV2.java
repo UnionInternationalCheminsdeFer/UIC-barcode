@@ -314,7 +314,7 @@ public class Api2OpenAsnEncoderV2 implements Api2AsnEncoder {
 		
 		asnData.setConfirmationType(ConfirmationTypeType.values()[document.getConfirmationType()]);
 		
-		asnData.setDelay(new Long(document.getDelay()));
+		asnData.setDelay(Long.valueOf(document.getDelay()));
 		
 		asnData.setTrainCancelled(document.isTrainCancelled());
 		
@@ -758,11 +758,11 @@ public class Api2OpenAsnEncoderV2 implements Api2AsnEncoder {
 		}
 		
 		if (document.getExternalIssuer() > 0) {
-			asnData.setExternalIssuerId(new Long(document.getExternalIssuer()));
+			asnData.setExternalIssuerId(Long.valueOf(document.getExternalIssuer()));
 		}
 		
 		if (document.getAuthorizationCode() > 0)  {
-			asnData.setIssuerAutorizationId(new Long(document.getAuthorizationCode()));
+			asnData.setIssuerAutorizationId(Long.valueOf(document.getAuthorizationCode()));
 		}
 
 		if (document.getValidRegionList()!= null && document.getValidRegionList().size() > 0) {
@@ -938,11 +938,11 @@ public class Api2OpenAsnEncoderV2 implements Api2AsnEncoder {
 		}
 		
 		if (document.getExternalIssuer()>0) {
-			asnData.setExtIssuerId(new Long(document.getExternalIssuer()));
+			asnData.setExtIssuerId(Long.valueOf(document.getExternalIssuer()));
 		}
 		
 		if (document.getAuthorizationCode()>0)  {
-			asnData.setIssuerAutorizationId(new Long (document.getAuthorizationCode()));
+			asnData.setIssuerAutorizationId(Long.valueOf(document.getAuthorizationCode()));
 		}
 
 		if (document.getValidRegionList() != null && document.getValidRegionList().size() > 0) {
@@ -1032,8 +1032,8 @@ public class Api2OpenAsnEncoderV2 implements Api2AsnEncoder {
 		}
 
 		asnData.setGroupName(document.getGroupName());
-		asnData.setNumberOfCountermark(new Long(document.getNumberOfCountermark()));
-		asnData.setTotalOfCountermarks(new Long(document.getTotalOfCountermarks()));
+		asnData.setNumberOfCountermark(Long.valueOf(document.getNumberOfCountermark()));
+		asnData.setTotalOfCountermarks(Long.valueOf(document.getTotalOfCountermarks()));
 					
 		asnData.setReferenceNum(UicEncoderUtils.getNum(document.getReference()));
 		asnData.setReferenceIA5(UicEncoderUtils.getIA5NonNum(document.getReference()));	
@@ -1147,10 +1147,10 @@ public class Api2OpenAsnEncoderV2 implements Api2AsnEncoder {
 		asnData.setRoute(encodeViaStationCollection(document.getRoute()));
 		
 		if (document.getRouteId() > 0){
-			asnData.setRouteId(new Long(document.getRouteId()));
+			asnData.setRouteId(Long.valueOf(document.getRouteId()));
 		}
 		if (document.getSeriesId() > 0){
-			asnData.setSeriesId(new Long(document.getSeriesId()));
+			asnData.setSeriesId(Long.valueOf(document.getSeriesId()));
 		}
 		
 		return asnData;
@@ -1294,7 +1294,7 @@ public class Api2OpenAsnEncoderV2 implements Api2AsnEncoder {
 		asnData.setTerminatingStationNum(UicEncoderUtils.getNum(document.getTerminatingStation()));	
 		
 		if (document.getCity() > 0) {
-			asnData.setCity(new Long(document.getCity()));
+			asnData.setCity(Long.valueOf(document.getCity()));
 		}
 		
 		asnData.setLineId(SequenceOfUnrestrictedLong.getSequence(UicEncoderUtils.encodeIntegerCollection(document.getLineIds())));
@@ -1654,7 +1654,7 @@ public class Api2OpenAsnEncoderV2 implements Api2AsnEncoder {
 		asnData.setNumberOfValidityDays(UicEncoderUtils.getRestrictedInt(document.getNumberOfValidityDays(), 1, 370));
 		asnData.setPassDescription(document.getPassDescription());
 		if (document.getPassType() > 0 ){
-			asnData.setPassType(new Long(document.getPassType()));
+			asnData.setPassType(Long.valueOf(document.getPassType()));
 		}
 		
 		asnData.setTariffs(encodeTariffCollection(document.getTariffs()));
@@ -1703,8 +1703,8 @@ public class Api2OpenAsnEncoderV2 implements Api2AsnEncoder {
 				}
 				
 			    TimeRangeType asnRange = new TimeRangeType();
-			    asnRange.setFromTime(new Long(range.getFromTime()));
-			    asnRange.setUntilTime(new Long(range.getUntilTime()));			
+			    asnRange.setFromTime(Long.valueOf(range.getFromTime()));
+			    asnRange.setUntilTime(Long.valueOf(range.getUntilTime()));			
 			    
 			    if (asnData.getExcludedTimeRange() == null) {
 			    	asnData.setExcludedTimeRange(new SequenceOfTimeRangeType());
@@ -1815,7 +1815,7 @@ public class Api2OpenAsnEncoderV2 implements Api2AsnEncoder {
 		asnData.setReferenceIA5(UicEncoderUtils.getIA5NonNum(document.getReference()));	
 
 		if (document.getNumberOfdaysAllowed() > 0) {
-			asnData.setNumberOfDaysValid(new Long(document.getNumberOfdaysAllowed()));
+			asnData.setNumberOfDaysValid(Long.valueOf(document.getNumberOfdaysAllowed()));
 		}
 		
 		asnData.setProductName(document.getProductName());
@@ -2277,8 +2277,8 @@ public class Api2OpenAsnEncoderV2 implements Api2AsnEncoder {
 		VatDetailType asnVatDetail = new VatDetailType();
 		
 		asnVatDetail.setAmount(vatDetail.getAmount());
-		asnVatDetail.setCountry(new Long(vatDetail.getCountry()));
-		asnVatDetail.setPercentage(new Long(vatDetail.getPercentage()));
+		asnVatDetail.setCountry(Long.valueOf(vatDetail.getCountry()));
+		asnVatDetail.setPercentage(Long.valueOf(vatDetail.getPercentage()));
 		asnVatDetail.setVatId(vatDetail.getVatId());
 		
 		return asnVatDetail;
@@ -2357,7 +2357,7 @@ public class Api2OpenAsnEncoderV2 implements Api2AsnEncoder {
 		CustomerStatusType asnStatus = new CustomerStatusType();
 		
 		if (status.getStatus() > 0) {
-			asnStatus.setCustomerStatus(new Long(status.getStatus()));
+			asnStatus.setCustomerStatus(Long.valueOf(status.getStatus()));
 		}
 		asnStatus.setCustomerStatusDescr(status.getDescription());
 		asnStatus.setStatusProviderIA5(UicEncoderUtils.getIA5NonNum(status.getStatusProvider()));

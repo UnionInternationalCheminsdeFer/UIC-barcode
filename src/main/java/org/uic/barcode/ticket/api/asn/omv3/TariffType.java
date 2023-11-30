@@ -81,7 +81,7 @@ public class TariffType extends Object {
 	public Long getNumberOfPassengers() {
 
 		if (numberOfPassengers == null) {
-			return new Long(1);
+			return 1L;
 		}
 		
 		return this.numberOfPassengers;

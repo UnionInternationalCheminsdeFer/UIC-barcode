@@ -15,7 +15,7 @@ public class SequenceOfCountries extends Asn1SequenceOf<Long> {
 	public SequenceOfCountries(List<Long> numbers) {
 		super();
 		for (Long number: numbers){
-			this.add(new Long(number));
+			this.add(Long.valueOf(number));
 		}
 	}
 	

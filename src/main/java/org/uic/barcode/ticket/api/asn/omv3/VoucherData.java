@@ -241,8 +241,8 @@ public class VoucherData extends Object {
 		fromCal.clear();
 		fromCal.setTime(fromDate);
 		
-		this.validFromYear = new Long( fromCal.get(Calendar.YEAR));
-		this.validFromDay = new Long (fromCal.get(Calendar.DAY_OF_YEAR));
+		this.validFromYear = Long.valueOf( fromCal.get(Calendar.YEAR));
+		this.validFromDay = Long.valueOf(fromCal.get(Calendar.DAY_OF_YEAR));
 		
 		if (untilDate == null) return;
 
@@ -250,8 +250,8 @@ public class VoucherData extends Object {
 		untilCal.clear();
 		untilCal.setTime(untilDate);
 		
-		this.validUntilYear = new Long( untilCal.get(Calendar.YEAR));
-		this.validUntilDay = new Long (untilCal.get(Calendar.DAY_OF_YEAR));
+		this.validUntilYear = Long.valueOf( untilCal.get(Calendar.YEAR));
+		this.validUntilDay = Long.valueOf(untilCal.get(Calendar.DAY_OF_YEAR));
 		
 	}
 	
@@ -264,8 +264,8 @@ public class VoucherData extends Object {
 		fromCal.clear();
 		fromCal.setTime(fromDate);
 		
-		this.validFromYear = new Long( fromCal.get(Calendar.YEAR));
-		this.validFromDay = new Long (fromCal.get(Calendar.DAY_OF_YEAR));
+		this.validFromYear = Long.valueOf( fromCal.get(Calendar.YEAR));
+		this.validFromDay = Long.valueOf(fromCal.get(Calendar.DAY_OF_YEAR));
 		
 	}
 	
@@ -277,8 +277,8 @@ public class VoucherData extends Object {
 		untilCal.clear();
 		untilCal.setTime(untilDate);
 		
-		this.validUntilYear = new Long( untilCal.get(Calendar.YEAR));
-		this.validUntilDay = new Long (untilCal.get(Calendar.DAY_OF_YEAR));
+		this.validUntilYear = Long.valueOf( untilCal.get(Calendar.YEAR));
+		this.validUntilDay = Long.valueOf(untilCal.get(Calendar.DAY_OF_YEAR));
 		
 	}	
 	
