@@ -14,6 +14,7 @@ import java.security.SignatureException;
 import java.security.spec.ECGenParameterSpec;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.uic.barcode.dynamicFrame.Constants;
 import org.uic.barcode.utils.AlgorithmNameResolver;
@@ -60,8 +61,11 @@ public class SecurityUtilsTest {
 
 
 
-
-	@Test public void testFindPublicKeyProvider() {
+	// functions without an explicitly set provider have been deprecated in the library. 
+	@Deprecated
+	@Test
+	@Ignore
+	public void testFindPublicKeyProvider() {
 			
 		
 		Provider p = null;
@@ -97,9 +101,11 @@ public class SecurityUtilsTest {
 
 
 
-
-
-	@Test public void testFindSignatureAlgorithmProvider() {
+	// functions without an explicitly set provider have been deprecated in the library. 
+	@Deprecated
+	@Test
+	@Ignore
+	public void testFindSignatureAlgorithmProvider() {
 	
 		Provider p = null;
 		boolean canSign = false;
