@@ -1,5 +1,6 @@
 package org.uic.barcode.ticket.api.test;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
@@ -10,6 +11,8 @@ import java.security.NoSuchProviderException;
 import java.security.SecureRandom;
 import java.security.Security;
 import java.security.SignatureException;
+import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
 import java.util.zip.DataFormatException;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
@@ -73,7 +76,7 @@ public class SecurityProviderTestV1 {
 		}
 
         assert(keyPair != null);
-        
+               
 	}
 	
 	

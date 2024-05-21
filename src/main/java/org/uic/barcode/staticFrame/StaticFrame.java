@@ -706,6 +706,11 @@ public class StaticFrame {
 	 * @throws IOException 
 	 */
 	public boolean verifyByAlgorithmOid(PublicKey key, String signingAlg, Provider prov) throws InvalidKeyException, NoSuchAlgorithmException, SignatureException, IllegalArgumentException, UnsupportedOperationException, IOException, EncodingFormatException {
+
+		if ((signingAlg == null || signingAlg.length() < 1) && this.getSignature() != null) {			
+			signingAlg = SecurityUtils.getDsaAlgorithm(this.getSignature());
+		}
+		
 		//find the algorithm name for the signature OID
 		String algo = null;
         Service service = prov.getService("Signature",signingAlg);

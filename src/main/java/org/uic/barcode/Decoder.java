@@ -23,6 +23,7 @@ import org.uic.barcode.staticFrame.ticketLayoutBarcode.TicketLayout;
 import org.uic.barcode.ticket.EncodingFormatException;
 import org.uic.barcode.ticket.UicRailTicketCoder;
 import org.uic.barcode.ticket.api.spec.IUicRailTicket;
+import org.uic.barcode.utils.SecurityUtils;
 
 
 /**
@@ -165,6 +166,7 @@ public class Decoder {
 		
 		} else if (staticFrame != null) {
 			
+			// guess the signature algorithm based on the signature size
 			if (staticFrame.verifyByAlgorithmOid(key,signingAlg, provider)) {
 				return Constants.LEVEL1_VALIDATION_OK;
 			} else {

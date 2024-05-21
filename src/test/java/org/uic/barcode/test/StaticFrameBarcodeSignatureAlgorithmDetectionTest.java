@@ -132,7 +132,7 @@ public class StaticFrameBarcodeSignatureAlgorithmDetectionTest {
         
         int signatureCheck = 0;
 		try {
-			signatureCheck = dec.validateLevel1(keyPair.getPublic());
+			signatureCheck = dec.validateLevel1(keyPair.getPublic(),null,prov);
 		} catch (InvalidKeyException | NoSuchAlgorithmException | SignatureException | IllegalArgumentException
 				| UnsupportedOperationException | IOException | EncodingFormatException e) {
 			assert(false);
@@ -298,7 +298,7 @@ public class StaticFrameBarcodeSignatureAlgorithmDetectionTest {
         
         int signatureCheck = 0;
 		try {
-			signatureCheck = dec.validateLevel1(keyPair.getPublic());
+			signatureCheck = dec.validateLevel1(keyPair.getPublic(),null,prov);
 		} catch (InvalidKeyException | NoSuchAlgorithmException | SignatureException | IllegalArgumentException
 				| UnsupportedOperationException | IOException | EncodingFormatException e) {
 			assert(false);
