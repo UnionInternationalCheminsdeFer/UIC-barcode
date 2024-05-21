@@ -81,6 +81,13 @@ public class DynamicContentCoderTest {
 		
 		IUicDynamicContent content = DynamicContentCoder.decode(UperEncoder.bytesFromHexString(encoding));
 		
+		try {
+			content.setTimeStamp(new SimpleDateFormat( "yyyy.MM.dd-HH:mm" ).parse( "2021.03.04-12:30" ));
+		} catch (ParseException e2) {
+			// 
+		}			
+		
+		
 		
 		assert("appID".equals(content.getAppId()));
 		
