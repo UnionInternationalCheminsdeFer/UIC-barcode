@@ -2,6 +2,8 @@ package org.uic.barcode.test;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.TimeZone;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -48,9 +50,10 @@ public class DynamicContentCoderTest {
 		g.setLongitude( 12345L);
 	    g.setLatitude(  56789L);
 		content.setGeoCoordinate(g);
-
+		
 		try {
-			content.setTimeStamp(new SimpleDateFormat( "yyyy.MM.dd-HH:mm" ).parse( "2021.03.04-12:30" ));
+			//needs to be before 28.2. to keep the test stable in year with febuary 29. 
+			content.setTimeStamp(new SimpleDateFormat( "yyyy.MM.dd-HH:mm" ).parse( "2021.02.04-12:30" ));
 		} catch (ParseException e2) {
 			// 
 		}			
@@ -69,25 +72,18 @@ public class DynamicContentCoderTest {
 		
 		String encoding = UperEncoder.hexStringFromBytes(encodedBytes);
 		
-		String expectedEncoding = "7C170F0E12620F9437000230390300DDD504017A20C6D0C2D8D8CADCCECA40E6E8E4D2DCCE2F8F461D9B32EECF96FE5F1D32EEE7A77EEBFA72310282DA05E1A37EECA0507B409C30F3E60509B42F8F461D9B32EECF96FE5F1D32EEE7A77EEBFA72310282DA";
-		
+		String expectedEncoding = "7C170F0E1262089437000230390300DDD504017A20C6D0C2D8D8CADCCECA40E6E8E4D2DCCE2F8F461D9B32EECF96FE5F1D32EEE7A77EEBFA72310282DA05E1A37EECA0507B409C30F3E60509B42F8F461D9B32EECF96FE5F1D32EEE7A77EEBFA72310282DA";
+
 		assert(expectedEncoding.equals(encoding));
 		
 	}
 	
 	@Test public void testDynamicContentDecoding() {
 		
-		String encoding = "7C170F0E12620F9437000230390300DDD504017A20C6D0C2D8D8CADCCECA40E6E8E4D2DCCE2F8F461D9B32EECF96FE5F1D32EEE7A77EEBFA72310282DA05E1A37EECA0507B409C30F3E60509B42F8F461D9B32EECF96FE5F1D32EEE7A77EEBFA72310282DA";
-		
+
+		String encoding         = "7C170F0E1262089437000230390300DDD504017A20C6D0C2D8D8CADCCECA40E6E8E4D2DCCE2F8F461D9B32EECF96FE5F1D32EEE7A77EEBFA72310282DA05E1A37EECA0507B409C30F3E60509B42F8F461D9B32EECF96FE5F1D32EEE7A77EEBFA72310282DA";
 		IUicDynamicContent content = DynamicContentCoder.decode(UperEncoder.bytesFromHexString(encoding));
-		
-		try {
-			content.setTimeStamp(new SimpleDateFormat( "yyyy.MM.dd-HH:mm" ).parse( "2021.03.04-12:30" ));
-		} catch (ParseException e2) {
-			// 
-		}			
-		
-		
+			
 		
 		assert("appID".equals(content.getAppId()));
 		
