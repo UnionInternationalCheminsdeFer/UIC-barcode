@@ -87,7 +87,7 @@ public class DynamicFrameDoubleSignatureCompressedCurveTest {
 		try {
 			enc.setLevel1Algs(signatureAlgorithmOID, keyPairAlgorithmOID);
 			enc.setLevel2Algs(signatureAlgorithmOID, keyPairAlgorithmOID,keyPairLevel2.getPublic(), ECKeyEncoder.ENCODING_X962_COMPRESSED);
-			enc.signLevel1("1080", keyPairLevel1.getPrivate(), signatureAlgorithmOID, "1");
+			enc.signLevel1("1080", keyPairLevel1.getPrivate(), signatureAlgorithmOID, "1", provider);
 		} catch (Exception e) {
 			assert(false);
 		}
@@ -98,7 +98,7 @@ public class DynamicFrameDoubleSignatureCompressedCurveTest {
 		IData level2Data = Level2TestDataFactory.getLevel2SimpleTestData();
 		try {
 			enc.setLevel2Data(level2Data);
-			enc.signLevel2(keyPairLevel2.getPrivate());
+			enc.signLevel2(keyPairLevel2.getPrivate(),provider);
 		} catch (Exception e) {
 			assert(false);
 		}
@@ -127,7 +127,7 @@ public class DynamicFrameDoubleSignatureCompressedCurveTest {
         
         int signatureCheck = 0;
 		try {
-			signatureCheck = dec.validateLevel1(keyPairLevel1.getPublic(), null);
+			signatureCheck = dec.validateLevel1(keyPairLevel1.getPublic(), null, provider);
 		} catch (InvalidKeyException | NoSuchAlgorithmException | SignatureException | IllegalArgumentException
 				| UnsupportedOperationException | IOException | EncodingFormatException e) {
 			assert(false);
@@ -136,7 +136,7 @@ public class DynamicFrameDoubleSignatureCompressedCurveTest {
 
         signatureCheck = 0;
 		try {
-			signatureCheck = dec.validateLevel2();
+			signatureCheck = dec.validateLevel2(provider);
 		} catch (Exception e) {
 			assert(false);
 		}

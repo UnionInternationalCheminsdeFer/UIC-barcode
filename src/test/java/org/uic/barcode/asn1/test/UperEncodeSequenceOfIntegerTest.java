@@ -46,8 +46,8 @@ TestRecord ::= [APPLICATION 0] IMPLICIT SEQUENCE {
     @Test public void test() throws IllegalArgumentException, IllegalAccessException {
 
     	ArrayList<Long> nums = new ArrayList<Long>();
-    	nums.add(new Long(12345678909999899L));
-    	nums.add(new Long(12345678909999899L));        	
+    	nums.add(Long.valueOf(12345678909999899L));
+    	nums.add(Long.valueOf(12345678909999899L));        	
         TestRecord record = new TestRecord(nums);
         byte[] encoded = UperEncoder.encode(record);
         String hex = UperEncoder.hexStringFromBytes(encoded);
@@ -59,8 +59,8 @@ TestRecord ::= [APPLICATION 0] IMPLICIT SEQUENCE {
     @Test public void testDecode() throws IllegalArgumentException, IllegalAccessException {
 
     	ArrayList<Long> nums = new ArrayList<Long>();
-    	nums.add(new Long(12345678909999899L));
-    	nums.add(new Long(12345678909999899L));        	
+    	nums.add(Long.valueOf(12345678909999899L));
+    	nums.add(Long.valueOf(12345678909999899L));        	
         TestRecord record = new TestRecord(nums);
         byte[] encoded = UperEncoder.encode(record);
         String hex = UperEncoder.hexStringFromBytes(encoded);

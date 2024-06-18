@@ -56,7 +56,17 @@ public class Decoder {
 	/** The data. */
 	byte[] data = null;
 	
+	private Provider defaultProvider = null;
 	
+	
+	public Provider getDefaultProvider() {
+		return defaultProvider;
+	}
+
+	public void setDefaultProvider(Provider defaultProvider) {
+		this.defaultProvider = defaultProvider;
+	}
+
 	/**
 	 * Instantiates a new decoder.
 	 *
@@ -67,6 +77,11 @@ public class Decoder {
 	 */
 	public Decoder (byte[] data) throws IOException, EncodingFormatException, DataFormatException {
 		this.data = data;
+		
+		if (defaultProvider == null) {
+			defaultProvider = SecurityUtils.getDefaultProvider();
+		}
+		
 		decode(data);
 	}
 	
@@ -86,22 +101,7 @@ public class Decoder {
 	 * @deprecated
 	 */
 	public int validateLevel1(PublicKey key) throws InvalidKeyException, NoSuchAlgorithmException, SignatureException, IllegalArgumentException, UnsupportedOperationException, IOException, EncodingFormatException {
-		if (dynamicFrame != null) {
-			return dynamicFrame.validateLevel1(key) ;
-		} else if (staticFrame != null) {
-			if (staticFrame.verifyByAlgorithmOid(key,null)) {
-				return Constants.LEVEL1_VALIDATION_OK;
-			} else {
-				return Constants.LEVEL1_VALIDATION_FRAUD;
-			}
-		} else if (ssbFrame!= null) {
-			if (ssbFrame.verifyByAlgorithmOid(key,null, null)) { 
-				return Constants.LEVEL1_VALIDATION_OK;
-			} else {
-				return Constants.LEVEL1_VALIDATION_FRAUD;
-			}
-		}
-		return Constants.LEVEL1_VALIDATION_NO_SIGNATURE;
+		return validateLevel1(key,null, defaultProvider);
 	}
 	
 	/**
@@ -120,22 +120,7 @@ public class Decoder {
 	 * @deprecated
 	 */
 	public int validateLevel1(PublicKey key, String signingAlg) throws InvalidKeyException, NoSuchAlgorithmException, SignatureException, IllegalArgumentException, UnsupportedOperationException, IOException, EncodingFormatException {
-		if (dynamicFrame != null ) {
-			return dynamicFrame.validateLevel1(key, signingAlg) ;
-		} else if (staticFrame != null) {
-			if (staticFrame.verifyByAlgorithmOid(key,signingAlg)) {
-				return Constants.LEVEL1_VALIDATION_OK;
-			} else {
-				return Constants.LEVEL1_VALIDATION_FRAUD;
-			}
-		} else if (ssbFrame!= null) {
-			if (ssbFrame.verifyByAlgorithmOid(key,signingAlg, null)) { 
-				return Constants.LEVEL1_VALIDATION_OK;
-			} else {
-				return Constants.LEVEL1_VALIDATION_FRAUD;
-			}
-		}
-		return Constants.LEVEL1_VALIDATION_NO_SIGNATURE;
+		return validateLevel1(key, signingAlg, defaultProvider);
 	}
 	
 	/**
@@ -184,11 +169,7 @@ public class Decoder {
 	 * @deprecated
 	 */
 	public int validateLevel2() throws EncodingFormatException {
-		if (!isStaticHeader(data) && dynamicFrame != null) {
-			return dynamicFrame.validateLevel2() ;
-		} else {
-			return Constants.LEVEL2_VALIDATION_NO_SIGNATURE;
-		}
+		return validateLevel2(defaultProvider);
 	}
 
 	/*

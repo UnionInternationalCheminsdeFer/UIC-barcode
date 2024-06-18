@@ -705,22 +705,41 @@ public class StaticFrame {
 	 * @throws EncodingFormatException 
 	 * @throws IOException 
 	 */
-	public boolean verifyByAlgorithmOid(PublicKey key, String signingAlg, Provider prov) throws InvalidKeyException, NoSuchAlgorithmException, SignatureException, IllegalArgumentException, UnsupportedOperationException, IOException, EncodingFormatException {
+	public boolean verifyByAlgorithmOid(PublicKey key, String signatureAlgorithmOid, Provider prov) throws InvalidKeyException, NoSuchAlgorithmException, SignatureException, IllegalArgumentException, UnsupportedOperationException, IOException, EncodingFormatException {
 
-		if ((signingAlg == null || signingAlg.length() < 1) && this.getSignature() != null) {			
-			signingAlg = SecurityUtils.getDsaAlgorithm(this.getSignature());
+		if ((signatureAlgorithmOid == null || signatureAlgorithmOid.length() < 1) && this.getSignature() != null) {			
+			signatureAlgorithmOid = SecurityUtils.getDsaAlgorithm(this.getSignature());
 		}
 		
 		//find the algorithm name for the signature OID
 		String algo = null;
-        Service service = prov.getService("Signature",signingAlg);
-	    if (service != null) {
-	    	algo = service.getAlgorithm();
-	    }
-		if (algo == null) {
-			throw new NoSuchAlgorithmException("No service for algorithm found: " + signingAlg);
+		if (prov != null) {
+			Service service = prov.getService("Signature",signatureAlgorithmOid);
+			if (service != null) {
+				algo = service.getAlgorithm();
+			}
+		} else {
+			Provider[] provs = Security.getProviders();
+			for (Provider p : provs) {
+			   if (algo == null) {
+				   Service service = p.getService("Signature",signatureAlgorithmOid);
+				   if (service != null) {
+					   algo = service.getAlgorithm();
+				   }
+			   }
+			}
 		}
-		Signature sig = Signature.getInstance(algo);
+		if (algo == null) {
+			throw new NoSuchAlgorithmException("No service for algorithm found: " + signatureAlgorithmOid);
+		}
+		
+		Signature sig = null;
+		if (prov != null) {
+			sig = Signature.getInstance(algo,prov);
+		} else {
+			sig = Signature.getInstance(algo);
+		}
+		
 		sig.initVerify(key);
 		sig.update(getDataForSignature());
 		return sig.verify(this.getSignature());
@@ -739,13 +758,23 @@ public class StaticFrame {
 	 * @throws SignatureException the signature exception
 	 * @throws EncodingFormatException 
 	 * @throws IOException 
+	 * @deprecated
 	 */
-	public void signByAlgorithmOID(PrivateKey key,String signingAlg) throws NoSuchAlgorithmException, InvalidKeyException, SignatureException, IOException, EncodingFormatException {
+	public void signByAlgorithmOID(PrivateKey key,String signatureAlgorithmOid) throws NoSuchAlgorithmException, InvalidKeyException, SignatureException, IOException, EncodingFormatException {
+		//find the algorithm name for the signature OID
 		//find the algorithm name for the signature OID
 		String algo = null;
-		algo = getAlgo(signingAlg);
+		Provider[] provs = Security.getProviders();
+		for (Provider p : provs) {
+			   if (algo == null) {
+				   Service service = p.getService("Signature",signatureAlgorithmOid);
+				   if (service != null) {
+					   algo = service.getAlgorithm();
+				   }
+			   }
+		}
 		if (algo == null) {
-			throw new NoSuchAlgorithmException("No service for algorthm found: " + signingAlg);
+			throw new NoSuchAlgorithmException("No service for algorithm found: " + signatureAlgorithmOid);
 		}
 		Signature sig = Signature.getInstance(algo);
 		sig.initSign(key);
@@ -754,16 +783,7 @@ public class StaticFrame {
 		signature = sig.sign();
 	}
 	
-	private String getAlgo(String signingAlg) {
-		Provider[] provs = Security.getProviders();
-		for (Provider prov : provs) {
-	       Service service = prov.getService("Signature",signingAlg);
-	       if (service != null) {
-	    	   return service.getAlgorithm();
-	       }
-		}
-		return null;
-	}
+
 
 
 
@@ -781,17 +801,36 @@ public class StaticFrame {
 	 * @throws EncodingFormatException 
 	 * @throws IOException 
 	 */
-	public void signByAlgorithmOID(PrivateKey key,String signingAlg, Provider prov) throws NoSuchAlgorithmException, InvalidKeyException, SignatureException, IOException, EncodingFormatException {
+	public void signByAlgorithmOID(PrivateKey key,String signatureAlgorithmOid, Provider prov) throws NoSuchAlgorithmException, InvalidKeyException, SignatureException, IOException, EncodingFormatException {
+		
 		//find the algorithm name for the signature OID
 		String algo = null;
-        Service service = prov.getService("Signature",signingAlg);
-	    if (service != null) {
-	      algo = service.getAlgorithm();
-	    }
-		if (algo == null) {
-			throw new NoSuchAlgorithmException("No service for algorthm found: " + signingAlg);
+		if (prov != null) {
+			Service service = prov.getService("Signature",signatureAlgorithmOid);
+			if (service != null) {
+				algo = service.getAlgorithm();
+			}
+		} else {
+			Provider[] provs = Security.getProviders();
+			for (Provider p : provs) {
+			   if (algo == null) {
+				   Service service = p.getService("Signature",signatureAlgorithmOid);
+				   if (service != null) {
+					   algo = service.getAlgorithm();
+				   }
+			   }
+			}
 		}
-		Signature sig = Signature.getInstance(algo,prov);	
+		if (algo == null) {
+			throw new NoSuchAlgorithmException("No service for algorithm found: " + signatureAlgorithmOid);
+		}
+		
+		Signature sig = null;
+		if (prov == null) {
+			sig = Signature.getInstance(algo);
+		} else {
+			sig = Signature.getInstance(algo,prov);
+		}
 		
 		sig.initSign(key);
 		signedData = getDataForSignature();
@@ -813,6 +852,7 @@ public class StaticFrame {
 	 * @throws SignatureException the signature exception
 	 * @throws EncodingFormatException 
 	 * @throws IOException 
+	 * @deprecated
 	 */
 	public void signUsingAlgorithmName(PrivateKey key,String algo) throws NoSuchAlgorithmException, InvalidKeyException, SignatureException, IOException, EncodingFormatException {
 		Signature sig = Signature.getInstance(algo);

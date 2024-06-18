@@ -7,6 +7,7 @@ import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
+import java.security.Provider;
 import java.security.SecureRandom;
 import java.security.Security;
 import java.security.SignatureException;
@@ -44,6 +45,8 @@ public class DynamicFrameDynamicContentApiTest {
 	public byte[] passIdHash = "PassId".getBytes();
 	public byte[] phoneIdHash = "myPhone".getBytes();
 	
+	public Provider provider = null;
+	
 
 	public IUicRailTicket testFCBticket = null;
 	
@@ -58,7 +61,8 @@ public class DynamicFrameDynamicContentApiTest {
 		
 	    testFCBticket = SimpleUICTestTicket.getUicTestTicket();
 		
-		Security.addProvider(new BouncyCastleProvider());
+	    provider = new BouncyCastleProvider();
+		Security.addProvider(provider);
 
 		try {
 			keyPairLevel1  = generateECKeys(keyPairAlgorithmOID, elipticCurve);
@@ -91,14 +95,14 @@ public class DynamicFrameDynamicContentApiTest {
 		enc.setLevel2Algs(signatureAlgorithmOID, keyPairAlgorithmOID, keyPairLevel2.getPublic());
 		
 		try {
-			enc.signLevel1("1080", keyPairLevel1.getPrivate(), signatureAlgorithmOID, "1");
+			enc.signLevel1("1080", keyPairLevel1.getPrivate(), signatureAlgorithmOID, "1",provider);
 		} catch (Exception e) {
 			assert(false);
 		}
 			
 		try {
 			enc.setDynamicData(DynamicTestContent.createDynamicTestContent());			
-			enc.signLevel2(keyPairLevel2.getPrivate());
+			enc.signLevel2(keyPairLevel2.getPrivate(),provider);
 			
 		} catch (Exception e) {
 			assert(false);
@@ -135,14 +139,14 @@ public class DynamicFrameDynamicContentApiTest {
 		enc.setLevel2Algs(signatureAlgorithmOID, keyPairAlgorithmOID, keyPairLevel2.getPublic());
 		
 		try {
-			enc.signLevel1("1080", keyPairLevel1.getPrivate(), signatureAlgorithmOID, "1");
+			enc.signLevel1("1080", keyPairLevel1.getPrivate(), signatureAlgorithmOID, "1",provider);
 		} catch (Exception e) {
 			assert(false);
 		}
 			
 		try {
 			enc.setDynamicData(DynamicTestContent.createDynamicTestContent());			
-			enc.signLevel2(keyPairLevel2.getPrivate());
+			enc.signLevel2(keyPairLevel2.getPrivate(),provider);
 		} catch (Exception e) {
 			assert(false);
 		}
@@ -171,7 +175,7 @@ public class DynamicFrameDynamicContentApiTest {
         
         int signatureCheck = 0;
 		try {
-			signatureCheck = dec.validateLevel1(keyPairLevel1.getPublic(),null);
+			signatureCheck = dec.validateLevel1(keyPairLevel1.getPublic(),null,provider);
 		} catch (InvalidKeyException | NoSuchAlgorithmException | SignatureException | IllegalArgumentException
 				| UnsupportedOperationException | IOException | EncodingFormatException e) {
 			assert(false);
@@ -183,7 +187,7 @@ public class DynamicFrameDynamicContentApiTest {
         
         int level2check = 0;
         try {
-        	level2check = dec.validateLevel2();
+        	level2check = dec.validateLevel2(provider);
         } catch (Exception e) {
         	assert(false);
         }

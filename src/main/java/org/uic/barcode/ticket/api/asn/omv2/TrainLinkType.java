@@ -168,7 +168,7 @@ public class TrainLinkType extends Object {
 	
 	public void setDepartureTimeZone(Date dateLocal, Date dateUTC ) {
 		// -- (UTC = local + offset * 15 Minutes)	
-		this.departureUTCOffset = new Long(dateLocal.getTime() - dateUTC.getTime()) / (1000 * 60 * 15);
+		this.departureUTCOffset = Long.valueOf(dateLocal.getTime() - dateUTC.getTime()) / (1000 * 60 * 15);
 	}
 	
 	public Date getDepartureDate(Date issuingDate){

@@ -61,7 +61,7 @@ public class BahnCardTest {
         assert(card.getCardTypeDescr().equals("My BahnCard 50 (2. Klasse)"));
         assert(card.getClassCode().equals(ITravelClassType.second));
         assert(card.getExtension() != null);
-        assert(card.getIncludedServices().contains(new Integer(1)));
+        assert(card.getIncludedServices().contains(Integer.valueOf(1)));
         
         Assert.assertNotNull(card.getCustomer() != null);
         

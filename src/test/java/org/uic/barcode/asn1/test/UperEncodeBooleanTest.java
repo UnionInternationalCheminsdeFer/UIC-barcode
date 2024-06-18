@@ -43,7 +43,7 @@ public class UperEncodeBooleanTest {
 	}
 
     @Test public void testTrue() throws IllegalArgumentException, IllegalAccessException {
-        TestRecord record = new TestRecord(new Boolean(true));
+        TestRecord record = new TestRecord(Boolean.valueOf(true));
         byte[] encoded = UperEncoder.encode(record);
         String hex = UperEncoder.hexStringFromBytes(encoded);
         UperEncoder.logger.log(Level.FINEST,String.format("data hex: %s", hex));
@@ -51,7 +51,7 @@ public class UperEncodeBooleanTest {
     }
     
     @Test public void testFalse() throws IllegalArgumentException, IllegalAccessException {
-        TestRecord record = new TestRecord(new Boolean(false));
+        TestRecord record = new TestRecord(Boolean.valueOf(false));
         byte[] encoded = UperEncoder.encode(record);
         String hex = UperEncoder.hexStringFromBytes(encoded);
         UperEncoder.logger.log(Level.FINEST,String.format("data hex: %s", hex));
@@ -59,7 +59,7 @@ public class UperEncodeBooleanTest {
     }    
     
     @Test public void testDecodeTrue() throws IllegalArgumentException, IllegalAccessException {
-        TestRecord record = new TestRecord(new Boolean(true));
+        TestRecord record = new TestRecord(Boolean.valueOf(true));
         byte[] encoded = UperEncoder.encode(record);
         String hex = UperEncoder.hexStringFromBytes(encoded);
         UperEncoder.logger.log(Level.FINEST,String.format("data hex: %s", hex));
@@ -70,7 +70,7 @@ public class UperEncodeBooleanTest {
     }
     
     @Test public void testDecodeFalse() throws IllegalArgumentException, IllegalAccessException {
-        TestRecord record = new TestRecord(new Boolean(false));
+        TestRecord record = new TestRecord(Boolean.valueOf(false));
         byte[] encoded = UperEncoder.encode(record);
         String hex = UperEncoder.hexStringFromBytes(encoded);
         UperEncoder.logger.log(Level.FINEST,String.format("data hex: %s", hex));

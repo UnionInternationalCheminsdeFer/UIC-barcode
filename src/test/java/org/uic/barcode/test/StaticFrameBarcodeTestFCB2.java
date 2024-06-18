@@ -7,6 +7,7 @@ import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
+import java.security.Provider;
 import java.security.SecureRandom;
 import java.security.Security;
 import java.security.SignatureException;
@@ -43,6 +44,8 @@ public class StaticFrameBarcodeTestFCB2 {
 	
 	public TicketLayout testLayout = null;
 	
+	public Provider provider = null;
+	
 	
 	/**
 	 * Initialize.
@@ -61,7 +64,8 @@ public class StaticFrameBarcodeTestFCB2 {
 	    testFCBticket = SimpleUICTestTicket.getUicTestTicket();
 		testLayout = SimpleTestTicketLayout.getSimpleTestTicketLayout();		
 		
-		Security.addProvider(new BouncyCastleProvider());
+	    provider = new BouncyCastleProvider();
+		Security.addProvider(provider);
 
 		try {
 			keyPair  = generateDSAKeys(keySize);
@@ -96,7 +100,7 @@ public class StaticFrameBarcodeTestFCB2 {
 		assert(enc != null);
 		
 		try {
-			enc.signLevel1("1080", keyPair.getPrivate(), algorithmOID, "1");
+			enc.signLevel1("1080", keyPair.getPrivate(), algorithmOID, "1",provider);
 		} catch (Exception e) {
 			assert(false);
 		}
@@ -136,7 +140,7 @@ public class StaticFrameBarcodeTestFCB2 {
 		assert(enc != null);
 		
 		try {
-			enc.signLevel1("1080", keyPair.getPrivate(), algorithmOID, "1");
+			enc.signLevel1("1080", keyPair.getPrivate(), algorithmOID, "1", provider);
 		} catch (Exception e) {
 			assert(false);
 		}
@@ -165,7 +169,7 @@ public class StaticFrameBarcodeTestFCB2 {
         
         int signatureCheck = 0;
 		try {
-			signatureCheck = dec.validateLevel1(keyPair.getPublic(),algorithmOID);
+			signatureCheck = dec.validateLevel1(keyPair.getPublic(),algorithmOID,provider);
 		} catch (InvalidKeyException | NoSuchAlgorithmException | SignatureException | IllegalArgumentException
 				| UnsupportedOperationException | IOException | EncodingFormatException e) {
 			assert(false);

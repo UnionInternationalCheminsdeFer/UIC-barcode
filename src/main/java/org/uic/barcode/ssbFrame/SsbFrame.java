@@ -359,13 +359,18 @@ public class SsbFrame {
 				   }
 			   }
 			}
-
 		}
 		
 		if (algo == null) {
 			throw new NoSuchAlgorithmException("No service for algorithm found: " + signingAlg);
 		}
-		Signature sig = Signature.getInstance(algo);
+		
+		Signature sig = null;
+		if (prov != null) {
+			sig = Signature.getInstance(algo,prov);
+		} else {
+			sig = Signature.getInstance(algo);
+		}
 		sig.initVerify(key);
 		sig.update(getDataForSignature());
 		

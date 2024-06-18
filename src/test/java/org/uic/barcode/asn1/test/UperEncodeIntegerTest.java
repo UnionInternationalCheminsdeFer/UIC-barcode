@@ -30,7 +30,7 @@ public class UperEncodeIntegerTest {
     	Asn1BigInteger value;
 
         public TestRecord() {
-            this(new Long(12345678909999899L));
+            this(Long.valueOf(12345678909999899L));
         }
 
         public TestRecord(Long num) {

@@ -16,7 +16,7 @@ public class SequenceOfPlaceNum extends Asn1SequenceOf<Long> {
 	public SequenceOfPlaceNum(List<Long> numbers) {
 		super();
 		for (Long number: numbers){
-			this.add(new Long(number));
+			this.add(Long.valueOf(number));
 		}
 	}
 	

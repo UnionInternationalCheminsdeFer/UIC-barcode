@@ -41,7 +41,7 @@ public class BinaryStringTest {
 	    	            0b0000_0001,
 	    };
 		String bs3 = AsnUtils.toBooleanString(mask);
-		byte[] bytes2 = AsnUtils.fromBooleanString(bs3);
+		//byte[] bytes2 = AsnUtils.fromBooleanString(bs3);
 		
 		
 		byte[] mask2 = new byte[] {
@@ -51,7 +51,7 @@ public class BinaryStringTest {
 	    	            0b0001_0000,
 	    };
 		String bs4 = AsnUtils.toBooleanString(mask2);
-		byte[] bytes3 = AsnUtils.fromBooleanString(bs4);
+		//byte[] bytes3 = AsnUtils.fromBooleanString(bs4);
 		
 		
 		assert(bs4.equals(ms2));
