@@ -334,7 +334,7 @@ public final class UperEncoder {
             parameterTypes[i] = parameters[i].getClass();
         }
         Constructor<T> constructor = findConsturctor(classOfT, parameters);
-        boolean constructorIsAccessible = constructor.isAccessible();
+        //boolean constructorIsAccessible = constructor.isAccessible();
         constructor.setAccessible(true);
         T result;
         try {
@@ -342,7 +342,7 @@ public final class UperEncoder {
         } catch (IllegalArgumentException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
             throw new IllegalArgumentException("Can't instantiate " + classOfT.getName(), e);
         }
-        constructor.setAccessible(constructorIsAccessible);
+        //constructor.setAccessible(constructorIsAccessible);
         return result;
     }
 
@@ -441,7 +441,7 @@ public final class UperEncoder {
         List<Field> optionalOrdinaryFields = new ArrayList<>();
         List<Field> allFields = new ArrayList<>();  // Excluding test instrumentation.
 
-        Map<Field, Boolean> originalAccess = new HashMap<>();
+        //Map<Field, Boolean> originalAccess = new HashMap<>();
 
         Asn1ContainerFieldSorter(Class<?> type) {
         	
@@ -472,7 +472,7 @@ public final class UperEncoder {
                 if (isTestInstrumentation(f) || isNonAsn1Field(f) ) {
                     continue;
                 }
-                originalAccess.put(f, f.isAccessible());
+                //originalAccess.put(f, f.isAccessible());
                 f.setAccessible(true);
                 if (isExtension(f)) {
                     extensionFields.add(f);
@@ -496,10 +496,13 @@ public final class UperEncoder {
             }
         }
 
+        
         public void revertAccess() {
+        	/*
             for (Entry<Field, Boolean> entry : originalAccess.entrySet()) {
                 entry.getKey().setAccessible(entry.getValue());
             }
+            */
         }
     }
 

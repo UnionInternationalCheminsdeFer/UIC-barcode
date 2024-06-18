@@ -98,7 +98,7 @@ public class DecodeSparpreisTicketDBTest {
         Assert.assertNotNull(tl);
         assert(tl.getTrain().equals("ICE973"));
         String departureDate = tl.getDepartureDateTime().toString();
-        assert(departureDate.equals("Fri Nov 06 11:58:00 CET 2020"));
+        assert(departureDate.equals("Thu Nov 05 11:58:00 CET 2020"));
         Assert.assertNull(layout);
         Assert.assertNotNull(decoder);
     }

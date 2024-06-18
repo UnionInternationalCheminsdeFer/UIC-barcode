@@ -29,6 +29,7 @@ import org.uic.barcode.ticket.EncodingFormatException;
 import org.uic.barcode.ticket.UicRailTicketCoder;
 import org.uic.barcode.ticket.api.spec.IUicRailTicket;
 import org.uic.barcode.utils.ECKeyEncoder;
+import org.uic.barcode.utils.SecurityUtils;
 
 
 /**
@@ -59,6 +60,17 @@ public class Encoder {
 	/** The UIC bar code type SSB. */
 	public static String UIC_BARCODE_TYPE_SSB = "UIC_SSB";	
 	
+	private Provider defaultProvider = null;
+	
+	
+	public Provider getDefaultProvider() {
+		return defaultProvider;
+	}
+
+	public void setDefaultProvider(Provider defaultProvider) {
+		this.defaultProvider = defaultProvider;
+	}
+	
 	/**
 	 * Instantiates a new encoder.
 	 *
@@ -71,6 +83,10 @@ public class Encoder {
 	 * @throws EncodingFormatException the encoding format exception
 	 */
 	public Encoder(IUicRailTicket ticket, TicketLayout layout, String barcodeType, int version, int fcbVersion) throws IOException, EncodingFormatException {
+		
+		if (defaultProvider == null) {
+			defaultProvider = SecurityUtils.getDefaultProvider();
+		}
 		
 		if (barcodeType == UIC_BARCODE_TYPE_CLASSIC) {
 
@@ -145,6 +161,9 @@ public class Encoder {
 	 */
 	public Encoder(byte[] level1DataBin, byte[] signatureLevel1, int version) throws IOException, EncodingFormatException {
 		
+		if (defaultProvider == null) {
+			defaultProvider = SecurityUtils.getDefaultProvider();
+		}
 			
 		dynamicFrame = new SimpleDynamicFrame();
 		dynamicFrame.setLevel2Data(new SimpleLevel2Data());
@@ -188,6 +207,10 @@ public class Encoder {
 	 * @throws DataFormatException 
 	 */
 	public Encoder(byte[] encoded, int version) throws IOException, EncodingFormatException, DataFormatException {
+		
+		if (defaultProvider == null) {
+			defaultProvider = SecurityUtils.getDefaultProvider();
+		}
 		
 		Decoder decoder = new Decoder(encoded);
 		
@@ -237,9 +260,7 @@ public class Encoder {
 	 * @deprecated
 	 */
 	public void signLevel2(PrivateKey key) throws Exception {
-		if (dynamicFrame != null) {
-			dynamicFrame.signLevel2(key);
-		} 
+		signLevel2(key, defaultProvider);
 	}
 	
 	/**
@@ -371,32 +392,7 @@ public class Encoder {
 	 * @deprecated
 	 */
 	public void signLevel1(String securityProvider,PrivateKey key,String signingAlg, String keyId) throws Exception {
-		if (dynamicFrame != null) {
-			if (securityProvider != null && securityProvider.length() > 0) {
-				dynamicFrame.getLevel2Data().getLevel1Data().setSecurityProvider(securityProvider);
-			}
-			dynamicFrame.getLevel2Data().getLevel1Data().setLevel1SigningAlg(signingAlg);
-			dynamicFrame.getLevel2Data().getLevel1Data().setKeyId(Long.parseLong(keyId));
-			dynamicFrame.signLevel1(key);
-		} else if (staticFrame != null) {
-			staticFrame.setSignatureKey(keyId);
-			staticFrame.setSecurityProvider(securityProvider);
-			if (securityProvider != null &&
-				securityProvider.length() > 0 &&	
-				staticFrame.getHeaderRecord()!= null) {
-				staticFrame.getHeaderRecord().setIssuer(securityProvider);
-			}
-			if (securityProvider != null &&
-				securityProvider.length() > 0 &&	
-				staticFrame.getuFlex() != null && 
-				staticFrame.getuFlex().getTicket() != null &&
-				staticFrame.getuFlex().getTicket().getIssuerDetails() != null) {
-				staticFrame.getuFlex().getTicket().getIssuerDetails().setSecurityProvider(securityProvider);	
-			}
-			staticFrame.signByAlgorithmOID(key,signingAlg);
-		} else if (ssbFrame != null) {
-			ssbFrame.signLevel1(key, null, keyId, signingAlg);
-		}
+		signLevel1(securityProvider,key,signingAlg, keyId, defaultProvider);
 	}
 	
 	/**
@@ -418,9 +414,17 @@ public class Encoder {
 		} else if (staticFrame != null) {
 			staticFrame.setSignatureKey(keyId);
 			staticFrame.setSecurityProvider(securityProvider);
-			if (staticFrame.getHeaderRecord()!= null && staticFrame.getHeaderRecord().getIssuer() == null) {
+			if (staticFrame.getHeaderRecord()!= null && 
+				staticFrame.getHeaderRecord().getIssuer() == null) {
 				staticFrame.getHeaderRecord().setIssuer(securityProvider);
 			}
+			if (securityProvider != null &&
+				securityProvider.length() > 0 &&	
+				staticFrame.getuFlex() != null && 
+				staticFrame.getuFlex().getTicket() != null &&
+				staticFrame.getuFlex().getTicket().getIssuerDetails() != null) {
+				staticFrame.getuFlex().getTicket().getIssuerDetails().setSecurityProvider(securityProvider);	
+			}			
 			staticFrame.signByAlgorithmOID(key,signingAlg,prov);
 		} else if (ssbFrame != null) {
 			ssbFrame.signLevel1(key, prov, keyId, signingAlg);

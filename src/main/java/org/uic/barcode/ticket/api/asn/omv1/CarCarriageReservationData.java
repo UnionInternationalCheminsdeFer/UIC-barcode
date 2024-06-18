@@ -33,7 +33,6 @@ import org.uic.barcode.asn1.datatypes.IntRange;
 import org.uic.barcode.asn1.datatypes.RestrictedString;
 import org.uic.barcode.asn1.datatypes.Sequence;
 import org.uic.barcode.asn1.datatypesimpl.SequenceOfStringIA5;
-import org.uic.barcode.ticket.api.asn.omv1.SequenceOfCarrierNum;
 import org.uic.barcode.ticket.api.utils.DateTimeUtils;
 
 
@@ -232,7 +231,7 @@ public class CarCarriageReservationData extends Object {
 
 	public Long getBeginLoadingTime() {
 
-		if (beginLoadingTime == null) return new Long(0);
+		if (beginLoadingTime == null) return Long.valueOf(0);
 		return beginLoadingTime;
 	}
 

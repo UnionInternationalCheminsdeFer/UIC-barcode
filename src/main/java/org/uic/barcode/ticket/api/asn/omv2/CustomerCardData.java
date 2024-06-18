@@ -242,8 +242,8 @@ public class CustomerCardData extends Object {
 		fromCal.clear();
 		fromCal.setTime(fromDate);
 		
-		this.validFromYear = new Long( fromCal.get(Calendar.YEAR));
-		this.validFromDay = new Long (fromCal.get(Calendar.DAY_OF_YEAR));
+		this.validFromYear = Long.valueOf( fromCal.get(Calendar.YEAR));
+		this.validFromDay = Long.valueOf (fromCal.get(Calendar.DAY_OF_YEAR));
 		
 		if (untilDate == null) return;
 
@@ -255,8 +255,8 @@ public class CustomerCardData extends Object {
 		
 		int yearDiff = untilCal.get(Calendar.YEAR) - fromCal.get(Calendar.YEAR);
 		
-		this.validUntilYear = new Long( yearDiff);
-		this.validUntilDay = new Long (untildays);
+		this.validUntilYear = Long.valueOf( yearDiff);
+		this.validUntilDay = Long.valueOf (untildays);
 		
 	}
 	

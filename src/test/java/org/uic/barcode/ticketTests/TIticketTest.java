@@ -65,6 +65,9 @@ public class TIticketTest {
         Assert.assertNotNull(frame.getLevel2Data());
         Assert.assertNotNull(frame.getLevel2Data().getLevel1Data());
         
+        Assert.assertNotNull(ticket);  
+        Assert.assertNull(layout);  
+        
         Assert.assertNotNull(frame.getLevel2Data().getLevel1Signature());        
         assert(frame.getFormat().equals(Constants.DYNAMIC_BARCODE_FORMAT_VERSION_2));
 

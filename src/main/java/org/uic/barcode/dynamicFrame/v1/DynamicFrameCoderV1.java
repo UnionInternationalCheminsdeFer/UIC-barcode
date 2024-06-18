@@ -2,8 +2,6 @@ package org.uic.barcode.dynamicFrame.v1;
 
 import org.uic.barcode.asn1.datatypesimpl.OctetString;
 import org.uic.barcode.asn1.uper.UperEncoder;
-import org.uic.barcode.dynamicFrame.v1.DynamicFrame;
-import org.uic.barcode.dynamicFrame.v1.Level1DataType;
 import org.uic.barcode.ticket.EncodingFormatException;
 import org.uic.barcode.dynamicFrame.api.IData;
 import org.uic.barcode.dynamicFrame.api.IDynamicFrame;

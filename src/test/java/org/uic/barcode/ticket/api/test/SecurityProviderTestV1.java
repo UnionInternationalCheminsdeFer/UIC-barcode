@@ -1,6 +1,5 @@
 package org.uic.barcode.ticket.api.test;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
@@ -8,11 +7,10 @@ import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
+import java.security.Provider;
 import java.security.SecureRandom;
 import java.security.Security;
 import java.security.SignatureException;
-import java.security.cert.CertificateException;
-import java.security.cert.CertificateFactory;
 import java.util.zip.DataFormatException;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
@@ -46,6 +44,8 @@ public class SecurityProviderTestV1 {
 	
 	public TicketLayout testLayout = null;
 	
+	public Provider provider = null;
+	
 	
 	/**
 	 * Initialize.
@@ -66,8 +66,8 @@ public class SecurityProviderTestV1 {
 		testFCBticket.getIssuerDetails().setSecurityProvider("1080");
 		testFCBticket.getIssuerDetails().setIssuer("4711");
 
-		
-		Security.addProvider(new BouncyCastleProvider());
+	    provider = new BouncyCastleProvider();
+		Security.addProvider(provider);
 
 		try {
 			keyPair  = generateDSAKeys(keySize);
@@ -105,7 +105,7 @@ public class SecurityProviderTestV1 {
 		assert(enc != null);
 		
 		try {
-			enc.signLevel1("1080", keyPair.getPrivate(), algorithmOID, "1");
+			enc.signLevel1("1080", keyPair.getPrivate(), algorithmOID, "1",provider);
 		} catch (Exception e) {
 			assert(false);
 		}
@@ -134,7 +134,7 @@ public class SecurityProviderTestV1 {
         
         int signatureCheck = 0;
 		try {
-			signatureCheck = dec.validateLevel1(keyPair.getPublic(),algorithmOID);
+			signatureCheck = dec.validateLevel1(keyPair.getPublic(),algorithmOID,provider);
 		} catch (InvalidKeyException | NoSuchAlgorithmException | SignatureException | IllegalArgumentException
 				| UnsupportedOperationException | IOException | EncodingFormatException e) {
 			assert(false);

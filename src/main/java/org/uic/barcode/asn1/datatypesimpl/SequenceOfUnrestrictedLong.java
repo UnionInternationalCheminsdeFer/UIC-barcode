@@ -17,7 +17,7 @@ public class SequenceOfUnrestrictedLong extends Asn1SequenceOf<Long> {
 	public SequenceOfUnrestrictedLong(List<Long> numbers) {
 		super();
 		for (Long number: numbers){
-			this.add(new Long(number));
+			this.add(Long.valueOf(number));
 		}
 	}
 	

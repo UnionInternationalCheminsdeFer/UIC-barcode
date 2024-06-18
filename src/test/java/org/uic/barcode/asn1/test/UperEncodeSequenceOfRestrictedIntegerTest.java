@@ -49,8 +49,8 @@ TestRecord ::= [APPLICATION 0] IMPLICIT SEQUENCE {
 
         TestRecord record = new TestRecord();
         
-        record.addNumber(new Long(9500001L));
-        record.addNumber(new Long(9699999L));
+        record.addNumber(Long.valueOf(9500001L));
+        record.addNumber(Long.valueOf(9699999L));
         
        
         byte[] encoded = UperEncoder.encode(record);
@@ -63,8 +63,8 @@ TestRecord ::= [APPLICATION 0] IMPLICIT SEQUENCE {
 
         TestRecord record = new TestRecord();
         
-        record.addNumber(new Long(9500001L));
-        record.addNumber(new Long(9699999L));
+        record.addNumber(Long.valueOf(9500001L));
+        record.addNumber(Long.valueOf(9699999L));
         
        
         byte[] encoded = UperEncoder.encode(record);

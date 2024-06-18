@@ -31,7 +31,7 @@ TestRecord ::= [APPLICATION 0] IMPLICIT SEQUENCE {
     	Long value;
 
         public TestRecord() {
-            this(new Long(33005));
+            this(Long.valueOf(33005));
         }
 
         public TestRecord(Long num) {

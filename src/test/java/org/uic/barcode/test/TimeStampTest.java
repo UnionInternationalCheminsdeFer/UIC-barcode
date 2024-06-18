@@ -65,8 +65,8 @@ public class TimeStampTest {
 		
 		//implementation not available on older android versions:
 		ZonedDateTime now = ZonedDateTime.now(ZoneId.of("UTC"));
-		long day = new Long(now.get(ChronoField.DAY_OF_YEAR));
-		long secondOfDay = new Long(now.get(ChronoField.SECOND_OF_DAY));		
+		long day = Long.valueOf(now.get(ChronoField.DAY_OF_YEAR));
+		long secondOfDay = Long.valueOf(now.get(ChronoField.SECOND_OF_DAY));		
 		
 		//alternative implementation
 	    Calendar c = Calendar.getInstance(TimeZone.getTimeZone("UTC"));

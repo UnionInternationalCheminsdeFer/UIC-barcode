@@ -7,6 +7,7 @@ import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
+import java.security.Provider;
 import java.security.SecureRandom;
 import java.security.Security;
 import java.security.SignatureException;
@@ -36,6 +37,8 @@ public class DynamicFrameV2FcbVersion3Test {
 	
 	public IUicRailTicket testFCBticket = null;
 	
+	public Provider provider = null;
+	
 	
 	@Before public void initialize() {
 		
@@ -47,7 +50,8 @@ public class DynamicFrameV2FcbVersion3Test {
 		
 	    testFCBticket = SimpleUICTestTicket.getUicTestTicket();
 		
-		Security.addProvider(new BouncyCastleProvider());
+	    provider = new BouncyCastleProvider();
+		Security.addProvider(provider);
 
 		try {
 			keyPair  = generateECKeys(Constants.KG_EC, elipticCurve);
@@ -76,7 +80,7 @@ public class DynamicFrameV2FcbVersion3Test {
 		assert(enc != null);
 		
 		try {
-			enc.signLevel1("1080", keyPair.getPrivate(), signatureAlgorithmOID, "1");
+			enc.signLevel1("1080", keyPair.getPrivate(), signatureAlgorithmOID, "1",provider);
 		} catch (Exception e) {
 			assert(false);
 		}
@@ -109,7 +113,7 @@ public class DynamicFrameV2FcbVersion3Test {
 		assert(enc != null);
 		
 		try {
-			enc.signLevel1("1080", keyPair.getPrivate(), signatureAlgorithmOID, "1");
+			enc.signLevel1("1080", keyPair.getPrivate(), signatureAlgorithmOID, "1",provider);
 		} catch (Exception e) {
 			assert(false);
 		}
@@ -138,7 +142,7 @@ public class DynamicFrameV2FcbVersion3Test {
         
         int signatureCheck = 0;
 		try {
-			signatureCheck = dec.validateLevel1(keyPair.getPublic(),null);
+			signatureCheck = dec.validateLevel1(keyPair.getPublic(),null,provider);
 		} catch (InvalidKeyException | NoSuchAlgorithmException | SignatureException | IllegalArgumentException
 				| UnsupportedOperationException | IOException | EncodingFormatException e) {
 			assert(false);

@@ -348,4 +348,15 @@ public class SecurityUtils {
 		   return Constants.DSA_SHA1;
 		 }
 	}
+
+	/*
+	 * get a default security provider to be used in case a provider is missing
+	 * bouncyCastle is assumed to be implemented
+	 * if bouncyCastel is missing in the environment the provider stays empty.
+	 */
+	public static Provider getDefaultProvider() {
+		
+		return Security.getProvider("BC");
+		
+	}
 }

@@ -36,7 +36,8 @@ class BitStringCoder implements Decoder, Encoder {
             		throw new AssertionError("Field should be a list of booleans!"); 
             	}
             	
-            	List<Boolean> list = (List<Boolean>)obj;
+            	@SuppressWarnings("unchecked")
+				List<Boolean> list = (List<Boolean>)obj;
                 if (list.size() != size.value()) { 
                 	throw new AssertionError(
                         "Declared size (" + size.value() +

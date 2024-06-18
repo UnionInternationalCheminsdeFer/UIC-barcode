@@ -62,7 +62,7 @@ public class ValidityPeriodType extends Object {
 	public Long getValidFromDay() {
 		
 		if (validFromDay == null) {
-			return new Long(0);
+			return Long.valueOf(0);
 		}
 
 		return this.validFromDay;
@@ -76,7 +76,7 @@ public class ValidityPeriodType extends Object {
 	public Long getValidUntilDay() {
 		
 		if (validUntilDay == null) {
-			return new Long(0);
+			return Long.valueOf(0);
 		}
 
 		return this.validUntilDay;
