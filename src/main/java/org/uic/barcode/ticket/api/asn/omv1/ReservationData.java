@@ -129,7 +129,7 @@ public class ReservationData extends Object {
 	@Asn1Optional public Long departureUTCOffset;
 
 	@FieldOrder(order = 22)
-	@IntRange(minValue=-1,maxValue=20)
+	@IntRange(minValue=0,maxValue=20)
 	@Asn1Default(value="0")
 	@Asn1Optional public Long arrivalDate;
 
