@@ -15,7 +15,7 @@ public class SequenceOfCarrierNum extends Asn1SequenceOf<Long> {
 	public SequenceOfCarrierNum(List<Long> numbers) {
 		super();
 		for (Long number: numbers){
-			this.add(new Long(number));
+			this.add(Long.valueOf(number));
 		}
 	}
 	public static SequenceOfCarrierNum getSequence(List<Long> numList) {

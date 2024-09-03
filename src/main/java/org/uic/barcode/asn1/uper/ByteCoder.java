@@ -23,7 +23,7 @@ class ByteCoder implements Decoder, Encoder {
             Class<T> classOfT, Field field,
             Annotation[] extraAnnotations, AsnExtractor extractor) {
         UperEncoder.logger.debug("BYTE");
-        return (T) new Byte((byte) UperEncoder.decodeConstrainedInt(bitbuffer, UperEncoder.newRange(0, 255, false)));
+        return (T) Byte.valueOf((byte) UperEncoder.decodeConstrainedInt(bitbuffer, UperEncoder.newRange(0, 255, false)));
     }
 
 	@Override

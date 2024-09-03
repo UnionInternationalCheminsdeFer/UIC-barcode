@@ -33,7 +33,7 @@ public class UperEncodeIntegerSmallTest {
     	public Integer value2;    	
 
         public TestRecord() {
-            this(new Long(12345678909999899L));
+            this(Long.valueOf(12345678909999899L));
         }
 
         public TestRecord(Long num) {

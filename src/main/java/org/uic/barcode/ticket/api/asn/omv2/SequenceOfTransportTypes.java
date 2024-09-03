@@ -15,7 +15,7 @@ public class SequenceOfTransportTypes extends Asn1SequenceOf<Long> {
 	public SequenceOfTransportTypes(List<Long> numbers) {
 		super();
 		for (Long number: numbers){
-			this.add(new Long(number));
+			this.add(Long.valueOf(number));
 		}
 	}
 	

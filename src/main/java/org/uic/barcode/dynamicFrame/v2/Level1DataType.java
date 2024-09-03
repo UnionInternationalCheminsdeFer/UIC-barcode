@@ -323,11 +323,11 @@ public class Level1DataType {
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(date);
 
-		this.endOfValidityYear = new Long( cal.get(Calendar.YEAR));
-		this.endOfValidityDay = new Long (cal.get(Calendar.DAY_OF_YEAR));
+		this.endOfValidityYear = Long.valueOf( cal.get(Calendar.YEAR));
+		this.endOfValidityDay = Long.valueOf (cal.get(Calendar.DAY_OF_YEAR));
 		int time =  cal.get(Calendar.HOUR_OF_DAY) * 60 + cal.get(Calendar.MINUTE);
 		if (time >= 0) {
-			this.endOfValidityTime = new Long (time );
+			this.endOfValidityTime = Long.valueOf (time );
 		}
 		TimeZone.setDefault(local);
 		

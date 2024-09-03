@@ -385,12 +385,12 @@ public class IncludedOpenTicketType extends Object {
 	
 	public void setValidFromTimeZone(Date dateLocal, Date dateUTC ) {
 		// -- (UTC = local + offset * 15 Minutes)	
-		this.validFromUTCOffset = new Long(dateLocal.getTime() - dateUTC.getTime()) / (1000 * 60 * 15);
+		this.validFromUTCOffset = Long.valueOf(dateLocal.getTime() - dateUTC.getTime()) / (1000 * 60 * 15);
 	}
 	
 	public void setValidUntilTimeZone(Date dateLocal, Date dateUTC ) {
 		// -- (UTC = local + offset * 15 Minutes)	
-		this.validUntilUTCOffset = new Long(dateLocal.getTime() - dateUTC.getTime()) / (1000 * 60 * 15);
+		this.validUntilUTCOffset = Long.valueOf(dateLocal.getTime() - dateUTC.getTime()) / (1000 * 60 * 15);
 		
 		if (this.validFromUTCOffset.longValue() == this.validUntilUTCOffset.longValue()) {
 			this.validUntilUTCOffset = null;

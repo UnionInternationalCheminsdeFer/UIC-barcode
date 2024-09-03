@@ -5,6 +5,7 @@ import java.security.InvalidAlgorithmParameterException;
 import java.security.KeyPair;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
+import java.security.Provider;
 import java.security.Security;
 import java.util.TimeZone;
 import java.util.zip.DataFormatException;
@@ -39,6 +40,8 @@ public class EncodeSparpreisTicketDBTest {
 	public IUicRailTicket ticket = null;
 	
     TimeZone defaulttimeZone = null;
+    
+    public Provider provider = null;
 	
 	/**
 	 * Prepare tickets.
@@ -57,7 +60,8 @@ public class EncodeSparpreisTicketDBTest {
 		algorithmOID = Constants.DSA_SHA1;
 		keySize = 1024;
 		
-		Security.addProvider(new BouncyCastleProvider());
+	    provider = new BouncyCastleProvider();
+		Security.addProvider(provider);
 
 		try {
 			keyPair  = TestUtils.generateDSAKeys(keySize);
@@ -88,7 +92,7 @@ public class EncodeSparpreisTicketDBTest {
     public void testDecoder() throws Exception {
 
         Encoder encoder = new Encoder(ticket, null, Encoder.UIC_BARCODE_TYPE_CLASSIC, 1, 2);
-        encoder.signLevel1(securityProvider, keyPair.getPrivate(), algorithmOID, "1");
+        encoder.signLevel1(securityProvider, keyPair.getPrivate(), algorithmOID, "1", null);
         
         byte[] encoded =  encoder.encode();
         

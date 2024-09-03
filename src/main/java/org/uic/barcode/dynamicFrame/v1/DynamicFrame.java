@@ -1,8 +1,5 @@
 package org.uic.barcode.dynamicFrame.v1;
 
-import java.security.PrivateKey;
-import java.security.Provider;
-import java.security.Signature;
 import org.uic.barcode.asn1.datatypes.Asn1Optional;
 import org.uic.barcode.asn1.datatypes.CharacterRestriction;
 import org.uic.barcode.asn1.datatypes.FieldOrder;
@@ -14,7 +11,6 @@ import org.uic.barcode.dynamicContent.api.DynamicContentCoder;
 import org.uic.barcode.dynamicContent.api.IUicDynamicContent;
 import org.uic.barcode.dynamicContent.fdc1.UicDynamicContentDataFDC1;
 import org.uic.barcode.ticket.EncodingFormatException;
-import org.uic.barcode.utils.AlgorithmNameResolver;
 
 
 /**

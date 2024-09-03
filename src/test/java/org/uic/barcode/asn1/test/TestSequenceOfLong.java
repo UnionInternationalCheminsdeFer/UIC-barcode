@@ -13,7 +13,7 @@ public class TestSequenceOfLong extends Asn1SequenceOf<Long> {
 		public TestSequenceOfLong(List<Long> numbers) {
 			super();
 			for (Long number: numbers){
-				this.add(new Long(number));
+				this.add(Long.valueOf(number));
 			}
 		}
 		

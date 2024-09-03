@@ -1,7 +1,6 @@
 package org.uic.barcode.ticketTestDB;
 
 
-import java.util.Base64;
 import java.util.TimeZone;
 
 import org.junit.After;
@@ -12,7 +11,6 @@ import org.uic.barcode.Decoder;
 import org.uic.barcode.logger.LoggerFactory;
 import org.uic.barcode.staticFrame.ticketLayoutBarcode.TicketLayout;
 import org.uic.barcode.test.utils.TestUtils;
-import org.uic.barcode.ticket.api.spec.IUicRailTicket;
 
 public class EurailPassTest {
 	
@@ -70,7 +68,7 @@ public class EurailPassTest {
           // try to decode
         Decoder decoder = new Decoder(content);
         TicketLayout layout = decoder.getLayout();
-        IUicRailTicket ticket = decoder.getUicTicket();
+        //IUicRailTicket ticket = decoder.getUicTicket();
         
         Assert.assertNotNull(layout);        
         //Assert.assertNotNull(ticket);        

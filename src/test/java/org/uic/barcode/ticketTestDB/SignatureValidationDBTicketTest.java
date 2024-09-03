@@ -2,6 +2,7 @@ package org.uic.barcode.ticketTestDB;
 
 import java.io.ByteArrayInputStream;
 import java.security.NoSuchAlgorithmException;
+import java.security.Provider;
 import java.security.PublicKey;
 import java.security.Security;
 import java.security.cert.CertificateException;
@@ -23,6 +24,8 @@ import org.uic.barcode.logger.LoggerFactory;
 public class SignatureValidationDBTicketTest {
 	
     TimeZone defaulttimeZone = null;
+    
+    Provider provider= null;
 	
 	/**
 	 * Prepare tickets.
@@ -30,8 +33,9 @@ public class SignatureValidationDBTicketTest {
 	@Before public void prepare() {
 		
 		LoggerFactory.setActivateConsoleLog(true);
-		
-		Security.addProvider(new BouncyCastleProvider());
+
+	    provider = new BouncyCastleProvider();
+		Security.addProvider(provider);
 
 		defaulttimeZone = TimeZone.getDefault();
     	//decode in local CET time zone
@@ -63,7 +67,7 @@ public class SignatureValidationDBTicketTest {
         
 		String algorithmOID = Constants.DSA_SHA256;
 		
-        int result = decoder.validateLevel1(getPublicKey2(), algorithmOID);
+        int result = decoder.validateLevel1(getPublicKey2(), algorithmOID,provider);
         
         assert(result == 0);
         

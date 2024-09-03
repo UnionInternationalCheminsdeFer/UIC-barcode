@@ -7,10 +7,6 @@ import org.uic.barcode.asn1.datatypes.RestrictedString;
 import org.uic.barcode.asn1.datatypes.Sequence;
 import org.uic.barcode.asn1.datatypesimpl.OctetString;
 import org.uic.barcode.asn1.uper.UperEncoder;
-import org.uic.barcode.dynamicContent.api.DynamicContentCoder;
-import org.uic.barcode.dynamicContent.api.IUicDynamicContent;
-import org.uic.barcode.dynamicContent.fdc1.UicDynamicContentDataFDC1;
-import org.uic.barcode.ticket.EncodingFormatException;
 
 
 /**

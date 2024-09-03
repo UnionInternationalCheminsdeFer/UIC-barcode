@@ -231,7 +231,7 @@ public class CarCarriageReservationData extends Object {
 
 	public Long getBeginLoadingTime() {
 
-		if (beginLoadingTime == null) return new Long(0);
+		if (beginLoadingTime == null) return Long.valueOf(0);
 		return beginLoadingTime;
 	}
 

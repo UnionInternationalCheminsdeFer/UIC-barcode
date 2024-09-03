@@ -54,7 +54,7 @@ public class LuggageRestrictionType extends Object {
 	public Long getMaxHandLuggagePieces() {
 
 		if (maxHandLuggagePieces == null) {
-			return new Long(3);
+			return Long.valueOf(3);
 		}
 		
 		return this.maxHandLuggagePieces;
@@ -63,7 +63,7 @@ public class LuggageRestrictionType extends Object {
 	public Long getMaxNonHandLuggagePieces() {
 
 		if (maxNonHandLuggagePieces == null) {
-			return new Long(1);
+			return Long.valueOf(1);
 		}
 		
 		return this.maxNonHandLuggagePieces;

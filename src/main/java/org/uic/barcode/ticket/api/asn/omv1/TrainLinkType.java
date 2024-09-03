@@ -43,7 +43,7 @@ public class TrainLinkType extends Object {
 	@Asn1Optional public String trainIA5;
 
 	@FieldOrder(order = 2)
-	@IntRange(minValue=0,maxValue=370)
+	@IntRange(minValue=-1,maxValue=370)
 	public Long travelDate;
 
 	@FieldOrder(order = 3)
@@ -168,7 +168,7 @@ public class TrainLinkType extends Object {
 	
 	public void setDepartureTimeZone(Date dateLocal, Date dateUTC ) {
 		// -- (UTC = local + offset * 15 Minutes)	
-		this.departureUTCOffset = new Long(dateLocal.getTime() - dateUTC.getTime()) / (1000 * 60 * 15);
+		this.departureUTCOffset = Long.valueOf(dateLocal.getTime() - dateUTC.getTime()) / (1000 * 60 * 15);
 	}
 	
 	public Date getDepartureDate(Date issuingDate){

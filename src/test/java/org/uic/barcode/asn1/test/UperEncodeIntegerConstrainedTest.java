@@ -42,7 +42,7 @@ public class UperEncodeIntegerConstrainedTest {
   	    	
 
         public TestRecord() {
-            this(new Long(63L));
+            this(Long.valueOf(63L));
         }
 
         public TestRecord(Long num) {
