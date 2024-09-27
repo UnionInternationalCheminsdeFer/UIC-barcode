@@ -257,7 +257,7 @@ public class UHEADDataRecord extends DataRecord{
 					                           now.get(Calendar.DAY_OF_MONTH),
 					                           now.get(Calendar.MONTH) + 1,
 					                           now.get(Calendar.YEAR),
-					                           now.get(Calendar.HOUR),
+					                           now.get(Calendar.HOUR_OF_DAY),
 					                           now.get(Calendar.MINUTE));
 			
 				
