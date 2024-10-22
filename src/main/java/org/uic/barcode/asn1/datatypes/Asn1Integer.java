@@ -19,7 +19,7 @@ public class Asn1Integer {
     }
     
     public Long longObject () {
-    	return Long.valueOf(value()); 
+    	return value();
     }
 
 	public Asn1Integer(Long num) {

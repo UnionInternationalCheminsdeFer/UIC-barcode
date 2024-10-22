@@ -8,7 +8,11 @@ import java.util.HashMap;
 /**
  * The Class AlgorithmNameResolver.
  */
-public class AlgorithmNameResolver {
+public final class AlgorithmNameResolver {
+
+	private AlgorithmNameResolver() {
+		// Utility class will not be instantiated.
+	}
 	
 	
 	/** The Constant TYPE_KEY_GENERATOR_ALG. */
@@ -22,7 +26,7 @@ public class AlgorithmNameResolver {
 	
 	
 	/**
-	 * Adds an entry for a mapping of algorithm type and oid to an algorithm name
+	 * Adds an entry for a mapping of an algorithm type and oid to an algorithm name
 	 *
 	 * @param type the algorithm type
 	 * @param oid the algorithm OID
@@ -123,7 +127,7 @@ public class AlgorithmNameResolver {
  		    	 name = service.getAlgorithm();
  		     }
     		 
-    		 if (name != null && name.length() > 0) {
+    		 if (name != null && !name.isEmpty()) {
     			 return name;
     		 }
     	}
@@ -135,7 +139,7 @@ public class AlgorithmNameResolver {
  		       if (service != null) {
  		    	 name = service.getAlgorithm();
  		       }		    	    		    		 
- 		       if (name != null && name.length() > 0) {
+ 		       if (name != null && !name.isEmpty()) {
  		    	 return name;
  		       }
  		}
