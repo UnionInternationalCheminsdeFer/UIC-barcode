@@ -181,7 +181,7 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 	   
 	   -- token
 	   --     specific id to be exchanged with the ticket (e.g. id of the phone in case of tickets linked to a phone)
-       token  TokenType OPTIONAL,
+       token  SEQUENCE OF TokenType OPTIONAL,
        
        -- choice of the ticket
        ticket	CHOICE  	
