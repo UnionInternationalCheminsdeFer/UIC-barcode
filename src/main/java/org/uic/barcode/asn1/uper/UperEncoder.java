@@ -9,10 +9,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 
 import org.uic.barcode.asn1.datatypes.Asn1Default;
 import org.uic.barcode.asn1.datatypes.Asn1Optional;
@@ -31,7 +28,7 @@ import org.uic.barcode.logger.LoggerFactory;
  *
  * @see ITU-T Recommendation <a
  *      href="http://www.itu.int/ITU-T/recommendations/rec.aspx?rec=x.691">X.691</a>
- *
+ * <p>
  *      TODO: Cover the rest of (useful) ASN.1 datatypes and PER-visible constraints,
  *      write unit tests for them. Clean-up, do more refactoring.
  **/
@@ -290,7 +287,7 @@ public final class UperEncoder {
             T obj, Asn1ContainerFieldSorter sorter)
                     throws IllegalArgumentException, IllegalAccessException {
         for (Field f : sorter.extensionFields) {
-        	//CG elements with default value will not be not included
+        	//CG elements with a default value will not be included
             if (f.get(obj) != null && !isDefault(f,f.get(obj)) ) { 
             	return true; 
             }
@@ -356,7 +353,7 @@ public final class UperEncoder {
         if (hasExtensionMarker) {
             boolean extensionIsActive = bitqueue.get();
             if (extensionIsActive) {
-            	//in extensions are encoded as uncontraint integers, thius an Asn1BigInteger type should be used(a lower range bound might be applied). 
+            	//in extensions are encoded as uncontraint integers, thius an Asn1BigInteger type should be used (a lower range bound might be applied).
                 throw new UnsupportedOperationException("int extension are not supported yet");
             }
         }

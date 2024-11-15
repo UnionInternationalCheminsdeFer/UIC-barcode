@@ -5,7 +5,7 @@
   <version>1.4.9</version>
   <packaging>jar</packaging>
   <name>UIC barcode</name>
-  <description>encoding and decoding of Aztec barcode content according to UIC IRS 90918-9</description>
+  <description>Encoding and decoding of Aztec barcode content according to UIC IRS 90918-9</description>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

@@ -115,8 +115,8 @@ public class SimpleDynamicFrame implements IDynamicFrame {
 	
 	/**
 	 * Verify the level 2 signature
-	 * 
-	 * Note:  an appropriate security provider (e.g. BC) must be registered before 
+	 * <p>
+	 * Note: an appropriate security provider (e.g. BC) must be registered before
 	 *
 	 * @return the int
 	 * @throws EncodingFormatException 
@@ -129,10 +129,10 @@ public class SimpleDynamicFrame implements IDynamicFrame {
 	
 	/**
 	 * Verify the level 2 signature
-	 * 
-	 * Note:  an appropriate security provider (e.g. BC) must be registered before 
+	 * <p>
+	 * Note: an appropriate security provider (e.g. BC) must be registered before
 	 *
-	 * @param provider the registered security provider
+	 * @param prov the registered security provider
 	 * @return the return error code
 	 * @throws EncodingFormatException 
 	 */	
@@ -144,7 +144,7 @@ public class SimpleDynamicFrame implements IDynamicFrame {
 		if (getLevel2Data() == null
 				|| getLevel2Data().getLevel1Data() == null 
 				|| getLevel2Data().getLevel1Data().getLevel2KeyAlg() == null
-				|| getLevel2Data().getLevel1Data().getLevel2KeyAlg().length() == 0) {
+				|| getLevel2Data().getLevel1Data().getLevel2KeyAlg().isEmpty()) {
 			return Constants.LEVEL2_VALIDATION_NO_KEY;
 		}
 		
@@ -152,7 +152,7 @@ public class SimpleDynamicFrame implements IDynamicFrame {
 		String level2SigAlg = this.getLevel2Data().getLevel1Data().getLevel2SigningAlg();
 
 	 
-		if (level2KeyAlg == null || level2KeyAlg.length() == 0) {
+		if (level2KeyAlg == null || level2KeyAlg.isEmpty()) {
 			return Constants.LEVEL2_VALIDATION_NO_KEY;
 		}
 		
@@ -166,7 +166,7 @@ public class SimpleDynamicFrame implements IDynamicFrame {
 		} catch (Exception e1) {
 			return Constants.LEVEL2_VALIDATION_KEY_ALG_NOT_IMPLEMENTED;	
 		}
-		if (keyAlgName == null || keyAlgName.length() == 0) {
+		if (keyAlgName == null || keyAlgName.isEmpty()) {
 			return Constants.LEVEL2_VALIDATION_KEY_ALG_NOT_IMPLEMENTED;	
 		}
 		
@@ -260,7 +260,6 @@ public class SimpleDynamicFrame implements IDynamicFrame {
 
 		if (getLevel2Data() == null
 				|| getLevel2Data().getLevel1Signature() == null
-				|| getLevel2Data().getLevel1Signature() == null
 				|| getLevel2Data().getLevel1Signature().length == 0) {
 			return Constants.LEVEL1_VALIDATION_NO_SIGNATURE;
 		}
@@ -274,13 +273,13 @@ public class SimpleDynamicFrame implements IDynamicFrame {
 		if (getLevel2Data() != null 
 				&& getLevel2Data().getLevel1Data() != null 
 				&& getLevel2Data().getLevel1Data().getLevel1SigningAlg() != null
-				&& getLevel2Data().getLevel1Data().getLevel1SigningAlg().length() > 0) {
+				&& !getLevel2Data().getLevel1Data().getLevel1SigningAlg().isEmpty()) {
 				signingAlgorithmOid = getLevel2Data().getLevel1Data().getLevel1SigningAlg();	
 		} else {
 			signingAlgorithmOid = signatureAlgorithmOid;
 		}
 				
-		if (signingAlgorithmOid == null || signingAlgorithmOid.length() == 0) {
+		if (signingAlgorithmOid == null || signingAlgorithmOid.isEmpty()) {
 			return Constants.LEVEL1_VALIDATION_NO_SIGNATURE;
 		}		
 		
@@ -426,12 +425,10 @@ public class SimpleDynamicFrame implements IDynamicFrame {
 
 	/**
 	 * Sign the contained data block.
-	 * 
-	 * Note:  an appropriate security provider (e.g. BC) must be registered before 
+	 * <p>
+	 * Note: an appropriate security provider (e.g. BC) must be registered before
 	 *
 	 * @param key the key
-	 * @return 
-	 * @return the byte[]
 	 * @throws Exception 
 	 */
 	@Override
@@ -443,13 +440,11 @@ public class SimpleDynamicFrame implements IDynamicFrame {
 
 	/**
 	 * Sign the contained data block.
-	 * 
-	 * Note:  an appropriate security provider (e.g. BC) must be registered before 
+	 * <p>
+	 * Note: an appropriate security provider (e.g. BC) must be registered before
 	 *
 	 * @param key the key
-	 * @param security provider - security provider that must be sued to create the signature
-	 * @return 
-	 * @return the byte[]
+	 * @param prov provider - security provider that must be sued to create the signature
 	 * @throws Exception 
 	 */
 	@Override

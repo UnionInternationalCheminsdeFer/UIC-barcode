@@ -69,8 +69,10 @@ import org.uic.barcode.ticket.api.asn.omv1.SequenceOfRegisteredLuggageType;
 import org.uic.barcode.ticket.api.asn.omv1.SequenceOfServiceBrands;
 import org.uic.barcode.ticket.api.asn.omv1.SequenceOfTariffType;
 import org.uic.barcode.ticket.api.asn.omv1.SequenceOfTicketLinkType;
+import org.uic.barcode.ticket.api.asn.omv1.SequenceOfTimeRangeType;
 import org.uic.barcode.ticket.api.asn.omv1.SequenceOfTravelerId;
 import org.uic.barcode.ticket.api.asn.omv1.SequenceOfTravelerType;
+import org.uic.barcode.ticket.api.asn.omv1.SequenceOfValidityPeriodType;
 import org.uic.barcode.ticket.api.asn.omv1.SequenceOfViaStationType;
 import org.uic.barcode.ticket.api.asn.omv1.SeriesDetailType;
 import org.uic.barcode.ticket.api.asn.omv1.ServiceType;
@@ -92,8 +94,6 @@ import org.uic.barcode.ticket.api.asn.omv1.VatDetailType;
 import org.uic.barcode.ticket.api.asn.omv1.ViaStationType;
 import org.uic.barcode.ticket.api.asn.omv1.VoucherData;
 import org.uic.barcode.ticket.api.asn.omv1.ZoneType;
-import org.uic.barcode.ticket.api.asn.omv1.SequenceOfValidityPeriodType;
-import org.uic.barcode.ticket.api.asn.omv1.SequenceOfTimeRangeType;
 import org.uic.barcode.ticket.api.spec.IBerth;
 import org.uic.barcode.ticket.api.spec.ICarCarriageReservation;
 import org.uic.barcode.ticket.api.spec.ICardReference;
@@ -745,7 +745,7 @@ public class Api2OpenAsnEncoder implements Api2AsnEncoder {
 		}
 
 	
-		if (document.getTariffs() != null && document.getTariffs().size() > 0){
+		if (document.getTariffs() != null && !document.getTariffs().isEmpty()){
 			asnData.setTariffs(encodeTariffCollection(document.getTariffs()));
 		}
 		
@@ -753,7 +753,7 @@ public class Api2OpenAsnEncoder implements Api2AsnEncoder {
 			asnData.setClassCode(convertTravelClass(document.getClassCode()));
 		}
 		
-		if (document.getServiceLevel() != null && document.getServiceLevel().length() > 0) {
+		if (document.getServiceLevel() != null && !document.getServiceLevel().isEmpty()) {
 			asnData.setServiceLevel(document.getServiceLevel());
 		}
 		
@@ -765,7 +765,7 @@ public class Api2OpenAsnEncoder implements Api2AsnEncoder {
 			asnData.setIssuerAutorizationId(Long.valueOf(document.getAuthorizationCode()));
 		}
 
-		if (document.getValidRegionList()!= null && document.getValidRegionList().size() > 0) {
+		if (document.getValidRegionList()!= null && !document.getValidRegionList().isEmpty()) {
 			asnData.setValidRegion(encodeRegionCollection(document.getValidRegionList(), issuingDate));
 		}
 
@@ -795,11 +795,11 @@ public class Api2OpenAsnEncoder implements Api2AsnEncoder {
 		asnData.setFromStationNameUTF8(route.getFromStationName());
 		asnData.setToStationNameUTF8(route.getToStationName());		
 		
-		if (route.getValidRegionList()!= null && route.getValidRegionList().size() > 0) {
+		if (route.getValidRegionList()!= null && !route.getValidRegionList().isEmpty()) {
 			asnData.setValidReturnRegion(encodeRegionCollection(route.getValidRegionList(), issuingDate));
 		}
 		
-		if (route.getValidRegionDesc() != null && route.getValidRegionDesc().length() > 0){
+		if (route.getValidRegionDesc() != null && !route.getValidRegionDesc().isEmpty()){
 			asnData.setValidReturnRegionDesc(route.getValidRegionDesc());
 		}
 		
@@ -823,7 +823,7 @@ public class Api2OpenAsnEncoder implements Api2AsnEncoder {
 
 		asnData.setMaxNonHandLuggagePieces(UicEncoderUtils.getRestrictedIntWithDefault(luggageRestriction.getMaxNonHandLuggagePieces(),1,99,1));
 				
-		if (luggageRestriction.getRegisteredLuggage() != null && luggageRestriction.getRegisteredLuggage().size() > 0) {
+		if (luggageRestriction.getRegisteredLuggage() != null && !luggageRestriction.getRegisteredLuggage().isEmpty()) {
 			asnData.setRegisteredLuggage(encodeRegisteredLuggage(luggageRestriction.getRegisteredLuggage()));
 		}
 		
@@ -931,7 +931,7 @@ public class Api2OpenAsnEncoder implements Api2AsnEncoder {
 			asnData.setClassCode(convertTravelClass(document.getClassCode()));
 		}
 		
-		if (document.getServiceLevel() != null && document.getServiceLevel().length() > 0) {
+		if (document.getServiceLevel() != null && !document.getServiceLevel().isEmpty()) {
 			asnData.setServiceLevel(document.getServiceLevel());
 		}
 		
@@ -943,12 +943,12 @@ public class Api2OpenAsnEncoder implements Api2AsnEncoder {
 			asnData.setIssuerAutorizationId(Long.valueOf(document.getAuthorizationCode()));
 		}
 
-		if (document.getValidRegionList() != null && document.getValidRegionList().size() > 0) {
+		if (document.getValidRegionList() != null && !document.getValidRegionList().isEmpty()) {
 			asnData.setValidRegion(encodeRegionCollection(document.getValidRegionList(), issuingDate));
 		}		
 		asnData.setValidRegionDesc(document.getValidRegionDesc());
 		
-		if (document.getIncludedAddOns() != null && document.getIncludedAddOns().size() > 0) {
+		if (document.getIncludedAddOns() != null && !document.getIncludedAddOns().isEmpty()) {
 			asnData.setIncludedAddOns(encodeIncludedAddons(document.getIncludedAddOns(),issuingDate, document.getClassCode()));
 		}
 		
@@ -1060,7 +1060,7 @@ public class Api2OpenAsnEncoder implements Api2AsnEncoder {
 		asnData.setExcludedServiceBrands(SequenceOfServiceBrands.getSequence(UicEncoderUtils.encodeRestrictedIntegerCollection(document.getExcludedServiceBrands(),1,32000)));		
 		asnData.setIncludedServiceBrands(SequenceOfServiceBrands.getSequence(UicEncoderUtils.encodeRestrictedIntegerCollection(document.getIncludedServiceBrands(),1,32000)));			
 				
-		if (document.getValidRegionList() != null && document.getValidRegionList().size() > 0) {
+		if (document.getValidRegionList() != null && !document.getValidRegionList().isEmpty()) {
 			asnData.setValidRegion(encodeRegionCollection(document.getValidRegionList(), issuingDate));
 		}
 		asnData.setValidRegionDesc(document.getValidRegionDesc());
@@ -1188,7 +1188,7 @@ public class Api2OpenAsnEncoder implements Api2AsnEncoder {
 			asnData.setCity(Asn1BigInteger.toAsn1(data.getCity()));
 		}
 		
-		if (data.getNUTScode() != null && data.getNUTScode().length() > 0) {
+		if (data.getNUTScode() != null && !data.getNUTScode().isEmpty()) {
 			asnData.setNutsCode(data.getNUTScode());			
 		}
 		
@@ -1236,7 +1236,7 @@ public class Api2OpenAsnEncoder implements Api2AsnEncoder {
 	 * @return the polygone type
 	 * @throws EncodingFormatException the encoding format exception
 	 */
-	private PolygoneType encodePolygone(IPolygone data) throws EncodingFormatException {
+    private PolygoneType encodePolygone(IPolygone data) {
 		if (data == null) return null;	
 		if (data.getEdges() == null || data.getEdges().isEmpty()) {
 			return null;
@@ -1638,7 +1638,7 @@ public class Api2OpenAsnEncoder implements Api2AsnEncoder {
 		
 		asnData.setClassCode(convertTravelClass(document.getClassCode()));
 		
-		if (document.getCountries() != null && document.getCountries().size() > 0){
+		if (document.getCountries() != null && !document.getCountries().isEmpty()){
 			asnData.setCountries(SequenceOfCountries.getSequence(UicEncoderUtils.encodeRestrictedIntegerCollection(document.getCountries(),1,250)));
 		}
 
@@ -1657,7 +1657,7 @@ public class Api2OpenAsnEncoder implements Api2AsnEncoder {
 		
 
 		
-		if(document.getValidRegionList()!= null && document.getValidRegionList().size() > 0) {
+		if(document.getValidRegionList()!= null && !document.getValidRegionList().isEmpty()) {
 			asnData.setValidRegion(encodeRegionCollection(document.getValidRegionList(), issuingDate));
 		}		
 		
@@ -1680,7 +1680,7 @@ public class Api2OpenAsnEncoder implements Api2AsnEncoder {
 	}	
 	
 	
-	private ValidityPeriodDetailType encodeValidityDetails(	IValidityDetails validityDetails, Date referenceDate) throws EncodingFormatException {
+    private ValidityPeriodDetailType encodeValidityDetails(IValidityDetails validityDetails, Date referenceDate) {
 		
 		if ( (validityDetails.getTimeRanges() == null || validityDetails.getTimeRanges().isEmpty())
 				||
@@ -1828,7 +1828,7 @@ public class Api2OpenAsnEncoder implements Api2AsnEncoder {
 			for (String station : document.getStations()) {
 				String ia5 = UicEncoderUtils.getIA5NonNum(station);
 				Long num = UicEncoderUtils.getNum(station);
-				if (ia5 != null && ia5.length() > 0) {
+				if (ia5 != null && !ia5.isEmpty()) {
 					stationsIA5.add(ia5);
 				}
 				if (num != null && num > 0){
@@ -1847,7 +1847,7 @@ public class Api2OpenAsnEncoder implements Api2AsnEncoder {
 			
 			SequenceOfStringUTF8 asnList = new SequenceOfStringUTF8();
 			for ( String text  :document.getStationNames()){
-				if (text.length() > 0) {
+				if (!text.isEmpty()) {
 					asnList.add(text);
 				}
 			}
@@ -1963,7 +1963,7 @@ public class Api2OpenAsnEncoder implements Api2AsnEncoder {
 			
 			CardReferenceType asnCard = new CardReferenceType();
 			
-			if (card.getCardId() != null && card.getCardId().length() > 0){
+			if (card.getCardId() != null && !card.getCardId().isEmpty()){
 				//only longs allowed
 				 try {
 					 long num = Long.parseLong(card.getCardId());
@@ -2100,7 +2100,7 @@ public class Api2OpenAsnEncoder implements Api2AsnEncoder {
 	private IssuingData encodeIssuingDetails(IIssuingDetail data) throws EncodingFormatException {
 		
 		if (data == null){
-			throw new EncodingFormatException("Issuind data missing");
+			throw new EncodingFormatException("Issuing data missing");
 		}
 		
 		IssuingData asnData = new IssuingData();
@@ -2218,7 +2218,7 @@ public class Api2OpenAsnEncoder implements Api2AsnEncoder {
 		asnDocument.getTicket().setCustomerCard(asnData);		
 		
 		
-		if (document.getCardId() != null && document.getCardId().length() > 0){
+		if (document.getCardId() != null && !document.getCardId().isEmpty()){
 		//only longs allowed
 		 try {
 			 long num = Long.parseLong(document.getCardId());
@@ -2375,7 +2375,7 @@ public class Api2OpenAsnEncoder implements Api2AsnEncoder {
 			throw new EncodingFormatException("Extension does not include data");
 		}
 
-		if (extension.getId() == null || extension.getId().length() == 0) {
+		if (extension.getId() == null || extension.getId().isEmpty()) {
 			throw new EncodingFormatException("Extension does not include id");
 		}
 		
