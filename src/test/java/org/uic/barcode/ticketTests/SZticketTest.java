@@ -110,18 +110,22 @@ public class SZticketTest {
         Assert.assertEquals(frame.getHeader().getIssuer(), 1179);
         Assert.assertEquals(frame.getHeader().getKeyId(), 1);
         Assert.assertEquals(frame.getHeader().getTicketType(), SsbTicketType.UIC_2_NRT);
+        
         Assert.assertEquals(frame.getNonReservationData().getNumberOfAdults(), 1);
         Assert.assertEquals(frame.getNonReservationData().getNumberOfChildren(), 0);
-        Assert.assertEquals(frame.getNonReservationData().isSpecimen(), false);
+        Assert.assertFalse(frame.getNonReservationData().isSpecimen());
         Assert.assertEquals(frame.getNonReservationData().getClassCode(), SsbClass.Second);
         Assert.assertEquals(frame.getNonReservationData().getTicketNumber(), "6140001343");
         Assert.assertEquals(frame.getNonReservationData().getYear(), 2);
         Assert.assertEquals(frame.getNonReservationData().getDay(), 182);
         Assert.assertEquals(frame.getNonReservationData().getFirstDayOfValidity(), 0);
         Assert.assertEquals(frame.getNonReservationData().getLastDayOfValidity(), 0);
+
+        Assert.assertFalse(frame.getNonReservationData().getStations().isAlphaNumeric());
         Assert.assertEquals(frame.getNonReservationData().getStations().getCodeTable(), SsbStationCodeTable.NRT);
         Assert.assertEquals(frame.getNonReservationData().getStations().getDepartureStationCode(), "7943100");
         Assert.assertEquals(frame.getNonReservationData().getStations().getArrivalStationCode(), "8103171");
+
         Assert.assertEquals(frame.getNonReservationData().getInfoCode(), 0);
         Assert.assertEquals(frame.getNonReservationData().getText(), "");
      }

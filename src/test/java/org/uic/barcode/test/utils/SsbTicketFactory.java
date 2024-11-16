@@ -73,6 +73,7 @@ public class SsbTicketFactory {
 		ssb.getGroupData().setTicketNumber("SKCTS86");
 		ssb.getGroupData().setYear(3);
 		
+		ssb.getReservationData().getStations().setAlphaNumeric(false);
 		ssb.getGroupData().getStations().setArrivalStationCode("8012345");
 		ssb.getGroupData().getStations().setDepartureStationCode("8054321");
 		ssb.getGroupData().getStations().setCodeTable(SsbStationCodeTable.NRT);
@@ -105,7 +106,7 @@ public class SsbTicketFactory {
 		ssb.getNonReservationData().setTicketNumber("SKCTS86");
 		ssb.getNonReservationData().setYear(3);
 		
-		
+		ssb.getReservationData().getStations().setAlphaNumeric(false);
 		ssb.getNonReservationData().getStations().setArrivalStationCode("8012345");
 		ssb.getNonReservationData().getStations().setDepartureStationCode("8054321");
 		ssb.getNonReservationData().getStations().setCodeTable(SsbStationCodeTable.NRT);
@@ -141,7 +142,7 @@ public class SsbTicketFactory {
 		ssb.getReservationData().setTicketNumber("SKCTS86");
 		ssb.getReservationData().setYear(3);
 		
-		
+		ssb.getReservationData().getStations().setAlphaNumeric(false);
 		ssb.getReservationData().getStations().setArrivalStationCode("8012345");
 		ssb.getReservationData().getStations().setDepartureStationCode("8054321");
 		ssb.getReservationData().getStations().setCodeTable(SsbStationCodeTable.NRT);
@@ -167,6 +168,8 @@ public class SsbTicketFactory {
 	}
 
 	public static void compareStations(SsbStations stations, SsbStations stations2) {
+
+		assert (stations.isAlphaNumeric() == stations2.isAlphaNumeric());
 		
 		assert (stations.getCodeTable().equals(stations2.getCodeTable()));
 		
