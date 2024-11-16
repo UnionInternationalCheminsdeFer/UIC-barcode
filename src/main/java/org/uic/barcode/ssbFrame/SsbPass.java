@@ -11,7 +11,7 @@ public class SsbPass extends SsbCommonTicketPart {
        First day of validity from the issuing date	Num (<367)	9 bit 000 = open date for regular Eurail pass to be activated
        Maximum duration from the issuing date for OVERSEAS; otherwise, last day of validity	Num (<278)	9 bit 9 months max. validity
        Number of days of travel allowed	Num (<93)	7	bit	
-       Country code 1	Num (<100)	7	0.875	100 = all countries
+       Country code 1	Num (<108)	7	0.875	100 = all countries, see TAP TSI B.12 for zones over 100
        Country code 2	Num (<99)	7	0.875	If country code 1 is 100, then 00
        Country code 3	Num (<99)	7	0.875	If country code 1 is 100, then 00
        Country code 4	Num (<99)	7	0.875	If country code 1 is 100, then 00
@@ -112,7 +112,7 @@ public class SsbPass extends SsbCommonTicketPart {
 		bits.putInteger(offset, 7, numberOfTravels);
 		offset += 7;
 		
-		if (country_1 < 0 || country_1 > 100) {
+		if (country_1 < 0 || country_1 > 108) {
 			throw new EncodingFormatException("SSB country 1 too big");
 		}
 		bits.putInteger(offset, 7,country_1);
