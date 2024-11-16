@@ -20,7 +20,7 @@ public class SsbNonUic extends SsbTicketPart {
 		
 		
 		for (int i = offset; i < openDataLength; i++) {
-			if (bits.get(i) == false) {
+			if (bits.get(i) == true) {
 				sb.append("1");
 			} else {
 				sb.append("0");
@@ -46,7 +46,7 @@ public class SsbNonUic extends SsbTicketPart {
 		
 	
 		for (int i = 0; i< openDataLength ; i++) {
-			if (i < bitString.length() && bitString.charAt(i) == '0') {
+			if (i < bitString.length() && bitString.charAt(i) == '1') {
 				bits.put(offset + i, true);
 			} else {
 				bits.put(offset + i, false);

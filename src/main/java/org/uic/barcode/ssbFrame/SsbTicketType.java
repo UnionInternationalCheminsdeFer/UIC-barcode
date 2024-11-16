@@ -1,7 +1,7 @@
 package org.uic.barcode.ssbFrame;
 
 public enum SsbTicketType {
-	
+	UIC_0_UNDEFINED,
 	UIC_1_IRT_RES_BOA,
 	UIC_2_NRT,
 	UIC_3_GRP,
@@ -32,8 +32,7 @@ public enum SsbTicketType {
 	NONUIC_28_BILATERAL,
 	NONUIC_29_BILATERAL,
 	NONUIC_30_BILATERAL,
-	NONUIC_31_BILATERAL,
-	NONUIC_32_BILATERAL;
+	NONUIC_31_BILATERAL;
 	
 
 }

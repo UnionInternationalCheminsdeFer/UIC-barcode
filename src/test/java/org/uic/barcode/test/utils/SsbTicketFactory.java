@@ -26,7 +26,7 @@ public class SsbTicketFactory {
 		
 		
 		ssbPass.setPassData(new SsbPass());
-		ssbPass.getPassData().setClassCode(SsbClass.FIRST);
+		ssbPass.getPassData().setClassCode(SsbClass.First);
 		ssbPass.getPassData().setCountry_1(10);
 		ssbPass.getPassData().setCountry_2(12);
 		ssbPass.getPassData().setDay(1);
@@ -57,7 +57,7 @@ public class SsbTicketFactory {
 		
 		
 		ssb.setGroupData(new SsbGroup());
-		ssb.getGroupData().setClassCode(SsbClass.FIRST);
+		ssb.getGroupData().setClassCode(SsbClass.First);
 		ssb.getGroupData().setCounterMarkNumber(1);
 		ssb.getGroupData().setDay(1);
 		ssb.getGroupData().setFirstDayOfValidity(10);
@@ -91,7 +91,7 @@ public class SsbTicketFactory {
 		
 		
 		ssb.setNonReservationData(new SsbNonReservation());
-		ssb.getNonReservationData().setClassCode(SsbClass.FIRST);
+		ssb.getNonReservationData().setClassCode(SsbClass.First);
 		ssb.getNonReservationData().setDay(1);
 		ssb.getNonReservationData().setFirstDayOfValidity(10);
 		ssb.getNonReservationData().setFirstDayOfValidity(120);
@@ -124,7 +124,7 @@ public class SsbTicketFactory {
 		
 		
 		ssb.setReservationData(new SsbReservation());
-		ssb.getReservationData().setClassCode(SsbClass.FIRST);
+		ssb.getReservationData().setClassCode(SsbClass.First);
 		ssb.getReservationData().setDay(1);
 		ssb.getReservationData().setCoach(123);
 		ssb.getReservationData().setDepartureDate(120);

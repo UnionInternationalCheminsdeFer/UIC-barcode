@@ -30,20 +30,20 @@ public abstract class SsbCommonTicketPart extends SsbTicketPart {
 		
 		int offset = 27; // header offset
 		numberOfAdults = bits.getInteger(offset, 7); 
-		offset = offset + 7;
+		offset += 7;
 		numberOfChildren = bits.getInteger(offset, 7); 
-		offset = offset + 7;
+		offset += 7;
 		specimen = bits.get(offset);
 		offset++;
 		int classIndex = bits.getInteger(offset, 6);
 		classCode = SsbClass.values()[classIndex];
-		offset = offset + 6;
+		offset += 6;
 		ticketNumber = bits.getChar6String(offset, 84);
-		offset = offset + 84;
+		offset += 84;
 		year = bits.getInteger(offset, 4);
-		offset = offset + 4;
+		offset += 4;
 		day = bits.getInteger(offset, 9);
-		offset = offset + 9;
+		offset += 9;
 		return offset;
 	}
 	
@@ -55,35 +55,35 @@ public abstract class SsbCommonTicketPart extends SsbTicketPart {
 			throw new EncodingFormatException("SSB number of adults too big");
 		}
 		bits.putInteger(offset,7, numberOfAdults);
-		offset = offset + 7;
+		offset += 7;
 		
 		if (numberOfChildren < 0 || numberOfChildren > 99) {
 			throw new EncodingFormatException("SSB number of children too big");
 		}		
 		bits.putInteger(offset, 7, numberOfChildren); 
-		offset = offset + 7;
+		offset += 7;
 		
 		bits.put(offset,specimen);
 		offset++;
 		
 		bits.putInteger(offset, 6,classCode.ordinal());
-		offset = offset + 6;
+		offset += 6;
 		
 		if (ticketNumber.length() > 14) {
 			throw new EncodingFormatException("SSB Ticket Number too long");
 		}	
 		bits.putChar6String(offset, 84, ticketNumber);
-		offset = offset + 84; 
+		offset += 84; 
 		
 		
 		bits.putInteger(offset, 4, (year % 10));
-		offset = offset + 4;
+		offset += 4;
 		
 		if (day > 512) {
 			throw new EncodingFormatException("SSB day too long");
 		}	
 		bits.putInteger(offset, 9, day);
-		offset = offset + 9;
+		offset += 9;
 		
 		return offset;
 		
