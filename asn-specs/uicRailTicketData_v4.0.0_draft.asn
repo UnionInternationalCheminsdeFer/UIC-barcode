@@ -299,10 +299,11 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
     IssuingData  	::=  SEQUENCE	{
     	
     	-- provider of the signature  (RICS code)
+        -- may be absent if present in UicBarcodeHeader
     	securityProviderNum INTEGER (1..32000) OPTIONAL,				
     	securityProviderIA5 IA5String          OPTIONAL,	
     	
-    	-- issuer of the transport document if the issuer is different from the security provider 
+    	-- issuer of the binary content of the transport document, if different from the security provider
     	-- (RICS code)
      	issuerNum			INTEGER (1..32000) 	OPTIONAL, 
      	issuerIA5			IA5String          	OPTIONAL,	
@@ -456,7 +457,7 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
     referenceIA5   		IA5String 	 			OPTIONAL,
     referenceNum   		INTEGER 				OPTIONAL,    
 
-    -- organization responsible for the product definition 
+    -- organization responsible for the product definition, if different from the issuer
     --        (RICS Code to be used as standard)     
     productOwnerNum		INTEGER 	(1..32000) 		OPTIONAL,    
     productOwnerIA5		IA5String 		 		OPTIONAL,    
@@ -615,7 +616,7 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
     referenceIA5   		IA5String 	 				OPTIONAL,
     referenceNum   		INTEGER 					OPTIONAL,  
     
-    -- organization responsible for the product definition 
+    -- organization responsible for the product definition, if different from the issuer 
     -- (RICS Code / proprietary code in case no RICS code is defined, proprietary codes must ensure to be unique)   
     productOwnerNum		INTEGER (1..32000) 			OPTIONAL,      
     productOwnerIA5		IA5String 		 			OPTIONAL,    
@@ -704,7 +705,7 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
       referenceNum   	INTEGER 			OPTIONAL,    
       referenceIA5   	IA5String 			OPTIONAL,   
      				   		
-      -- organization responsible for the product definition 
+      -- organization responsible for the product definition, if different from the issuer 
       -- (RICS Code / proprietary code in case no RICS code is defined, proprietary codes must ensure to be unique)   
       productOwnerNum		INTEGER (1..32000) 	OPTIONAL,        
       productOwnerIA5		IA5String 		OPTIONAL,    
@@ -842,7 +843,7 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 	   referenceNum   			INTEGER 				OPTIONAL,   
 	   referenceIA5   			IA5String 				OPTIONAL,	   
      			       		
-	   -- organization responsible for the product definition 
+	   -- organization responsible for the product definition, if different from the issuer 
        -- (RICS Code / proprietary code in case no RICS code is defined, proprietary codes must ensure to be unique)      
 	   productOwnerNum			INTEGER (1..32000) 		OPTIONAL,    
 	   productOwnerIA5			IA5String 		 		OPTIONAL,    
@@ -1032,7 +1033,7 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
      	referenceIA5   		IA5String 				OPTIONAL,      
      	referenceNum   		INTEGER 				OPTIONAL,     
      				   		
-     	-- organization responsible for the product definition 
+     	-- organization responsible for the product definition, if different from the issuer 
         -- (RICS Code / proprietary code in case no RICS code is defined, proprietary codes must ensure to be unique)   
      	productOwnerNum		INTEGER (1..32000) 		OPTIONAL,         
      	productOwnerIA5		IA5String 		 		OPTIONAL,    
@@ -1072,7 +1073,7 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 	   referenceIA5   	IA5String 				 	OPTIONAL,      
        referenceNum   	INTEGER 					OPTIONAL,         
      				   		
-       -- organization responsible for the product definition 
+       -- organization responsible for the product definition, if different from the issuer 
        -- (RICS Code / proprietary code in case no RICS code is defined, proprietary codes must ensure to be unique)    
        productOwnerNum	INTEGER (1..32000) 			OPTIONAL,        
        productOwnerIA5	IA5String 		 			OPTIONAL,    
@@ -1120,7 +1121,7 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 	   referenceIA5   		IA5String 	                OPTIONAL,     
 	   referenceNum   		INTEGER 					OPTIONAL,      
      				    		    
-	   -- organization responsible for the product definition
+	   -- organization responsible for the product definition, if different from the issuer
        -- (RICS Code / proprietary code in case no RICS code is defined, proprietary codes must ensure to be unique)    	   
 	   productOwnerNum		INTEGER (1..32000) 			OPTIONAL,    
 	   productOwnerIA5		IA5String 		 			OPTIONAL,    
@@ -1256,7 +1257,7 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 	   -- number of days from the from parking date in case it is different from that date
 	   untilParkingDate INTEGER 		 	(0..500) DEFAULT 0, 
 
-	   -- organization responsible for the product definition 
+	   -- organization responsible for the product definition, if different from the issuer 
        -- (RICS Code / proprietary code in case no RICS code is defined, proprietary codes must ensure to be unique)        
 	   productOwnerNum	INTEGER (1..32000) 	OPTIONAL,    
 	   productOwnerIA5	IA5String 		 	OPTIONAL,   
@@ -1298,7 +1299,7 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 	   referenceIA5   		IA5String 	 				OPTIONAL,
 	   referenceNum   		INTEGER 					OPTIONAL,        			      	
         					
-	   -- organization responsible for the product definition
+	   -- organization responsible for the product definition, if different from the issuer
 	   -- (RICS Code / proprietary code in case no RICS code is defined, proprietary codes must ensure to be unique)   
 	   productOwnerNum		INTEGER (1..32000) 			OPTIONAL,    
 	   productOwnerIA5		IA5String 		 			OPTIONAL,    
@@ -1420,7 +1421,7 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
   --  #############################################################################################                       	 					        
    IncludedOpenTicketType  ::= SEQUENCE {
      					        		
-	-- organization responsible for the product definition
+	-- organization responsible for the product definition, if different from the issuer
 	-- (RICS Code / proprietary code in case no RICS code is defined, proprietary codes must ensure to be unique)  	
   	productOwnerNum		INTEGER (1..32000) 			OPTIONAL,        
   	productOwnerIA5		IA5String 		 			OPTIONAL,    
@@ -1893,7 +1894,7 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 	   issuerPNR			IA5String 					OPTIONAL,  -- in case the ticket can also be identified via 
 	                                                               -- the issuer PNR
      	
-	   -- organization responsible for the product definition 
+	   -- organization responsible for the product definition, if different from the issuer 
 	   -- (RICS Code / proprietary code in case no RICS code is defined, proprietary codes must ensure to be unique) 
 	   productOwnerNum		INTEGER (1..32000) 			OPTIONAL,      
 	   productOwnerIA5		IA5String 		 			OPTIONAL,     
