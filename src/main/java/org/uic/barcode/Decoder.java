@@ -374,7 +374,7 @@ public class Decoder {
 		if (!isStaticHeader(data) && dynamicFrame != null) {
 			return dynamicFrame.getLevel1DataBin();
 		} else if (staticFrame != null) {
-			return staticFrame.getDataForSignature();
+			return staticFrame.buildDataForSignature();
 		} else {
 			throw new EncodingFormatException("Unknown Header");
 		}		
@@ -385,7 +385,7 @@ public class Decoder {
 		if (!isStaticHeader(data)) {
 			return dynamicFrame.getLevel2Data().getLevel1Signature();
 		} else if (staticFrame != null) {
-			return staticFrame.getDataForSignature();
+			return staticFrame.buildDataForSignature();
 		} else {
 			throw new EncodingFormatException("Unknown Header");
 		}

@@ -294,10 +294,14 @@ public class StaticFrame {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 * @throws EncodingFormatException the encoding format exception
 	 */
-	public byte[] getDataForSignature() throws IOException, EncodingFormatException {
-		// data compression
-		if (signedData != null) return signedData;
+	public byte[] buildDataForSignature() throws IOException, EncodingFormatException {
 		
+		if (signedData != null) {
+			//signed data already build
+			return signedData;
+		}
+		
+		// data compression	
 		Deflater deflater = new Deflater();  
 		byte[] data = encodeData();
 		deflater.setInput(data);  
@@ -310,7 +314,18 @@ public class StaticFrame {
 		}  
 		compressStream.close();
 
-		return compressStream.toByteArray();
+		signedData = compressStream.toByteArray();
+		
+		return signedData;
+	}
+	
+	/**
+	 * Gets the data for signing.
+	 *
+	 * @return the data to be signed
+	 */
+	public byte[] getDataForSignature() {
+		return signedData;
 	}
     
 	/**
@@ -620,30 +635,6 @@ public class StaticFrame {
 	}
 
 
-
-	/**
-	 * Verify the signature
-	 * 
-	 * Note:  an appropriate security provider (e.g. BC) must be registered before 
-	 *
-	 * @param key the key
-	 * @param algo the algorithm name
-	 * @return true, if successful
-	 * @throws InvalidKeyException the invalid key exception
-	 * @throws NoSuchAlgorithmException the no such algorithm exception
-	 * @throws SignatureException the signature exception
-	 * @throws IllegalArgumentException the illegal argument exception
-	 * @throws UnsupportedOperationException the unsupported operation exception
-	 * @throws EncodingFormatException 
-	 * @throws IOException 
-	 */
-	public boolean ByAlgorithmName(PublicKey key, String algo) throws InvalidKeyException, NoSuchAlgorithmException, SignatureException, IllegalArgumentException, UnsupportedOperationException, IOException, EncodingFormatException {
-		Signature sig = Signature.getInstance(algo);
-		sig.initVerify(key);
-		sig.update(this.getDataForSignature());
-		return sig.verify(this.getSignature());
-	}
-	
 	/**
 	 * Verify the signature
 	 * 
@@ -659,6 +650,7 @@ public class StaticFrame {
 	 * @throws UnsupportedOperationException the unsupported operating exception
 	 * @throws EncodingFormatException 
 	 * @throws IOException 
+	 * @deprecated
 	 */
 	public boolean verifyByAlgorithmOid(PublicKey key, String signingAlg) throws InvalidKeyException, NoSuchAlgorithmException, SignatureException, IllegalArgumentException, UnsupportedOperationException, IOException, EncodingFormatException {
 		
@@ -778,7 +770,7 @@ public class StaticFrame {
 		}
 		Signature sig = Signature.getInstance(algo);
 		sig.initSign(key);
-		signedData = getDataForSignature();
+		signedData = buildDataForSignature();
 		sig.update(signedData);
 		signature = sig.sign();
 	}
@@ -833,7 +825,7 @@ public class StaticFrame {
 		}
 		
 		sig.initSign(key);
-		signedData = getDataForSignature();
+		signedData = buildDataForSignature();
 		sig.update(signedData);
 		signature = sig.sign();
 	}
@@ -857,7 +849,7 @@ public class StaticFrame {
 	public void signUsingAlgorithmName(PrivateKey key,String algo) throws NoSuchAlgorithmException, InvalidKeyException, SignatureException, IOException, EncodingFormatException {
 		Signature sig = Signature.getInstance(algo);
 		sig.initSign(key);
-		sig.update(getDataForSignature());
+		sig.update(buildDataForSignature());
 		signature = sig.sign();
 	}
 

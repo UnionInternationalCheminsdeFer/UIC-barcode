@@ -490,7 +490,7 @@ public class Encoder {
 		if (dynamicFrame != null) {
 			return DynamicFrameCoder.encodeLevel1(dynamicFrame);
 		} else if (staticFrame != null) {
-			return staticFrame.getDataForSignature();
+			return staticFrame.buildDataForSignature();
 		} else {
 			throw new EncodingFormatException("Unknown Header");
 		}		
