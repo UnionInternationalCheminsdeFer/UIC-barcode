@@ -17,26 +17,26 @@ public class SsbNonReservation extends SsbCommonTicketPart {
 	@Override
 	protected int decodeContent(byte[] bytes, int offset) {
 		
-		offset = offset + decodeCommonPart(bytes);
+		offset = decodeCommonPart(bytes);
 		
 		BitBuffer bits = new ByteBitBuffer(bytes);
 		
 		isReturnJourney = bits.get(offset);
-		offset = offset++;
+		offset++;
 		
 		firstDayOfValidity = bits.getInteger(offset, 9);
-		offset = offset + 9;
+		offset += 9;
 		
 		lastDayOfValidity = bits.getInteger(offset, 9);
-		offset = offset + 9;
+		offset += 9;
 		
 		offset = stations.decode(offset, bytes);
 		
 		infoCode = bits.getInteger(offset, 14);
-		offset = offset + 14;
+		offset += 14;
 		
 		text = bits.getChar6String(offset, 222);
-		offset = offset + 222;
+		offset += 222;
 		
 		return offset;
 		
@@ -45,24 +45,24 @@ public class SsbNonReservation extends SsbCommonTicketPart {
 	@Override
 	protected int encodeContent(byte[] bytes, int offset) throws EncodingFormatException {
 		
-		offset = offset + encodeCommonPart(bytes, offset);
+		offset = encodeCommonPart(bytes, offset);
 		
 		BitBuffer bits = new ByteBitBuffer(bytes);
 		
 		bits.put(offset, isReturnJourney);
-		offset = offset++;
+		offset++;
 		
 		if (firstDayOfValidity < 0 || firstDayOfValidity > 511) {
 			throw new EncodingFormatException("SSB first day of validity too big");
 		}
 		bits.putInteger(offset, 9, firstDayOfValidity);
-		offset = offset + 9;
+		offset += 9;
 		
 		if (lastDayOfValidity < 0 || lastDayOfValidity > 511) {
 			throw new EncodingFormatException("SSB last day of validity too big");
 		}
 		bits.putInteger(offset, 9, lastDayOfValidity);
-		offset = offset + 9;
+		offset += 9;
 		
 		offset = stations.encode(offset, bytes);
 		
@@ -70,13 +70,13 @@ public class SsbNonReservation extends SsbCommonTicketPart {
 			throw new EncodingFormatException("SSB info code too big");
 		}
 		bits.putInteger(offset, 14, infoCode);
-		offset = offset + 14;
+		offset += 14;
 		
 		if (text.length() > 37) {
 			throw new EncodingFormatException("SSB text too big");
 		}
 		bits.putChar6String(offset, 222, text);
-		offset = offset + 222;
+		offset += 222;
 		
 		return offset;
 		

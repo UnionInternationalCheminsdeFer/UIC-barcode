@@ -33,12 +33,12 @@ public class SsbReservation extends SsbCommonTicketPart {
 	@Override
 	protected int decodeContent(byte[] bytes, int offset) {
 		
-		offset = offset + decodeCommonPart(bytes);
+		offset = decodeCommonPart(bytes);
 		
 		BitBuffer bits = new ByteBitBuffer(bytes);
 		
 		ticketSubType = bits.getInteger(offset, 2);
-		offset = offset + 2;
+		offset += 2;
 		
 		stations = new SsbStations();
 		offset = stations.decode(offset, bytes);
@@ -55,28 +55,28 @@ public class SsbReservation extends SsbCommonTicketPart {
 		 */
 		
 		departureDate = bits.getInteger(offset, 9);
-		offset = offset + 9;
+		offset += 9;
 		
 		departureTime = bits.getInteger(offset, 11);
-		offset = offset + 11;
+		offset += 11;
 		
 		train = bits.getChar6String(offset, 30);
-		offset = offset + 30;
+		offset += 30;
 		
 		coach = bits.getInteger(offset, 10);
-		offset = offset + 10;
+		offset += 10;
 		
 		place = bits.getChar6String(offset, 18);
-		offset = offset + 18;
+		offset += 18;
 		
 		overbooking = bits.get(offset);
 		offset++;
 		
 		infoCode = bits.getInteger(offset, 14);
-		offset = offset + 14;
+		offset += 14;
 		
 		text = bits.getChar6String(offset, 162);
-		offset = offset + 162;
+		offset += 162;
 		
 		return offset;
 	}
@@ -84,7 +84,7 @@ public class SsbReservation extends SsbCommonTicketPart {
 	@Override
 	protected int encodeContent(byte[] bytes, int offset) throws EncodingFormatException {
 		
-		offset = offset + encodeCommonPart(bytes, offset);
+		offset = encodeCommonPart(bytes, offset);
 		
 		BitBuffer bits = new ByteBitBuffer(bytes);
 		
@@ -92,7 +92,7 @@ public class SsbReservation extends SsbCommonTicketPart {
 			throw new EncodingFormatException("SSB pass type too big");
 		}
 		bits.putInteger(offset, 2,ticketSubType);
-		offset = offset + 2;
+		offset += 2;
 
 		offset = stations.encode(offset, bytes);
 		
@@ -111,31 +111,31 @@ public class SsbReservation extends SsbCommonTicketPart {
 			throw new EncodingFormatException("SSB departure date too big");
 		}
 		bits.putInteger(offset, 9, departureDate);
-		offset = offset + 9;
+		offset += 9;
 		
 		if (departureTime < 0 || departureTime > 1440) {
 			throw new EncodingFormatException("SSB departure time too big");
 		}
 		bits.putInteger(offset, 11,departureTime);
-		offset = offset + 11;
+		offset += 11;
 		
 		if (train.length() > 5) {
 			throw new EncodingFormatException("SSB train too big");
 		}
 		bits.putChar6String(offset, 30,train);
-		offset = offset + 30;
+		offset += 30;
 		
 		if (coach < 0 || coach > 999) {
 			throw new EncodingFormatException("SSB coach too big");
 		}
 		bits.putInteger(offset, 10,coach);
-		offset = offset + 10;
+		offset += 10;
 		
 		if (place.length() > 3) {
 			throw new EncodingFormatException("SSB coach too big");
 		}
 		bits.putChar6String(offset, 18,place);
-		offset = offset + 18;
+		offset += 18;
 		
 		bits.put(offset, overbooking);
 		offset++; 
@@ -144,13 +144,13 @@ public class SsbReservation extends SsbCommonTicketPart {
 			throw new EncodingFormatException("SSB info code too big");
 		}
 		bits.putInteger(offset, 14, infoCode);
-		offset = offset + 14;
+		offset += 14;
 		
 		if (text.length() > 27) {
 			throw new EncodingFormatException("SSB text too big");
 		}
 		bits.putChar6String(offset, 162, text);
-		offset = offset + 162;
+		offset += 162;
 		
 		return offset;
 		

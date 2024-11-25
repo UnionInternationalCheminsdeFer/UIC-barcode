@@ -11,7 +11,7 @@ public class SsbPass extends SsbCommonTicketPart {
        First day of validity from the issuing date	Num (<367)	9 bit 000 = open date for regular Eurail pass to be activated
        Maximum duration from the issuing date for OVERSEAS; otherwise, last day of validity	Num (<278)	9 bit 9 months max. validity
        Number of days of travel allowed	Num (<93)	7	bit	
-       Country code 1	Num (<100)	7	0.875	100 = all countries
+       Country code 1	Num (<108)	7	0.875	100 = all countries, see TAP TSI B.12 for zones over 100
        Country code 2	Num (<99)	7	0.875	If country code 1 is 100, then 00
        Country code 3	Num (<99)	7	0.875	If country code 1 is 100, then 00
        Country code 4	Num (<99)	7	0.875	If country code 1 is 100, then 00
@@ -38,45 +38,45 @@ public class SsbPass extends SsbCommonTicketPart {
 	@Override
 	protected int decodeContent(byte[] bytes, int offset) {
 		
-		offset = offset + decodeCommonPart(bytes);
+		offset = decodeCommonPart(bytes);
 		
 		BitBuffer bits = new ByteBitBuffer(bytes);
 		
 		passSubType = bits.getInteger(offset, 2);
-		offset = offset + 2;
+		offset += 2;
 		
 		firstDayOfValidity = bits.getInteger(offset, 9);
-		offset = offset + 9;
+		offset += 9;
 
 		maximumValidityDuration = bits.getInteger(offset, 9);
-		offset = offset + 9;
+		offset += 9;
 
 		numberOfTravels = bits.getInteger(offset, 7);
-		offset = offset + 7;
+		offset += 7;
 		
 		country_1 = bits.getInteger(offset, 7);
-		offset = offset + 7;
+		offset += 7;
 
 		country_2 = bits.getInteger(offset, 7);
-		offset = offset + 7;
+		offset += 7;
 		
 		country_3 = bits.getInteger(offset, 7);
-		offset = offset + 7;
+		offset += 7;
 		
 		country_4 = bits.getInteger(offset, 7);
-		offset = offset + 7;
+		offset += 7;
 		
 		country_5 = bits.getInteger(offset, 7);
-		offset = offset + 7;
+		offset += 7;
 		
 		hasSecondPage = bits.get(offset);
 		offset++;
 		
 		infoCode = bits.getInteger(offset, 14);
-		offset = offset + 14;
+		offset += 14;
 		
 		text = bits.getChar6String(offset, 240);
-		offset = offset + 240;
+		offset += 240;
 		
 		return offset;
 	}
@@ -84,7 +84,7 @@ public class SsbPass extends SsbCommonTicketPart {
 	@Override
 	protected int encodeContent(byte[] bytes, int offset) throws EncodingFormatException {
 		
-		offset = offset + encodeCommonPart(bytes, offset);
+		offset = encodeCommonPart(bytes, offset);
 		
 		BitBuffer bits = new ByteBitBuffer(bytes);
 		
@@ -92,55 +92,55 @@ public class SsbPass extends SsbCommonTicketPart {
 			throw new EncodingFormatException("SSB pass type too big");
 		}
 		bits.putInteger(offset, 2,passSubType);
-		offset = offset + 2;
+		offset += 2;
 		
 		if (firstDayOfValidity < 0 || firstDayOfValidity > 511) {
 			throw new EncodingFormatException("SSB first day of validity too big");
 		}
 		bits.putInteger(offset, 9,firstDayOfValidity);
-		offset = offset + 9;
+		offset += 9;
 
 		if (maximumValidityDuration < 0 || maximumValidityDuration > 511) {
 			throw new EncodingFormatException("SSB validity duration too big");
 		}
 		bits.putInteger(offset, 9,maximumValidityDuration);
-		offset = offset + 9;
+		offset += 9;
 
 		if (numberOfTravels < 0 || numberOfTravels > 94) {
 			throw new EncodingFormatException("SSB number of travels too big");
 		}
 		bits.putInteger(offset, 7, numberOfTravels);
-		offset = offset + 7;
+		offset += 7;
 		
-		if (country_1 < 0 || country_1 > 100) {
+		if (country_1 < 0 || country_1 > 108) {
 			throw new EncodingFormatException("SSB country 1 too big");
 		}
 		bits.putInteger(offset, 7,country_1);
-		offset = offset + 7;
+		offset += 7;
 
 		if (country_2 < 0 || country_2 > 99) {
 			throw new EncodingFormatException("SSB country 2 too big");
 		}
 		bits.putInteger(offset, 7,country_2);
-		offset = offset + 7;
+		offset += 7;
 		
 		if (country_3 < 0 || country_3 > 99) {
 			throw new EncodingFormatException("SSB country 3 too big");
 		}
 		bits.putInteger(offset, 7,country_3);
-		offset = offset + 7;
+		offset += 7;
 		
 		if (country_4 < 0 || country_4 > 99) {
 			throw new EncodingFormatException("SSB country 4 too big");
 		}
 		bits.putInteger(offset, 7,country_4);
-		offset = offset + 7;
+		offset += 7;
 		
 		if (country_5 < 0 || country_5 > 99) {
 			throw new EncodingFormatException("SSB country 5 too big");
 		}
 		bits.putInteger(offset, 7,country_5);
-		offset = offset + 7;
+		offset += 7;
 		
 		bits.put(offset, hasSecondPage);
 		offset++;
@@ -149,13 +149,13 @@ public class SsbPass extends SsbCommonTicketPart {
 			throw new EncodingFormatException("SSB info code too big");
 		}
 		bits.putInteger(offset, 14, infoCode);
-		offset = offset + 14;
+		offset += 14;
 		
 		if (text.length() > 40) {
 			throw new EncodingFormatException("SSB text too big");
 		}
 		bits.putChar6String(offset, 240,text);
-		offset = offset + 240;		
+		offset += 240;		
 		
 		return offset;
 	}

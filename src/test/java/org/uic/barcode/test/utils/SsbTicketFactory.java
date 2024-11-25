@@ -26,7 +26,7 @@ public class SsbTicketFactory {
 		
 		
 		ssbPass.setPassData(new SsbPass());
-		ssbPass.getPassData().setClassCode(SsbClass.FIRST);
+		ssbPass.getPassData().setClassCode(SsbClass.First);
 		ssbPass.getPassData().setCountry_1(10);
 		ssbPass.getPassData().setCountry_2(12);
 		ssbPass.getPassData().setDay(1);
@@ -57,7 +57,7 @@ public class SsbTicketFactory {
 		
 		
 		ssb.setGroupData(new SsbGroup());
-		ssb.getGroupData().setClassCode(SsbClass.FIRST);
+		ssb.getGroupData().setClassCode(SsbClass.First);
 		ssb.getGroupData().setCounterMarkNumber(1);
 		ssb.getGroupData().setDay(1);
 		ssb.getGroupData().setFirstDayOfValidity(10);
@@ -73,6 +73,7 @@ public class SsbTicketFactory {
 		ssb.getGroupData().setTicketNumber("SKCTS86");
 		ssb.getGroupData().setYear(3);
 		
+		ssb.getReservationData().getStations().setAlphaNumeric(false);
 		ssb.getGroupData().getStations().setArrivalStationCode("8012345");
 		ssb.getGroupData().getStations().setDepartureStationCode("8054321");
 		ssb.getGroupData().getStations().setCodeTable(SsbStationCodeTable.NRT);
@@ -91,7 +92,7 @@ public class SsbTicketFactory {
 		
 		
 		ssb.setNonReservationData(new SsbNonReservation());
-		ssb.getNonReservationData().setClassCode(SsbClass.FIRST);
+		ssb.getNonReservationData().setClassCode(SsbClass.First);
 		ssb.getNonReservationData().setDay(1);
 		ssb.getNonReservationData().setFirstDayOfValidity(10);
 		ssb.getNonReservationData().setFirstDayOfValidity(120);
@@ -105,7 +106,7 @@ public class SsbTicketFactory {
 		ssb.getNonReservationData().setTicketNumber("SKCTS86");
 		ssb.getNonReservationData().setYear(3);
 		
-		
+		ssb.getReservationData().getStations().setAlphaNumeric(false);
 		ssb.getNonReservationData().getStations().setArrivalStationCode("8012345");
 		ssb.getNonReservationData().getStations().setDepartureStationCode("8054321");
 		ssb.getNonReservationData().getStations().setCodeTable(SsbStationCodeTable.NRT);
@@ -124,7 +125,7 @@ public class SsbTicketFactory {
 		
 		
 		ssb.setReservationData(new SsbReservation());
-		ssb.getReservationData().setClassCode(SsbClass.FIRST);
+		ssb.getReservationData().setClassCode(SsbClass.First);
 		ssb.getReservationData().setDay(1);
 		ssb.getReservationData().setCoach(123);
 		ssb.getReservationData().setDepartureDate(120);
@@ -141,7 +142,7 @@ public class SsbTicketFactory {
 		ssb.getReservationData().setTicketNumber("SKCTS86");
 		ssb.getReservationData().setYear(3);
 		
-		
+		ssb.getReservationData().getStations().setAlphaNumeric(false);
 		ssb.getReservationData().getStations().setArrivalStationCode("8012345");
 		ssb.getReservationData().getStations().setDepartureStationCode("8054321");
 		ssb.getReservationData().getStations().setCodeTable(SsbStationCodeTable.NRT);
@@ -167,6 +168,8 @@ public class SsbTicketFactory {
 	}
 
 	public static void compareStations(SsbStations stations, SsbStations stations2) {
+
+		assert (stations.isAlphaNumeric() == stations2.isAlphaNumeric());
 		
 		assert (stations.getCodeTable().equals(stations2.getCodeTable()));
 		

@@ -23,52 +23,50 @@ public class SsbStations {
 	protected String arrivalStationCode = "      ";
 	protected String departureStationCode = "      ";
 	protected SsbStationCodeTable codeTable = SsbStationCodeTable.NRT;
+	protected boolean alphaNumeric = true;
 	
 	public int encode(int offset, byte[] bytes) throws EncodingFormatException {
-		
-		boolean isAlphaNumeric = false;
-		
 		BitBuffer bits = new ByteBitBuffer(bytes);
 		
-		try {
+		if (!alphaNumeric) try {
 			Integer.parseInt(arrivalStationCode);
 			Integer.parseInt(departureStationCode);
-			isAlphaNumeric  = false;
+			alphaNumeric  = false;
 		} catch(NumberFormatException e) {
-			isAlphaNumeric  = true;
+			alphaNumeric  = true;
 		}
-		bits.put(offset, isAlphaNumeric);
+		bits.put(offset, alphaNumeric);
 		offset++;
 		
-		if (isAlphaNumeric) {
+		if (alphaNumeric) {
 			if (departureStationCode.length() > 6) {
 				throw new EncodingFormatException("SSB departure station too long");
 			}	
 			bits.putChar6String(offset,30, departureStationCode);
-			offset = offset + 30;
+			offset += 30;
 			
 			if (arrivalStationCode.length() > 6) {
 				throw new EncodingFormatException("SSB arrival station too long");
 			}	
 			bits.putChar6String(offset,30, arrivalStationCode);
-			offset = offset + 30;
+			offset += 30;
 		} else {
 			bits.putInteger(offset, 4, codeTable.ordinal());
-			offset = offset + 4;
+			offset += 4;
 			
 			int stationCode = Integer.parseInt(departureStationCode);
 			if (stationCode < 0 || stationCode > 9999999) {
 				throw new EncodingFormatException("SSB departure station code too long");
 			}	
 			bits.putInteger(offset, 28, stationCode);
-			offset = offset + 28;
+			offset += 28;
 			
 			stationCode = Integer.parseInt(arrivalStationCode);
 			if (stationCode < 0 || stationCode > 9999999) {
 				throw new EncodingFormatException("SSB arrival station code too long");
 			}	
 			bits.putInteger(offset, 28, stationCode);
-			offset = offset + 28;
+			offset += 28;
 		}
 		
 		return offset;
@@ -79,21 +77,21 @@ public class SsbStations {
 		
 		BitBuffer bits = new ByteBitBuffer(bytes);
 		
-		boolean isAlphaNumeric = bits.get(offset);
+		alphaNumeric = bits.get(offset);
 		offset++;
 		
-		if (isAlphaNumeric) {
+		if (alphaNumeric) {
 			departureStationCode = bits.getChar6String(offset,30);
-			offset = offset + 30;
+			offset += 30;
 			arrivalStationCode = bits.getChar6String(offset,30);
-			offset = offset + 30;
+			offset += 30;
 		} else {
 			codeTable = SsbStationCodeTable.values()[bits.getInteger(offset, 4)];
-			offset = offset + 4;
+			offset += 4;
 			departureStationCode = Integer.toString(bits.getInteger(offset, 28));
-			offset = offset + 28;
+			offset += 28;
 			arrivalStationCode = Integer.toString(bits.getInteger(offset, 28));
-			offset = offset + 28;
+			offset += 28;
 		}
 
 		
@@ -126,7 +124,12 @@ public class SsbStations {
 		this.codeTable = codeTable;
 	}
 	
-	
-	
+	public boolean isAlphaNumeric() {
+		return alphaNumeric;
+	}
+
+	public void setAlphaNumeric(boolean alphaNumeric) {
+		this.alphaNumeric = alphaNumeric;
+	}
 
 }
