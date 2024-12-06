@@ -60,7 +60,7 @@ public class SsbGroup extends SsbCommonTicketPart {
 		BitBuffer bits = new ByteBitBuffer(bytes);
 		
 		bits.put(offset, isReturnJourney);
-		offset = offset++;
+		offset++;
 		
 		if (firstDayOfValidity < 0 || firstDayOfValidity > 511) {
 			throw new EncodingFormatException("SSB first day of validity too big");
