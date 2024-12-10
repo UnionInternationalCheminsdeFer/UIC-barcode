@@ -27,9 +27,13 @@ public class SZticketTest {
     	
     TimeZone defaulttimeZone = null;
     
-    String ticketBase64 = "MSbEQEACWRUQQQRTUTAAAAJbAAAAg8md4D3SgYAAAAAAAAAAAAAAAAAAAAAA"
-            + "AAAAAAAAAAAAAAAAAIYJ9h44ZY0Kh/z3y89kgvrmVBIQAodNRwl3wlNU/1q6qcoOOjir/NX8"
-            + "tZlBGPMrZNQAKdG5WoJc";
+    String nrtTicketBase64 = "MSbEQEACWRUQQQRTUTAAAAJbAAAAg8md4D3SgYAAAAAAAAAAAAAAAAAAA"
+            + "AAAAAAAAAAAAAAAAAAAAIYJ9h44ZY0Kh/z3y89kgvrmVBIQAodNRwl3wlNU/1q6qcoOOjir/"
+            + "NX8tZlBGPMrZNQAKdG5WoJc";
+
+    String groupTicketBase64 = "MSbEYoECVQTQQSQZWUAAAAQwAgHgg8D/ADyYTgAAAAAAAAAAAAAAAAA"
+            + "AAAAAAAAAAAAAAAAAAAAAACG89Pn+WUG8sh9neiBKh3hV4flrKftbcscFpVI14W2aKoStC7B"
+            + "vvy6hR6u89MB80iOxBxmTlddk";
 
 	String publicKeyBase64 = "MIIDQzCCAjUGByqGSM44BAEwggIoAoIBAQDdevkGfuV5U5BmSaaC2ymhw"
             + "+SQQcax2yZRbRExZvaTeOr3NkJlqAgzbvpIAUx5U1rZ3J3ZkFWmkADWds8r1sko8vpqJQDpG"
@@ -88,8 +92,8 @@ public class SZticketTest {
 	}
 	
     @Test
-    public void testDecoder() throws Exception {
-        byte[] content = Base64.getDecoder().decode(ticketBase64);
+    public void testDecoderNRT() throws Exception {
+        byte[] content = Base64.getDecoder().decode(nrtTicketBase64);
         
         Decoder decoder = new Decoder(content);
         SsbFrame frame = decoder.getSsbFrame();
@@ -129,5 +133,51 @@ public class SZticketTest {
         Assert.assertEquals(frame.getNonReservationData().getInfoCode(), 0);
         Assert.assertEquals(frame.getNonReservationData().getText(), "");
      }
+
+     @Test
+     public void testDecoderGroup() throws Exception {
+         byte[] content = Base64.getDecoder().decode(groupTicketBase64);
+         
+         Decoder decoder = new Decoder(content);
+         SsbFrame frame = decoder.getSsbFrame();
+ 
+         Assert.assertNotNull(frame);       
+         Assert.assertNull(frame.getNonReservationData());
+         Assert.assertNull(frame.getReservationData());
+         Assert.assertNull(frame.getPassData());
+         Assert.assertNotNull(frame.getGroupData());
+         Assert.assertNull(frame.getNonUicData());
+         
+         Assert.assertNotNull(frame.getSignaturePart1());
+         Assert.assertNotNull(frame.getSignaturePart2());        
+ 
+         Assert.assertTrue(frame.verifyByAlgorithmOid(publicKey, algorithmOID, provider));
+ 
+         Assert.assertEquals(frame.getHeader().getVersion(), 3);
+         Assert.assertEquals(frame.getHeader().getIssuer(), 1179);
+         Assert.assertEquals(frame.getHeader().getKeyId(), 1);
+         Assert.assertEquals(frame.getHeader().getTicketType(), SsbTicketType.UIC_3_GRP);
+         
+         Assert.assertEquals(frame.getGroupData().getNumberOfAdults(), 10);
+         Assert.assertEquals(frame.getGroupData().getNumberOfChildren(), 2);
+         Assert.assertFalse(frame.getGroupData().isSpecimen());
+         Assert.assertEquals(frame.getGroupData().getClassCode(), SsbClass.Second);
+         Assert.assertEquals(frame.getGroupData().getTicketNumber(), "5030020964");
+         Assert.assertEquals(frame.getGroupData().getYear(), 4);
+         Assert.assertEquals(frame.getGroupData().getDay(), 96);
+         Assert.assertFalse(frame.getGroupData().isReturnJourney());
+         Assert.assertEquals(frame.getGroupData().getFirstDayOfValidity(), 16);
+         Assert.assertEquals(frame.getGroupData().getLastDayOfValidity(), 30);
+ 
+         Assert.assertFalse(frame.getGroupData().getStations().isAlphaNumeric());
+         Assert.assertEquals(frame.getGroupData().getStations().getCodeTable(), SsbStationCodeTable.NRT);
+         Assert.assertEquals(frame.getGroupData().getStations().getDepartureStationCode(), "7872480");
+         Assert.assertEquals(frame.getGroupData().getStations().getArrivalStationCode(), "7942300");
+
+         Assert.assertEquals(frame.getGroupData().getGroupName(), "");
+         Assert.assertEquals(frame.getGroupData().getCounterMarkNumber(), 0);
+         Assert.assertEquals(frame.getGroupData().getInfoCode(), 0);
+         Assert.assertEquals(frame.getGroupData().getText(), "");
+      }
     
 }
