@@ -55,7 +55,7 @@ public class SsbGroup extends SsbCommonTicketPart {
 	@Override
 	protected int encodeContent(byte[] bytes, int offset) throws EncodingFormatException {
 		
-		offset += encodeCommonPart(bytes, offset);
+		offset = encodeCommonPart(bytes, offset);
 		
 		BitBuffer bits = new ByteBitBuffer(bytes);
 		
