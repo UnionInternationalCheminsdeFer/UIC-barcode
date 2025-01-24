@@ -79,9 +79,11 @@ public class SsbFrame {
 		byte[] signatureBytes = new byte[56];
 				
 		try {
+			for (int i = 0 ; i < 56;i++) {
+				signatureBytes[i] = bytes[58 + i];
+			}
 			//check for non-standard signature encoding
 			BigInteger[] bInts = SecurityUtils.decodeSignatureIntegerSequence(signatureBytes);
-			SecurityUtils.encodeSignatureIntegerSequence(bInts[0],bInts[1]);
 			signaturePart1 = bInts[0].toByteArray();
 			signaturePart2 = bInts[1].toByteArray();	
 			//decoding the entire signature was ok, so there was no split
