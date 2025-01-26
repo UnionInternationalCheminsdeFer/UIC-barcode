@@ -19,7 +19,7 @@ public class SsbNonUic extends SsbTicketPart {
 		StringBuffer sb = new StringBuffer();
 		
 		
-		for (int i = offset; i < openDataLength; i++) {
+		for (int i = offset; i < offset + openDataLength; i++) {
 			if (bits.get(i) == true) {
 				sb.append("1");
 			} else {
