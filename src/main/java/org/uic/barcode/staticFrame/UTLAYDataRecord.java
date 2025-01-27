@@ -130,10 +130,145 @@ public class UTLAYDataRecord extends DataRecord {
 			//Do Nothing			
 		}
 		
+		
+		try {
+		
+			decodeFields(elements, offset);
+
+		} catch(Exception e) {
+						
+			if (!decodeUtf8FieldsWithCharacterLengthSucceeded(elements, offset)) {
+				throw e;
+			}
+			
+		}
+
+	}
+	
+	private boolean decodeUtf8FieldsWithCharacterLengthSucceeded(int elements, int offset) {
+
+		int remainingBytes = content.length - offset; 
+		
+		//content length - layout standard, number of fields
+		int characterLength = this.contentLength - 8;
+		
+		String utf8String = getUnicode(characterLength, content, offset );
+		if (utf8String.length() == characterLength) {
+			//no utf8
+			return false;
+		}		
+
+		
+		for (int i = 0; i < elements && remainingBytes > 0 ;i++){
+		
+			String lineValue = decodeString(content, offset , 2);
+			offset = offset + 2;			
+			int line = 0;
+			try {
+				line = Integer.parseInt(lineValue.trim());			
+			} catch(NumberFormatException e){
+				return false;	
+			}			
+			String columnValue = decodeString(content, offset , 2);
+			offset = offset + 2;
+			int column = 0;
+			try {
+				column = Integer.parseInt(columnValue.trim());			
+			} catch(NumberFormatException e){
+				return false;		
+			}			
+			String heightValue = decodeString(content, offset , 2);
+			offset = offset + 2;
+			int height = 0;
+			try {
+				height = Integer.parseInt(heightValue.trim());			
+			} catch(NumberFormatException e){
+				return false;			
+			}			
+			String widthValue = decodeString(content, offset , 2);
+			offset = offset + 2;
+			int width = 0;
+			try {
+				width = Integer.parseInt(widthValue.trim());			
+			} catch(NumberFormatException e){
+				return false;			
+			}			
+			String formatValue = decodeString(content, offset , 1);
+			offset = offset + 1;
+			int format = 0;
+			try {
+				format = Integer.parseInt(formatValue.trim());			
+			} catch(NumberFormatException e){
+				return false;			
+			}			
+			String lengthValue = decodeString(content, offset , 4);
+			offset = offset + 4;
+			int fieldLength = 0;
+			try {
+				fieldLength = Integer.parseInt(lengthValue.trim());			
+			} catch(NumberFormatException e){
+				return false;			
+			}			
+
+			String text = getUnicode(offset, content, fieldLength );
+			
+			if (text == null) {
+				return false;
+			}
+
+			offset = offset + text.getBytes().length;
+			
+			LayoutElement layoutElement = new LayoutElement();   
+			
+			layoutElement.setColumn(column);
+			layoutElement.setLine(line);
+			layoutElement.setHeight(height);
+			layoutElement.setWidth(width);
+			layoutElement.setText(text);
+			
+			layoutElement.setFormat(FormatType.values()[format]);
+						
+			layout.addLayoutElement(layoutElement);
+		
+		}	
+		
+		return true;
+		
+	}
+
+	/*
+	 * get a unicode string from the byte array with characterLength unicode characters
+	 * 
+	 * 
+	 */
+	private String getUnicode(int characterLength, byte[] content, int offset) {
+		
+		int remainingBytes = content.length - offset;
+		
+		
+		String utf8String = null;
+		
+		for (int i = characterLength ; i < remainingBytes ;i++){
+			
+			try {
+				utf8String = decodeUtf8String(content, offset, i);
+				if (utf8String.length() == characterLength) {
+					return utf8String;
+				}
+			} catch (UnsupportedEncodingException e) {
+				//
+			}
+		}
+		
+		return null;
+	}
+
+	private void decodeFields(int elements, int offset){
+		
 		int remainingBytes = content.length - offset; 
 		
 		for (int i = 0; i < elements && remainingBytes > 0 ;i++){
-			
+		
 			String lineValue = decodeString(content, offset , 2);
 			offset = offset + 2;			
 			int line = 0;
@@ -176,20 +311,20 @@ public class UTLAYDataRecord extends DataRecord {
 			}			
 			String lengthValue = decodeString(content, offset , 4);
 			offset = offset + 4;
-			int length = 0;
+			int fieldLength = 0;
 			try {
-				length = Integer.parseInt(lengthValue.trim());			
+				fieldLength = Integer.parseInt(lengthValue.trim());			
 			} catch(NumberFormatException e){
 				//Do Nothing			
 			}			
 
 			String text;
 			try {
-				text = decodeUtf8String(content, offset ,length);
+				text = decodeUtf8String(content, offset ,fieldLength);
 			} catch (UnsupportedEncodingException e) {
 				text = "unsupported character set";
 			}
-			offset = offset + length;
+			offset = offset + fieldLength;
 			
 			LayoutElement layoutElement = new LayoutElement();   
 			
@@ -202,10 +337,11 @@ public class UTLAYDataRecord extends DataRecord {
 			layoutElement.setFormat(FormatType.values()[format]);
 						
 			layout.addLayoutElement(layoutElement);
-			
-		}
+		
+		}		
 
 	}
+	
 
 	/**
 	 * Encode content.

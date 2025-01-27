@@ -24,6 +24,9 @@ public abstract class DataRecord {
 	/** The content. */
 	protected byte[] content;
 
+	/** The content length. */
+	protected int contentLength;
+	
 	/**
 	 * Instantiates a new data record.
 	 *
@@ -107,6 +110,7 @@ public abstract class DataRecord {
 		offset = offset + 4;			
 		
 		int length = Integer.parseInt(dataSize.trim()) - 12;
+		contentLength = length;
 		this.setData(Arrays.copyOfRange(byteData, offset,  offset + length));
 		
 		decodeContent();
