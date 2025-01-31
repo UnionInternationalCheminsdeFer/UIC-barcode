@@ -22,6 +22,8 @@ public class UTLAYDataRecord extends DataRecord {
 	/** The ticket layout. */
 	private TicketLayout layout;
 	
+	private int length = 0;
+	
 	/**
 	 * Instantiates a new empty UTLAY data record.
 	 */
@@ -103,6 +105,7 @@ public class UTLAYDataRecord extends DataRecord {
 
 	/**
 	 * Decode content.
+	 * @return 
 	 *
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 * @throws EncodingFormatException the encoding format exception
@@ -130,18 +133,23 @@ public class UTLAYDataRecord extends DataRecord {
 			//Do Nothing			
 		}
 		
+		int offsetBeforeFields = offset;
 		
 		try {
 		
 			decodeFields(elements, offset);
 
 		} catch(Exception e) {
+			
+			offset = offsetBeforeFields;
 						
 			if (!decodeUtf8FieldsWithCharacterLengthSucceeded(elements, offset)) {
 				throw e;
 			}
 			
 		}
+		
+		this.length = offset;
 
 	}
 	
@@ -245,6 +253,8 @@ public class UTLAYDataRecord extends DataRecord {
 		
 		int remainingBytes = content.length - offset;
 		
+		
+		remainingBytes = Math.min(characterLength * 4, remainingBytes);
 		
 		String utf8String = null;
 		
@@ -403,6 +413,16 @@ public class UTLAYDataRecord extends DataRecord {
 	 */
 	public TicketLayout getLayout() {
 		return layout;
+	}
+
+	/*
+	 * get the length of the data
+	 * 
+	 * This is needed to fix encoding errors made due to wrong length descriptions on unicode content.
+	 * 
+	 */
+	public int getLength() {
+		return length;
 	}
 
 }
