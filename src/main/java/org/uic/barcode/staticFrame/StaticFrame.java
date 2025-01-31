@@ -543,6 +543,8 @@ public class StaticFrame {
 			if (tag.startsWith("U_TLAY")) {
 				UTLAYDataRecord record = new UTLAYDataRecord();
 				length = record.decode(Arrays.copyOfRange(byteData, offset, byteData.length));
+				//get the length to cover encoding errors with unicode
+				length = record.getLength();
 				this.uTlay = record;			
 			} else if (tag.startsWith("U_FLEX")) {
 				UFLEXDataRecord record = new UFLEXDataRecord();
