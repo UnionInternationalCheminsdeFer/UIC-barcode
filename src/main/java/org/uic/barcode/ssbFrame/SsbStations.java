@@ -119,10 +119,6 @@ public class SsbStations {
 		return arrivalStationNumber;
 	}
 
-	public void setArrivalStationNumber(Integer arrivalStationNumber) {
-		this.arrivalStationNumber = arrivalStationNumber;
-	}
-
 	public String getDepartureStationCode() {
 		return departureStationCode;
 	}
@@ -133,10 +129,6 @@ public class SsbStations {
 
 	public Integer getDepartureStationNumber() {
 		return departureStationNumber;
-	}
-
-	public void setDepartureStationNumber(Integer departureStationNumber) {
-		this.departureStationNumber = departureStationNumber;
 	}
 
 	public SsbStationCodeTable getCodeTable() {
