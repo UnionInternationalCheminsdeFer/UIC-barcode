@@ -22,6 +22,8 @@ public class SsbStations {
 	
 	protected String arrivalStationCode = "      ";
 	protected String departureStationCode = "      ";
+	protected Integer arrivalStationNumber = 0;
+	protected Integer departureStationNumber = 0;
 	protected SsbStationCodeTable codeTable = SsbStationCodeTable.NRT;
 	protected boolean alphaNumeric = true;
 	
@@ -81,16 +83,21 @@ public class SsbStations {
 		offset++;
 		
 		if (alphaNumeric) {
+			codeTable = SsbStationCodeTable.UNKNOWN_0;
 			departureStationCode = bits.getChar6String(offset,30);
+			departureStationNumber = bits.getInteger(offset, 30);
 			offset += 30;
 			arrivalStationCode = bits.getChar6String(offset,30);
+			arrivalStationNumber = bits.getInteger(offset, 30);
 			offset += 30;
 		} else {
 			codeTable = SsbStationCodeTable.values()[bits.getInteger(offset, 4)];
 			offset += 4;
-			departureStationCode = Integer.toString(bits.getInteger(offset, 28));
+			departureStationNumber = bits.getInteger(offset, 28);
+			departureStationCode = Integer.toString(departureStationNumber);
 			offset += 28;
-			arrivalStationCode = Integer.toString(bits.getInteger(offset, 28));
+			arrivalStationNumber = bits.getInteger(offset, 28);
+			arrivalStationCode = Integer.toString(arrivalStationNumber);
 			offset += 28;
 		}
 
@@ -108,12 +115,28 @@ public class SsbStations {
 		this.arrivalStationCode = arrivalStationCode;
 	}
 
+	public Integer getArrivalStationNumber() {
+		return arrivalStationNumber;
+	}
+
+	public void setArrivalStationNumber(Integer arrivalStationNumber) {
+		this.arrivalStationNumber = arrivalStationNumber;
+	}
+
 	public String getDepartureStationCode() {
 		return departureStationCode;
 	}
 
 	public void setDepartureStationCode(String departureStationCode) {
 		this.departureStationCode = departureStationCode;
+	}
+
+	public Integer getDepartureStationNumber() {
+		return departureStationNumber;
+	}
+
+	public void setDepartureStationNumber(Integer departureStationNumber) {
+		this.departureStationNumber = departureStationNumber;
 	}
 
 	public SsbStationCodeTable getCodeTable() {
