@@ -462,7 +462,7 @@ public class StaticFrame {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public void decode(byte[] inputData) throws EncodingFormatException, DataFormatException, IOException {
-		
+
 		
 		int offset = 0;
 		String  headerTag = new String( Arrays.copyOfRange(inputData,offset,offset + 3));
@@ -535,21 +535,35 @@ public class StaticFrame {
 		offset = 0;
 		int remainingBytes = byteData.length;
 
-		while (remainingBytes > 0) {
+		while (remainingBytes > 1) {
 		
 			String tag = new String(Arrays.copyOfRange(byteData, offset, offset + 6));
 			int length = 0;
+
+			String next = new String(Arrays.copyOfRange(byteData, offset, offset + 6 + 13));
+
 			
 			if (tag.startsWith("U_TLAY")) {
 				UTLAYDataRecord record = new UTLAYDataRecord();
 				length = record.decode(Arrays.copyOfRange(byteData, offset, byteData.length));
 				//get the length to cover encoding errors with unicode
 				length = record.getLength();
-				this.uTlay = record;			
+				if (this.uTlay == null) {
+					this.uTlay = record;	
+				} else {
+					//to cover some weird implementations
+					addDataRecord(record);
+				}
+							
 			} else if (tag.startsWith("U_FLEX")) {
 				UFLEXDataRecord record = new UFLEXDataRecord();
 				length = record.decode(Arrays.copyOfRange(byteData, offset, byteData.length));
-				this.uFlex = record;			
+				if (this.uFlex == null) {
+					this.uFlex = record;	
+				} else {
+					//to cover some weird implementations
+					addDataRecord(record);
+				}
 			} else if (tag.startsWith("U_HEAD")) {
 				UHEADDataRecord record = new UHEADDataRecord();
 				length = record.decode(Arrays.copyOfRange(byteData, offset, byteData.length));

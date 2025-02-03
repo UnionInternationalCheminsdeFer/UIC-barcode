@@ -149,26 +149,35 @@ public class UTLAYDataRecord extends DataRecord {
 			
 		}
 		
-		this.length = offset;
 
 	}
 	
+	
+	/*
+	 * 
+	 * special decoding to fix wrong encoding of DSB and SJ
+	 * 
+	 */
 	private boolean decodeUtf8FieldsWithCharacterLengthSucceeded(int elements, int offset) {
 
+		layout.getElements().clear();
+		
 		int remainingBytes = content.length - offset; 
 		
 		//content length - layout standard, number of fields
 		int characterLength = this.contentLength - 8;
 		
-		String utf8String = getUnicode(characterLength, content, offset );
-		if (utf8String.length() == characterLength) {
-			//no utf8
+		//Check for unicode with length error
+		String utf8String = getUnicode(offset, content, characterLength);
+		int charLength = utf8String.length();
+		if (charLength == characterLength) {
+			//length value was ok
 			return false;
 		}		
 
 		
-		for (int i = 0; i < elements && remainingBytes > 0 ;i++){
-		
+		for (int i = 0; i < elements && remainingBytes > 15 ;i++){
+					
 			String lineValue = decodeString(content, offset , 2);
 			offset = offset + 2;			
 			int line = 0;
@@ -218,13 +227,14 @@ public class UTLAYDataRecord extends DataRecord {
 				return false;			
 			}			
 
-			String text = getUnicode(offset, content, fieldLength );
-			
-			if (text == null) {
-				return false;
-			}
-
-			offset = offset + text.getBytes().length;
+			String text = null;
+			if (fieldLength > 0) {
+				text = getUnicode(offset, content, fieldLength );
+				if (text == null) {
+					return false;
+				}
+				offset = offset + text.getBytes(Charset.forName("UTF-8")).length;
+			} 
 			
 			LayoutElement layoutElement = new LayoutElement();   
 			
@@ -237,8 +247,13 @@ public class UTLAYDataRecord extends DataRecord {
 			layoutElement.setFormat(FormatType.values()[format]);
 						
 			layout.addLayoutElement(layoutElement);
+			
+			remainingBytes = content.length - offset; 
 		
 		}	
+		
+		
+		this.length = offset;
 		
 		return true;
 		
@@ -249,7 +264,7 @@ public class UTLAYDataRecord extends DataRecord {
 	 * 
 	 * 
 	 */
-	private String getUnicode(int characterLength, byte[] content, int offset) {
+	private String getUnicode(int offset, byte[] content, int characterLength) {
 		
 		int remainingBytes = content.length - offset;
 		
@@ -258,7 +273,7 @@ public class UTLAYDataRecord extends DataRecord {
 		
 		String utf8String = null;
 		
-		for (int i = characterLength ; i < remainingBytes ;i++){
+		for (int i = 1 ; i <= remainingBytes ;i++){
 			
 			try {
 				utf8String = decodeUtf8String(content, offset, i);
@@ -270,14 +285,14 @@ public class UTLAYDataRecord extends DataRecord {
 			}
 		}
 		
-		return null;
+		return utf8String;
 	}
 
 	private void decodeFields(int elements, int offset){
 		
 		int remainingBytes = content.length - offset; 
 		
-		for (int i = 0; i < elements && remainingBytes > 0 ;i++){
+		for (int i = 0; i < elements && remainingBytes > 15 ;i++){
 		
 			String lineValue = decodeString(content, offset , 2);
 			offset = offset + 2;			
@@ -328,13 +343,16 @@ public class UTLAYDataRecord extends DataRecord {
 				//Do Nothing			
 			}			
 
-			String text;
-			try {
-				text = decodeUtf8String(content, offset ,fieldLength);
-			} catch (UnsupportedEncodingException e) {
-				text = "unsupported character set";
+			String text = null;
+			
+			if (fieldLength > 0) {
+				try {
+					text = decodeUtf8String(content, offset ,fieldLength);
+				} catch (UnsupportedEncodingException e) {
+					text = "unsupported character set";
+				}
+				offset = offset + fieldLength;
 			}
-			offset = offset + fieldLength;
 			
 			LayoutElement layoutElement = new LayoutElement();   
 			
@@ -342,13 +360,17 @@ public class UTLAYDataRecord extends DataRecord {
 			layoutElement.setLine(line);
 			layoutElement.setHeight(height);
 			layoutElement.setWidth(width);
-			layoutElement.setText(text);
+			layoutElement.setText(text);		
 			
 			layoutElement.setFormat(FormatType.values()[format]);
 						
 			layout.addLayoutElement(layoutElement);
+			
+			remainingBytes = content.length - offset; 
 		
 		}		
+		
+		this.length = offset;
 
 	}
 	
@@ -422,7 +444,7 @@ public class UTLAYDataRecord extends DataRecord {
 	 * 
 	 */
 	public int getLength() {
-		return length;
+		return length + 12;
 	}
 
 }

@@ -112,10 +112,10 @@ public abstract class DataRecord {
 		int length = Integer.parseInt(dataSize.trim()) - 12;
 		contentLength = length;
 		this.setData(Arrays.copyOfRange(byteData, offset,  offset + length));
-		
 		decodeContent();
+		length = length + 12;
 		
-		return length + 12;
+		return length;
 	}
 
 
