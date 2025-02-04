@@ -1,14 +1,8 @@
 package org.uic.barcode.ticketTests;
 
 
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.TimeZone;
-
-import javax.imageio.ImageIO;
 
 import org.junit.After;
 import org.junit.Assert;

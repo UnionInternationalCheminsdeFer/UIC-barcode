@@ -535,19 +535,17 @@ public class StaticFrame {
 		offset = 0;
 		int remainingBytes = byteData.length;
 
-		while (remainingBytes > 1) {
+		while (remainingBytes > 12) {
 		
 			String tag = new String(Arrays.copyOfRange(byteData, offset, offset + 6));
 			int length = 0;
-
-			String next = new String(Arrays.copyOfRange(byteData, offset, offset + 6 + 13));
-
 			
 			if (tag.startsWith("U_TLAY")) {
 				UTLAYDataRecord record = new UTLAYDataRecord();
 				length = record.decode(Arrays.copyOfRange(byteData, offset, byteData.length));
-				//get the length to cover encoding errors with unicode
-				length = record.getLength();
+				//get the length to cover encoding errors with unicode (number of characters is less than number of bytes)
+                int decodedLength = record.getDecodedLength();
+				length = Math.max(length, decodedLength);
 				if (this.uTlay == null) {
 					this.uTlay = record;	
 				} else {

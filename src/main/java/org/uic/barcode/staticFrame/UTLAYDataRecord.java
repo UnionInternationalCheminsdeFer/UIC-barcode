@@ -443,7 +443,7 @@ public class UTLAYDataRecord extends DataRecord {
 	 * This is needed to fix encoding errors made due to wrong length descriptions on unicode content.
 	 * 
 	 */
-	public int getLength() {
+	public int getDecodedLength() {
 		return length + 12;
 	}
 
