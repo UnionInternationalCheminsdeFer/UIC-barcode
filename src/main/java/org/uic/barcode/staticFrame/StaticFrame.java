@@ -56,7 +56,10 @@ public class StaticFrame {
 	
 	/** The data records. */
 	private ArrayList<DataRecord> dataRecords = new ArrayList<DataRecord>();
+
 	
+	/** The TLAY data records. */
+	private ArrayList<UTLAYDataRecord> layouts = new ArrayList<UTLAYDataRecord>();
 	
 	private byte[] signedData = null;
 	
@@ -546,12 +549,8 @@ public class StaticFrame {
 				//get the length to cover encoding errors with unicode (number of characters is less than number of bytes)
                 int decodedLength = record.getDecodedLength();
 				length = Math.max(length, decodedLength);
-				if (this.uTlay == null) {
-					this.uTlay = record;	
-				} else {
-					//to cover some weird implementations
-					addDataRecord(record);
-				}
+				this.uTlay = record;	
+				this.layouts.add(record);
 							
 			} else if (tag.startsWith("U_FLEX")) {
 				UFLEXDataRecord record = new UFLEXDataRecord();
@@ -896,6 +895,10 @@ public class StaticFrame {
 	public void setHeaderRecord(UHEADDataRecord headerRecord) {
 		this.headerRecord = headerRecord;
 	}	
+	
+	public ArrayList<UTLAYDataRecord> getLayouts(){
+		return layouts;
+	}
 	
 	
 	

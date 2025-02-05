@@ -6,6 +6,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.Provider;
 import java.security.PublicKey;
 import java.security.SignatureException;
+import java.util.ArrayList;
 import java.util.zip.DataFormatException;
 
 import org.uic.barcode.dynamicContent.api.IUicDynamicContent;
@@ -314,6 +315,18 @@ public class Decoder {
 	 */
 	public TicketLayout getLayout() {
 		return layout;
+	}
+	
+	/*
+	 * some companies use multiple layouts in domestic travel
+	 */
+	public ArrayList<UTLAYDataRecord> getLayouts(){
+		if (staticFrame != null 
+				&& staticFrame.getLayouts()!= null 
+				&& !staticFrame.getLayouts().isEmpty()) {
+			return staticFrame.getLayouts();
+		}
+		return null;
 	}
 	
 	/**
