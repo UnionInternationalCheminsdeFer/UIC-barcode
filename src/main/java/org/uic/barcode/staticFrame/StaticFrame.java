@@ -56,7 +56,10 @@ public class StaticFrame {
 	
 	/** The data records. */
 	private ArrayList<DataRecord> dataRecords = new ArrayList<DataRecord>();
+
 	
+	/** The TLAY data records. */
+	private ArrayList<UTLAYDataRecord> layouts = new ArrayList<UTLAYDataRecord>();
 	
 	private byte[] signedData = null;
 	
@@ -462,7 +465,7 @@ public class StaticFrame {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public void decode(byte[] inputData) throws EncodingFormatException, DataFormatException, IOException {
-		
+
 		
 		int offset = 0;
 		String  headerTag = new String( Arrays.copyOfRange(inputData,offset,offset + 3));
@@ -535,7 +538,7 @@ public class StaticFrame {
 		offset = 0;
 		int remainingBytes = byteData.length;
 
-		while (remainingBytes > 0) {
+		while (remainingBytes > 12) {
 		
 			String tag = new String(Arrays.copyOfRange(byteData, offset, offset + 6));
 			int length = 0;
@@ -543,11 +546,21 @@ public class StaticFrame {
 			if (tag.startsWith("U_TLAY")) {
 				UTLAYDataRecord record = new UTLAYDataRecord();
 				length = record.decode(Arrays.copyOfRange(byteData, offset, byteData.length));
-				this.uTlay = record;			
+				//get the length to cover encoding errors with unicode (number of characters is less than number of bytes)
+                int decodedLength = record.getDecodedLength();
+				length = Math.max(length, decodedLength);
+				this.uTlay = record;	
+				this.layouts.add(record);
+							
 			} else if (tag.startsWith("U_FLEX")) {
 				UFLEXDataRecord record = new UFLEXDataRecord();
 				length = record.decode(Arrays.copyOfRange(byteData, offset, byteData.length));
-				this.uFlex = record;			
+				if (this.uFlex == null) {
+					this.uFlex = record;	
+				} else {
+					//to cover some weird implementations
+					addDataRecord(record);
+				}
 			} else if (tag.startsWith("U_HEAD")) {
 				UHEADDataRecord record = new UHEADDataRecord();
 				length = record.decode(Arrays.copyOfRange(byteData, offset, byteData.length));
@@ -882,6 +895,10 @@ public class StaticFrame {
 	public void setHeaderRecord(UHEADDataRecord headerRecord) {
 		this.headerRecord = headerRecord;
 	}	
+	
+	public ArrayList<UTLAYDataRecord> getLayouts(){
+		return layouts;
+	}
 	
 	
 	
