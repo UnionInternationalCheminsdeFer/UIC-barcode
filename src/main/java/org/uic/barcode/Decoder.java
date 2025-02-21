@@ -56,17 +56,6 @@ public class Decoder {
 	
 	/** The data. */
 	byte[] data = null;
-	
-	private Provider defaultProvider = null;
-	
-	
-	public Provider getDefaultProvider() {
-		return defaultProvider;
-	}
-
-	public void setDefaultProvider(Provider defaultProvider) {
-		this.defaultProvider = defaultProvider;
-	}
 
 	/**
 	 * Instantiates a new decoder.
@@ -78,10 +67,6 @@ public class Decoder {
 	 */
 	public Decoder (byte[] data) throws IOException, EncodingFormatException, DataFormatException {
 		this.data = data;
-		
-		if (defaultProvider == null) {
-			defaultProvider = SecurityUtils.getDefaultProvider();
-		}
 		
 		decode(data);
 	}
@@ -102,7 +87,7 @@ public class Decoder {
 	 * @deprecated
 	 */
 	public int validateLevel1(PublicKey key) throws InvalidKeyException, NoSuchAlgorithmException, SignatureException, IllegalArgumentException, UnsupportedOperationException, IOException, EncodingFormatException {
-		return validateLevel1(key,null, defaultProvider);
+		return validateLevel1(key,null, null);
 	}
 	
 	/**
@@ -121,7 +106,7 @@ public class Decoder {
 	 * @deprecated
 	 */
 	public int validateLevel1(PublicKey key, String signingAlg) throws InvalidKeyException, NoSuchAlgorithmException, SignatureException, IllegalArgumentException, UnsupportedOperationException, IOException, EncodingFormatException {
-		return validateLevel1(key, signingAlg, defaultProvider);
+		return validateLevel1(key, signingAlg, null);
 	}
 	
 	/**
@@ -170,7 +155,7 @@ public class Decoder {
 	 * @deprecated
 	 */
 	public int validateLevel2() throws EncodingFormatException {
-		return validateLevel2(defaultProvider);
+		return validateLevel2(null);
 	}
 
 	/*
