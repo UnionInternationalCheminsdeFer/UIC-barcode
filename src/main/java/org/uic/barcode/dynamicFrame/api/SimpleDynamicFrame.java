@@ -301,12 +301,7 @@ public class SimpleDynamicFrame implements IDynamicFrame {
 		
 		Signature sig;
 		try {
-			if (prov != null) {
-				sig = Signature.getInstance(algo, prov);
-			} else {
-				sig = Signature.getInstance(algo);
-
-			}
+			sig = Signature.getInstance(algo, prov);
 		} catch (NoSuchAlgorithmException e) {
 			return Constants.LEVEL1_VALIDATION_SIG_ALG_NOT_IMPLEMENTED;
 		}
