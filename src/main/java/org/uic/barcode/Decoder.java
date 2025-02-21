@@ -24,7 +24,6 @@ import org.uic.barcode.staticFrame.ticketLayoutBarcode.TicketLayout;
 import org.uic.barcode.ticket.EncodingFormatException;
 import org.uic.barcode.ticket.UicRailTicketCoder;
 import org.uic.barcode.ticket.api.spec.IUicRailTicket;
-import org.uic.barcode.utils.SecurityUtils;
 
 
 /**

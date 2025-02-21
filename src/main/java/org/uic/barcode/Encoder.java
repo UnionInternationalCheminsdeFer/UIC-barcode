@@ -29,8 +29,6 @@ import org.uic.barcode.ticket.EncodingFormatException;
 import org.uic.barcode.ticket.UicRailTicketCoder;
 import org.uic.barcode.ticket.api.spec.IUicRailTicket;
 import org.uic.barcode.utils.ECKeyEncoder;
-import org.uic.barcode.utils.SecurityUtils;
-
 
 /**
  * The Class Encoder.
