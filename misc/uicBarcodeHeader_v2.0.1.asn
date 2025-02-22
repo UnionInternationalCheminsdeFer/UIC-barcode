@@ -101,7 +101,7 @@ ASN-Module-Header DEFINITIONS AUTOMATIC TAGS ::= BEGIN
       	-- algorithm used for signing
       	level1SigningAlg   OBJECT IDENTIFIER OPTIONAL,
       	level2SigningAlg   OBJECT IDENTIFIER OPTIONAL,
-        level2PublicKey    OCTET  STRING     OPTIONAL,
+        level2PublicKey    OCTET STRING     OPTIONAL,
         
         -- end of the validity of the bar code, after this date and time the bar code needs to be regenerated 
         -- by the provider of the ticket

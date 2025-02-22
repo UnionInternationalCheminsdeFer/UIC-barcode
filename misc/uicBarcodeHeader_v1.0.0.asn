@@ -101,7 +101,7 @@ ASN-Module DEFINITIONS AUTOMATIC TAGS ::= BEGIN
       	level1SigningAlg   OBJECT IDENTIFIER OPTIONAL,
       	level2SigningAlg   OBJECT IDENTIFIER OPTIONAL,
       	
-        level2PublicKey    OCTET  STRING     OPTIONAL
+        level2PublicKey    OCTET STRING     OPTIONAL
 
    }
 
