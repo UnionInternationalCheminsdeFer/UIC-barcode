@@ -1266,8 +1266,8 @@ public class Api2OpenAsnEncoderV3 implements Api2AsnEncoder {
 				firstEdge = false;
 			} else {
 				DeltaCoordinates delta = new DeltaCoordinates();
-				delta.setLatitude(Asn1BigInteger.toAsn1(asnData.getFirstEdge().getLatitude() - edge.getLatitude()));
-				delta.setLongitude(Asn1BigInteger.toAsn1(asnData.getFirstEdge().getLongitude() - edge.getLongitude()));				
+				delta.setLatitude(Asn1BigInteger.toAsn1(edge.getLatitude() - asnData.getFirstEdge().getLatitude()));
+				delta.setLongitude(Asn1BigInteger.toAsn1(edge.getLongitude() - asnData.getFirstEdge().getLongitude()));				
                 asnList.add(delta);
 			}			
 			
