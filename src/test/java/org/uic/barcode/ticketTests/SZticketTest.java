@@ -1,11 +1,9 @@
 package org.uic.barcode.ticketTests;
 
 import java.security.KeyFactory;
-import java.security.NoSuchAlgorithmException;
 import java.security.Provider;
 import java.security.PublicKey;
 import java.security.Security;
-import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
 import java.util.TimeZone;
