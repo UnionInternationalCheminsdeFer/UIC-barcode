@@ -141,7 +141,7 @@ public class Decoder {
 	 */
 	public int validateLevel1(PublicKey key, String signingAlg, Provider provider) throws InvalidKeyException, NoSuchAlgorithmException, SignatureException, IllegalArgumentException, UnsupportedOperationException, IOException, EncodingFormatException {
 		if (!isStaticHeader(data) && dynamicFrame != null) {
-			return dynamicFrame.validateLevel1(key, provider) ;
+			return dynamicFrame.validateLevel1(key, provider, signingAlg) ;
 		} else if (isSsbFrame(data) && ssbFrame != null) {
 			
 			if (ssbFrame.verifyByAlgorithmOid(key,signingAlg, provider)) {
