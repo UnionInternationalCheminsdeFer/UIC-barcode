@@ -1,6 +1,7 @@
 package org.uic.barcode;
 
 import java.io.IOException;
+import java.math.BigInteger;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.Provider;
@@ -388,6 +389,8 @@ public class Decoder {
 			return dynamicFrame.getLevel1DataBin();
 		} else if (staticFrame != null) {
 			return staticFrame.buildDataForSignature();
+		} else if (ssbFrame != null) {
+			return ssbFrame.getDataForSignature();
 		} else {
 			throw new EncodingFormatException("Unknown Header");
 		}		
@@ -399,6 +402,8 @@ public class Decoder {
 			return dynamicFrame.getLevel2Data().getLevel1Signature();
 		} else if (staticFrame != null) {
 			return staticFrame.buildDataForSignature();
+		} else if (ssbFrame != null) {
+			return SecurityUtils.encodeSignatureIntegerSequence(new BigInteger(ssbFrame.getSignaturePart1()), new BigInteger(ssbFrame.getSignaturePart2()));
 		} else {
 			throw new EncodingFormatException("Unknown Header");
 		}
@@ -412,6 +417,8 @@ public class Decoder {
 			return dynamicFrame.getLevel2Data().getLevel1Data().getKeyId().toString();
 		} else if (staticFrame != null) {
 			return staticFrame.getSignatureKey();
+		} else if (ssbFrame != null) {
+			return String.valueOf(ssbFrame.getHeader().getKeyId());
 		} else {
 			throw new EncodingFormatException("Unknown Header");
 		}
