@@ -8,6 +8,8 @@ import java.security.Provider;
 import java.security.PublicKey;
 import java.security.Signature;
 import java.security.SignatureException;
+import java.security.interfaces.DSAPublicKey;
+import java.security.interfaces.ECPublicKey;
 import java.util.Date;
 
 import org.uic.barcode.dynamicContent.api.DynamicContentCoder;
@@ -275,9 +277,12 @@ public class SimpleDynamicFrame implements IDynamicFrame {
 				&& getLevel2Data().getLevel1Data().getLevel1SigningAlg() != null
 				&& !getLevel2Data().getLevel1Data().getLevel1SigningAlg().isEmpty()) {
 				signingAlgorithmOid = getLevel2Data().getLevel1Data().getLevel1SigningAlg();	
-		} else {
+		} else if (signatureAlgorithmOid != null && !signatureAlgorithmOid.isEmpty()) {
 			signingAlgorithmOid = signatureAlgorithmOid;
+		} else if (key instanceof DSAPublicKey) {
+			signingAlgorithmOid = SecurityUtils.getDsaAlgorithm(signature);
 		}
+		
 				
 		if (signingAlgorithmOid == null || signingAlgorithmOid.isEmpty()) {
 			return Constants.LEVEL1_VALIDATION_NO_SIGNATURE;
