@@ -2,6 +2,8 @@ package org.uic.barcode.test;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.uic.barcode.asn1.uper.UperEncoder;
@@ -47,13 +49,10 @@ public class DynamicContentCoderTest {
 		g.setLongitude( 12345L);
 	    g.setLatitude(  56789L);
 		content.setGeoCoordinate(g);
-		
-		try {
-			//needs to be before 28.2. to keep the test stable in year with febuary 29. 
-			content.setTimeStamp(new SimpleDateFormat( "yyyy.MM.dd-HH:mm" ).parse( "2021.02.04-12:30" ));
-		} catch (ParseException e2) {
-			// 
-		}			
+	
+		//needs to be before 28.2. to keep the test stable in year with febuary 29. 
+		Date date = new Date(1612438200000L);
+		content.setTimeStamp(date);
 		
 	}
 
@@ -79,39 +78,39 @@ public class DynamicContentCoderTest {
 		
 
 		String encoding         = "7C170F0E1262089437000230390300DDD504017A20C6D0C2D8D8CADCCECA40E6E8E4D2DCCE2F8F461D9B32EECF96FE5F1D32EEE7A77EEBFA72310282DA05E1A37EECA0507B409C30F3E60509B42F8F461D9B32EECF96FE5F1D32EEE7A77EEBFA72310282DA";
-		IUicDynamicContent content = DynamicContentCoder.decode(UperEncoder.bytesFromHexString(encoding));
+		IUicDynamicContent testContent = DynamicContentCoder.decode(UperEncoder.bytesFromHexString(encoding));
 			
 		
-		assert("appID".equals(content.getAppId()));
+		assert("appID".equals(testContent.getAppId()));
 		
-		assert("challenge string".equals(content.getChallengeString()));
+		assert("challenge string".equals(testContent.getChallengeString()));
 		
-		IExtension e1 = content.getExtension();
+		IExtension e1 = testContent.getExtension();
 		assert(UperEncoder.hexStringFromBytes(e1.getBinarydata()).equals("82DA"));
 		assert(e1.getId().equals("challenge_extension_id1"));
 		
 		
-		assert(content.getChallengeString().equals("challenge string"));
+		assert(testContent.getChallengeString().equals("challenge string"));
 				
 		byte[] ce = null;
-		for (IExtension e : content.getDynamicContentResponseList()) {
+		for (IExtension e : testContent.getDynamicContentResponseList()) {
 			if (e.getId().equals("challenge_extension_id1")) {
 				ce = e.getBinarydata();
 			}
 		}
 		assert(UperEncoder.hexStringFromBytes(ce).equals("82DA"));
 		
-		assert(UperEncoder.hexStringFromBytes(content.getPhoneIdHash()).equals("83DA"));
+		assert(UperEncoder.hexStringFromBytes(testContent.getPhoneIdHash()).equals("83DA"));
 
-		assert(UperEncoder.hexStringFromBytes(content.getPassIdHash()).equals("84DA"));
+		assert(UperEncoder.hexStringFromBytes(testContent.getPassIdHash()).equals("84DA"));
 	
-		assert(content.getGeoCoordinate() != null);
-		assert(content.getGeoCoordinate().getLongitude() == 12345L);
-		assert(content.getGeoCoordinate().getLatitude() == 56789L);			
+		assert(testContent.getGeoCoordinate() != null);
+		assert(testContent.getGeoCoordinate().getLongitude() == 12345L);
+		assert(testContent.getGeoCoordinate().getLatitude() == 56789L);			
 		
-		assert(content.getTimeStamp() != null);
+		assert(testContent.getTimeStamp() != null);
 		
-		assert(content.getTimeStamp().toString().contains("04 12:30:00 CET"));
+		assert(testContent.getTimeStamp().getTime() == 1738668600000L);
 		
 		
 	}
