@@ -281,8 +281,6 @@ public class SimpleDynamicFrame implements IDynamicFrame {
 			signingAlgorithmOid = signatureAlgorithmOid;
 		} else if (key instanceof DSAPublicKey) {
 			signingAlgorithmOid = SecurityUtils.getDsaAlgorithm(signature);
-		} else if (key instanceof ECPublicKey) {
-			signingAlgorithmOid = Constants.ECDSA_SHA256;
 		}
 		
 				
