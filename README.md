@@ -8,3 +8,5 @@ the ticket to and from the ASN.1/UPER encoded byte array specified in IRS 90918-
 2021: extended to the FCB asn.1 specification version 3 
 
 Documentation is available in the wiki: https://github.com/UnionInternationalCheminsdeFer/UIC-barcode/wiki
+
+The maven repo is available at: https://github.com/orgs/UnionInternationalCheminsdeFer/packages?repo_name=UIC-barcode
