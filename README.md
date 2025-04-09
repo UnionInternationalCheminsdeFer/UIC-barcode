@@ -10,11 +10,11 @@ Covered barcode types:
      - TLB (Ticket Layout Barcode content)
      - FCB (Flexible Content Barcode) version 1
      - FCB (Flexible Content Barcode) version 2 (not used by railways)
-     - FBC (Flexible Content Barcode) version 3
+     - FCB (Flexible Content Barcode) version 3
   - Dynamic barcode (DOSIPAS)
      - FCB (Flexible Content Barcode) version 1
      - FCB (Flexible Content Barcode) version 2 (not used by railways)
-     - FBC (Flexible Content Barcode) version 3
+     - FCB (Flexible Content Barcode) version 3
   - SSB (Small Structured Barcode)
     
 
