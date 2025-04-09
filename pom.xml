@@ -1,31 +1,33 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.uic.barcode</groupId>
-  <artifactId>org.uic.barcode</artifactId>
-  <version>1.4.12</version>
+  <groupId>org.uic</groupId>
+  <artifactId>barcode</artifactId>
+  <version>1.4.13</version>
   <packaging>jar</packaging>
-  <name>UIC barcode</name>
+  <name>UIC Barcode</name>
   <description>Encoding and decoding of Aztec barcode content according to UIC IRS 90918-9</description>
 
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
 
-    <dependencies>
-        <!-- test dependencies -->
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.13.2</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.bouncycastle</groupId>
-            <artifactId>bcprov-jdk18on</artifactId>
-            <version>1.80</version>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
+  <dependencies>
+    <!-- test dependencies -->
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.13.2</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.bouncycastle</groupId>
+      <artifactId>bcprov-jdk18on</artifactId>
+      <version>1.80</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
 
   <build>
     <sourceDirectory>src/main/java</sourceDirectory>
@@ -43,50 +45,57 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
         <version>2.3.2</version>
-           <configuration>
-               <source>1.8</source>
-               <target>1.8</target>
-           </configuration>
+        <configuration>
+          <source>1.8</source>
+          <target>1.8</target>
+        </configuration>
       </plugin>
       <plugin>
-		  <groupId>org.apache.maven.plugins</groupId>
-		  <artifactId>maven-source-plugin</artifactId>
-          <version>3.2.0</version>
-		  <executions>
-		    <execution>
-		      <id>attach-sources</id>
-		      <goals>
-		        <goal>jar</goal>
-		      </goals>
-		    </execution>
-            <execution>
-                <id>attach-javadocs</id>
-                <goals>
-                    <goal>jar</goal>
-                </goals>
-            </execution>
-		  </executions>
-		</plugin>
-        <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-site-plugin</artifactId>
-            <version>3.7.1</version>
-            <configuration>
-                <locales>en_gb</locales>
-                <outputDirectory>${project.build.directory}/site</outputDirectory>
-                <relativizeDecorationLinks>false</relativizeDecorationLinks>
-            </configuration>
-        </plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <version>3.2.0</version>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>attach-javadocs</id>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-site-plugin</artifactId>
+        <version>3.7.1</version>
+        <configuration>
+          <locales>en_gb</locales>
+          <outputDirectory>${project.build.directory}/site</outputDirectory>
+          <relativizeDecorationLinks>false</relativizeDecorationLinks>
+        </configuration>
+      </plugin>
     </plugins>
-   
+
   </build>
-  
-  
+
+  <distributionManagement>
+    <repository>
+      <id>github</id>
+      <name>GitHub UIC Apache Maven Packages</name>
+      <url>https://maven.pkg.github.com/UnionInternationalCheminsdeFer/UIC-barcode</url>
+    </repository>
+  </distributionManagement>
+
   <licenses>
-        <license>
-            <name>The Apache Software License, Version 2.0</name>
-            <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
-            <distribution>repo</distribution>
-        </license>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
   </licenses>
 </project>
