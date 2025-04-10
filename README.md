@@ -6,7 +6,7 @@ the ticket to and from the ASN.1/UPER encoded byte array specified in IRS 90918-
 
 Covered barcode types:
 
-  - Static barcode (Fixed length structure)
+  - Static barcode (Fixed length structure, Version 1 and Version 2)
      - TLB (Ticket Layout Barcode content)
      - FCB (Flexible Content Barcode) version 1
      - FCB (Flexible Content Barcode) version 2 (not used by railways)
