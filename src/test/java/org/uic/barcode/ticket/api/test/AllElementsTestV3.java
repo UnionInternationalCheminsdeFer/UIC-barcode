@@ -234,8 +234,8 @@ public class AllElementsTestV3 {
 		assert(ticket.getIssuerDetails().getPointOfSale().getAccuracy().equals(IGeoUnitType.microDegree));
 		assert(ticket.getIssuerDetails().getPointOfSale().getHemisphereLatitude().equals(IHemisphereLatitudeType.east));
 		assert(ticket.getIssuerDetails().getPointOfSale().getHemisphereLongitude().equals(IHemisphereLongitudeType.north));
-		assert(ticket.getIssuerDetails().getPointOfSale().getLatitude() == 269);
-		assert(ticket.getIssuerDetails().getPointOfSale().getLongitude() == 105);
+		assert(ticket.getIssuerDetails().getPointOfSale().getLatitude() == 56789);
+		assert(ticket.getIssuerDetails().getPointOfSale().getLongitude() == 12345);
 		
 		assert(ticket.getDocumentData() != null);
 		assert(!ticket.getDocumentData().isEmpty());

@@ -155,8 +155,8 @@ public class SimpleGeoCoordinate implements IGeoCoordinate {
 			return 1000 * 360;
 		} else if (unit == IGeoUnitType.tenthmilliDegree) {
 			return 10000 * 360;
-		} else if (unit == IGeoUnitType.milliDegree) {
-			return 100000 * 360;
+		} else if (unit == IGeoUnitType.microDegree) {
+			return 1000000 * 360;
 		} else {
 			return 360;
 		}
