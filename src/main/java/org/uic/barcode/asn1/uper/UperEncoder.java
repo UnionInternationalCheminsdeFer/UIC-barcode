@@ -504,7 +504,8 @@ public final class UperEncoder {
     }
 
     static boolean isTestInstrumentation(Field f) {
-        return f.getName().startsWith("$");
+        return (f.getName().startsWith("$") || 
+        		f.getName().startsWith("_"));
     }
     
     static boolean isNonAsn1Field(Field f) {
