@@ -20,8 +20,8 @@
 package org.uic.barcode.ticket.api.spec;
 
 public enum IHemisphereLatitudeType {
-		east("east"),
-		west("west");
+		north("north"),
+		south("south");
 		
 		
 		public String text;

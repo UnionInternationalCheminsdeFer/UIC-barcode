@@ -23,12 +23,12 @@ package org.uic.barcode.dynamicContent.fdc1;
  * The Enum HemisphereLatitudeType.
  */
 public enum HemisphereLatitudeType {
-		
-		/** The east. */
-		east("east"),
-		
-		/** The west. */
-		west("west");
+	
+	/** The north. */
+	north("north"),
+	
+	/** The south. */
+	south("south");
 		
 		
 		/** The text. */

@@ -20,8 +20,8 @@
 package org.uic.barcode.ticket.api.spec;
 
 public enum IHemisphereLongitudeType {
-		north("north"),
-		south("south");
+		east("east"),
+		west("west");
 		
 		public String text;
 
