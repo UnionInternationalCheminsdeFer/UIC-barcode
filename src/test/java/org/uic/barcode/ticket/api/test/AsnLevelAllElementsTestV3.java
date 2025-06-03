@@ -241,8 +241,8 @@ public class AsnLevelAllElementsTestV3 {
 		assert(t.getIssuingDetail().getPointOfSale().getGeoUnit().equals(GeoUnitType.microDegree));
 		assert(t.getIssuingDetail().getPointOfSale().getCoordinateSystem().equals(GeoCoordinateSystemType.wgs84));
 		assert(t.getIssuingDetail().getPointOfSale().getAccuracy().equals(GeoUnitType.microDegree));
-		assert(t.getIssuingDetail().getPointOfSale().getHemisphereLatitude().equals(HemisphereLatitudeType.east));
-		assert(t.getIssuingDetail().getPointOfSale().getHemisphereLongitude().equals(HemisphereLongitudeType.north));
+		assert(t.getIssuingDetail().getPointOfSale().getHemisphereLatitude().equals(HemisphereLatitudeType.north));
+		assert(t.getIssuingDetail().getPointOfSale().getHemisphereLongitude().equals(HemisphereLongitudeType.east));
 		assert(t.getIssuingDetail().getPointOfSale().getLatitude() == 56789);
 		assert(t.getIssuingDetail().getPointOfSale().getLongitude() == 12345);
 		

@@ -25,11 +25,11 @@ public class SimpleGeoCoordinate implements IGeoCoordinate {
 	/** The system. */
 	protected IGeoCoordinateSystemType system = IGeoCoordinateSystemType.wgs84;
 	
-	/** The hemispher longiture. */
-	protected IHemisphereLongitudeType hemispherLongiture = IHemisphereLongitudeType.north;
+	/** The hemisphere longitude. */
+	protected IHemisphereLongitudeType hemispherLongiture = IHemisphereLongitudeType.east;
 	
 	/** The hemisphere latitude. */
-	protected IHemisphereLatitudeType hemisphereLatitude = IHemisphereLatitudeType.east;
+	protected IHemisphereLatitudeType hemisphereLatitude = IHemisphereLatitudeType.north;
 	
 	/** The longitude. */
 	protected Long longitude;

@@ -233,8 +233,8 @@ public class AllElementsTestV1 {
 		assert(ticket.getIssuerDetails().getPointOfSale().getUnit().equals(IGeoUnitType.microDegree));
 		assert(ticket.getIssuerDetails().getPointOfSale().getSystem().equals(IGeoCoordinateSystemType.wgs84));
 		assert(ticket.getIssuerDetails().getPointOfSale().getAccuracy().equals(IGeoUnitType.microDegree));
-		assert(ticket.getIssuerDetails().getPointOfSale().getHemisphereLatitude().equals(IHemisphereLatitudeType.east));
-		assert(ticket.getIssuerDetails().getPointOfSale().getHemisphereLongitude().equals(IHemisphereLongitudeType.north));
+		assert(ticket.getIssuerDetails().getPointOfSale().getHemisphereLatitude().equals(IHemisphereLatitudeType.north));
+		assert(ticket.getIssuerDetails().getPointOfSale().getHemisphereLongitude().equals(IHemisphereLongitudeType.east));
 		assert(ticket.getIssuerDetails().getPointOfSale().getLatitude() == 56789);
 		assert(ticket.getIssuerDetails().getPointOfSale().getLongitude() == 12345);
 		

@@ -20,18 +20,18 @@
 package org.uic.barcode.ticket.api.asn.omv1;
 
 public enum HemisphereLatitudeType {
-		east("east"),
-		west("west");
+	north("north"),
+	south("south");
 		
 		
-		public String text;
+	public String text;
 
-		HemisphereLatitudeType(String text) {
-			this.text = text;
-		}
+	HemisphereLatitudeType(String text) {
+		this.text = text;
+	}
 		
-		public String toString(){
-			return text;
-		}		
+	public String toString(){
+		return text;
+	}		
 }
 

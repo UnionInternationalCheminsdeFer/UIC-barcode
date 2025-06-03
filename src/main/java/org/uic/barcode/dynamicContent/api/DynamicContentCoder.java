@@ -111,11 +111,11 @@ public class DynamicContentCoder {
 				asnPoint.setAccuracy(GeoUnitType.valueOf(point.getAccuracy().name()));
 			}
 			
-			if (point.getHemisphereLatitude() != IHemisphereLatitudeType.east && point.getHemisphereLatitude() != null) {
+			if (point.getHemisphereLatitude() != IHemisphereLatitudeType.north && point.getHemisphereLatitude() != null) {
 				asnPoint.setHemisphereLatitude(HemisphereLatitudeType.valueOf(point.getHemisphereLatitude().name()));
 			}
 			
-			if (point.getHemisphereLongitude() != IHemisphereLongitudeType.north && point.getHemisphereLongitude() != null) {
+			if (point.getHemisphereLongitude() != IHemisphereLongitudeType.east && point.getHemisphereLongitude() != null) {
 				asnPoint.setHemisphereLongitude(HemisphereLongitudeType.valueOf(point.getHemisphereLongitude().name()));
 			}		
 			
