@@ -181,7 +181,7 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 	   
 	   -- token
 	   --     specific id to be exchanged with the ticket (e.g. id of the phone in case of tickets linked to a phone)
-       token  TokenType OPTIONAL,
+       token  SEQUENCE OF TokenType OPTIONAL,
        
        -- choice of the ticket
        ticket	CHOICE  	
@@ -218,7 +218,7 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
          delayConfirmation      DelayConfirmation
          
          ,...
-       }
+       } OPTIONAL
        ,...       
     }    		   
    
@@ -1945,18 +1945,43 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
    
   -- ########################################################################################### 
   -- TokenType provides an additional identifier
-  --    known use cases
-  --     - identified of the mobile phone for tickets linked with a specific phone (e.g. VDV standard)
+  --    known use cases:
+  --    (0) identifier of the media linked with the barcode, e.g.:
+  --	   > mobile phone for tickets linked with a specific phone (e.g. VDV standard)
+  --       > serial number of a SIP ticket hosting the barcorde
+  --    (1) identifier of an ABT (Account Based Ticketing) system
   -- ########################################################################################### 
    TokenType ::= SEQUENCE { 
-	   -- provider of the token
-	   tokenProviderNum     INTEGER 	 	OPTIONAL,  
+	   -- category of the token. If absent, the token category is implicit or unspecified.
+    	   tokenCategory	TokenCategoryType	OPTIONAL,
+   
+	   -- provider of the token (RICS code). If absent, the provider is the 'issuer' identified in IssuingData
+	   tokenProviderNum     INTEGER (1..32000) 	OPTIONAL,  
 	   tokenProviderIA5  	IA5String	 	OPTIONAL,  
 	   
-	   -- in case the provider has multiple tokens 
+	   -- format of the 'token' element, in case the provider has multiple tokens:
+	   -- "+" + [2-letters ISO 3166 country code] + [addon, chosen by the registrar of that country]
+  	   --    means that 'token' is encoded as defined by this registrar,
+  	   --    according to the format identified as 'addon' by this registrar.
+  	   -- "_" + [4-digit RICS] + [addon, chosen by this company] means that 'token' is encoded as specified
+  	   --    by the company identified by the RICS code, according to the format identified as 'addon'
+  	   -- "*" + [addon] means that 'token' format is specific to this barcode, identified as 'addon' by its issuer,
+  	   -- Others values are reserved for future UIC use and shall not be used.
+           -- If absent, the format is considered implicit for the token provider.
 	   tokenSpecification	IA5String	 	OPTIONAL, 
-	   token  				OCTET STRING
+	   token  		OCTET STRING,
+    	   ...
    }
+
+  -- ###########################################################################################
+  -- 
+  -- ###########################################################################################
+  TokenCategoryType ::= ENUMERATED {
+	  media                 (0), -- 'token' is the ID of the media (phone, SIP ticket includind a serial number...) with which the barcode is linked
+	  accountBasedTicketing (1), -- 'token' is the ID of the account with which the barcode is linked
+	  ...
+  }
+
    
   -- ########################################################################################### 
   -- TicketLinkType is used to define a link from the ticket in the bar code to another ticket 
