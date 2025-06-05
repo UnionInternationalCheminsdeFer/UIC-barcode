@@ -2280,9 +2280,9 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
     	geoUnit   				GeoUnitType 			DEFAULT milliDegree,
     	coordinateSystem	 	GeoCoordinateSystemType DEFAULT wgs84,  	
     	-- separate hemishpere flag reduces the data size
-    	hemisphereLongitude 	HemisphereLongitudeType DEFAULT north,  
+    	hemisphereLongitude 	HemisphereLongitudeType DEFAULT east,  
     	-- separate hemishpere flag reduces the data size
-    	hemisphereLatitude 		HemisphereLatitudeType	DEFAULT east,   
+    	hemisphereLatitude 		HemisphereLatitudeType	DEFAULT north,   
     	longitude 				INTEGER,
     	latitude  				INTEGER,
     	accuracy                GeoUnitType 			OPTIONAL
@@ -2309,13 +2309,13 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
     }
     				
 	HemisphereLongitudeType ::=		ENUMERATED { 	
-		north 				(0), 
-		south 				(1) 
+		east 				(0), 
+		west 				(1)  
 	}
 
 	HemisphereLatitudeType	::=		ENUMERATED { 	
-		east 				(0), 
-		west 				(1)  
+ 		north 				(0), 
+		south 				(1) 
 	}	
 
 	LoadingDeckType		::=			ENUMERATED { 	
