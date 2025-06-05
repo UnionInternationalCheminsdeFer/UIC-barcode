@@ -363,42 +363,44 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
    ControlData  	::=  SEQUENCE	{   
     	
     	-- cards that can be used to identify the ticket holder
-    	identificationByCardReference  	SEQUENCE OF CardReferenceType OPTIONAL,    
+    	identificationByCardReference  		SEQUENCE OF CardReferenceType OPTIONAL,    
     	
-    	-- id-card id must be checked to identify the traveler    
-    	identificationByIdCard	        BOOLEAN, 		 
+    	-- indicator of wether id must be checked to identify the traveler
+    	-- id-card or any official document proving identity and recognised by the carrier is acceptable. 
+    	identificationRequired			BOOLEAN, 		 
     	
-    	-- passport id must be checked to identify the traveler
-    	identificationByPassportId      BOOLEAN, 		          
+    	-- indicator of wether passport id must be checked to identify the traveler
+    	identificationByPassportIdRequired	BOOLEAN, 		          
     	
     	-- other items which could be used to identify the ticket holder 
     	--    (for future use, code list to be defined)
-    	identificationItem              INTEGER         OPTIONAL,            
+    	identificationItem              	INTEGER OPTIONAL,            
     	
-    	-- validation of the passport is required (e.g. in case of Eurail)
-    	passportValidationRequired  	BOOLEAN, 		    
+    	-- indicator of wether validation of the passport is required for elements other than identity (e.g. in case of Eurail)
+     	-- (verification of the passport's identity is controlled by identificationByPassportRequired)
+    	passportValidationRequired  		BOOLEAN, 		    
     	
-    	-- online validation of the ticket required
-    	onlineValidationRequired    	BOOLEAN, 		 
+    	-- indicator of wether online validation of the ticket is required
+    	onlineValidationRequired    		BOOLEAN, 		 
     	
     	-- percentage of the tickets to be validated in more detail 
     	--       (i.e. via online check or detailed checks later-on)
-    	randomDetailedValidationRequired INTEGER (0..99) OPTIONAL,          
+    	randomDetailedValidationRequired 	INTEGER (0..99) OPTIONAL,          
     	
-    	-- manual validation of the traveler age required (in case of reductions)
-    	ageCheckRequired            	BOOLEAN, 		 
+    	-- indicator of wether validation of the traveler age is required (e.g. in case of reductions)
+    	ageCheckRequired            		BOOLEAN, 		 
     	
-    	-- manual validation of the travelers reduction card required (in case of reductions)   	
-    	reductionCardCheckRequired  	BOOLEAN, 		 
+    	-- indicator of wether validation of the travelers reduction card is required (e.g. in case of reductions)   	
+    	reductionCardCheckRequired  		BOOLEAN, 		 
     	
     	-- controler info text
-    	infoText						UTF8String 		OPTIONAL,      
+    	infoText				UTF8String OPTIONAL,      
     	
     	-- additional tickets that should be controlled 
-    	includedTickets				    SEQUENCE OF TicketLinkType OPTIONAL,	  
+    	includedTickets				SEQUENCE OF TicketLinkType OPTIONAL,	  
     	
     	-- proprietary data defined bilaterally
-        extension 						ExtensionData	OPTIONAL                              
+        extension 				ExtensionData OPTIONAL                              
         ,...
    }                              		
 				       
