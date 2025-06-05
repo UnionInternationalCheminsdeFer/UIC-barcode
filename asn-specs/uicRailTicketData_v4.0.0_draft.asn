@@ -8,15 +8,14 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 
 
 -- changes:
---    extended range in valid from dates
---    service brand restrictions in viaStation
---    new train validity in pass data
+--    new ticket structure merging openTicket, pass, reservation and allowing defining a commercialCard
+--    improvements in IssuingData and ControlData
+--    renaming of some elements to address transport modes other than rail
 	
 -- ##############################################################################################
 -- #	                                                                      
--- #   version 3.0.3       - value 3 in the UIC bar code version element 
+-- #   version 4.0.0       - value 4 in the UIC bar code version element 
 -- #                         (see element 2 in U_FLEX record definition in leaflet 918.9)
--- #                       - country code for Kosovo
 -- #
 -- ##############################################################################################
 
@@ -142,7 +141,7 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
     --            -proprietary extensions
     -- 
     -- ##########################################################################################
-    UicRailTicketData 	::= SEQUENCE 	{ 	
+    UniversalTicketData 	::= SEQUENCE 	{ 	
     	-- data specific to the issuer 
     	issuingDetail 		IssuingData,                                   
     	
@@ -223,7 +222,7 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
     }    		   
    
    --  ########################################################################################
-   --  confirmation of the delay of a train 
+   --  confirmation of the delay of a transport 
    --  
    --  ########################################################################################
    DelayConfirmation ::= SEQUENCE {
@@ -232,13 +231,13 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 	    referenceIA5   		IA5String 	 		    OPTIONAL,
 	    referenceNum   		INTEGER 			    OPTIONAL,   	   
 	   
-	    -- train number of the delayed train - numeric or alphanumeric
-	    trainNum			 INTEGER 			OPTIONAL,
-	    trainIA5       		 IA5String 	                    OPTIONAL,     						
+	    -- transport number of the delayed transport - numeric or alphanumeric
+	    transportNum		 INTEGER 			    OPTIONAL,
+	    transportIA5       		 IA5String 	                    OPTIONAL,     						
 	    						
-	    -- planned departure date of the delayed train in local time at the station where delay 
+	    -- planned departure date of the delayed transport in local time at the station where delay 
 	    --  became relevant (see below)
-      	-- number of year 
+      	    -- number of year 
    	    departureYear 		INTEGER (2016..2269) 	OPTIONAL,    	
    	    -- number of the day in the year (1.1. = 1)
    	    departureDay		INTEGER (1..366)  	    OPTIONAL,   
@@ -254,8 +253,8 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
    	    -- delay in minutes at the mentioned station
    	    delay			        INTEGER     (1..999),
    	    
-   	    -- indication that the train was cancelled
-   	    trainCancelled          	BOOLEAN,
+   	    -- indication that the transport was cancelled
+   	    transportCancelled          	BOOLEAN,
    	    
    	    -- type of confirmation provided
    	    confirmationType        	ConfirmationType  DEFAULT travelerDelayConfirmation,
@@ -272,9 +271,9 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
    }
    
  	ConfirmationType  	::=			ENUMERATED { 	
-   		trainDelayConfirmation    (0),      -- confirmation of train delay, whether the traveler was on board in unconfirmed
-   		travelerDelayConfirmation (1),      -- confirmation that the traveler was on board of the delayed train
-   		trainLinkedTicketDelay    (2)       -- confirmation that a ticket linked to the delayed train was issued   
+   		transportDelayConfirmation    (0),      -- confirmation of transport delay, whether the traveler was on board in unconfirmed
+   		travelerDelayConfirmation     (1),      -- confirmation that the traveler was on board of the delayed transport
+   		transportLinkedTicketDelay    (2)       -- confirmation that a ticket linked to the delayed transport was issued   
    		,...
    	}   
 
@@ -340,16 +339,67 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
         -- proprietary data defined bilaterally
         extension 			ExtensionData 				OPTIONAL,            
                     
-        -- location of sale in case of a sale on board of a train
-        -- numeric train number or alphanumeric id of the train where the ticket was sold
-        issuedOnTrainNum 	INTEGER            			OPTIONAL,            
-		issuedOnTrainIA5 	IA5String 					OPTIONAL,                                             
-		--   line number
-		issuedOnLine     	INTEGER 					OPTIONAL,
-		
-		-- point of sale 
-        pointOfSale		 	GeoCoordinateType           OPTIONAL     
-        ,...
+        -- location of sale in case of a sale on board of a transport
+        -- numeric transport number or alphanumeric id of the transport where the ticket was sold
+        issuedOnTransportNum 	INTEGER            			OPTIONAL,            
+	issuedOnTransportIA5 	IA5String 				OPTIONAL,
+ 
+	--   line number
+	issuedOnLine     	INTEGER 				OPTIONAL,
+
+	-- point of sale 
+        pointOfSale		 	GeoCoordinateType           	OPTIONAL,     
+
+	-- retail information
+ 	productRetail 			ProductRetailData		OPTIONAL
+  
+ 	,...
+   }
+
+   --  ################################################################################### 
+   --  data allowing to describe all possible information about product retail
+   --  ################################################################################### 
+   ProductRetailData ::= SEQUENCE {
+   
+   	-- Channel through which the traveller requested the contract / the barcode
+   	retailChannel       	RetailChannelData	OPTIONAL,
+
+    	-- Contract generation platform identifier (RICS code, either numerical or alphanumerical)
+   	retailGeneratorIdNum	INTEGER (1..32000)	OPTIONAL, 
+    	retailGeneratorIdIA5	IA5String		OPTIONAL, 
+    
+   	-- Contract sales server identifier (RICS code, either numerical or alphanumerical)
+    	retailServerId      	INTEGER (1..32000)	OPTIONAL, 
+        retailServerIdIA5	IA5String		OPTIONAL, 
+
+     	-- Product retailer, as in ISO 24014-1 (RICS code, either numerical or alphanumerical)
+   	retailerIdNum       	INTEGER (1..32000)	OPTIONAL, 
+        retailerIdIA5       	IA5String		OPTIONAL,
+
+ 	-- Type of equipment that distributed the contract / the barcode
+  	-- (value specific to the product retailer)
+   	retailEquipmentType 	INTEGER (0..99)    	OPTIONAL, 
+
+    	-- Identifier of the final distribution point of the barcode
+     	-- (value specific to the product retailer)
+   	retailPointId       	INTEGER            	OPTIONAL, 
+
+    	-- Traceability information linked to the barcode or contrat generation
+     	-- (value specific to the product retailer)
+   	retailTraceability  	IA5String         	OPTIONAL, 
+    
+   	...
+   }
+
+   RetailChannelData ::= ENUMERATED {
+   	smsTicket            (0), -- SMS sent to a specific number
+   	mobileApplication    (1), -- Application on a mobile phone
+   	webSite              (2), -- Internet portal
+   	ticketOffice         (3), -- Agency or counter
+   	depositaryTerminal   (4), -- Dealer (e.g. tobacconist, newsagent, cafe, etc.)
+   	onBoardTerminal      (5), -- On-board sales (e.g. using the driver's point-of-sale terminal)
+   	ticketVendingMachine (6), -- Automatic sales machine
+   	...
    }
 
    --  ################################################################################### 
