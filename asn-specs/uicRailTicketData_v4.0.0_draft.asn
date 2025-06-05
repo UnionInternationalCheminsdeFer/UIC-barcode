@@ -186,19 +186,12 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
        -- choice of the ticket
        ticket	CHOICE  	
        {
-    	   
-         -- Reservation (without car carriage) (IRT and RES)  
-         reservation  	 		ReservationData,      
-         
+
+         -- universal transport product  
+         transportProduct		TransportProductData,           
     	 
          -- Reservation of car carriage
          carCarriageReservation CarCarriageReservationData, 
-    	 
-         -- open ticket specification (NRT)
-         openTicket   	 		OpenTicketData,      
-         
-         -- pass specification (RPT) including Eurail and Interrail
-         pass         	 		PassData,          
          
          -- voucher
          voucher      	 		VoucherData,         
@@ -436,6 +429,215 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 
 
    --  #################################################################################### 
+   --  Transport Product (ticket, right to travel, commercial card...)
+   --  #################################################################################### 
+       TransportProductData ::= SEQUENCE 	{	
+
+	   -- general type of the ticket (single ticket, return ticket, pass, right to travel
+           productType           ProductType,
+
+	   -- area (city, region, country...) in which the transport document is valid
+	   -- (allows defining local value tables depending on this area)
+	   validityAreaCodeTable	AreaCodeTableType	OPTIONAL,
+	   validityAreaId		AreaIdType		OPTIONAL, 
+
+	   -- internal reference to the document, reference must be given either in numeric or alphanumeric format
+           referenceNum   	INTEGER 			OPTIONAL,    
+           referenceIA5   	IA5String 			OPTIONAL,   
+     				   		
+           -- organization responsible for the product definition 
+           -- (RICS Code / proprietary code in case no RICS code is defined, proprietary codes must ensure to be unique)   
+           productOwnerNum		INTEGER (1..32000) 	OPTIONAL,        
+           productOwnerIA5		IA5String 		OPTIONAL,    
+
+	   -- version of the local code tables used in the area identified by:
+	   -- - validityAreaId (if present)
+	   -- - productOwnerNum (if globalValidityAreaIdIdentifier is absent)
+	   localCodeTableVersion	INTEGER (0..255)	OPTIONAL,
+
+	   -- family of the product (value according to the product owner)
+	   -- (allows processing the product according to its family)
+	   productFamily	IA5String	OPTIONAL,
+    
+           -- product id to identify the issued product codelist defined by the product owner   	   
+           productIdNum		 INTEGER 	(0..65535) 	OPTIONAL,    
+	   productIdIA5		 IA5String  	      	OPTIONAL,    
+
+	   -- short description of the product 
+	   productDescription  	UTF8String  			OPTIONAL,     
+			    
+	   -- description for manual evaluation  					                  	   
+	   validRegionDesc 	UTF8String 			OPTIONAL,  	
+	   -- specification of the ordered sequence of valid regions
+
+	   -- specification of the regional validity
+	   validRegions		SEQUENCE OF RegionalValiditySegmentType OPTIONAL,	  
+           -- list of conditions to be applied
+	   -- the first condition applies to regional validitySemgents without reference to a specific condition
+    	   conditions		SEQUENCE OF SpecificConditionsType OPTIONAL,	  
+
+	   -- for single tickets only:
+    	   --   TRUE if the stations have to be run through in the order of the elements in validRegion
+    	   --   FALSE if they can be run through in the reverse order
+	   -- for other products: not applicable (set to FALSE)
+    	   directionIsMandatory	BOOLEAN,
+       
+	   -- return route description
+	   --   the return route description can be omitted if it is identical to the 
+	   --   inversed outbound validRegion sequence  
+	   returnDescription   	ReturnRouteDescriptionType     	OPTIONAL,     	
+     					    
+	   -- date/time validity in local time of the location where the journey starts
+	   -- number of days from issuing date 
+	   validFromDay		INTEGER (-367..700)    		DEFAULT 0, 
+	   -- in case the valid from time is not provided the valid from time is 00.00 (local time)
+	   -- in case UTC offset is provided (NOT RECOMMENDED) the local date time in the time zone of validity region. The region where the ticket is valid must not cover more than one time zone
+           -- in case no UTC offset is provided (RECOMMENDED) the local date time in the time zone of the current location of the traveler	   	   
+	   validFromTime	INTEGER (0..1439) 		    OPTIONAL,    
+	   -- offset in units of 15 minutes from local time to UTC 
+           -- (UTC = local + offset * 15 Minutes)	
+           -- the UTC offset can be used to calculate the duration of the travel 
+           -- if UTC offset is used in control devices the usage of UTC offset has to be agreed bilateral to be mandatory
+           -- times to be shown on a ticket should always be the local times
+           validFromUTCOffset   INTEGER (-60..60)       OPTIONAL,   
+                                                                      
+	   -- date/time validity in local time of the location where the journey ends                                                                  
+	   --  number of days from valid-from date, 0 = valid until day is equal to the first day of validity
+	   validUntilDay	INTEGER (-1..500)  		   DEFAULT 0,     	
+	   validUntilTime	INTEGER (0..1439) 		   OPTIONAL,       		
+	   -- offset in units of 15 minutes from local time to UTC 
+           -- (UTC = local + offset * 15 Minutes)	
+           -- the UTC offset can be used to calculate the duration of the travel 
+           -- if UTC offset is used in control devices the usage of UTC offset has to be agreed bilateral to be mandatory
+           -- times to be shown on a ticket should always be the local times				
+           -- should be omitted in case it is the same as for departure			                   
+           validUntilUTCOffset  INTEGER (-60..60)      OPTIONAL,   
+
+	   -- for return tickets only:
+	   --   TRUE means that the outward journey must be made on validFomDay/Time and the the return journey must be made on validUntilDay/Time
+	   --   FALSE means that the outward and return journey can be made any moment between validFromDay/Time and validUntilDay/Time
+	   -- for other tickets: this element is not used and shall be set to FALSE
+	   TravelAllowedOnlyOnValidFromAndUntilDay BOOLEAN,
+
+           -- here it is possible to list the activated days of the ticket:                                                                    
+           -- day the ticket is activated. The activation is valid from 00:00 to 23:59 in the time zone of the current location of the traveler	
+           -- thereby the activation might include more or less that 24 hours in case time zone borders are crossed
+           -- travel days of a ticket might be subject to a separate activation to be valid for traveling
+	   -- list of activated days in case the entire ticket is not activated
+           -- the day is given by the number of days from the first day of validity
+           -- 0 = first day of validity   		   
+	   activatedDay        	SEQUENCE OF INTEGER (0..500) 	OPTIONAL,  
+
+	   -- additional validity periods and excluded time ranges
+	   validityPeriodDetails 	ValidityPeriodDetailType OPTIONAL, 
+                            
+	   -- max number of days of validity in case the valid from day is open	
+	   numberOfValidityDays  	INTEGER (0..500) 		OPTIONAL, 
+	   
+	   trainValidity            TrainValidityType       OPTIONAL,
+	   
+	   -- max number of possible trips to be activated
+	   numberOfPossibleTrips 	INTEGER (1..250)  		OPTIONAL,      	
+	   numberOfDaysOfTravel  	INTEGER (1..250)  		OPTIONAL, 
+    
+	   -- ###
+    	   -- ### ClassCode, serviceLevel, carrierNum, included/excludedServiceBrands should be transferred in validRegion or in ZoneType / ViaStationsType / LineType,
+	   -- ### as the can be different for each segment of a trip
+	   -- ###
+	   classCode		TravelClassType 		DEFAULT second,
+	   
+	   -- servicelevel code according to leaflet 918.1 to encode other products 
+	   --                     (e.g. PREMIUM, ...)   					                
+	   serviceLevel		 IA5String (SIZE(1..2)) 	OPTIONAL,  	  
+	   
+	   -- carriers involved in the transport (RICS codes)
+	   -- the indication of carriers is mandatory on international routes, they can be 
+	   -- listed here but can also be included in viaDetails 
+           carrierNum		SEQUENCE OF INTEGER (1..32000)	OPTIONAL,	 
+           carrierIA5		SEQUENCE OF IA5String		    OPTIONAL,		   
+
+
+	   -- list of service brands for which the ticket is valid 
+	   -- in case the included service brands are listed all other brands are excluded
+	   -- service brand: code list https://uic.org/service-brand-code-list
+       	   includedServiceBrands SEQUENCE OF INTEGER (1..32000) OPTIONAL,  
+       
+           -- list of service brands for which the ticket is not valid 
+           -- service brand: code list https://uic.org/service-brand-code-list       
+	   excludedServiceBrands SEQUENCE OF INTEGER (1..32000) OPTIONAL, 
+     					      
+	   tariffs              SEQUENCE OF TariffType 			OPTIONAL,    
+	   
+	   price                INTEGER                         OPTIONAL,
+	   
+	   vatDetail            SEQUENCE OF VatDetailType       OPTIONAL,	 	   
+	    					                
+	   infoText		UTF8String 			OPTIONAL, 				   
+
+	   -- ###
+    	   -- ### is includedAddOns still necessary as validRegion has been enriched to allow describing any kind of local trafic ?
+	   -- ###
+           -- additional included open tickets 
+	   --     e.g. to include local city traffic on parts of a the route
+	   includedAddOns		SEQUENCE OF IncludedOpenTicketType	OPTIONAL,      
+     					                			                
+	   -- in case the luggage restrictions are general and do not depend 
+	   --    on the ticket type they should not be included
+	   luggage 		LuggageRestrictionType		OPTIONAL,   
+	   	    
+           -- reserved places
+           reservations         SEQUENCE OF ReservationData (0..31) 	OPTIONAL,  
+	
+	   extension   		ExtensionData 			            OPTIONAL 
+	   ,...
+   }	
+
+
+   -- #########################################
+   SpecificConditions::= Sequence {
+   	   -- if ordering is true the traveler must pass the sequence of regions i the order as provided
+           validRegionOrdering            BOOLEAN,
+
+           -- link to a specific transport service
+	   transportLink    		  TransportLinkType OPTIONAL,
+    
+	   -- carrier responsible for the transport starting at this station (RICS-Code)
+	   -- in case the carrier is included here it might be omitted 
+	   --     in the carrier list of the region data 
+           carrier			SEQUENCE OF CompanyCodeType	OPTIONAL,	 
+
+	   -- included or excluded transport modes. Code list: EN 1545-1 (transport type code)
+ 	   includedTransportType 	SEQUENCE OF INTEGER (0..31) 	OPTIONAL,  
+
+	   -- service brands valid for the route 
+           -- in case this list is provided the ticket is invalid on all other service brands
+           -- service brand: code list https://uic.org/service-brand-code-list
+	   includedServiceBrands       SEQUENCE OF INTEGER (1..32000) OPTIONAL, 
+
+	   rareSpecificConditions      RareSpecificConditionsType OPTIONAL,
+           ...
+   }
+
+
+   RareSpecificConditionsType::= Sequence {
+   	   -- rare specific conditions
+
+	   -- included or excluded transport modes. Code list: EN 1545-1 (transport type code)
+  	   excludedTransportType 	SEQUENCE OF INTEGER (0..31) 	OPTIONAL,  
+   
+	   -- service brands valid for the route 
+	   -- in case this list is provided the ticket is valid on all other service brands	   
+	   excludedServiceBrands        SEQUENCE OF INTEGER (1..32000)  OPTIONAL    
+       
+   }
+
+   CompanyCodeType ::= CHOICE {
+           -- Company code - the ERA codes (https://www.era.europa.eu/domains/registers/ocr_en) must be used (1..9999 or alphanumerical 4 positions)
+           companyNum			INTEGER (1..32000)	OPTIONAL,	 
+           companyIA5			IA5String 		OPTIONAL	
+   }
+
+   --  #################################################################################### 
    --   reservations of seats , couchettes and berths
    --   included are the data defined in:
    --     - leaflet 918.1 for reservation data exchange
@@ -444,16 +646,28 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
    --         - additional second coach for large groups
    --  #################################################################################### 
    ReservationData ::= SEQUENCE 	{	
-	   
-    -- train number - numeric or alphanumeric
-    trainNum			 INTEGER 						OPTIONAL,
-    trainIA5       		 IA5String 	                    OPTIONAL,     						
+
+    -- when included in validRegion,
+    -- number identifying the segment (part) of the whole trip that is concerned by this reservation
+    associated tripSegmentId	INTEGER (1..16)	OPTIONAL,
+    
+    -- transport number - numeric or alphanumeric
+    transportNum			 INTEGER 						OPTIONAL,
+    transportIA5       		 IA5String 	                    OPTIONAL,     						
     						
     -- departure date in local time at the departure station
     -- number of the days calculated from the issuing date 
     departureDate  		 INTEGER 	(-1..500)           DEFAULT 0, 
+    -- departure time in local time at the departure station
+    departureTime 		INTEGER (0..1439),             
+    -- offset in units of 15 minutes from local time to UTC 
+    -- (UTC = local + offset * 15 Minutes)	
+    -- the UTC offset can be used to calculate the duration of the travel 
+    -- if UTC offset is used in control devices the usage of UTC offset has to be agreed bilateral to be mandatory
+    -- times to be shown on a ticket should always be the local times
+    departureUTCOffset   INTEGER (-60..60)              OPTIONAL,      
      		        															
-    -- reservation reference according ton 918.1 in case ade via Hermes    			      	     		        															
+    -- optional internal reference of thereservation    			      	     		        															
     referenceIA5   		IA5String 	 			OPTIONAL,
     referenceNum   		INTEGER 				OPTIONAL,    
 
@@ -492,15 +706,7 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
     -- destination station name    
     toStationNameUTF8   UTF8String 						OPTIONAL,   
      					   
-    -- departure time in local time at the departure station
-    departureTime 		INTEGER (0..1439),             
-    -- offset in units of 15 minutes from local time to UTC 
-    -- (UTC = local + offset * 15 Minutes)	
-    -- the UTC offset can be used to calculate the duration of the travel 
-    -- if UTC offset is used in control devices the usage of UTC offset has to be agreed bilateral to be mandatory
-    -- times to be shown on a ticket should always be the local times
-    departureUTCOffset   INTEGER (-60..60)              OPTIONAL,  
-    
+
     -- arrival date and time in local time at the arrival station
     -- number of days counted from the departure date 
     arrivalDate		   INTEGER (-1..20)		            DEFAULT 0,  			
@@ -530,39 +736,16 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
     additionalPlaces    PlacesType                      OPTIONAL,    
     
     --bicycle places 
-	bicyclePlaces		PlacesType 						OPTIONAL,
+    bicyclePlaces		     PlacesType 						OPTIONAL,
 	
-	-- compartment details (open space, wheelchair,..)
-	compartmentDetails  CompartmentDetailsType 			OPTIONAL,
+    -- compartment details (open space, wheelchair,..)
+    compartmentDetails  CompartmentDetailsType 			OPTIONAL,
 	
-	-- number of persons on the ticket without place numbers (on IRT)				 
+    -- number of persons on the ticket without place numbers (on IRT)				 
     numberOfOverbooked	INTEGER (0..200)				DEFAULT 0,	      
     
     -- description of berths
-    berth 				SEQUENCE OF BerthDetailData  	OPTIONAL,				
-    
-    -- tariffs included (Adult, Children,... )
-    tariff				SEQUENCE OF TariffType          OPTIONAL,
-    
-    -- type of the price (supplement,... )
-	priceType			PriceTypeType 					DEFAULT travelPrice,
-	
-    price               INTEGER                         OPTIONAL,
-    
-    vatDetail           SEQUENCE OF VatDetailType       OPTIONAL,	
-	
-	-- type of supplement - code list from 918.1
-	typeOfSupplement	INTEGER (0..9)				    DEFAULT 0,				
-	
-	numberOfSupplements	INTEGER (0..200)				DEFAULT 0,
-	
-	-- luggage restrictions and registered luggage
-	--   in case the luggage restrictions are general and do not depend on the
-	--   ticket type they should not be included
-    luggage 			LuggageRestrictionType			OPTIONAL,   
-
-    infoText			UTF8String 						OPTIONAL,
-     
+    berth 				SEQUENCE OF BerthDetailData  	OPTIONAL,				   
     
     -- bilaterally agreed proprietary extension
     extension   		ExtensionData 					OPTIONAL    
@@ -687,261 +870,6 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
     ,...
    }
 				        	
-
-   -- #####################################################################################
-   -- data for open tickets (NRT and group tickets) 
-   --   included are the data defined in:
-   --       - the ticket layout (leaflet 918.8)
-   --       - the ticket bar code version 3 (leaflet 918.9)
-   --       - additional data based on 108.1 with some extensions as 108.1 
-   --                   does not provide well structured data, 
-   --                   especially concerning regional validity
-   -- 
-   -- ##################################################################################### 
-	        						        			        
-   OpenTicketData 	::= SEQUENCE 	{
-	   
-      -- reference must be given either in numeric or alphanumeric format
-      referenceNum   	INTEGER 			OPTIONAL,    
-      referenceIA5   	IA5String 			OPTIONAL,   
-     				   		
-      -- organization responsible for the product definition, if different from the issuer 
-      -- (RICS Code / proprietary code in case no RICS code is defined, proprietary codes must ensure to be unique)   
-      productOwnerNum		INTEGER (1..32000) 	OPTIONAL,        
-      productOwnerIA5		IA5String 		OPTIONAL,    
-	   
-       -- product id to identify the issued product codelist defined by the product owner   	   
-       -- !!! productIdNum extended
-       productIdNum		 INTEGER 	(0..65535) 	OPTIONAL,    
-	   productIdIA5		 IA5String  	      	OPTIONAL,    
-     				              					        		
-	   -- to support other ticket content (e.g. VDV, UTPF, V�V, CALYPSO)
-	   --   issuer code using the default code table of the product owner  
-	   extIssuerId		     INTEGER  	OPTIONAL,    
-	   --   authorization id provided to the issuer by the product owner      		
-	   issuerAutorizationId	 INTEGER  	OPTIONAL,    		        
-     				           		
-	   -- ticket includes the return trip -  should be set to false if it is not relevant (e.g. zones) 		  
-	   returnIncluded	BOOLEAN,    	 			    					        		
-   								
-   	   -- for tickets valid in regions without from or to stations no station is provided							
-	   stationCodeTable	CodeTableType DEFAULT stationUIC,                                         										
-	   fromStationNum  	INTEGER 	(1..9999999)	OPTIONAL,
-	   fromStationIA5      	IA5String  			OPTIONAL,    					    
-     				
-   	   -- for tickets valid in regions without from or to stations no station is provided							    				
-	   toStationNum      	INTEGER 	(1..9999999)	OPTIONAL,     					                
-	   toStationIA5        	IA5String  			OPTIONAL,    				                 
-     					    
-	   fromStationNameUTF8 UTF8String 			OPTIONAL,    
-	   toStationNameUTF8   UTF8String 			OPTIONAL,   
-     					    
-	   -- description for manual evaluation in case structured data are not available       					                  	   
-	   validRegionDesc 	UTF8String 			OPTIONAL,  	
-	   -- specification of the ordered sequence of valid regions
-	   validRegion		SEQUENCE OF RegionalValidityType OPTIONAL,	  	
-     					    
-	   -- return route description
-	   --   the return route description can be omitted if it is identical to the 
-	   --   inversed outbound validRegion sequence  
-	   returnDescription   	ReturnRouteDescriptionType     	OPTIONAL,     	
-     					    
-	   -- date/time validity in local time of the location where the journey starts
-	   -- number of days from issuing date 
-	   validFromDay		INTEGER (-367..700)    		DEFAULT 0, 
-	   -- in case the valid from time is not provided the valid from time is 00.00 (local time)
-	   -- in case UTC offset is provided (NOT RECOMMENDED) the local date time in the time zone of validity region. The region where the ticket is valid must not cover more than one time zone
-       -- in case no UTC offset is provided (RECOMMENDED) the local date time in the time zone of the current location of the traveler	   	   
-	   validFromTime	INTEGER (0..1439) 		    OPTIONAL,    
-	   -- offset in units of 15 minutes from local time to UTC 
-       -- (UTC = local + offset * 15 Minutes)	
-       -- the UTC offset can be used to calculate the duration of the travel 
-       -- if UTC offset is used in control devices the usage of UTC offset has to be agreed bilateral to be mandatory
-       -- times to be shown on a ticket should always be the local times
-       validFromUTCOffset   INTEGER (-60..60)       OPTIONAL,   
-                                                                      
-	   -- date/time validity in local time of the location where the journey ends                                                                  
-	   --  number of days from valid-from date, 0 = valid until day is equal to the first day of validity
-	   validUntilDay	INTEGER (-1..500)  		   DEFAULT 0,     	
-	   validUntilTime	INTEGER (0..1439) 		   OPTIONAL,       		
-	   -- offset in units of 15 minutes from local time to UTC 
-       -- (UTC = local + offset * 15 Minutes)	
-       -- the UTC offset can be used to calculate the duration of the travel 
-       -- if UTC offset is used in control devices the usage of UTC offset has to be agreed bilateral to be mandatory
-       -- times to be shown on a ticket should always be the local times				
-       -- should be omitted in case it is the same as for departure			                   
-       validUntilUTCOffset  INTEGER (-60..60)      OPTIONAL,   
-
-       -- here it is possible to list the activated days of the ticket:                                                                    
-       -- day the ticket is activated. The activation is valid from 00:00 to 23:59 in the time zone of the current location of the traveler	
-       -- thereby the activation might include more or less that 24 hours in case time zone borders are crossed
-       -- travel days of a ticket might be subject to a separate activation to be valid for traveling
-	   -- list of activated days in case the entire ticket is not activated
-       -- the day is given by the number of days from the first day of validity
-       -- 0 = first day of validity   		   
-	   activatedDay        	SEQUENCE OF INTEGER (0..500) 	OPTIONAL,  
-						
-	   classCode		TravelClassType 		DEFAULT second,
-	   
-	   -- servicelevel code according to leaflet 918.1 to encode other products 
-	   --                     (e.g. PREMIUM, ...)   					                
-	   serviceLevel		 IA5String (SIZE(1..2)) 	OPTIONAL,  	  
-	   
-	   -- carriers involved in the transport (RICS codes)
-	   -- the indication of carriers is mandatory on international routes, they can be 
-	   -- listed here but can also be included in viaDetails 
-       carrierNum		SEQUENCE OF INTEGER (1..32000)	OPTIONAL,	 
-       carrierIA5		SEQUENCE OF IA5String		    OPTIONAL,		   
-
-
-	   -- list of service brands for which the ticket is valid 
-	   -- in case the included service brands are listed all other brands are excluded
-	   -- service brand: code list https://uic.org/service-brand-code-list
-       	includedServiceBrands SEQUENCE OF INTEGER (1..32000) OPTIONAL,  
-       
-       -- list of service brands for which the ticket is not valid 
-       -- service brand: code list https://uic.org/service-brand-code-list       
-	   excludedServiceBrands SEQUENCE OF INTEGER (1..32000) OPTIONAL, 
-     					      
-	   tariffs              SEQUENCE OF TariffType 			OPTIONAL,    
-	   
-	   price                INTEGER                         OPTIONAL,
-	   
-	   vatDetail            SEQUENCE OF VatDetailType       OPTIONAL,	 	   
-	    					                
-	   infoText		UTF8String 			OPTIONAL, 				   
-     					           		
-       -- additional included open tickets 
-	   --     e.g. to include local city traffic on parts of a the route
-	   includedAddOns		SEQUENCE OF IncludedOpenTicketType	OPTIONAL,      
-     					                			                
-	   -- in case the luggage restrictions are general and do not depend 
-	   --    on the ticket type they should not be included
-	   luggage 		LuggageRestrictionType		OPTIONAL,   
-	   	    
-	   -- included or excluded transport modes
-       -- code list: EN 1545-1 (transport type code)
-	   -- new data elements  
- 	   includedTransportType 	SEQUENCE OF INTEGER (0..31) 	OPTIONAL,  
-  	   excludedTransportType 	SEQUENCE OF INTEGER (0..31) 	OPTIONAL,  
-	
-	   extension   		ExtensionData 			            OPTIONAL 
-	,...
-   }		
-   
-
-
-   -- ####################################################################################
-   -- data for passes
-   --   included are the data defined in:
-   --       - the ticket layout (leaflet 918.8)
-   --       - the ticket bar code version 3 (leaflet 918.8)
-   -- #################################################################################### 
-   PassData 		::= SEQUENCE    {
-	   
-	   -- reference must be given in numeric or alphanumeric format      
-	   referenceNum   			INTEGER 				OPTIONAL,   
-	   referenceIA5   			IA5String 				OPTIONAL,	   
-     			       		
-	   -- organization responsible for the product definition, if different from the issuer 
-       -- (RICS Code / proprietary code in case no RICS code is defined, proprietary codes must ensure to be unique)      
-	   productOwnerNum			INTEGER (1..32000) 		OPTIONAL,    
-	   productOwnerIA5			IA5String 		 		OPTIONAL,    
-	   
-	   -- product id to identify the issued product code list defined by the product owner   
-       productIdNum		 INTEGER 	(0..65535) 	OPTIONAL,    
-	   productIdIA5				IA5String  	      		OPTIONAL,    
-                             
-	   -- type of the pass, code list provided by the product owner
-			-- in case of Eurail:
-               -- 1 = Eurail Global Pass
-               -- 2 = Interrail Global Pass
-               -- 3 = Interrail One Country Pass
-               -- 4 = Eurail One Country Pass
-               -- 5 = Eurail/Interrail Global Pass Emergency ticket
-
-	   passType            		INTEGER (1..250)  		OPTIONAL,    
-	        
-	   -- literal name of the pass    
-	   passDescription    		UTF8String  			OPTIONAL,          	
-                            
-	   classCode           		TravelClassType			DEFAULT second,      
-                            
-	   -- begin of validity (local time)
-	   -- number of days from issuing date 
-	   validFromDay			INTEGER (-367..700)   	DEFAULT 0,   	   
-	   -- in case the valid from time is not provided the valid from time is 00.00 (local time)
-	   -- in case UTC offset is provided (NOT RECOMMENDED) the local date time in the time zone of validity region. The region where the ticket is valid must not cover more than one time zone
-       -- in case no UTC offset is provided (RECOMMENDED) the local date time in the time zone of the current location of the traveler	   
-	   validFromTime		INTEGER (0..1439)  		OPTIONAL,
-       -- offset in units of 15 minutes from local time to UTC   
-       -- (UTC = local + offset * 15 Minutes)
-       validFromUTCOffset   INTEGER (-60..60)       OPTIONAL,   	   
-	   
-	   -- end of validity  (local time)
-	   -- number of days from valid from day, 0 = valid on valid-from-date
-	   validUntilDay		INTEGER (-1..500)   	DEFAULT 0,     	
-	   -- in case the valid until time is not provided the valid until time is 23.59 (local time)
-	   validUntilTime	 	INTEGER (0..1439)  		OPTIONAL,     
-       -- in case UTC offset is provided (NOT RECOMMENDED) the local date time in the time zone of validity region. The region where the ticket is valid must not cover more than one time zone
-       -- in case no UTC offset is provided (RECOMMENDED) the local date time in the time zone of the current location of the traveler	   
-	   -- offset in units of 15 minutes from local time to UTC 
-       -- (UTC = local + offset * 15 Minutes)	
-       -- should be omitted in case it is the same as for departure
-       validUntilUTCOffset  INTEGER (-60..60)       OPTIONAL,   
-	      
-	   
-	   -- additional validity periods and excluded time ranges
-	   validityPeriodDetails 	ValidityPeriodDetailType OPTIONAL, 
-                            
-	   -- max number of days of validity in case the valid from day is open		
-	   				
-	   numberOfValidityDays  	INTEGER (0..500) 		OPTIONAL, 
-	   
-	   trainValidity            TrainValidityType       OPTIONAL,
-	   
-	   -- max number of possible trips to be activated
-	   numberOfPossibleTrips 	INTEGER (1..250)  		OPTIONAL,      	
-	   numberOfDaysOfTravel  	INTEGER (1..250)  		OPTIONAL, 
-         
-       -- here it is possible to list the activated days of the ticket:                                                                    
-       -- day the ticket is activated. The activation is valid from 00:00 to 23:59 in the time zone of the current location of the traveler	
-       -- thereby the activation might include more or less that 24 hours in case time zone borders are crossed
-       -- travel days of a ticket might be subject to a separate activation to be valid for traveling
-	   -- list of activated days in case the entire ticket is not activated
-       -- the day is given by the number of days from the first day of validity
-       -- 0 = first day of validity         
-	   activatedDay        		SEQUENCE OF INTEGER (0..500) 	OPTIONAL,  
-   							                                                        
-	   -- included countries, code table according to UIC leaflet 918.9
-	   countries			    SEQUENCE OF INTEGER (1..250)	OPTIONAL, 		
-	   
-	   -- included carriers (RICS codes)
-       includedCarrierNum		SEQUENCE OF INTEGER (1..32000)	OPTIONAL,	 
-       includedCarrierIA5		SEQUENCE OF IA5String		    OPTIONAL,		   
-
-	   -- excluded carriers (RICS codes)
-       excludedCarrierNum		SEQUENCE OF INTEGER (1..32000)	OPTIONAL,	 
-       excludedCarrierIA5		SEQUENCE OF IA5String		    OPTIONAL,	       
-       
-           -- service brand: code list https://uic.org/service-brand-code-list
-	   includedServiceBrands 	SEQUENCE OF INTEGER (1..32000) 	OPTIONAL, 
-	   excludedServiceBrands 	SEQUENCE OF INTEGER (1..32000) 	OPTIONAL, 					
-   							
-	   -- region description to cover local zones
-	   validRegion				SEQUENCE OF RegionalValidityType OPTIONAL,
-   							   							
-	   tariffs             		SEQUENCE OF TariffType         	 OPTIONAL,   
-	   
-	   price                    INTEGER                          OPTIONAL,
-	   
-	   vatDetail                SEQUENCE OF VatDetailType        OPTIONAL,		   
-     		                
-	   infoText			        UTF8String 			             OPTIONAL,				   										   										
-	   extension   			    ExtensionData 			         OPTIONAL  
-	   ,...
-   }	
-   
    
    TrainValidityType ::= SEQUENCE {
        -- validity for travel depending on the boarding or arrival time to be within the given time range
@@ -1493,7 +1421,6 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
   	
 	-- included or excluded transport modes
 	-- code list: EN 1545-1 (transport type code)
-	-- !!! new data elements 
  	includedTransportType 	SEQUENCE OF INTEGER (0..31) 	OPTIONAL,  
   	excludedTransportType 	SEQUENCE OF INTEGER (0..31) 	OPTIONAL,  
   	
@@ -1683,43 +1610,125 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 	 ,...
 
    }   
+
+  -- ###################################################################################### 
+  -- regional validity segment
+  --     specification of the regional validity of one segment of the total regional validity. 
+  -- ###################################################################################### 
+  RegionalValiditySegmentType :: {
+
+	validitySegment                        RegionalValidityType,
+        -- the general conditions apply for this segment. the general conditions are in the first entry of the conditions list
+        generalConditionsApplied               BOOLEAN,
+	-- the complementary conditions are in the conditions list. 1 corresponds to the second entry of the list
+        appliedComplementaryConditionsIndex    INTEGER (1..15) OPTIONAL
+	-- the edge case of having no general condition and no complementary conditions is a valid case. This could be a full fare ticket without any restrictions.
+ 
+  }
+   
 						        	
   -- ###################################################################################### 
-  -- regional validity of an open ticket
-  --     specification of the regional validity. 
+  --     specification of the regional validity for a segment. 
   -- ###################################################################################### 
    									
-   RegionalValidityType	::= CHOICE {   					
-	   trainLink    				TrainLinkType,			
+   RegionalValidityType	::= CHOICE {   		
+           originDestination                            OriginDestinationType,		
+	   originDestinationComplex                     OriginDestinationComplexType,		
+           complexRoute                                 ComplexRouteType,
 	   viaStations	 				ViaStationType,
-	   zones	 	 				ZoneType,
-	   lines                		LineType,                
-	   polygone	 					PolygoneType
+	   zones	 	 			ZoneType,
+	   lines                		        LineType,                
+	   polygone	 				PolygoneType
 	   ,...
    }	
 
 
+  -- ###################################################################################### 
+  --     Regional Validity from a simple origin station to a destination station
+  -- ###################################################################################### 
+  OriginDestinationType ::= SEQUENCE {
+
+  	   stationCodeTable 	        CodeTableType DEFAULT stationUIC,
+           -- if the origin station is absent, the destination of the previous regional section is the origin station
+	   originStation                StationType OPTIONAL,
+	   destinationStation           StationType,
+
+           intermediateStations         SEQUENCE OF StationType OPTIONAL,
+           ...    
+  					        				
+  }
+
+  -- ###################################################################################### 
+  --     Regional Validity from a complex origin station to a destination station
+  -- ###################################################################################### 
+  OriginDestinationComplexType ::= SEQUENCE {
+
+  	   - multiple origins
+           - alternative routes
+	   - indication of train changes
+           - multiple destinations
+
+  	   stationCodeTable 	        CodeTableType DEFAULT stationUIC,
+           -- if the origin station is absent, the destination of the previous regional section is the origin station
+	   originStation                StationType OPTIONAL,
+	   destinationStation           StationType,
+
+           intermediateStations         SEQUENCE OF StationType OPTIONAL,
+           ...    
+  					        				
+  }
+
+  StationType ::= SEQUENCE {
+           -- if code table is not provided the code table of the container object applies
+  	   stationCodeTable	CodeTableType          OPTIONAL,             
+	   station              StationCodeType,
+    	   stationNameUTF8      UTF8String 		OPTIONAL,
+           ...
+  }
+
+  StationCodeType ::= CHOICE {
+	   stationNum  	  INTEGER (1..999999999),
+	   stationIA5     IA5String,
+           ...
+  }
 
   -- ####################################################################################### 
-  -- train link data
-  --     includes a restriction of an open ticket valid only on a specific train 
-  --     and date on a part of the route
+  -- transport link data
+  --     includes a restriction of an trip segment (e.g. part of a route described with a viaStation)  
+  --     valid only on a specific transport and date
   -- ####################################################################################### 
-   TrainLinkType ::= SEQUENCE {
+   TransportLinkType ::= SEQUENCE {
+
+	   -- number identifying the segment (part) of the whole trip that is concerned by this link restriction
+    	   associatedTripSegmentId	INTEGER (1..16)	OPTIONAL,
+
+	   -- service provider / carrier providing the link
+	   -- (RICS Code / proprietary code in case no RICS code is defined, proprietary codes must ensure to be unique) 
+	   carrierNum 		INTEGER     (1..32000) 	OPTIONAL,   
+	   carrierIA5 		IA5String     		OPTIONAL,   
+
+	   transportNum		INTEGER 			OPTIONAL,
+	   transportIA5       	IA5String 	                OPTIONAL,    
 	   
-	   trainNum			INTEGER 					OPTIONAL,
-	   trainIA5       	IA5String 	                OPTIONAL,    
-	   
-	   -- local date at the station where the train link starts (fromStation)
+	   -- local date at the station where the transport link starts (fromStation)
 	   -- days from the issuing date onwards
 	   travelDate  		INTEGER 	(-1..500),   
-	   -- time in minutes, local time at the station where the train link starts	 
+	   -- time in minutes, local time at the station where the transport link starts	 
 	   departureTime 	INTEGER 	(0..1439),   
 	   -- offset in units of 15 minutes from local time to UTC 
        -- (UTC = local + offset * 15 Minutes)		   
 	   departureUTCOffset   INTEGER (-60..60)    OPTIONAL,   
                             
-	   fromStationNum  	INTEGER 	(1..9999999)    OPTIONAL,
+	   -- TRUE if the link is mandatory
+    	   -- FALSE if the link is not mandatoy (e.g. the link is just a possible link given as an information,
+	   --    but the passenger may choose another one as long as it is compatible with the associated trip segment)
+	   linkIsMandatory BOOLEAN,
+    
+    	   -- ###
+    	   -- ### as TransportLinkType is a restriction that applies to a trip segment defined by another element (e.g. defined through viaStationType),
+	   -- ### fromStation and toStation seem to be useless (they are already defined in the linked element) and could be removed.
+	   -- ###
+    	   fromStationNum  	INTEGER 	(1..9999999)    OPTIONAL,
 	   fromStationIA5   IA5String  					OPTIONAL,
    							 	     					    
 	   toStationNum     INTEGER 	(1..9999999)	OPTIONAL,
@@ -1737,33 +1746,43 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
   --     - based on data used in regional city trafic enviromnemnts
   -- ###################################################################################### 
    LineType ::= SEQUENCE {
-	   
+
+    	   -- number identifying the segment (part) of the whole trip that is described with this LineType element
+    	   tripSegmentId	INTEGER (1..16)	OPTIONAL,
+
 	   -- local service provider / carrier within the zone
 	   -- (RICS Code / proprietary code in case no RICS code is defined, proprietary codes must ensure to be unique) 
-	   carrierNum 				INTEGER     (1..32000) 	OPTIONAL,   
-	   carrierIA5 				IA5String     		OPTIONAL,   
-	   			
-	   -- ids of the valid lines known by the local carriers on that line   
+	   carrierNum 				SEQUENCE OF INTEGER     (1..32000) 	OPTIONAL,   
+	   carrierIA5 				SEQUENCE OF IA5String     		OPTIONAL,   
+
+	   -- included or excluded transport modes. Code list: EN 1545-1 (transport type code)
+ 	   includedTransportType 	SEQUENCE OF INTEGER (0..31) 	OPTIONAL,  
+  	   excludedTransportType 	SEQUENCE OF INTEGER (0..31) 	OPTIONAL,  
+       
+	   -- ids of the valid lines known by the local carriers on that line,
+    	   -- or are defined in a table specific to concernedAreaId
 	   lineId 				    SEQUENCE OF INTEGER OPTIONAL,           
 	   
-	   stationCodeTable			CodeTableType 		DEFAULT stationUIC,             
-                
+	   entryStationCodeTable			CodeTableType 		DEFAULT stationUIC,             
 	   -- in case the line must be entered via a specific station 
-	   --     (e.g. local city traffic at the end of a journey 
-	   --                     starting from the main train station)
+	   --     (e.g. local city traffic at the end of a journey starting from the main train station)
 	   entryStationNum			INTEGER (1..9999999) 	OPTIONAL,                                       	
 	   entryStationIA5			IA5String		OPTIONAL,
                 
-	   -- in case the line must be left via a specific station     
-	   --    (e.g. local city trafic at the beginning of a journey 
-	   --       terminating at the main train station)
+	   terminatingStationCodeTable			CodeTableType 		DEFAULT stationUIC,             
+    	   -- in case the line must be left via a specific station     
+	   --    (e.g. local city trafic at the beginning of a journey terminating at the main train station)
 	   terminatingStationNum 	INTEGER	(1..9999999) OPTIONAL,	 				
 	   terminatingStationIA5 	IA5String	 		 OPTIONAL,	
-                
-	   -- code of the local city in case the line is part of regional city transport
-	   --    code list of the local carrier
-	   city 			INTEGER  			         OPTIONAL  						
-	   ,...
+
+	   entryStationNameUTF8		UTF8String	OPTIONAL,
+	   terminatingStationNameUTF8	UTF8String	OPTIONAL,
+
+	   -- in case the lines are defined by a code table specific to an area (city, region, country...) transport
+    	   concernedAreaCodeTable	AreaCodeTableType	OPTIONAL,
+	   concernedAreaId		AreaIdType		OPTIONAL, 
+    
+	   ...
    }
       
    
@@ -1773,40 +1792,95 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
   -- ################################################################################# 
    ZoneType ::= SEQUENCE {
 
-	   -- local service provider / carrier within the zone 
-	   -- (RICS Code / proprietary code in case no RICS code is defined, proprietary codes must ensure to be unique)              
-	   carrierNum 		INTEGER (1..32000) 						OPTIONAL,   
-	   carrierIA5 		IA5String     							OPTIONAL,              
-	   
-	   stationCodeTable	CodeTableType 							DEFAULT stationUIC,
+	   -- number identifying the segment (part) of the whole trip that is described with this ZoneType element
+    	   tripSegmentId	INTEGER (1..16)	OPTIONAL,
+
+	   -- local service providers / carriers within the zone 
+	   -- (RICS Code / proprietary code in case no RICS code is defined, proprietary codes must ensure to be unique)
+	   carrierNum 		SEQUENCE OF INTEGER (1..32000) 						OPTIONAL,   
+	   carrierIA5 		SEQUENCE OF IA5String  							OPTIONAL,              
+
+	   -- included or excluded transport modes. Code list: EN 1545-1 (transport type code)
+ 	   includedTransportType 	SEQUENCE OF INTEGER (0..31) 	OPTIONAL,  
+  	   excludedTransportType 	SEQUENCE OF INTEGER (0..31) 	OPTIONAL,  
+    
+	   entryStationCodeTable	CodeTableType 							DEFAULT stationUIC,
 	   -- in case the zone must be entered via a specific station 
-	   --    (e.g. local city traffic at the end of a journey starting 
-	   --          from the main train station)
+	   --    (e.g. local city traffic at the end of a journey starting from the main train station)
 	   entryStationNum		INTEGER (1..9999999) 				OPTIONAL,   
 	   entryStationIA5		IA5String				 			OPTIONAL,
 
+	   terminatingStationCodeTable	CodeTableType 							DEFAULT stationUIC,
 	   -- in case the zone must be left via a specific station 
-	   --    (e.g. local city traffic at the beginning of a journey 
-	   --    terminating at the main train station)
+	   --    (e.g. local city traffic at the beginning of a journey terminating at the main train station)
 	   terminatingStationNum 	INTEGER	(1..9999999)		    OPTIONAL,	              										
 	   terminatingStationIA5 	IA5String 	  					OPTIONAL,	
 
-	   -- code of the local city in case the zone is part of regional 
-	   -- city transport code list of the local carrier
-	   city 			INTEGER 						       OPTIONAL,   
- 
-	   -- ids of the valid zones known by the local carriers in that zone
-	   zoneId 					SEQUENCE OF INTEGER 			OPTIONAL,           
+	   entryStationNameUTF8		UTF8String	OPTIONAL,
+	   terminatingStationNameUTF8	UTF8String	OPTIONAL,
+
+	   -- in case the zone is an area (city, region, country...),
+           -- or in case the zones are defined in this area:
+    	   concernedAreaCodeTable	AreaCodeTableType	OPTIONAL,
+	   concernedAreaId		AreaIdType		OPTIONAL, 
+    
+    	   -- zoneId and binaryZoneId are exclusive
+	   -- they encode the authorized zones, according to a specification provided by:
+    	   --   a code list defined in the area identified by concernedAreaId (if present)
+    	   -- 	a code list defined in the global validityAreaId of the product (if present)
+    	   --   a code list defined by carrierNum/IA5 (the local service providers) (if present) 
+	   zoneId 			SEQUENCE OF INTEGER 			OPTIONAL,           
+	   binaryZoneId	    		OCTET STRING				OPTIONAL,    
                 
-	   -- binary encoding of zones, encoding specification provided by 
-	   --     the local service provider
-	   binaryZoneId	    		OCTET STRING					OPTIONAL,    
-                
-	   -- EU NUTS code for a region
-	   nutsCode            		IA5String 	  					OPTIONAL
-	   ,...
+	   ...
    }
-      					        	
+
+
+  -- ################################################################################## 
+  -- Complex Route
+  --    includes a description of of the route by via stations. 
+  --    Via stations follow the description in leaflet 108.1: 
+  --         via stations can e mandatory to pass (but there does not need to be a
+  --         train stop at this stations): visible route description: "*station*"
+  --         there can be a list of alternative routes: 
+  --               visible route description: "*(station1/station2)*"      
+  --         there can also be alternative routes:  
+  --              "*(station1*station2/station3*station4)*" although the 
+  --                definition in 108.2 is not very precise on this option    
+  -- ################################################################################### 
+   ComplexRouteType ::= SEQUENCE {    
+
+	   station                      StationType                             OPTIONAL,
+
+    	   stationSet                   StationSetType                          OPTIONAL,
+
+           -- the change of the service
+	   --   true change  is mandatory
+           --   false change is forbidden
+           changeOfService               BOOLEAN                                 OPTIONAL,
+ 
+
+	   -- list of stations along the route 
+	   route			SEQUENCE OF ComplexRouteType		OPTIONAL,  	
+ 
+	   -- list of alternative routes, one of these has to be taken
+	   alternativeRoutes	        SEQUENCE OF ComplexRouteType		OPTIONAL,  	
+
+           -- in case different carriers and/or different service brands need to be indicated on the routes or alternative routes
+           appliedComplementaryConditionsIndex    INTEGER (1..15)                OPTIONAL
+
+	         
+	   ,...
+   }		
+
+   StationSetType :== SEQUENCE {
+           -- code for a list of stations valid. The code table is provided by the owner of the tariff
+  	   codeTableProvider	CompanyCodeType          OPTIONAL,             
+	   code                 INTEGER                  (1..9999999),
+    	   nameUTF8             UTF8String 		 OPTIONAL,
+           ...
+
+   }
    
   -- ################################################################################## 
   -- via station
@@ -1821,24 +1895,33 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
   --                definition in 108.2 is not very precise on this option    
   -- ################################################################################### 
    ViaStationType ::= SEQUENCE {    
-	   
+
+    	   -- number identifying the segment (part) of the whole trip that is described with this ViaStationType element
+    	   tripSegmentId	INTEGER (1..16)	OPTIONAL,
+
 	   stationCodeTable 	CodeTableType 					DEFAULT stationUIC,  		
 	   -- mandatory via station	
 	   stationNum  	 	INTEGER (1..9999999) 				OPTIONAL,  			   			
 	   stationIA5  	 	IA5String							OPTIONAL,  	
-	   
+
+    	   stationNameUTF8	UTF8String	OPTIONAL,
+	
 	   -- list of alternative routes, one of these has to be taken
 	   alternativeRoutes	SEQUENCE OF ViaStationType		OPTIONAL,  	
 	   
 	   -- list of stations along the route 
 	   route				SEQUENCE OF ViaStationType		OPTIONAL,  	     
-	   
+    
 	   -- carrier responsible for the transport starting at this station (RICS-Code)
 	   -- in case the carrier is included here it might be omitted 
 	   --     in the carrier list of the region data 
-       carrierNum			SEQUENCE OF INTEGER (1..32000)	OPTIONAL,	 
-       carrierIA5			SEQUENCE OF IA5String			OPTIONAL,	
-	         
+           carrierNum			SEQUENCE OF INTEGER (1..32000)	OPTIONAL,	 
+           carrierIA5			SEQUENCE OF IA5String			OPTIONAL,	
+
+	   -- included or excluded transport modes. Code list: EN 1545-1 (transport type code)
+ 	   includedTransportType 	SEQUENCE OF INTEGER (0..31) 	OPTIONAL,  
+  	   excludedTransportType 	SEQUENCE OF INTEGER (0..31) 	OPTIONAL,  
+
 	   -- service brands valid for the route 
        -- in case this list is provided the ticket is invalid on all other service brands
        -- service brand: code list https://uic.org/service-brand-code-list
@@ -1915,23 +1998,45 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
   -- ############################################################################################
    
    CodeTableType ::= ENUMERATED { 
-	   -- standard UIC station code from MERITS (UIC country code + 5 digit local code)
-	   stationUIC  	  						(0), 	
-	   -- standard UIC station code for reservation
-	   stationUICReservation 	  			(1),  
-	   -- future standard ERA station code 
-	   stationERA				  		 	(2),  	
-	   -- local carrier code list
-	   --	  e.g. in case of stations / stops of non-railways stops (city traffic)	   
-	   localCarrierStationCodeTable 	 	(3),  	
+	stationUIC  	  		(0), -- standard UIC station code from MERITS (UIC country code + 5 digit local code)
+	stationUICReservation		(1), -- standard UIC station code for reservation
+	stationERA		 	(2), -- future standard ERA station code 
+    	netex				(3), -- NeTEx, a CEN Technical Standard for exchanging Public Transport related data
+	regionalCodeTable		(4), -- code table defined in the region defined by validityAreaId
+	localCarrierCodeTable		(5), -- local carrier code list, e.g. in case of stations / stops of non-railways stops (city traffic)	   
+	proprietaryIssuerCodeTable 	(6), -- non standard code to be used within the issuer ecosystem only, not applicable for multi carrier travel documents, or if issuer and carrier are different
+    	...	   						
+   }			
 
-	   -- non standard code to be used within the issuer eco system only
-	   --   not applicable for multi carrier travel documents		
-	   --   or in case issuer and carrier are different		   
-	   proprietaryIssuerStationCodeTable 	(4)		
-			   						
-   }									
+
+   ProductType    	::= ENUMERATED  {	
+    	point-2-point-single-trip                                      (0),   -- single usage ticket for origin to destination
+        point-2-point-single-trip-mandatory-reservation                (1),   -- single usage ticket for origin to destination
+    	point-2-point-return-trip                                      (2),   -- single usage ticket for origin to destination and return
+    	point-2-point-multiple-trips                                   (3),   -- multiple usage ticket for origin to/froim destination e.g. monthly ticket beaween A and B
+    	area-ticket-multiple-trips                                     (4),   -- multiple usage ticket for an area
+     	area-ticket-single-trip					       (5),   -- single usage ticket for an area
+  	pay-as-you-go						       (6),   -- right to travel
+  	standalone-reservation					       (7),   -- reservation without the associated ticket
+  	commercial-card                                                (8),   -- card allowing to buy tickets with reductions
+   	...
+    }  	
      
+    -- Code table used to identify a geographical area
+    AreaCodeTableType ::= ENUMERATED {
+  	nutsCode		(0), -- european NUTS code
+  	postCode		(1), -- post (zip) code
+  	calypsoNetworkId	(2), -- Calypso standard network / interoperability area identifier
+  	...
+    }
+
+    -- Identifier of a geographical area
+    AreaIdType ::= CHOICE {
+  	areaIdNum	INTEGER,	-- e.g. city identified through its post code (zip code)
+  	areaIdIA5	IA5String,	-- e.g. european NUTS code
+  	areaIdOct	OCTET STRING,	-- e.g. Calypso NetworkId
+  	...
+    }
     
     ServiceType    	::= ENUMERATED  {	
     	seat              (0),
