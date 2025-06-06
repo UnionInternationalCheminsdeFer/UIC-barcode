@@ -1902,36 +1902,46 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
   -- ################################################################################### 
    ComplexRouteType ::= SEQUENCE {    
 
-	   station                      StationType                             OPTIONAL,
-
-    	   stationSet                   StationSetType                          OPTIONAL,
+           routeItem    RouteItemType,         
 
            -- the change of the service
-	   --   true change  is mandatory
+	   --   true  change is mandatory
            --   false change is forbidden
-           changeOfService               BOOLEAN                                 OPTIONAL,
- 
-
-	   -- list of stations along the route 
-	   route			SEQUENCE OF ComplexRouteType		OPTIONAL,  	
- 
-	   -- list of alternative routes, one of these has to be taken
-	   alternativeRoutes	        SEQUENCE OF ComplexRouteType		OPTIONAL,  	
+           changeOfService                        BOOLEAN                        OPTIONAL,
 
            -- in case different carriers and/or different service brands need to be indicated on the routes or alternative routes
            appliedComplementaryConditionsIndex    INTEGER (1..15)                OPTIONAL
 
-	         
 	   ,...
    }		
 
+   RouteItemType ::= CHOICE {
+
+	   station                      StationType,
+    
+           -- set of stations that are equivalent (OSDM: FareStationSet) 
+    	   stationSet                   StationSetType,
+
+	   -- list of stations along the route 
+	   route			ComplexRouteSequence,  	
+ 
+	   -- list of alternative routes, one of these has to be taken
+	   alternativeRoutes	        ComplexRouteSequence, 
+           ...
+   }
+
+   ComplexRouteSequence :== SEQUENCE {
+        items   SEQUENCE OF ComplexRouteType	
+   }
+
    StationSetType :== SEQUENCE {
            -- code for a list of stations valid. The code table is provided by the owner of the tariff
-  	   codeTableProvider	CompanyCodeType          OPTIONAL,             
-	   code                 INTEGER                  (1..9999999),
-    	   nameUTF8             UTF8String 		 OPTIONAL,
+  	   codeTableProvider	CompanyCodeType                                 OPTIONAL,             
+	   code                 INTEGER                                         (1..9999999),
+    	   nameUTF8             UTF8String 		                        OPTIONAL,
+           -- explcitly listing the stations of a station set
+           stationSetStations           SEQUENCE of StationType                 OPTIONAL,	
            ...
-
    }
    
   -- ################################################################################## 
