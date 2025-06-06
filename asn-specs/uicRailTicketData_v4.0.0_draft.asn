@@ -647,6 +647,9 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 
    -- #########################################
    SpecificConditions::= Sequence {
+
+           stationCodeTable 	         CodeTableType DEFAULT stationUIC,
+   
    	   -- if ordering is true the traveler must pass the sequence of regions i the order as provided
            validRegionOrdering            BOOLEAN,
 
@@ -1669,6 +1672,12 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
   -- ###################################################################################### 
   RegionalValiditySegmentType :: {
 
+        -- if the code tableis not provided the code table from the gereral conditions applies (Special conditions with index 0)
+  	stationCodeTable 	               CodeTableType OPTIONAL,         
+
+        -- human readable edescription of the regional Segment
+        description                            UTF8String 						OPTIONAL, 
+
 	validitySegment                        RegionalValidityType,
         -- the general conditions apply for this segment. the general conditions are in the first entry of the conditions list
         generalConditionsApplied               BOOLEAN,
@@ -1685,9 +1694,7 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
    									
    RegionalValidityType	::= CHOICE {   		
            originDestination                            OriginDestinationType,		
-	   originDestinationComplex                     OriginDestinationComplexType,		
            complexRoute                                 ComplexRouteType,
-	   viaStations	 				ViaStationType,
 	   zones	 	 			ZoneType,
 	   lines                		        LineType,                
 	   polygone	 				PolygoneType
@@ -1700,7 +1707,6 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
   -- ###################################################################################### 
   OriginDestinationType ::= SEQUENCE {
 
-  	   stationCodeTable 	        CodeTableType DEFAULT stationUIC,
            -- if the origin station is absent, the destination of the previous regional section is the origin station
 	   originStation                StationType OPTIONAL,
 	   destinationStation           StationType,
@@ -1710,25 +1716,6 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
   					        				
   }
 
-  -- ###################################################################################### 
-  --     Regional Validity from a complex origin station to a destination station
-  -- ###################################################################################### 
-  OriginDestinationComplexType ::= SEQUENCE {
-
-  	   - multiple origins
-           - alternative routes
-	   - indication of train changes
-           - multiple destinations
-
-  	   stationCodeTable 	        CodeTableType DEFAULT stationUIC,
-           -- if the origin station is absent, the destination of the previous regional section is the origin station
-	   originStation                StationType OPTIONAL,
-	   destinationStation           StationType,
-
-           intermediateStations         SEQUENCE OF StationType OPTIONAL,
-           ...    
-  					        				
-  }
 
   StationType ::= SEQUENCE {
            -- if code table is not provided the code table of the container object applies
@@ -1746,7 +1733,7 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 
   -- ####################################################################################### 
   -- transport link data
-  --     includes a restriction of an trip segment (e.g. part of a route described with a viaStation)  
+  --     includes a restriction of an trip segment
   --     valid only on a specific transport and date
   -- ####################################################################################### 
    TransportLinkType ::= SEQUENCE {
@@ -1777,7 +1764,7 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 	   linkIsMandatory BOOLEAN,
     
     	   -- ###
-    	   -- ### as TransportLinkType is a restriction that applies to a trip segment defined by another element (e.g. defined through viaStationType),
+    	   -- ### as TransportLinkType is a restriction that applies to a trip segment defined by another element
 	   -- ### fromStation and toStation seem to be useless (they are already defined in the linked element) and could be removed.
 	   -- ###
     	   fromStationNum  	INTEGER 	(1..9999999)    OPTIONAL,
@@ -1844,48 +1831,40 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
   -- ################################################################################# 
    ZoneType ::= SEQUENCE {
 
-	   -- number identifying the segment (part) of the whole trip that is described with this ZoneType element
-    	   tripSegmentId	INTEGER (1..16)	OPTIONAL,
-
-	   -- local service providers / carriers within the zone 
-	   -- (RICS Code / proprietary code in case no RICS code is defined, proprietary codes must ensure to be unique)
-	   carrierNum 		SEQUENCE OF INTEGER (1..32000) 						OPTIONAL,   
-	   carrierIA5 		SEQUENCE OF IA5String  							OPTIONAL,              
-
-	   -- included or excluded transport modes. Code list: EN 1545-1 (transport type code)
- 	   includedTransportType 	SEQUENCE OF INTEGER (0..31) 	OPTIONAL,  
-  	   excludedTransportType 	SEQUENCE OF INTEGER (0..31) 	OPTIONAL,  
-    
-	   entryStationCodeTable	CodeTableType 							DEFAULT stationUIC,
-	   -- in case the zone must be entered via a specific station 
-	   --    (e.g. local city traffic at the end of a journey starting from the main train station)
-	   entryStationNum		INTEGER (1..9999999) 				OPTIONAL,   
-	   entryStationIA5		IA5String				 			OPTIONAL,
-
-	   terminatingStationCodeTable	CodeTableType 							DEFAULT stationUIC,
-	   -- in case the zone must be left via a specific station 
-	   --    (e.g. local city traffic at the beginning of a journey terminating at the main train station)
-	   terminatingStationNum 	INTEGER	(1..9999999)		    OPTIONAL,	              										
-	   terminatingStationIA5 	IA5String 	  					OPTIONAL,	
-
-	   entryStationNameUTF8		UTF8String	OPTIONAL,
-	   terminatingStationNameUTF8	UTF8String	OPTIONAL,
-
 	   -- in case the zone is an area (city, region, country...),
            -- or in case the zones are defined in this area:
-    	   concernedAreaCodeTable	AreaCodeTableType	OPTIONAL,
-	   concernedAreaId		AreaIdType		OPTIONAL, 
+    	   concernedAreaCodeTable	AreaCodeTableType	        OPTIONAL,
+	   concernedAreaId		SEQUENCE OF AreaIdType		OPTIONAL, 
     
     	   -- zoneId and binaryZoneId are exclusive
 	   -- they encode the authorized zones, according to a specification provided by:
     	   --   a code list defined in the area identified by concernedAreaId (if present)
     	   -- 	a code list defined in the global validityAreaId of the product (if present)
     	   --   a code list defined by carrierNum/IA5 (the local service providers) (if present) 
-	   zoneId 			SEQUENCE OF INTEGER 			OPTIONAL,           
+
+ 	   - list of zone ids where the traveler has to start in one of these 
+	   entryZoneIds 		SEQUENCE OF ZoneIdType			OPTIONAL,    
+    	   ZoneIds 		        SEQUENCE OF ZoneIdType			OPTIONAL,    
+ 	   - list of zone ids where the traveler has to terminate in one of these 	
+	   terminatingZoneIds 		SEQUENCE OF ZoneIdType			OPTIONAL,    
+    
+           -- bit representation of zones according to a code list. Each bit represents a zone, 1 = zone is allowed, 0 = zone is forbidden
 	   binaryZoneId	    		OCTET STRING				OPTIONAL,    
-                
+
+	   -- in case the zone must be entered via a specific station 
+	   --    (e.g. local city traffic at the end of a journey starting from the main train station)
+	   entryStation                 StationSetType                          OPTIONAL,    
+    
+	   -- in case the zone must be left via a specific station 
+	   --    (e.g. local city traffic at the beginning of a journey terminating at the main train station)
+	   terminatingStation           StationSetType                          OPTIONAL,                  
 	   ...
    }
+
+   ZoneIdType ::= CHOICE {
+         codeNum INTEGER,
+	 codeIA5 IA5String
+  }
 
 
   -- ################################################################################## 
@@ -1901,7 +1880,7 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
   --                definition in 108.2 is not very precise on this option    
   -- ################################################################################### 
    ComplexRouteType ::= SEQUENCE {    
-
+   
            routeItem    RouteItemType,         
 
            -- the change of the service
@@ -1917,8 +1896,11 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 
    RouteItemType ::= CHOICE {
 
+           -- use the destination station from the previous regional validity segment
+           destinationStationOfPreviousSegment BOOLEAN,    
+
 	   station                      StationType,
-    
+
            -- set of stations that are equivalent (OSDM: FareStationSet) 
     	   stationSet                   StationSetType,
 
@@ -1927,6 +1909,7 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
  
 	   -- list of alternative routes, one of these has to be taken
 	   alternativeRoutes	        ComplexRouteSequence, 
+
            ...
    }
 
@@ -1944,58 +1927,7 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
            ...
    }
    
-  -- ################################################################################## 
-  -- via station
-  --    includes a description of of the route by via stations. 
-  --    Via stations follow the description in leaflet 108.1: 
-  --         via stations can e mandatory to pass (but there does not need to be a
-  --         train stop at this stations): visible route description: "*station*"
-  --         there can be a list of alternative routes: 
-  --               visible route description: "*(station1/station2)*"      
-  --         there can also be alternative routes:  
-  --              "*(station1*station2/station3*station4)*" although the 
-  --                definition in 108.2 is not very precise on this option    
-  -- ################################################################################### 
-   ViaStationType ::= SEQUENCE {    
-
-    	   -- number identifying the segment (part) of the whole trip that is described with this ViaStationType element
-    	   tripSegmentId	INTEGER (1..16)	OPTIONAL,
-
-	   stationCodeTable 	CodeTableType 					DEFAULT stationUIC,  		
-	   -- mandatory via station	
-	   stationNum  	 	INTEGER (1..9999999) 				OPTIONAL,  			   			
-	   stationIA5  	 	IA5String							OPTIONAL,  	
-
-    	   stationNameUTF8	UTF8String	OPTIONAL,
-	
-	   -- list of alternative routes, one of these has to be taken
-	   alternativeRoutes	SEQUENCE OF ViaStationType		OPTIONAL,  	
-	   
-	   -- list of stations along the route 
-	   route				SEQUENCE OF ViaStationType		OPTIONAL,  	     
-    
-	   -- carrier responsible for the transport starting at this station (RICS-Code)
-	   -- in case the carrier is included here it might be omitted 
-	   --     in the carrier list of the region data 
-           carrierNum			SEQUENCE OF INTEGER (1..32000)	OPTIONAL,	 
-           carrierIA5			SEQUENCE OF IA5String			OPTIONAL,	
-
-	   -- included or excluded transport modes. Code list: EN 1545-1 (transport type code)
- 	   includedTransportType 	SEQUENCE OF INTEGER (0..31) 	OPTIONAL,  
-  	   excludedTransportType 	SEQUENCE OF INTEGER (0..31) 	OPTIONAL,  
-
-	   -- service brands valid for the route 
-       -- in case this list is provided the ticket is invalid on all other service brands
-       -- service brand: code list https://uic.org/service-brand-code-list
-	   includedServiceBrands SEQUENCE OF INTEGER (1..32000) OPTIONAL, 
-	   
-	   -- service brands valid for the route 
-	   -- in case this list is provided the ticket is valid on all other service brands	   
-	   excludedServiceBrands SEQUENCE OF INTEGER (1..32000) OPTIONAL    
-	 
-	   ,...
-   }		
-   
+  
    
    PolygoneType ::=  SEQUENCE {		
 	   firstEdge 	GeoCoordinateType,
@@ -2112,7 +2044,6 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
     -- Code table used to identify a geographical area
     AreaCodeTableType ::= ENUMERATED {
   	nutsCode		(0), -- european NUTS code
-  	postCode		(1), -- post (zip) code
   	calypsoNetworkId	(2), -- Calypso standard network / interoperability area identifier
   	...
     }
