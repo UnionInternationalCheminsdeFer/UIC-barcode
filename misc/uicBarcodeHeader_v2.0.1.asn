@@ -82,7 +82,7 @@ ASN-Module-Header DEFINITIONS AUTOMATIC TAGS ::= BEGIN
     	securityProviderNum INTEGER (1..32000) OPTIONAL,				
     	securityProviderIA5 IA5String          OPTIONAL,	
     	
-    	keyId		        INTEGER(0..99999)  OPTIONAL,
+    	keyId		        INTEGER (0..99999)  OPTIONAL,
     	
     	dataSequence 	    SEQUENCE OF DataType,
 
