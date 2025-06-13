@@ -2090,9 +2090,9 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
   -- #####################################################################################    
      LuggageRestrictionType ::= SEQUENCE {
     	 -- allowed hand luggage pieces on this ticket (3 = default in current NRT tariff)
-    	 maxHandLuggagePieces		INTEGER(0..99) 	DEFAULT 3,			
+    	 maxHandLuggagePieces		INTEGER (0..99) 	DEFAULT 3,			
     	 -- allowed hand luggage pieces on this ticket (3 = default in current NRT tariff)    	 
-    	 maxNonHandLuggagePieces	INTEGER(0..99) 	DEFAULT 1,			
+    	 maxNonHandLuggagePieces	INTEGER (0..99) 	DEFAULT 1,			
     	 registeredLuggage			SEQUENCE OF RegisteredLuggageType OPTIONAL
     	 ,...
     	 
