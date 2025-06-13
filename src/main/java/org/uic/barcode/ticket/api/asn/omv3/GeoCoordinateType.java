@@ -39,11 +39,11 @@ public class GeoCoordinateType extends Object {
 	@Asn1Optional public GeoCoordinateSystemType coordinateSystem;
 
 	@FieldOrder(order = 2)
-	@Asn1Default(value="north")
+	@Asn1Default(value="east")
 	@Asn1Optional public HemisphereLongitudeType hemisphereLongitude;
 
 	@FieldOrder(order = 3)
-	@Asn1Default(value="east")
+	@Asn1Default(value="north")
 	@Asn1Optional public HemisphereLatitudeType hemisphereLatitude;
 
 	@FieldOrder(order = 4)
@@ -75,7 +75,7 @@ public class GeoCoordinateType extends Object {
 	public HemisphereLongitudeType getHemisphereLongitude() {
 
 		if (hemisphereLongitude == null){
-			return HemisphereLongitudeType.north;
+			return HemisphereLongitudeType.east;
 		}
 		
 		return this.hemisphereLongitude;
@@ -84,7 +84,7 @@ public class GeoCoordinateType extends Object {
 	public HemisphereLatitudeType getHemisphereLatitude() {
 
 		if (hemisphereLatitude == null) {
-			return HemisphereLatitudeType.east;
+			return HemisphereLatitudeType.north;
 		}
 		
 		return this.hemisphereLatitude;

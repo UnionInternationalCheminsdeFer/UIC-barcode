@@ -24,11 +24,11 @@ package org.uic.barcode.dynamicContent.fdc1;
  */
 public enum HemisphereLongitudeType {
 		
-		/** The north. */
-		north("north"),
-		
-		/** The south. */
-		south("south");
+	/** The east. */
+	east("east"),
+	
+	/** The west. */
+	west("west");
 		
 		/** The text. */
 		public String text;

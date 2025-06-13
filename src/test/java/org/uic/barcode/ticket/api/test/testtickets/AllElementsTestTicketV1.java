@@ -1339,8 +1339,8 @@ public class AllElementsTestTicketV1 {
 			id.getPointOfSale().setGeoUnit(GeoUnitType.microDegree);
 			id.getPointOfSale().setCoordinateSystem(GeoCoordinateSystemType.wgs84);
 			id.getPointOfSale().setAccuracy(GeoUnitType.microDegree);
-			id.getPointOfSale().setHemisphereLatitude(HemisphereLatitudeType.east);
-			id.getPointOfSale().setHemisphereLongitude(HemisphereLongitudeType.north);
+			id.getPointOfSale().setHemisphereLatitude(HemisphereLatitudeType.north);
+			id.getPointOfSale().setHemisphereLongitude(HemisphereLongitudeType.east);
 			id.getPointOfSale().setLatitude(56789L);
 			id.getPointOfSale().setLongitude(12345L);
 			
