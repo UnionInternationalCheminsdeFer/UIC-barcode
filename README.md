@@ -23,6 +23,4 @@ Documentation is available in the wiki: https://github.com/UnionInternationalChe
 The maven repo is available at: https://github.com/orgs/UnionInternationalCheminsdeFer/packages?repo_name=UIC-barcode
 
 -------------------------------------------------
-Upcoming UIC barcode specifications: 
-
-         https://unioninternationalcheminsdefer.github.io/UIC-barcode/
+Upcoming UIC barcode [specifications.](https://unioninternationalcheminsdefer.github.io/UIC-barcode/)
