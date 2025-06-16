@@ -10,7 +10,10 @@
     - name: Technical Principles
       link: spec/technical-principles/
     - name: DOISPAS
-      link: spec/dosipas/      
+      link: spec/dosipas/     
+      subfolderitems:
+        - name: Dynamic Content
+          link: spec/dynamic_content
 - name: asn.1 files
   dropdown:
     - name: FCB version 1.3
