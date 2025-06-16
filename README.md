@@ -21,3 +21,8 @@ Covered barcode types:
 Documentation is available in the wiki: https://github.com/UnionInternationalCheminsdeFer/UIC-barcode/wiki
 
 The maven repo is available at: https://github.com/orgs/UnionInternationalCheminsdeFer/packages?repo_name=UIC-barcode
+
+-------------------------------------------------
+Upcoming UIC barcode specifications: 
+
+         https://unioninternationalcheminsdefer.github.io/UIC-barcode/
