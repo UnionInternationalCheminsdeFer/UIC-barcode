@@ -189,7 +189,7 @@ public class SimpleGeoCoordinate implements IGeoCoordinate {
 	 *
 	 * @param l the longitude
 	 */
-	public void addLongitude(Long l) {
+	public void addLongitude(Long longitude) {
 		long value = this.longitude + longitude;
 		this.longitude = limitValues(value);
 	}
