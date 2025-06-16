@@ -1,0 +1,15 @@
+- name: Specification
+  link: spec/
+  dropdown:
+    - name: Getting Started
+      link: spec/getting-started
+    - name: Requirements
+      link: spec/requirements/
+    - name: Business Capabilities
+      link: spec/business-capabilities
+    - name: Technical Principles
+      link: spec/technical-principles/
+- name: asn.1 files
+  dropdown:
+    - name: FCB version 1.3
+      link: misc/uicRailTicketData_v1.3.4.asn
