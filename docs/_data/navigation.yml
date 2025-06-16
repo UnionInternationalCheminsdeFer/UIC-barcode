@@ -9,6 +9,8 @@
       link: spec/business-capabilities
     - name: Technical Principles
       link: spec/technical-principles/
+    - name: DOISPAS
+      link: spec/dosipas/      
 - name: asn.1 files
   dropdown:
     - name: FCB version 1.3
