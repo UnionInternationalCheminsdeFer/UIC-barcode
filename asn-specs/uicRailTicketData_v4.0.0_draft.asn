@@ -669,7 +669,9 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
            -- service brand: code list https://uic.org/service-brand-code-list
 	   includedServiceBrands       SEQUENCE OF INTEGER (1..32000) OPTIONAL, 
 
-	   rareSpecificConditions      RareSpecificConditionsType OPTIONAL,
+    	   reservation		       ReservationSegmentType         OPTIONAL,
+
+	   rareSpecificConditions      RareSpecificConditionsType    OPTIONAL,
            ...
    }
 
@@ -690,6 +692,75 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
            -- Company code - the ERA codes (https://www.era.europa.eu/domains/registers/ocr_en) must be used (1..9999 or alphanumerical 4 positions)
            companyNum			INTEGER (1..32000)	OPTIONAL,	 
            companyIA5			IA5String 		OPTIONAL	
+   }
+
+TransportNumber ::= CHOICE {
+    transportNum		 INTEGER 			    OPTIONAL,
+    transportIA5       		 IA5String 	                    OPTIONAL
+}
+
+ArrivalDateTimeType ::= SEQUENCE {
+
+    -- arrival date and time in local time at the arrival station
+    -- number of days counted from the departure date 
+    arrivalDate		   INTEGER (-1..20)		    DEFAULT 0,  			
+    arrivalTime		   INTEGER (0..1439) 	            OPTIONAL,  
+    -- offset in units of 15 minutes from local time to UTC 
+    -- (UTC = local + offset * 15 Minutes)	
+    -- should be omitted in case it is the same as for departure   
+    -- the UTC offset can be used to calculate the duration of the travel 
+    -- times to be shown on a ticket should always be the local times  
+    arrivalUTCOffset   INTEGER (-60..60)                   OPTIONAL
+
+}
+
+ReservationSegmentType ::= SEQUENCE {
+
+    -- mandatory service = true: using this transport service is mandatory ("train link").
+    mandatoryService             BOOLEAN                            DEFAULT true,
+ 
+    -- transport number - numeric or alphanumeric
+    transportNumber		 TransportNumber		    OPTIONAL,
+
+    -- departure date in local time at the departure station
+    -- number of the days calculated from the issuing date 
+    departureDate  		 INTEGER 	(-1..500)           DEFAULT 0, 
+    -- departure time in local time at the departure station
+    departureTime 		 INTEGER (0..1439),             
+    -- offset in units of 15 minutes from local time to UTC 
+    -- (UTC = local + offset * 15 Minutes)	
+    -- the UTC offset can be used to calculate the duration of the travel 
+    -- if UTC offset is used in control devices the usage of UTC offset has to be agreed bilateral to be mandatory
+    -- times to be shown on a ticket should always be the local times
+    departureUTCOffset           INTEGER (-60..60)                  OPTIONAL,      
+
+    -- service code list from 918.1 (seat couchette,..)
+    service         	 ServiceType 				   DEFAULT seat,
+
+    -- travel class
+    classCode		TravelClassType				   DEFAULT second,
+    
+
+    arrivalDateTime              ArrivalDateTimeType                OPTIONAL,
+
+    -- service brand: code list https://uic.org/service-brand-code-list
+    -- to identify the train service uniquely in combination with train number and departure date
+    serviceBrand    	 INTEGER    (0..32000)         	            OPTIONAL,
+    serviceBrandAbrUTF8  UTF8String  			 	    OPTIONAL, 					    
+
+    
+    -- service level code list from 918.1
+    serviceLevel	IA5String (SIZE(1..2))			        OPTIONAL,   
+    
+    -- places
+    coachPlaces		SEQUENCE OF  CoachPlacesType		        OPTIONAL,																
+	
+    -- number of persons on the ticket without place numbers		 
+    numberOfOverbooked	INTEGER (0..200)				DEFAULT 0,	      
+    
+    -- description of berths
+    berth 				SEQUENCE OF BerthDetailData  	OPTIONAL
+
    }
 
    --  #################################################################################### 
@@ -2075,20 +2146,28 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
   -- #################################################################################### 
   -- place data corresponding to leaflet 918.1 
   --    placeString = place number ranges in case of groups
-  -- ####################################################################################                         		
-    PlacesType		::= SEQUENCE 	{	
+  -- ####################################################################################    
+
+    
+    CoachPlacesType		::= SEQUENCE 	{	
     	coach 				IA5String               			OPTIONAL,
     	
     	-- printable place string  ("15-18, 21, 22" )		
-    	placeString			IA5String 							OPTIONAL, 	
+    	placeString			IA5String 					OPTIONAL, 	
     				
     	-- printable place description 
-    	placeDescription	UTF8String 							OPTIONAL,   
+    	placeDescription	        UTF8String 					OPTIONAL,   
     	
     	-- individual places 
-    	placeIA5			SEQUENCE OF IA5String 				OPTIONAL,  	
-    	placeNum			SEQUENCE OF INTEGER (1..254) 		OPTIONAL   															
-    }                             		
+    	placeNumber			SEQUENCE OF PlaceNumberType			OPTIONAL, 
+
+       details                          PlaceDetailsType                                OPTIONAL
+    }                         
+
+    PlaceNumberType  ::= CHOICE {
+    	placeIA5			IA5String 				        OPTIONAL,  	
+    	placeNum			INTEGER (1..254) 		                OPTIONAL   
+    }
 
     PriceTypeType			::= ENUMERATED 	{  	
     	noPrice			(0),
@@ -2151,16 +2230,13 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 										
   -- ####################################################################################
   -- compartment details corresponding to leaflet 918.1 
+  --    918.1 pos 1/2 --> 1..99
+  --    918.1 pos 3/4 --> 101..199
+  --    918.1 pos 5/6 --> 201..299    
   -- ####################################################################################
-    CompartmentDetailsType		::= SEQUENCE 	{	
-    	coachType				INTEGER (1..99)   				OPTIONAL,    
-    	compartmentType			INTEGER (1..99)   				OPTIONAL,    
-    	specialAllocation		INTEGER (1..99)   				OPTIONAL,    	
-    	coachTypeDescr			UTF8String  					OPTIONAL,    
-    	compartmentTypeDescr	UTF8String  					OPTIONAL,
-    	specialAllocationDescr	UTF8String  					OPTIONAL,
-    	position                CompartmentPositionType  		DEFAULT unspecified
-    	,...
+    PlaceDetailsType		::= SEQUENCE 	{	
+    	coachType		INTEGER (1..999)   		
+    	description		UTF8String  	OPTIONAL
     }     
     
     
