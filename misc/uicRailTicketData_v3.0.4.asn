@@ -219,6 +219,9 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
          stationPassage         StationPassageData, 
          
          -- proprietary data defined bilaterally
+         -- In the specific case of a pure Account Based Ticketing barcode, in which no ticket must be present,
+         -- as it is impossible with the existing definition to completely remove the ticket from the DocumentData,
+         -- a specific "minimal" extension with extensionId = "_3011+0" and extensionData = ''H is used. 
          extension       		ExtensionData,   
          
          -- delay confirmation
@@ -1400,8 +1403,8 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
    -- # "_" + [4-digit RICS] + [addon, chosen by this company] means that 'extensionData' is a proprietary
    -- #    content of the company identified by the RICS code, identified as 'addon' by this company.
    -- # "*" + [addon] means that 'extensionData' is a content specific to this barcode,
-   -- # "_3011+0" (3011 being the RICS code of UIC) identifies empty extensionData.  
    -- #    identified as 'addon', with no further information on who defined it.
+   -- # "_3011+0" (3011 being the RICS code of UIC) identifies empty extensionData. 
    -- # Others values are reserved for future UIC use and shall not be used.
    -- ###########################################################################################
    ExtensionData	::= SEQUENCE 	{	
