@@ -4,11 +4,11 @@ tagline: UIC
 email: TODO
 
 description: >- # this means to ignore newlines until "baseurl:"
-  Open Sales and Distribution Model to simplify rail distribution.
+  UIC Barcodes.
 
 baseurl: "/" # the subpath of your site, e.g. /blog
 
-# url: "http://osdm.github.com"
+# url: "https://github.com/UnionInternationalCheminsdeFer/UIC-barcode/edit/master/docs"
 
 permalink: pretty
 
