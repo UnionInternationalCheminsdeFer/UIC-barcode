@@ -11,9 +11,6 @@
       link: spec/technical-principles/
     - name: DOISPAS
       link: spec/dosipas/     
-      subfolderitems:
-        - name: Dynamic Content
-          link: spec/dynamic_content
 - name: asn.1 files
   dropdown:
     - name: FCB version 1.3
@@ -23,5 +20,5 @@
   dropdown:
     - name: UIC barcode library GitHub
       link: https://github.com/UnionInternationalCheminsdeFer/UIC-barcode/
-   - name: UIC barcode library maven repo
+    - name: UIC barcode library maven repo
       link: https://github.com/orgs/UnionInternationalCheminsdeFer/packages?repo_name=UIC-barcode
