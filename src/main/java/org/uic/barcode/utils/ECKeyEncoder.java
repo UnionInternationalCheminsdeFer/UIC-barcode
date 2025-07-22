@@ -54,7 +54,7 @@ public class ECKeyEncoder {
     	
     	PublicKey key = null;
     	
-    	
+		
 		String keyAlgName = null;
 		try {
 			keyAlgName = AlgorithmNameResolver.getName(AlgorithmNameResolver.TYPE_KEY_GENERATOR_ALG, oid,provider);
@@ -226,7 +226,12 @@ public class ECKeyEncoder {
 	        final BigInteger y = new BigInteger(1, Arrays.copyOfRange(encoded, offset, offset + keySizeBytes));
 	        final ECPoint w = new ECPoint(x, y);
 	        final ECPublicKeySpec ecPublicKeySpec = new ECPublicKeySpec(w, params);
-	        final KeyFactory keyFactory = KeyFactory.getInstance("EC",provider);
+	        KeyFactory keyFactory;
+			if (provider != null) {
+				keyFactory = KeyFactory.getInstance("EC", provider);
+			} else {
+				keyFactory = KeyFactory.getInstance("EC");
+			}
 	        return (ECPublicKey) keyFactory.generatePublic(ecPublicKeySpec);
 	    }
 
