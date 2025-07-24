@@ -275,7 +275,7 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
     IssuingData  	::=  SEQUENCE	{
     	
     	-- provider of the signature, may be absent if present in UicBarcodeHeader
-    	securityProvide                 CompanyCodeType 	          OPTIONAL,   	
+    	securityProvider                CompanyCodeType 	          OPTIONAL,   	
     	
     	-- issuer of the binary content of the transport document, if different from the security provider
      	issuer   			CompanyCodeType 	          OPTIONAL,    
