@@ -124,7 +124,8 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 -- # 
 -- #
 -- #########################################################################################	
-	
+
+ 
 	
 -- ############################################################################################
 	
@@ -153,6 +154,9 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
    --     - the index of the list can be used to identify the 
    --              traveler within other contexts (e.g. in assigned tariffs)       
         traveler                SEQUENCE OF TravelerType                OPTIONAL,    
+
+        -- group details in case group participant cards group members or a group name needs to be indicated. Otherwise omitted.
+        groupDetails                  GroupDetailsType                 OPTIONAL,
         
         -- data of the transport document 
         --!!! proposal: replace this by a comment in the lealet on the total size of the barcode: more than one document to be used on bilateral agreement only   
@@ -207,9 +211,6 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
          
          -- car parking slot
          parkingGround    		ParkingGroundData, 
-         
-         -- FIP duty ticket
-         fipTicket                      FIPTicketData, 
          
          -- ticket to pass the gates at a station
          stationPassage                 StationPassageData, 
@@ -435,7 +436,7 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
        TransportProductData ::= SEQUENCE 	{	
 
 	   -- general type of the ticket (single ticket, return ticket, pass, right to travel)
-           productType                   ProductType,
+           productType                   ProductTypeType,
 
            -- organization responsible for the product definition 
            productOwner                  CompanyCodeType 	          OPTIONAL,        
@@ -445,9 +446,6 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 
            -- short description of the product 
 	   productDescription  	         UTF8String                       OPTIONAL,    
-
-           -- group details in case group participant cards group members or a group name needs to be indicated. Otherwise omitted.
-           groupDetails                  GroupDetailsType        OPTIONAL,
 
 	   -- area (city, region, country...) in which the transport document is valid
 	   -- (allows defining local value tables depending on this area)
@@ -462,28 +460,98 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 
            -- to be provided in case the return route differs
 	   validReturnRegions		SEQUENCE OF RegionalValiditySegmentType OPTIONAL,
-   
-    	   -- internal reference to the document, reference must be given either in numeric or alphanumeric format
-           reference           	         GenericIdType                    OPTIONAL,  
-     				   		
-           validFrom                     ValidFromType                    OPTIONAL,
-           validUntil                    ValidUntilType                   OPTIONAL, 	
-   							
-     	   value                      	INTEGER 			  DEFAULT 0,   	
-     	
-     	   -- type of the voucher, code list defined by the product owner
-     	   type                         INTEGER (1..32000) 		 OPTIONAL, 	
-     	
-     	   infoText			UTF8String 			 OPTIONAL,
-     	   extension   		        ExtensionData 			 OPTIONAL
-     	   ,...
-   }	        
 
+	   -- general conditions 
+           generalConditions	        ConditionsType,	
+	   -- list of special conditions to be applied on parts of the route
+    	   specificConditions	        SEQUENCE OF ConditionsType OPTIONAL,	  
+    					                			                   	    
+           -- reserved places
+           reservations                 SEQUENCE OF ReservationData (0..31) 	OPTIONAL,  
+	
+	   extension   		        ExtensionData 			        OPTIONAL 
+	   ,...
+   }	       
+
+
+   IncludedTimeRangesType ::= SEQUENCE {
+	   dayTypes                     DayTypesType,
+	   includedTimeRange 		SEQUENCE OF TimeRangeType      	OPTIONAL
+   }
+
+   DayTypesType ::= SEQUENCE {
+           --  monday = true, national_holiday = true --> true on mondays or national_holidays
+           monday              BOOLEAN, 
+	   tuesday             BOOLEAN,
+           wednesday           BOOLEAN,
+	   thursday            BOOLEAN,
+    	   friday              BOOLEAN,
+    	   saturday            BOOLEAN,
+	   sunday              BOOLEAN,
+           -- national holiday (e.g. Christmas)
+           nationalHolidays   BOOLEAN,
+	   -- (county holiday (e.g. Corpus Christi)
+	   countyHolidays     BOOLEAN,
+           -- local holiday (e.g. Augsburger Friedensfest)
+           localHolidays      BOOLEAN,
+           -- true only in case the pollution level is exceeding the threshold
+           pollutionDay       BOOLEAN
+	   ,...
+    }
+   
+   TimeRangeType ::= SEQUENCE {
+   	    -- local time 
+	    fromTime				INTEGER (0..1439), 
+	    -- local time 
+	    untilTime				INTEGER (0..1439)
+   }
+                               
+   --  ######################################################################################
+   -- data for vouchers
+   --   included are quite basic further study is required
+   --  ######################################################################################
+   VoucherData 		::= SEQUENCE 	{
+	   
+	    -- reference must be given in numeric or alphanumeric format 
+     	referenceIA5   		IA5String 				OPTIONAL,      
+     	referenceNum   		INTEGER 				OPTIONAL,     
+     				   		
+     	-- organization responsible for the product definition, if different from the issuer 
+        -- (RICS Code / proprietary code in case no RICS code is defined, proprietary codes must ensure to be unique)   
+     	productOwnerNum		INTEGER (1..32000) 		OPTIONAL,         
+     	productOwnerIA5		IA5String 		 		OPTIONAL,    
+ 
+     	-- product id to identify the issued product code list defined by the product owner   
+        productIdNum		 INTEGER 	(0..65535) 	OPTIONAL,  
+     	productIdIA5		IA5String  	      		OPTIONAL,    
+     				   		
+     	-- begin / end of validity in local date wherever the traveler is located
+     	-- valid from 00:00 to 23:59 
+     	-- number of year 		
+     	validFromYear 	    INTEGER	(2016..2269),    		
+     	--   number of the day in the year (1.1. = 1)
+     	validFromDay	    INTEGER	(0..500),    
+     	-- end of validity
+     	-- number of year 	
+     	validUntilYear 	    INTEGER	(2016..2269),    	
+     	--   number of the day in the year (1.1. = 1)   	
+     	validUntilDay 	    INTEGER	(0..500),    	
+   							
+     	value           	INTEGER 				DEFAULT 0,   	
+     	
+     	-- type of the voucher, code list defined by the product owner
+     	type                INTEGER (1..32000) 		OPTIONAL, 	
+     	
+     	infoText			UTF8String 				OPTIONAL,
+     	extension   		ExtensionData 			OPTIONAL
+     	,...
+   }	
 
    GroupDetailsType ::= SEQUENCE {
 
            -- this is the participant card (=countermark) only, not valid without the real ticket of the ticket holder
-	   -- in case participant cards are used all members of the group except the ticket holder (group leader)  will have (isGroupParticipantCard==false).
+	   -- in case participant cards are used all members of the group except the ticket holder (group leader)  will have (isGroupParticipantCard==true).
+           -- the leader will have isGroupParticipantCard==false as he has the real ticket
            isGroupParticipantCard       BOOLEAN,
 
            -- name of the group in case of a group ticket
@@ -652,46 +720,7 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
    }
 
 
-   
-   
-   --  ###################################################################################
-   -- data for FIP tickets
-   --   included are data from the FIP ticket layout, 
-   --  ###################################################################################
-   FIPTicketData 	::= SEQUENCE 	{
-     
-         -- organization responsible for the product definition 
-         productOwner                  CompanyCodeType 	          OPTIONAL,        
-    
-         -- product id to identify the issued product codelist defined by the product owner   	   
-         productId                     ProductIdType    	          OPTIONAL,    
-
-   	 -- short description of the product 
-	 productDescription  	         UTF8String                       OPTIONAL,    
-   
-    	 -- internal reference to the document, reference must be given either in numeric or alphanumeric format
-         reference           	         GenericIdType            	  OPTIONAL,  
-     				   		
-        validFrom                     ValidFromType                    OPTIONAL,
-        validUntil                    ValidUntilType                   OPTIONAL,							
-   							
-        -- activated days: list of days for which the ticket is valid in local date wherever the traveler is located
-        --   the day is given by the number of days from the first day of validity
-        --   0 = first day of validity   							
-        activatedDay        	SEQUENCE OF INTEGER (0..500) OPTIONAL,  
-
-        -- included carriers 	 
-        carrier			SEQUENCE OF CompanyCodeType         	OPTIONAL	 
-       
-        -- number of travel days allowed
-        numberOfTravelDays  	INTEGER (1..200),                  
-        includesSupplements 	BOOLEAN,			
-       
-        -- travel class
-        classCode           	TravelClassType  		DEFAULT second,
-        extension   			ExtensionData 			OPTIONAL
-        ,...
-   }	      
+  
                                		
    --  #####################################################################################
    -- data station passage and access 
@@ -1395,7 +1424,7 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 
 
 
-   ProductType    	::= ENUMERATED  {	
+   ProductTypeType    	::= ENUMERATED  {	
     	point-2-point-single-trip                                      (0),   -- single usage ticket for origin to destination
         point-2-point-single-trip-mandatory-reservation                (1),   -- single usage ticket for origin to destination
     	point-2-point-return-trip                                      (2),   -- single usage ticket for origin to destination and return
@@ -1553,3 +1582,17 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
    	...
    }
 END
+
+-- ############################################################################################
+-- TODO
+-- - indication of different FIP tickets - producttype, tariff, ...
+-- - naming of geo... (areas, regions,..)
+-- - can car carriage be integrated in transport document?
+-- - use cases for micro mobility
+--    - barcode as bike reservation
+--    - check-in / check-out barcode in app
+--    - barcodes on fixed items 
+--        - barcode on a bike 
+--        - check-in / check-out barcode at check-in check-out point
+-- - other use cases?
+-- ############################################################################################
