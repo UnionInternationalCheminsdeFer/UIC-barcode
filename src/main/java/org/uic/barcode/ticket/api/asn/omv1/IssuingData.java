@@ -317,7 +317,7 @@ public class IssuingData extends Object {
 	public void setIssuingDate(Date date){
 		
 		if (date == null) {
-			date = Calendar.getInstance().getTime();
+			date = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
 		}
 		
 		Calendar cal = Calendar.getInstance();
