@@ -320,7 +320,7 @@ public class IssuingData extends Object {
 			date = Calendar.getInstance(TimeZone.getTimeZone("UTC")).getTime();
 		}
 		
-		Calendar cal = Calendar.getInstance();
+		Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
 		cal.setTime(date);
 		
 		this.issuingYear = Long.valueOf(cal.get(Calendar.YEAR));
