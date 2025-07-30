@@ -292,7 +292,7 @@ public class TravelerType extends Object {
 		
 		if (date == null) return;
 		
-		Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+		Calendar cal = Calendar.getInstance();
 		cal.setTime(date);
 		
 		this.yearOfBirth = Long.valueOf ( cal.get(Calendar.YEAR));
