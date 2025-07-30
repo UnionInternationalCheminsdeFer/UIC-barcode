@@ -6,6 +6,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 
 import org.uic.barcode.ticket.EncodingFormatException;
 
@@ -246,7 +247,7 @@ public class UHEADDataRecord extends DataRecord{
 			String idElement = String.format("%20s", this.identifier);
 			
 			//DDMMYYYYHHMM"		
-			Calendar now = Calendar.getInstance();
+			Calendar now = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
 			
 			// issuing date can be in the ticket or in the header
 			if (this.issuingDate != null) {
