@@ -1605,12 +1605,14 @@ public class Api2OpenAsnEncoderV2 implements Api2AsnEncoder {
 		
 		PassData asnData = new PassData();
 		asnDocument.getTicket().setPass(asnData);
-		
-		asnData.setProductOwnerNum(UicEncoderUtils.getNum(document.getProductOwner()));
-		asnData.setProductOwnerIA5(UicEncoderUtils.getIA5NonNum(document.getProductOwner()));
-				
-		asnData.setProductIdNum(UicEncoderUtils.getNum(document.getProductId()));
-		asnData.setProductIdIA5(UicEncoderUtils.getIA5NonNum(document.getProductId()));				
+
+		NumWrapper wn = new NumWrapper(document.getProductOwner(),1,32000);
+		asnData.setProductOwnerNum(wn.getNumber());
+		asnData.setProductOwnerIA5(wn.getString());
+
+		wn = new NumWrapper(document.getProductId(),0,65535);
+		asnData.setProductIdNum(wn.getNumber());
+		asnData.setProductIdIA5(wn.getString());
 		
 		asnData.setReferenceNum(Asn1BigInteger.toAsn1(UicEncoderUtils.getNum(document.getReference())));
 		asnData.setReferenceIA5(UicEncoderUtils.getIA5NonNum(document.getReference()));	
