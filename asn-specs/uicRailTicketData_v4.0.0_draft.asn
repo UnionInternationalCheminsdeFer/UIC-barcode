@@ -24,16 +24,6 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 -- #                                                                      
 -- #  Naming and encoding conventions
 -- #
--- #  Elements included as String and as Numeric values:
--- #    Some elements are included in different formats to reduce the data size. 
--- #    These elements must be included only once.
--- #    These elements are named with the same name and appendix 
--- #                     Num  (numeric values)	
--- #	                 IA5  (String values according to ASN IA5String (7Bit))
--- #         Example:
--- #                     trainNum - in case of a numeric train number
--- #                     trainIA5 - in case of a alphanumeric train Id	
--- #
 -- #  ISO Country codes are used to code countries. 
 -- #    As Kosovo does not have an official ISO Country Code the following codes are used:
 -- #          926 for Kosovo as numeric ISO Country Code 
@@ -156,15 +146,15 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
         traveler                SEQUENCE OF TravelerType                OPTIONAL,    
 
         -- group details in case group participant cards group members or a group name needs to be indicated. Otherwise omitted.
-        groupDetails                  GroupDetailsType                 OPTIONAL,
+        groupDetails            GroupDetailsType                       OPTIONAL,
         
         -- data of the transport document 
         --!!! proposal: replace this by a comment in the lealet on the total size of the barcode: more than one document to be used on bilateral agreement only   
-    	transportDocument  	SEQUENCE OF DocumentData 	        OPTIONAL,     
+    	transportDocument  	SEQUENCE OF DocumentData 	       OPTIONAL,     
     	
     	-- data specific to support the ticket control process
      	-- if TransportProduct is used the control data should be defined in the conditions
-        controlDetail		ControlData     	  		OPTIONAL, 
+        controlDetail		ControlData     	  	      OPTIONAL, 
         
         -- proprietary data defined bilaterally
         extension 		SEQUENCE OF ExtensionData 	       OPTIONAL      
@@ -450,7 +440,7 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 	   -- area (city, region, country...) in which the transport document is valid
 	   -- (allows defining local value tables depending on this area)
 	   validityAreaCodeTable	CodeTableType	        OPTIONAL,
-	   validityAreaId		AreaIdType		OPTIONAL, 
+	   validityAreaIds		AreaIdsType		OPTIONAL, 
     
 	   -- version of the local code tables used in the area identified by:
 	   -- - validityAreaId (if present)
@@ -489,13 +479,13 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
     	   saturday            BOOLEAN,
 	   sunday              BOOLEAN,
            -- national holiday (e.g. Christmas)
-           nationalHolidays   BOOLEAN,
+           nationalHolidays    BOOLEAN,
 	   -- (county holiday (e.g. Corpus Christi)
-	   countyHolidays     BOOLEAN,
+	   countyHolidays      BOOLEAN,
            -- local holiday (e.g. Augsburger Friedensfest)
-           localHolidays      BOOLEAN,
+           localHolidays       BOOLEAN,
            -- true only in case the pollution level is exceeding the threshold
-           pollutionDay       BOOLEAN
+           pollutionDay        BOOLEAN
 	   ,...
     }
    
@@ -512,38 +502,37 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
    --  ######################################################################################
    VoucherData 		::= SEQUENCE 	{
 	   
-	    -- reference must be given in numeric or alphanumeric format 
-     	referenceIA5   		IA5String 				OPTIONAL,      
-     	referenceNum   		INTEGER 				OPTIONAL,     
+	   -- reference of the voucher 
+     	   reference                     GenericIdType            	  OPTIONAL,
      				   		
-     	-- organization responsible for the product definition, if different from the issuer 
-        -- (RICS Code / proprietary code in case no RICS code is defined, proprietary codes must ensure to be unique)   
-     	productOwnerNum		INTEGER (1..32000) 		OPTIONAL,         
-     	productOwnerIA5		IA5String 		 		OPTIONAL,    
- 
-     	-- product id to identify the issued product code list defined by the product owner   
-        productIdNum		 INTEGER 	(0..65535) 	OPTIONAL,  
-     	productIdIA5		IA5String  	      		OPTIONAL,    
+           -- organization responsible for the product definition 
+           productOwner                  CompanyCodeType 	          OPTIONAL,        
+    
+           -- product id to identify the issued product codelist defined by the product owner   	   
+           productId                     ProductIdType    	          OPTIONAL,    
+
+           -- short description of the product 
+	   productDescription  	         UTF8String                       OPTIONAL,    
      				   		
-     	-- begin / end of validity in local date wherever the traveler is located
-     	-- valid from 00:00 to 23:59 
-     	-- number of year 		
-     	validFromYear 	    INTEGER	(2016..2269),    		
-     	--   number of the day in the year (1.1. = 1)
-     	validFromDay	    INTEGER	(0..500),    
-     	-- end of validity
-     	-- number of year 	
-     	validUntilYear 	    INTEGER	(2016..2269),    	
-     	--   number of the day in the year (1.1. = 1)   	
-     	validUntilDay 	    INTEGER	(0..500),    	
+     	   -- begin / end of validity in local date wherever the traveler is located
+     	   -- valid from 00:00 to 23:59 
+     	   -- number of year 		
+     	   validFromYear 	        INTEGER	(2016..2269),    		
+     	   --   number of the day in the year (1.1. = 1)
+     	   validFromDay	                INTEGER	(0..500),    
+     	   -- end of validity
+     	   -- number of year 	
+     	   validUntilYear 	        INTEGER	(2016..2269),    	
+     	   --   number of the day in the year (1.1. = 1)   	
+     	   validUntilDay 	        INTEGER	(0..500),    	
    							
-     	value           	INTEGER 				DEFAULT 0,   	
+     	   value           	        INTEGER 			DEFAULT 0,   	
      	
-     	-- type of the voucher, code list defined by the product owner
-     	type                INTEGER (1..32000) 		OPTIONAL, 	
+     	   -- type of the voucher, code list defined by the product owner
+     	   type                         INTEGER (1..32000) 		OPTIONAL, 	
      	
-     	infoText			UTF8String 				OPTIONAL,
-     	extension   		ExtensionData 			OPTIONAL
+     	   infoText		        UTF8String 			OPTIONAL,
+     	   extension   		   ExtensionData 			OPTIONAL
      	,...
    }	
 
@@ -556,7 +545,6 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 
            -- name of the group in case of a group ticket
            groupName                    UTF8String  OPTIONAL,
-	   
 	   ...       
    }
 
@@ -585,10 +573,7 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 	   validUntilTime	INTEGER (0..1439)                 DEFAULT 1439
     }    
 
-    ProductIdType ::= CHOICE {
-           productIdNum		         INTEGER 	        (0..65535) ,    
-	   productIdIA5		         IA5String  	      
-    }
+
 
    -- #########################################
    ConditionsType::= SEQUENCE {
@@ -603,7 +588,7 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
    	   -- short description of the product 
 	   productDescription  	         UTF8String                       OPTIONAL,    
    
-    	   -- internal reference to the document, reference must be given either in numeric or alphanumeric format
+    	   -- internal reference to the document 
            reference           	         ReferenceType            	  OPTIONAL,  
 
            validFrom                     ValidFromType                    OPTIONAL,
@@ -640,7 +625,6 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 	   serviceLevel		       IA5String (SIZE(1..2)) 	      OPTIONAL,  	  
 	   
 	   tariffs                     SEQUENCE OF TariffType 	      OPTIONAL, 
-
 
            -- data specific to support the ticket control process, 
            controlDetail		ControlData     	      OPTIONAL, 
@@ -738,13 +722,13 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
    	 -- short description of the product 
 	 productDescription  	       UTF8String                       OPTIONAL,    
    
-    	 -- internal reference to the document, reference must be given either in numeric or alphanumeric format
+    	 -- internal reference to the document 
          reference           	       GenericIdType            	  OPTIONAL,  	
      				    		
          stations                      SEQUENCE OF StationType	  OPTIONAL,   
 	   
 	 -- list of areas in a station where the access is allowed
-         areas                         SEQUENCE OF AreaIdType		OPTIONAL, 			                 	    
+         areas                         SEQUENCE OF AreaIdsType		OPTIONAL, 			                 	    
 	 -- area names
 	 areaNameUTF8  		       SEQUENCE OF UTF8String 		OPTIONAL,
 
@@ -773,8 +757,8 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 	   --   optional, as there might be an anonymous cards
 	   customer 		TravelerType 			         OPTIONAL, 	  
                             
-	   -- card id might be numerical or alphanumerical
-	   cardIdI              GenericIdType                             OPTIONAL,	 
+	   -- card id 
+	   cardId               GenericIdType                             OPTIONAL,	 
    					
            -- begin / end of validity in local date wherever the traveler is located
            validFrom            ValidFromType                    OPTIONAL,
@@ -783,7 +767,7 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 	   classCode		TravelClassType 		OPTIONAL,
 	   
 	   -- code of the card type code list defined by the issuer
-	   cardType			INTEGER (1..1000) 		OPTIONAL, 	
+	   cardType		INTEGER (1..1000) 		OPTIONAL, 	
 	   
 	   -- readable description of the card type	
 	   cardTypeDescr	UTF8String 				OPTIONAL,		
@@ -827,7 +811,7 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
    	 -- short description of the product 
 	 productDescription  	       UTF8String                       OPTIONAL,    
    
-    	 -- internal reference to the document, reference must be given either in numeric or alphanumeric format
+    	 -- internal reference to the document
          reference           	       GenericIdType            	  OPTIONAL,
 	   
 	 parkingGroundId 	       IA5String, 
@@ -839,7 +823,8 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 	 untilParking                  ValidUntilType, 
 	  
          -- code needed to access the parking lot
-	 accessCode		       IA5String 		        OPTIONAL,            			
+	 accessCode		       IA5String 		        OPTIONAL,    
+  
 	 location		       UTF8String,        					        		
 
 	 -- in case the parking ground is associated with a station 
@@ -906,7 +891,6 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 	   ageBelow     				INTEGER (1..64)  	OPTIONAL, 
 	   ageAbove             			INTEGER (1..128) 	OPTIONAL,      
  
-              
 	   -- named traveler list 
 	   -- link to the traveler in case the travelers have to be named (e.g. Eurail passes)
 	   -- 	 the number indicates the position in the traveler list starting from 1
@@ -951,7 +935,6 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
                 
         -- in case only the trailing part of the card number is provided   
 	trailingCardId          GenericIdType                   OPTIONAL,         
-     
 	...
    }    	                              	                                                  
                               	
@@ -1088,7 +1071,7 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 	   areaCodeTableProvider        CodeTableProvider               OPTIONAL,	
 
 	   -- the concerned area restricts the area of validity but zoneIds have to be evaluated for the exact validity
-    	   concernedAreaIds		AreaIdType		        OPTIONAL, 
+    	   concernedAreaIds		AreaIdsType		        OPTIONAL, 
       
 	   -- ids of the valid lines known by the local carriers on that line,
     	   -- or are defined in a table specific to concernedAreaId
@@ -1114,13 +1097,13 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 	   areaCodeTableProvider        CodeTableProvider               OPTIONAL,	
 
 	   -- the concerned area restricts the area of validity but zoneIds have to be evaluated for the exact validity
-    	   concernedAreaIds		AreaIdType		        OPTIONAL, 
+    	   concernedAreaIds		AreaIdsType		        OPTIONAL, 
     
  	   -- list of zone ids where the traveler has to start in one of these 
-	   entryZoneIds 		AreaIdType			OPTIONAL,    
-    	   zoneIds 		        AreaIdType			OPTIONAL,    
+	   entryZoneIds 		AreaIdsType			OPTIONAL,    
+    	   zoneIds 		        AreaIdsType			OPTIONAL,    
  	   -- list of zone ids where the traveler has to terminate in one of these 	
-	   terminatingZoneIds 		AreaIdType			OPTIONAL,    
+	   terminatingZoneIds 		AreaIdsType			OPTIONAL,    
     
 	   -- in case the zone must be entered via a specific station 
 	   --    (e.g. local city traffic at the end of a journey starting from the main train station)
@@ -1132,14 +1115,7 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 	   ...
    }
 
-  AreaIdType ::= CHOICE {
-  	areaIdNum	SEQUENCE of INTEGER,	
-  	areaIdIA5	SEQUENCE of IA5String,	-- e.g. european NUTS code
-   
-        -- bit representation of zones according to a code list. Each bit represents a zone, 1 = zone is allowed, 0 = zone is forbidden
-  	areaIdOct	OCTET STRING,	        -- e.g. Calypso NetworkId
-  	...
-    }   
+
 
   -- provider of a code list for area codes
   CodeTableProvider CHOICE::= {
@@ -1191,7 +1167,6 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
  
 	   -- list of alternative routes, one of these has to be taken
 	   alternativeRoutes	        ComplexRouteSequence, 
-
            ...
    }
 
@@ -1202,10 +1177,10 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
    StationSetType :== SEQUENCE {
            -- code for a list of stations valid. The code table is provided by the owner of the tariff
   	   codeTableProvider	CompanyCodeType                                 OPTIONAL,             
-	   code                 INTEGER                                         (1..9999999),
+	   code                 INTEGER  (1..9999999),
     	   nameUTF8             UTF8String 		                        OPTIONAL,
            -- explcitly listing the stations of a station set
-           stationSetStations           SEQUENCE of StationType                 OPTIONAL,	
+           stationSetStations   SEQUENCE of StationType                         OPTIONAL,	
            ...
    }
    
@@ -1248,11 +1223,6 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
   -- ###########################################################################################
   -- 
   -- ###########################################################################################
-  TokenCategoryType ::= ENUMERATED {
-	  media                 (0), -- 'token' is the ID of the media (phone, SIP ticket includind a serial number...) with which the barcode is linked
-	  accountBasedTicketing (1), -- 'token' is the ID of the account with which the barcode is linked
-	  ...
-  }
 
    
   -- ########################################################################################### 
@@ -1272,7 +1242,7 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 	   issuerName			UTF8String 		  OPTIONAL,  -- name of the issuer 
        
 	   -- type of linked ticket
-	   ticketType                   TicketType                DEFAULT openTicket,	    
+	   ticketType                   ProductTypeType           DEFAULT point-2-point-single-trip,	    
 	   
 	   -- type of link  	   
 	   linkMode  			LinkMode    		  DEFAULT issuedTogether         
@@ -1305,7 +1275,7 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 	BerthDetailData	  ::= SEQUENCE {  	
 		berthType   		BerthTypeType,
 		numberOfBerths 		INTEGER (1..999),
-		gender 				CompartmentGenderType	DEFAULT family         
+		gender 			CompartmentGenderType	DEFAULT family         
 		,...
 	}
 										
@@ -1343,7 +1313,7 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
     
      RegisteredLuggageType ::= SEQUENCE {
     	 -- id of the additional registered luggage
-    	 registrationId			IA5String 			OPTIONAL,	
+    	 registrationId			        GenericIdType 		OPTIONAL,	
     	 -- maximum weight in kg 
     	 maxWeight				INTEGER (1..99)  	OPTIONAL, 	
     	 -- sum of length with and height in cm
@@ -1374,36 +1344,45 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
   --  numeric / alphanumeric / binary codings
   -- ##########################################################################################  
 
-  -- ##########################################################################################
-  -- Identifier of a geographical area
-  -- ##########################################################################################
+    ProductIdType ::= CHOICE {
+           productIdNum		         INTEGER 	        (0..65535),    
+	   productIdIA5		         IA5String  	      
+    }  
 
-  GenericIdType ::= CHOICE {
-	   idIA5	IA5String 				OPTIONAL,	 
-	   idNum 	INTEGER					OPTIONAL,
-  }
+  AreasIdType ::= CHOICE {
+  	areaIdNum	SEQUENCE of INTEGER,	
+  	areaIdIA5	SEQUENCE of IA5String,	-- e.g. european NUTS code
+   
+        -- bit representation of zones according to a code list. Each bit represents a zone, 1 = zone is allowed, 0 = zone is forbidden
+  	areaIdOct	OCTET STRING,	        -- e.g. Calypso NetworkId
+  	...
+    }     
+
+     GenericIdType ::= CHOICE {
+	idNum 	       INTEGER
+	idIA5	       IA5String,	 
+     }
   
-
-
-    CompanyCodeType ::= CHOICE {
+     CompanyCodeType ::= CHOICE {
         -- (RICS Code / proprietary code in case no RICS code is defined, proprietary codes must ensure to be unique)   
        codeNum  	 INTEGER (1..32000),
        codeIA5           IA5String
-    }
+     }
 
-   StationCodeType ::= CHOICE {
-       stationNum  	  INTEGER (1..999999999),
-       stationIA5         IA5String
-   }  
+     StationCodeType ::= CHOICE {
+        stationNum  	  INTEGER (1..999999999),
+        stationIA5        IA5String
+     }  
 
-    PlaceNumberType  ::= CHOICE {
+     PlaceNumberType  ::= CHOICE {
+        placeNum	  INTEGER (1..254) 
     	placeIA5	  IA5String,  	
-    	placeNum	  INTEGER (1..254) 
-    }   
+     }   
 
+ 
   -- ##########################################################################################
   --  enumerations
-  -- ##########################################################################################      
+  -- ##########################################################################################     
 
     -- ############################################################################################
   -- code table used fort station codes
@@ -1422,7 +1401,11 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
   	...
     }
 
-
+    TokenCategoryType ::= ENUMERATED {
+	  media                 (0), -- 'token' is the ID of the media (phone, SIP ticket includind a serial number...) with which the barcode is linked
+	  accountBasedTicketing (1), -- 'token' is the ID of the account with which the barcode is linked
+	  ...
+    }
 
    ProductTypeType    	::= ENUMERATED  {	
     	point-2-point-single-trip                                      (0),   -- single usage ticket for origin to destination
@@ -1455,12 +1438,12 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 
     }
 
-      ServiceType    	::= ENUMERATED  {	
-    	seat              (0),
-    	couchette         (1),
-    	berth             (2),
-    	carcarriage       (3)
-    }  						 	
+        ServiceType    	::= ENUMERATED  {	
+    	       seat              (0),
+    	       couchette         (1),
+    	       berth             (2),
+    	       carcarriage       (3)
+        }  						 	
 
 										
 	PassengerType	::=	ENUMERATED { 	
@@ -1470,8 +1453,12 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 		youth				(3),
 		dog 				(4),
 		bicycle 			(5),
-		freeAddonPassenger 	(6),
-		freeAddonChild 		(7)
+                young_child                     (6),
+		family_child                    (7), --  Child associated with a family traveling together
+                accomp_prm                      (8), --  Accompanying Person for PRM	 
+                wheelchair                      (9), --  Passenger with wheel-chair	 
+                pet                             (10), -- A pet but not a dog 
+                accomp_dog	                (11), -- An accompanying dog for a PRM	
 		,...
 	}			
 	
@@ -1494,9 +1481,9 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 		single 	(0),
 		special (1),
 		double 	(2),
-		t2		(3),
-		t3		(4),
-		t4		(5)
+		t2	(3),
+		t3	(4),
+		t4	(5)
 	}
 
 	CompartmentGenderType	::= ENUMERATED {	
@@ -1518,14 +1505,14 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 												
 	TravelClassType			::= ENUMERATED {	
 		notApplicable (0),
-		first 	 (1),
-		second 	 (2),
-		tourist	 (3),
-		comfort	 (4),
-		premium  (5),
-		business (6),
-		all		 (7),
-		premiumFirst (8),
+		first 	      (1),
+		second 	      (2),
+		tourist	      (3),
+		comfort	      (4),
+		premium       (5),
+		business      (6),
+		all	      (7),
+		premiumFirst  (8),
 		standardFirst (9),
 		premiumSecond (10),
 		standardSecond (11)
@@ -1571,16 +1558,16 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 		,...
 	}	
 
-    RetailChannelData ::= ENUMERATED {
-   	smsTicket            (0), -- SMS sent to a specific number
-   	mobileApplication    (1), -- Application on a mobile phone
-   	webSite              (2), -- Internet portal
-   	ticketOffice         (3), -- Agency or counter
-   	depositaryTerminal   (4), -- Dealer (e.g. tobacconist, newsagent, cafe, etc.)
-   	onBoardTerminal      (5), -- On-board sales (e.g. using the driver's point-of-sale terminal)
-   	ticketVendingMachine (6), -- Automatic sales machine
-   	...
-   }
+        RetailChannelData ::= ENUMERATED {
+   	  smsTicket            (0), -- SMS sent to a specific number
+   	  mobileApplication    (1), -- Application on a mobile phone
+   	  webSite              (2), -- Internet portal
+   	  ticketOffice         (3), -- Agency or counter
+   	  depositaryTerminal   (4), -- Dealer (e.g. tobacconist, newsagent, cafe, etc.)
+   	  onBoardTerminal      (5), -- On-board sales (e.g. using the driver's point-of-sale terminal)
+   	  ticketVendingMachine (6), -- Automatic sales machine
+   	  ...
+        }
 END
 
 -- ############################################################################################
@@ -1596,3 +1583,4 @@ END
 --        - check-in / check-out barcode at check-in check-out point
 -- - other use cases?
 -- ############################################################################################
+
