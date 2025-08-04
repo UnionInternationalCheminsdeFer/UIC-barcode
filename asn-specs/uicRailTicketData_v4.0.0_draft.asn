@@ -464,6 +464,70 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
    }	       
 
 
+ArrivalDateTimeType ::= SEQUENCE {
+
+    -- arrival date and time in local time at the arrival station
+    -- number of days counted from the departure date 
+    arrivalDate		   INTEGER (-1..20)		    DEFAULT 0,  			
+    arrivalTime		   INTEGER (0..1439) 	            OPTIONAL,  
+    -- offset in units of 15 minutes from local time to UTC 
+    -- (UTC = local + offset * 15 Minutes)	
+    -- should be omitted in case it is the same as for departure   
+    -- the UTC offset can be used to calculate the duration of the travel 
+    -- times to be shown on a ticket should always be the local times  
+    arrivalUTCOffset   INTEGER (-60..60)                   OPTIONAL
+
+}
+
+ReservationSegmentType ::= SEQUENCE {
+
+    -- mandatory service = true: using this transport service is mandatory ("train link").
+    mandatoryService             BOOLEAN                            DEFAULT true,
+ 
+    -- transport number - numeric or alphanumeric
+    transportNumber		 TransportNumber		    OPTIONAL,
+
+    -- departure date in local time at the departure station
+    -- number of the days calculated from the issuing date 
+    departureDate  		 INTEGER 	(-1..500)           DEFAULT 0, 
+    -- departure time in local time at the departure station
+    departureTime 		 INTEGER (0..1439),             
+    -- offset in units of 15 minutes from local time to UTC 
+    -- (UTC = local + offset * 15 Minutes)	
+    -- the UTC offset can be used to calculate the duration of the travel 
+    -- if UTC offset is used in control devices the usage of UTC offset has to be agreed bilateral to be mandatory
+    -- times to be shown on a ticket should always be the local times
+    departureUTCOffset           INTEGER (-60..60)                  OPTIONAL,      
+
+    -- service code list from 918.1 (seat couchette,..)
+    service         	 ServiceType 				   DEFAULT seat,
+
+    -- travel class
+    classCode		TravelClassType				   DEFAULT second,
+    
+
+    arrivalDateTime              ArrivalDateTimeType                OPTIONAL,
+
+    -- service brand: code list https://uic.org/service-brand-code-list
+    -- to identify the train service uniquely in combination with train number and departure date
+    serviceBrand    	 INTEGER    (0..32000)         	            OPTIONAL,
+    serviceBrandAbrUTF8  UTF8String  			 	    OPTIONAL, 					    
+
+    
+    -- service level code list from 918.1
+    serviceLevel	IA5String (SIZE(1..2))			        OPTIONAL,   
+    
+    -- places
+    coachPlaces		SEQUENCE OF  CoachPlacesType		        OPTIONAL,																
+	
+    -- number of persons on the ticket without place numbers		 
+    numberOfOverbooked	INTEGER (0..200)				DEFAULT 0,	      
+    
+    -- description of berths
+    berth 				SEQUENCE OF BerthDetailData  	OPTIONAL
+
+   }
+
    IncludedTimeRangesType ::= SEQUENCE {
 	   dayTypes                     DayTypesType,
 	   includedTimeRange 		SEQUENCE OF TimeRangeType      	OPTIONAL
@@ -1583,4 +1647,5 @@ END
 --        - check-in / check-out barcode at check-in check-out point
 -- - other use cases?
 -- ############################################################################################
+
 
