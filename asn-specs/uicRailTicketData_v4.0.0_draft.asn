@@ -41,8 +41,8 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 -- # !  INTEGERS must not exceed the value of 9,223,372,036,854,775,807 (64 bit) even in case 
 -- # !     they are unrestricted!!!
 -- # ! 
--- # !   Some elements like ReferenceNum or cardIdNum are defined as an unrestricted integer. 
--- # !   Unlike other numerical values the cardIdNum and referenceNum can be larger than a usual 32 bit Integer
+-- # !   Some elements like Reference or cardId are defined as an unrestricted integer. 
+-- # !   Unlike other numerical values the cardId and reference can be larger than a usual 32 bit Integer
 -- # !   Some ASN.1 implementation tools are limited to 32 bit integers which is too small. 
 -- # !   Please ensure to use a tool capable of dealing with larger numbers.
 -- #
@@ -589,7 +589,7 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 	   productDescription  	         UTF8String                       OPTIONAL,    
    
     	   -- internal reference to the document 
-           reference           	         ReferenceType            	  OPTIONAL,  
+           reference           	         GenericIdType            	  OPTIONAL,  
 
            validFrom                     ValidFromType                    OPTIONAL,
            validUntil                    ValidUntilType                   OPTIONAL,
@@ -652,7 +652,7 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
            -- if UTC offset is used in control devices the usage of UTC offset has to be agreed bilateral to be mandatory
            -- times to be shown on a ticket should always be the local times				
            -- should be omitted in case it is the same as for departure			                   
-           validUntilUTCOffset  INTEGER (-60..60)       OPTIONAL,   
+           validUntilUTCOffset  INTEGER (-60..60)                   OPTIONAL,   
 
            -- in case included time ranges are defined the validity is restricted to these ranges
            includedTimeRanges   SEQUENCE OF IncludedTimeRangesType  OPTIONAL,
@@ -1583,4 +1583,5 @@ END
 --        - check-in / check-out barcode at check-in check-out point
 -- - other use cases?
 -- ############################################################################################
+
 
