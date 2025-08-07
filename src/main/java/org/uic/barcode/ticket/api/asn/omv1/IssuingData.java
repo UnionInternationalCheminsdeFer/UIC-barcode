@@ -314,13 +314,19 @@ public class IssuingData extends Object {
 		this.pointOfSale = pointOfSale;
 	}
 
-	public void setIssuingDate(Date date){
+	public void setIssuingDate(Date date, String timeZoneId){
 		
 		if (date == null) {
 			date = Calendar.getInstance(TimeZone.getTimeZone("UTC")).getTime();
 		}
 		
-		Calendar cal = Calendar.getInstance();
+		Calendar cal = null;
+		
+		if (timeZoneId != null) {
+			cal = Calendar.getInstance(TimeZone.getTimeZone(timeZoneId));
+		} else {
+			cal = Calendar.getInstance();
+		}
 		cal.setTime(date);
 		
 		this.issuingYear = Long.valueOf( cal.get(Calendar.YEAR));
