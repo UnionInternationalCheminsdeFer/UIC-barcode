@@ -2187,7 +2187,7 @@ public class Api2OpenAsnEncoderV3 implements Api2AsnEncoder {
 		asnData.setIssuerPNR(UicEncoderUtils.getIA5(data.getIssuerPNR()));
 		
 		
-		asnData.setIssuingDate(data.getIssuingDate());
+		asnData.setIssuingDate(data.getIssuingDate(),data.getTimeZoneId());
 			
 		if (data.isSpecimen()){
 			asnData.setSpecimen(true);
