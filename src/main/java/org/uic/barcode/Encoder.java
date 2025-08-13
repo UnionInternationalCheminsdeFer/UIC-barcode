@@ -29,8 +29,6 @@ import org.uic.barcode.ticket.EncodingFormatException;
 import org.uic.barcode.ticket.UicRailTicketCoder;
 import org.uic.barcode.ticket.api.spec.IUicRailTicket;
 import org.uic.barcode.utils.ECKeyEncoder;
-import org.uic.barcode.utils.SecurityUtils;
-
 
 /**
  * The Class Encoder.
@@ -60,17 +58,6 @@ public class Encoder {
 	/** The UIC bar code type SSB. */
 	public static String UIC_BARCODE_TYPE_SSB = "UIC_SSB";	
 	
-	private Provider defaultProvider = null;
-	
-	
-	public Provider getDefaultProvider() {
-		return defaultProvider;
-	}
-
-	public void setDefaultProvider(Provider defaultProvider) {
-		this.defaultProvider = defaultProvider;
-	}
-	
 	/**
 	 * Instantiates a new encoder.
 	 *
@@ -83,10 +70,6 @@ public class Encoder {
 	 * @throws EncodingFormatException the encoding format exception
 	 */
 	public Encoder(IUicRailTicket ticket, TicketLayout layout, String barcodeType, int version, int fcbVersion) throws IOException, EncodingFormatException {
-		
-		if (defaultProvider == null) {
-			defaultProvider = SecurityUtils.getDefaultProvider();
-		}
 		
 		if (barcodeType == UIC_BARCODE_TYPE_CLASSIC) {
 
@@ -160,10 +143,6 @@ public class Encoder {
 	 * @throws EncodingFormatException the encoding format exception
 	 */
 	public Encoder(byte[] level1DataBin, byte[] signatureLevel1, int version) throws IOException, EncodingFormatException {
-		
-		if (defaultProvider == null) {
-			defaultProvider = SecurityUtils.getDefaultProvider();
-		}
 			
 		dynamicFrame = new SimpleDynamicFrame();
 		dynamicFrame.setLevel2Data(new SimpleLevel2Data());
@@ -207,10 +186,6 @@ public class Encoder {
 	 * @throws DataFormatException 
 	 */
 	public Encoder(byte[] encoded, int version) throws IOException, EncodingFormatException, DataFormatException {
-		
-		if (defaultProvider == null) {
-			defaultProvider = SecurityUtils.getDefaultProvider();
-		}
 		
 		Decoder decoder = new Decoder(encoded);
 		
@@ -260,7 +235,7 @@ public class Encoder {
 	 * @deprecated
 	 */
 	public void signLevel2(PrivateKey key) throws Exception {
-		signLevel2(key, defaultProvider);
+		signLevel2(key, null);
 	}
 	
 	/**
@@ -392,7 +367,7 @@ public class Encoder {
 	 * @deprecated
 	 */
 	public void signLevel1(String securityProvider,PrivateKey key,String signingAlg, String keyId) throws Exception {
-		signLevel1(securityProvider,key,signingAlg, keyId, defaultProvider);
+		signLevel1(securityProvider,key,signingAlg, keyId, null);
 	}
 	
 	/**
