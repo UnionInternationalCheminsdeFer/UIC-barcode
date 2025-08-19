@@ -1056,6 +1056,8 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
        
        passengerType                   PassengerType                              DEFAULT adult,
 
+       dateOfBirth                     DateType                                   OPTIONAL,       
+
        rareDetails                     RarePassengerDetailsType                   OPTIONAL
    } 
 
@@ -1075,13 +1077,7 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
        
        -- customer id might be numerical or alphanumerical
        customerId                       GenericIdType                              OPTIONAL,                      
-       
-       -- date of birth
-       -- number of year
-       yearOfBirth                     INTEGER    (1901..2155)                      OPTIONAL,                                             
-       monthOfBirth                    INTEGER    (1..12)                           OPTIONAL, 
-       dayOfBirthInMonth               INTEGER    (1..31)                           OPTIONAL,       
-       
+              
        passengerWithReducedMobility    BOOLEAN                                      OPTIONAL, 
        
        -- country of residence (numeric ISO country code) 
@@ -1094,6 +1090,12 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
        status                          SEQUENCE OF CustomerStatusType               OPTIONAL, 
        ...
    }    
+
+   DateType :== SEQUENCE {
+       yearOfBirth                     INTEGER    (1901..2155,                                             
+       monthOfBirth                    INTEGER    (1..12), 
+       dayInMonth                      INTEGER    (1..31) 
+  }
 
   -- ###################################################################################### 
   -- customer status
@@ -1701,6 +1703,7 @@ END
 --        - check-in / check-out barcode at check-in check-out point
 -- - other use cases?
 -- ############################################################################################
+
 
 
 
