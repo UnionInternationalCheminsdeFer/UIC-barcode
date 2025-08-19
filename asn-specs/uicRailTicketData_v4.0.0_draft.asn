@@ -118,8 +118,6 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
  
     
 -- ############################################################################################
-    
-
 -- type assignments
 
     -- #########################################################################################
@@ -158,9 +156,7 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
         -- proprietary data defined bilaterally
         extension               SEQUENCE OF ExtensionData              OPTIONAL      
         ,...
-    }
-                                     
-              
+    }      
 
    --  ###########################################################################################
    --  the choice on the different transport documents that can be included in the bar code data:
@@ -248,7 +244,6 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
         extension                     ExtensionData                       OPTIONAL,
         ...
    }
-   
 
    --  ########################################################################################
    --  Details of the issuer and the issue of the ticket
@@ -317,14 +312,12 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
         pointOfSale                    GeoCoordinateType             OPTIONAL,     
 
         -- retail information
-        productRetail                  ProductRetailData            OPTIONAL,
+        productRetail                  ProductRetailData             OPTIONAL,
 
         -- proprietary data defined bilaterally
         extension                      ExtensionData                 OPTIONAL,            
         ...
    }
-
-   
 
    --  ################################################################################### 
    --  data allowing to describe all possible information about product retail
@@ -357,8 +350,6 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
     
        ...
    }
-
-
 
    --  ################################################################################### 
    --  data supporting the control process
@@ -451,9 +442,7 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
          ...
    }           
 
-
-ArrivalDateTimeType ::= SEQUENCE {
-
+  ArrivalDateTimeType ::= SEQUENCE {
       -- arrival date and time in local time at the arrival station
       -- number of days counted from the departure date 
       arrivalDate           INTEGER (-1..20)                 DEFAULT 0,              
@@ -464,20 +453,19 @@ ArrivalDateTimeType ::= SEQUENCE {
       -- the UTC offset can be used to calculate the duration of the travel 
       -- times to be shown on a ticket should always be the local times  
       arrivalUTCOffset   INTEGER (-60..60)                   OPTIONAL
+  }
 
-}
-
-ReservationSegmentType ::= SEQUENCE {
+  ReservationSegmentType ::= SEQUENCE {
 
     -- mandatory service = true: using this transport service is mandatory ("train link").
     mandatoryService        BOOLEAN                            DEFAULT true,
  
-    -- transport number - numeric or alphanumeric
+    -- transport number (=service number, train number) 
     transportNumber         TransportNumber                    OPTIONAL,
 
     -- departure date in local time at the departure station
     -- number of the days calculated from the issuing date 
-    departureDate           INTEGER     (-1..500)             DEFAULT 0, 
+    departureDate           INTEGER  (-1..500)                 DEFAULT 0, 
     -- departure time in local time at the departure station
     departureTime           INTEGER (0..1439),             
     -- offset in units of 15 minutes from local time to UTC 
@@ -595,11 +583,11 @@ ReservationSegmentType ::= SEQUENCE {
    ValidFromType ::= SEQUENCE {
           -- date/time validity in local time of the location where the journey starts
        -- number of days from issuing date 
-       validFromDay        INTEGER (-398..800)                DEFAULT 0, 
+       validFromDay     INTEGER (-398..800)                DEFAULT 0, 
        -- in case the valid from time is not provided the valid from time is 00.00 (local time)
        -- in case UTC offset is provided (NOT RECOMMENDED) the local date time in the time zone of validity region. The region where the ticket is valid must not cover more than one time zone
-           -- in case no UTC offset is provided (RECOMMENDED) the local date time in the time zone of the current location of the traveler              
-       validFromTime    INTEGER (0..1439)             DEFAULT 0
+       -- in case no UTC offset is provided (RECOMMENDED)  the local date time in the time zone of the current location of the traveler              
+       validFromTime    INTEGER (0..1439)                  DEFAULT 0
     }
 
     ValidUntilType ::= SEQUENCE {
@@ -678,14 +666,14 @@ ReservationSegmentType ::= SEQUENCE {
 
    RareTimingConditions::= SEQUENCE {
 
-       validUntil                              ExtendedValidUntilType                     OPTIONAL,
+       validUntil                              ExtendedValidUntilType                      OPTIONAL,
 
        -- offset in units of 15 minutes from local time to UTC 
        -- (UTC = local + offset * 15 Minutes)    
        -- the UTC offset can be used to calculate the duration of the travel 
        -- if UTC offset is used in control devices the usage of UTC offset has to be agreed bilateral to be mandatory
        -- times to be shown on a ticket should always be the local times
-       validFromUTCOffset                       INTEGER (-60..60)                            OPTIONAL,   
+       validFromUTCOffset                       INTEGER (-60..60)                          OPTIONAL,   
 
        -- offset in units of 15 minutes from local time to UTC 
        -- (UTC = local + offset * 15 Minutes)    
@@ -1638,6 +1626,7 @@ END
 --        - check-in / check-out barcode at check-in check-out point
 -- - other use cases?
 -- ############################################################################################
+
 
 
 
