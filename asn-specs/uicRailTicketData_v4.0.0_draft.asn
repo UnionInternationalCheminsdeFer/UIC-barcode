@@ -7,15 +7,16 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 -- EXPORTS ALL;
 
 
--- changes:
---    new ticket structure merging openTicket, pass, reservation and allowing defining a commercialCard
---    improvements in IssuingData and ControlData
---    renaming of some elements to address transport modes other than rail
+-- Changes:
+--    New ticket structure merging openTicket, pass, reservation and allowing defining a commercialCard.
+--    Improvements in IssuingData and ControlData.
+--    Renaming of some elements to address transport modes other than rail
     
 -- ##############################################################################################
 -- #                                                                          
--- #   version 4.0.0       - value 4 in the UIC bar code version element 
+-- #   version 4.0.0       - Value 4 in the UIC bar code version element 
 -- #                         (see element 2 in U_FLEX record definition in leaflet 918.9)
+-- #                       - Value "FCB4" in element dataFormat of UicBarcodeHeader
 -- #
 -- ##############################################################################################
 
@@ -30,8 +31,8 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 -- #          XK  for Kosovo as alphanumeric 2-character ISO Country Code
 -- # 
 -- #  RICS codes must be used to encode companies (issuer, product owner, ...) where available
--- #    other codes are possible based on bilateral agreements
--- #    the format is kept more flexible to cover upcoming extensions of the RICS code by ERA    
+-- #    Other codes are possible based on bilateral agreements
+-- #    The format is kept more flexible to cover upcoming extensions of the RICS code by ERA    
 -- #          
 -- #  Stations can be coded using the UIC and upcoming ERA code lists. Proprietary codes are
 -- #    possible based on bilateral agreements. Format: 1..9999999 or alphanumeric without 
@@ -50,8 +51,8 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 -- #
 -- # 
 -- #  Encoding of time:
--- #      time is encoded as the number of minutes of the day 0 = 00:00,   1439 = 23:59, 
--- #     time data elements end with "time" in their name    
+-- #     Time is encoded as the number of minutes of the day from 0 = 00:00 to 1439 = 23:59, 
+-- #     time data elements end with "time" in their name.
 -- #    
 -- #  Encoding of date:    
 -- #  .........................................................................................................
@@ -103,143 +104,135 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 -- #
 -- #  ASN.1 Extensions:
 -- #
--- #    The specification makes use of extension (",..."). 
--- #    These extensions might be defined in future versions of the UIC specification
--- #    Implementations must support the extension feature of ASN.1, at least they must be able to ignore extensions while decoding the data
+-- #    The specification makes use of the ASN.1 extension marker ("..."). 
+-- #    Extensions might be defined in future versions of the UIC specification
+-- #    Implementations must support this extension feature of ASN.1, at least they must be able to ignore extensions while decoding the data
 -- #    ASN.1 extensions will be defined by UIC. It is not allowed to define bilateral extensions.
 -- #
 -- #  Bilateral Extensions:
 -- #    Bilateral extensions can be included in the data element "ExtensionData". 
 -- # 
--- # 
--- #
 -- #########################################################################################    
 
  
     
 -- ############################################################################################
--- type assignments
+-- Type assignments
 
     -- #########################################################################################
-    -- the basic entry point of the data structure 
-    --   the data include:
-    --            -issuer informations
-    --            -the details of the transport document
-    --            -informations required for the control process
-    --            -informations on the travelers independent from the transport document
-    --            -proprietary extensions
-    -- 
+    -- UniversalTicketData is the basic entry point of the data structure.
+    -- Its data include:
+    --   - issuer informations (this is the only mandatory information)
+    --   - informations on the travelers independent from the transport document
+    --   - informations on the group
+    --   - the details of the transport document
+    --   - informations required for the control process
+    --   - proprietary extensions
     -- ##########################################################################################
-    UniversalTicketData ::= SEQUENCE     {     
-        -- data specific to the issuer 
+    UniversalTicketData ::= SEQUENCE {
+    
+        -- Data specific to the issuer
         issuingDetail         IssuingData,                                   
         
-   --   Traveler data
-   --     these data do not include tariff details of the booked tariffs, 
-    --    tariff data are included in the transport document details and might 
-   --     have a reference to the traveler defined here.
-   --     - personal data of the travelers
-   --     - the index of the list can be used to identify the 
-   --       traveler within other contexts (e.g. in assigned tariffs)       
+        -- Traveler data. Present if personal data about the travelers are needed, otherwise omitted.
+        -- These data do not include tariff details of the booked tariffs.
+        -- Tariff data are included in the transport document details and might 
+        --   have a reference to the traveler defined here.
+        -- The index of the sequence can be used to identify the 
+        --   traveler within other contexts (e.g. in assigned tariffs)       
         traveler                SEQUENCE OF TravelerType                OPTIONAL,    
 
-        -- group details in case group participant cards group members or a group name needs to be indicated. Otherwise omitted.
-        groupDetails            GroupDetailsType                       OPTIONAL,
+        -- Group details. Present if the traveler is a member of a group, otherwise omitted.
+        groupDetails            GroupDetailsType                        OPTIONAL,
         
-        -- data of the transport document 
-        transportDocument       SEQUENCE OF DocumentData                 OPTIONAL,     
+        -- Data of the transport document 
+        transportDocument       SEQUENCE OF DocumentData                OPTIONAL,     
         
-        -- data specific to support the ticket control process
-         -- if TransportProduct is used the control data should be defined in the conditions
-        controlDetail           ControlData                              OPTIONAL, 
+        -- Data specific to support the ticket control process.
+        -- If TransportProduct is used, the control data should be defined in its conditions
+        --   and this global controlDetail element should be omitted.
+        controlDetail           ControlData                             OPTIONAL, 
         
-        -- proprietary data defined bilaterally
-        extension               SEQUENCE OF ExtensionData              OPTIONAL      
-        ,...
+        -- Proprietary data defined bilaterally
+        extension               SEQUENCE OF ExtensionData               OPTIONAL,
+        ...
     }      
 
    --  ###########################################################################################
-   --  the choice on the different transport documents that can be included in the bar code data:
-   --    - transport product
-   --    - reservation of car carriage                    (VET)
-   --    - Voucher                                                          
+   --  The choice on the different transport documents that can be included in the bar code data:
+   --    - universal transport product
+   --    - reservation of car carriage (VET)
+   --    - voucher                                                          
    --    - customer card (including bonus cards and reduction cards)
-   --    - counter marks issued for group tickets                                
    --    - parking ground tickets
    --    - station access / station passage tickets        
    --    - delay confirmation
+   --    - token
    --    - proprietary documents as an extension 
    --  ############################################################################################
-   DocumentData ::=  SEQUENCE {
-       
-       -- token
-       --     specific id to be exchanged with the ticket (e.g. id of the phone in case of tickets linked to a phone)
-       token  SEQUENCE OF TokenType                                     OPTIONAL,
-       
-       -- choice of the ticket
-       ticket CHOICE 
-       {
+   DocumentData ::= CHOICE {
 
-         -- universal transport product  
-         transportProduct        TransportProductData,           
-         
-         -- Reservation of car carriage
-         carCarriageReservation         CarCarriageReservationData, 
-         
-         -- voucher
-         voucher                        VoucherData,         
-         
-         -- customer card either to identify a customer and / or to provide reductions
-         customerCard                   CustomerCardData,     
-         
-         -- car parking slot
-         parkingGround                  ParkingGroundData, 
-         
-         -- ticket to pass the gates at a station
-         stationPassage                 StationPassageData, 
+       -- Universal transport product.
+       -- Can be used for tickets (incl. FIP), passes, reservations, countermarks, customer cards and parking.
+       transportProduct               TransportProductData,           
 
-         -- delay confirmation
-         delayConfirmation              DelayConfirmation,
+       -- Reservation of car carriage
+       carCarriageReservation         CarCarriageReservationData, 
          
-         -- proprietary data defined bilaterally
-         extension                      ExtensionData,    
-         ...
-       }                                                                  OPTIONAL,
+       -- Voucher
+       voucher                        VoucherData,         
+         
+       -- Customer card either to identify a customer and / or to provide reductions
+       customerCard                   CustomerCardData,     
+         
+       -- Car parking slot
+       parkingGround                  ParkingGroundData, 
+         
+       -- Ticket to pass the gates at a station
+       stationPassage                 StationPassageData, 
+
+       -- Delay confirmation
+       delayConfirmation              DelayConfirmation,
+         
+       -- Token (specific id linked to the ticket)
+       token                          TokenType,
+         
+       -- Proprietary data defined bilaterally
+       extension                      ExtensionData,    
        ...       
     }               
    
    --  ########################################################################################
-   --  confirmation of the delay of a transport 
-   --  
+   --  Confirmation of the delay of a transport 
    --  ########################################################################################
    DelayConfirmation ::= SEQUENCE {
        
-        -- transport number of the delayed transport 
+        -- Transport number of the delayed transport 
         transportNumber              TransportNumberType                  OPTIONAL,                    
                                 
-        -- planned departure date of the delayed transport in local time at the station where delay 
-        -- became relevant (see below)
+        -- Planned departure date of the delayed transport in local time at the station where delay 
+        --   became relevant (see below)
         departure                     ValidFromType                       OPTIONAL,        
     
-        -- station where the delay became relevant
+        -- Station where the delay became relevant
         station                       StationType                         OPTIONAL,    
     
-        -- delay in minutes at the mentioned station
-        delay                         INTEGER (1..999),
+        -- Delay in minutes at the mentioned station. Omitted if not relevant (e.g. if transport was cancelled)
+        delay                         INTEGER (1..999)                    OPTIONAL,
            
-        -- indication that the transport was cancelled
+        -- Indication that the transport was cancelled
         transportCancelled            BOOLEAN,
            
-        -- type of confirmation provided
+        -- Type of confirmation provided
         confirmationType              ConfirmationType                    DEFAULT travelerDelayConfirmation,
         
-        -- affected original ticket(s)
+        -- Affected original ticket(s)
         affectedTickets               SEQUENCE OF TicketLinkType          OPTIONAL,    
        
-        -- info text
+        -- Info text
         infoText                      UTF8String                          OPTIONAL,         
     
-        -- proprietary data defined bilaterally
+        -- Proprietary data defined bilaterally
         extension                     ExtensionData                       OPTIONAL,
         ...
    }
@@ -249,23 +242,23 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
    --   - details on the issuer
    --   - indication of test tickets (specimen)
    --   - payment details: method of payment, currency
-   --   - proprietary PNR of the issuer to be used to identify the sale within 
-   --     the issuers ecosystem
+   --   - proprietary id & booking id of the issuer to be used to identify the sale within his ecosystem
    --   - web link to display more information for the customer 
+   --   - retail information
    --   - proprietary extension data
    --  ######################################################################################## 
-    IssuingData ::=  SEQUENCE    {
+    IssuingData ::= SEQUENCE {
         
-        -- provider of the signature, may be absent if present in UicBarcodeHeader
+        -- Provider of the signature, may be absent if present in UicBarcodeHeader
         securityProvider               CompanyCodeType               OPTIONAL,       
         
-        -- issuer of the binary content of the transport document, if different from the security provider
+        -- Issuer of the binary content of the transport document, if different from the security provider
         issuer                         CompanyCodeType               OPTIONAL,    
          
-        -- issuing time stamp in UTC
-        -- number of year 
+        -- Issuing time stamp in UTC
+        -- Number of year 
         issuingYear                    INTEGER (2016..2269),        
-        -- number of the day in the year (1.1. = 1)
+        -- Number of the day in the year (1.1. = 1)
         issuingDay                     INTEGER (1..366),   
         -- The number of the minutes of issue might be used in case of account 
         --   based ticketing with a delay of n minutes for the replication of central
@@ -273,53 +266,56 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
         -- The time can be compared with the last synchronization time of the control device
         issuingTime                    INTEGER (0..1439),  
            
-        -- name of the issuer (E.g. short name mentioned in RICS code table)           
+        -- Name of the issuer (e.g. short name mentioned in RICS code table)           
         issuerName                     UTF8String                    OPTIONAL,              
                      
-        -- specimen indicates a test specimen not valid for traveling        
+        -- Specimen indicates a test specimen not valid for traveling        
         specimen                       BOOLEAN,         
 
-        -- secure paper indicates that this barcode is issued with a secure paper ticket 
-        --  to ensure the uniqueness of the ticket. This allows to use the same control 
-        --  procedure as for e-tickets also for anonymous tickets
-        --  the double use of the ticket is in this case excluded by the secure paper      
+        -- Secure paper indicates that this barcode is issued with a secure paper ticket 
+        --   to ensure the uniqueness of the ticket. This allows to use the same control 
+        --   procedure as for e-tickets also for anonymous tickets.
+        --   The double use of the ticket is in this case excluded by the secure paper.
         securePaperTicket              BOOLEAN, 
         
-        -- indicates that the ticket is valid for traveling or still needs activation
+        -- Indicates that the ticket is valid for traveling or still needs activation
         activated                      BOOLEAN,  
                        
-        -- currency of the price: ISO4217 currency codes
+        -- Currency of the price: ISO4217 currency codes (upper case)
         currency                       IA5String (SIZE(3))           DEFAULT "EUR",   
         
-        -- fraction of the prices included
+        -- Fraction of the prices included
         currencyFract                  INTEGER (1..3)                DEFAULT 2,                  
         
-        -- id to uniquely identify this ticket (barcode) within the context of the issuer and an appropriate time range
-        -- used to reference the ticket in central control applications (e.g. ETCD)
+        -- Id to uniquely identify this ticket (barcode) within the context of the issuer and an appropriate time range.
+        -- Used to reference the ticket in central control applications (e.g. ETCD)
         id                              IA5String,
 
-        -- booking reference to the booking containing this tcket (barcode). The booking might include more than one ticket (barcode)
+        -- Booking reference to the booking containing this ticket (barcode). The booking might include more than one ticket (barcode).
         bookingId                       IA5String                    OPTIONAL,          
                     
-        -- location of sale in case of a sale on board of a transport
+        -- Location of sale in case of a sale on board of a transport
         issuedOnTransport              TransportNumber               OPTIONAL,  
     
-         --  line number
+         -- Line number
          issuedOnLine                  TransportNumber               OPTIONAL,
 
-        -- point of sale 
+        -- Point of sale 
         pointOfSale                    GeoCoordinateType             OPTIONAL,     
 
-        -- retail information
+        -- Retail information
         productRetail                  ProductRetailData             OPTIONAL,
 
-        -- proprietary data defined bilaterally
+        -- ISO 639-1 coding (lower case) of the language preferred for the traveler / ticket holder
+        preferredLanguage              IA5String (SIZE(2))           OPTIONAL,    
+        
+        -- Proprietary data defined bilaterally
         extension                      ExtensionData                 OPTIONAL,            
         ...
    }
 
    --  ################################################################################### 
-   --  data allowing to describe all possible information about product retail
+   --  Data allowing to describe all possible information about product retail
    --  ################################################################################### 
    ProductRetailData ::= SEQUENCE {
    
@@ -332,75 +328,71 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
        -- Contract sales server identifier 
         retailServerId           CompanyCodeType                   OPTIONAL, 
 
-         -- Product retailer, as in ISO 24014-1 
+       -- Product retailer, as in ISO 24014-1 
        retailerId                CompanyCodeType                   OPTIONAL, 
 
-     -- Type of equipment that distributed the contract / the barcode
-      -- (value specific to the product retailer)
+       -- Type of equipment that distributed the contract / the barcode
+       -- (value specific to the product retailer)
        retailEquipmentType       INTEGER (0..99)                   OPTIONAL, 
 
-        -- Identifier of the final distribution point of the barcode
-         -- (value specific to the product retailer)
+       -- Identifier of the final distribution point of the barcode
+       -- (value specific to the product retailer)
        retailPointId             INTEGER                           OPTIONAL, 
 
-        -- Traceability information linked to the barcode or contrat generation
-         -- (value specific to the product retailer)
-       retailTraceability      IA5String                           OPTIONAL, 
+       -- Traceability information linked to the barcode or contrat generation
+       -- (value specific to the product retailer)
+       retailTraceability        IA5String                         OPTIONAL, 
     
        ...
    }
 
    --  ################################################################################### 
-   --  data supporting the control process
-   --  - list of items which the traveler can use to identify himself or the unique
-   --            usage of the ticket 
-   --           (card ids, parts or identity card numbers, credit card numbers,..)
-   --   - hints on the validation to be made on board
-   --     
+   --  Data supporting the control process
+   --  - List of items which the traveler can use to identify himself or the unique
+   --    usage of the ticket 
+   --    (card ids, parts or identity card numbers, credit card numbers...)
+   --   - Instructions on the inspection to be made on board
    --  ################################################################################### 
-   ControlData ::=  SEQUENCE    {   
-        
-        -- ISO 639-1 coding of the language preferred for the traveler / ticket holder
-        preferredLanguage                      IA5String (SIZE(2))   OPTIONAL,    
-        
-        -- cards that can be used to identify the ticket holder
+   ControlData ::= SEQUENCE {   
+
+        -- Cards that can be used to identify the ticket holder
         identificationByCardReference          SEQUENCE OF CardReferenceType OPTIONAL,    
         
-        -- indicator of wether id must be checked to identify the traveler
-        -- id-card or any official document proving identity and recognised by the carrier is acceptable. 
+        -- Indicator of wether id must be checked to identify the traveler.
+        -- Id-card or any official document proving identity and recognised by the carrier is acceptable
         identificationRequired                 BOOLEAN,          
         
-        -- indicator of wether passport id must be checked to identify the traveler
+        -- Indicator of wether passport id must be checked to identify the traveler
         identificationByPassportIdRequired     BOOLEAN,                   
         
-        -- other items which could be used to identify the ticket holder 
-        --    (for future use, code list to be defined)
-        identificationItem                     INTEGER OPTIONAL,            
+        -- Other items which could be used to identify the ticket holder 
+        -- (for future use, code list to be defined)
+        identificationItem                     INTEGER                        OPTIONAL,            
         
-        -- indicator of wether validation of the passport is required for elements other than identity (e.g. in case of Eurail)
-         -- (verification of the passport's identity is controlled by identificationByPassportRequired)
+        -- Indicator of wether validation of the passport is required for elements other than identity (e.g. in case of Eurail)
+        -- (verification of the passport's identity is controlled by identificationByPassportRequired)
         passportValidationRequired             BOOLEAN,             
         
-        -- indicator of wether online validation of the ticket is required
+        -- Indicator of wether online validation of the ticket is required
         onlineValidationRequired               BOOLEAN,          
         
-        -- percentage of the tickets to be validated in more detail 
-        --       (i.e. via online check or detailed checks later-on)
-        randomDetailedValidationRequired       INTEGER (0..99) OPTIONAL,          
+        -- Percentage of the tickets to be validated in more detail 
+        -- (i.e. via online check or detailed checks later-on)
+        randomDetailedValidationRequired       INTEGER (0..99)                OPTIONAL,          
         
-        -- indicator of wether validation of the traveler age is required (e.g. in case of reductions)
+        -- Indicator of wether validation of the traveler age is required (e.g. in case of reductions)
         ageCheckRequired                       BOOLEAN,          
         
-        -- indicator of wether validation of the travelers reduction card is required (e.g. in case of reductions)       
+        -- Indicator of wether validation of the travelers reduction card is required (e.g. in case of reductions)       
         reductionCardCheckRequired             BOOLEAN,          
         
-        -- controler info text
+        -- Info text for the inspector
         infoText                               UTF8String                                     OPTIONAL,      
         
-        -- additional tickets that should be controlled 
+        -- Additional tickets that should be controlled 
         includedTickets                        SEQUENCE OF TicketLinkType                     OPTIONAL,      
         
-        -- proprietary data defined bilaterally
+        -- Proprietary data defined bilaterally
         extension                              ExtensionData                                  OPTIONAL,     
         ...
    }                                      
@@ -408,44 +400,51 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
    --  #################################################################################### 
    --  Transport Product (ticket, right to travel, commercial card...)
    --  #################################################################################### 
-       TransportProductData ::= SEQUENCE     {    
+       TransportProductData ::= SEQUENCE {
 
-         -- detailed type of the transport product
-         productType                   ProductTypeType,
-         
-         product                       ProductType,       
+         -- Detailed type of the transport product
+         productType               ProductTypeType,
 
-         -- area (city, region, country...) in which the transport document is valid
+         -- Identification of the product (owner, id, textual description)
+         product                   ProductType,       
+
+         -- Area (city, region, country...) in which the transport document is valid
          -- (allows defining local value tables depending on this area)
-         validityAreaCodeTable         CodeTableType                             OPTIONAL,
-         validityAreaIds               AreaIdsType                               OPTIONAL, 
+         validityAreaCodeTable     CodeTableType                                    OPTIONAL,
+         validityAreaIds           AreaIdsType                                      OPTIONAL, 
     
-         -- version of the local code tables used in the area identified by:
-         -- - validityAreaId (if present)
-         -- - productOwnerNum (if globalValidityAreaIdIdentifier is absent)
-         localCodeTableVersion        INTEGER (0..255)                           OPTIONAL,            
-         validRegions                 SEQUENCE OF RegionalValiditySegmentType    OPTIONAL,
+         -- Version of the local code tables used in the area identified by:
+         -- - validityAreaIds (if present)
+         -- - productOwner (if validityAreaIds is absent)
+         localCodeTableVersion     INTEGER (0..255)                                 OPTIONAL,
 
-          -- to be provided in case the return route differs
-         validReturnRegions           SEQUENCE OF RegionalValiditySegmentType    OPTIONAL,
+         -- Geographical validity of the transport product.
+         -- This validity is described through successive segments that make up the route.
+         geoValidity               SEQUENCE SIZE (1..16) OF GeoValiditySegmentType  OPTIONAL,
 
-         -- general conditions 
-         generalConditions            ConditionsType,    
-         -- list of special conditions to be applied on parts of the route
-         specificConditions           SEQUENCE OF ConditionsType                 OPTIONAL,      
-                                                                               
-         -- reserved places
-         reservations                 SEQUENCE OF ReservationData (0..31)        OPTIONAL,  
-    
-         extension                   ExtensionData                               OPTIONAL,
+          -- To be provided in case the return route differs
+         returnGeoValidity         SEQUENCE SIZE (1..16) OF GeoValiditySegmentType  OPTIONAL,
+
+         -- General conditions that apply to all segments of the route
+         generalConditions         ConditionsType                                   OPTIONAL,
+         
+         -- Specific conditions that can be applied to segments of the route.
+         -- When a segment refers to specific conditions, these are added to the general conditions.
+         -- If a particular condition is defined in both the general and then specific conditions,
+         -- the one in specific conditions overrules the one in the general conditions.
+         specificConditions        SEQUENCE SIZE (1..32) OF ConditionsType          OPTIONAL,      
+
+         -- Proprietary data defined bilaterally
+         extension                 ExtensionData                                    OPTIONAL,
          ...
    }           
 
    --  #################################################################################
    --   car carriage for a car, motorcycle or trailer
    --  #################################################################################
-   CarCarriageReservationData ::= SEQUENCE    {   
+   CarCarriageReservationData ::= SEQUENCE {   
 
+        -- identification of the product (owner, id, textual description)
          product                         ProductType,    
     
          -- transport number (=service number, train number) 
@@ -614,6 +613,7 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
    --  ######################################################################################
    VoucherData         ::= SEQUENCE     {
 
+       -- identification of the product (owner, id, textual description)
        product                       ProductType,        
        
        -- internal reference of the voucher 
@@ -777,28 +777,31 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
        ...
   }
 
+   -- rare details and conditions
    RareDetailsType::= SEQUENCE {
-        -- rare details and conditions
+
+        -- associated online identifier (e.g. Account Based Ticketing identifier)
+        token                     TokenType                       OPTIONAL,
 
         -- family of the product (value according to the product owner)
         -- (allows processing the product according to its family)
-        productFamily             IA5String                         OPTIONAL,       
+        productFamily             IA5String                       OPTIONAL,       
 
         -- included or excluded transport modes. Code list: EN 1545-1 (transport type code)
-        excludedTransportType     SEQUENCE OF INTEGER (0..31)        OPTIONAL,  
+        excludedTransportType     SEQUENCE OF INTEGER (0..31)     OPTIONAL,  
    
         -- service brands valid for the route 
         -- in case this list is provided the ticket is valid on all other service brands       
-        excludedServiceBrands        SEQUENCE OF INTEGER (1..32000)  OPTIONAL,   
+        excludedServiceBrands     SEQUENCE OF INTEGER (1..32000)  OPTIONAL,   
 
-        price                        INTEGER                         OPTIONAL,
+        price                     INTEGER                         OPTIONAL,
 
         -- to be used in case of special conditions that can be provided textual only
-        conditionText                UTF8String                      OPTIONAL,
+        conditionText             UTF8String                      OPTIONAL,
 
         -- in case the luggage restrictions are general and do not depend 
         --    on the ticket type they should not be included
-        luggage                     LuggageRestrictionType          OPTIONAL,        
+        luggage                   LuggageRestrictionType          OPTIONAL,        
         ...
        
    }
@@ -812,7 +815,8 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
    --          E.g. for staff working in a station.
    --  ##################################################################################### 
    StationPassageData     ::= SEQUENCE     {
-       
+
+         -- identification of the product (owner, id, textual description)
          product                       ProductType,        
    
          -- internal reference to the document 
@@ -894,7 +898,8 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
    --        - DB parking ground reservation
    -- #######################################################################################
    ParkingGroundData ::= SEQUENCE     {    
-       
+
+         -- identification of the product (owner, id, textual description)
          product                       ProductType,        
    
          -- internal reference to the document
@@ -931,7 +936,7 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
    }    
 
 
-   --  ######################################################################################
+   -- ######################################################################################
    -- product identification
    -- #######################################################################################
    ProductType ::= SEQUENCE     {    
@@ -1121,10 +1126,10 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
    
 
   -- ###################################################################################### 
-  -- regional validity segment
-  --     specification of the regional validity of one segment of the total regional validity. 
+  -- Geographical validity segment
+  --   Specification of the geographical validity of one segment of the total validity. 
   -- ###################################################################################### 
-  RegionalValiditySegmentType ::= SEQUENCE {
+  GeoValiditySegmentType ::= SEQUENCE {
 
         -- if the code table is not provided the code table from the gereral conditions applies
       stationCodeTable                       CodeTableType          OPTIONAL,         
@@ -1319,15 +1324,18 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
        tokenProvider           CompanyCodeType                       OPTIONAL,  
        
        -- format of the 'token' element, in case the provider has multiple tokens:
-       -- "+" + [2-letters ISO 3166 country code] + [addon, chosen by the registrar of that country]
+       -- "+" + [2-letters uppercase ISO 3166 country code] + [addon, chosen by the registrar of that country]
        --    means that 'token' is encoded as defined by this registrar,
        --    according to the format identified as 'addon' by this registrar.
-       -- "_" + [4-digit RICS] + [addon, chosen by this company] means that 'token' is encoded as specified
-       --    by the company identified by the RICS code, according to the format identified as 'addon'
+       -- "_" + [CompanyCode] + "_" + [addon, chosen by this company]
+       --    means that 'token' is encoded as specified by the company identified by CompanyCode,
+       --    according to the format identified as 'addon' by this company.
        -- "*" + [addon] means that 'token' format is specific to this barcode, identified as 'addon' by its issuer,
        -- Others values are reserved for future UIC use and shall not be used.
        -- If absent, the format is considered implicit for the token provider.
        tokenSpecification        IA5String                          OPTIONAL, 
+
+       -- value of the token, encoded according to tokenSpecification
        token                     OCTET STRING,
        ...
    }
@@ -1700,6 +1708,7 @@ END
 --        - check-in / check-out barcode at check-in check-out point
 -- - other use cases?
 -- ############################################################################################
+
 
 
 
