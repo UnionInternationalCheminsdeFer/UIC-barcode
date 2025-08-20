@@ -199,12 +199,11 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
          stationPassage                 StationPassageData, 
 
          -- delay confirmation
-         delayConfirmation              DelayConfirmation
+         delayConfirmation              DelayConfirmation,
          
          -- proprietary data defined bilaterally
-         extension                      ExtensionData,   
-                 
-         ,...
+         extension                      ExtensionData,    
+         ...
        }                                                                  OPTIONAL,
        ...       
     }               
@@ -734,7 +733,7 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
        -- data specific to support the ticket control process, 
        controlDetail                   ControlData                      OPTIONAL, 
 
-       rareConditions                  RareConditionsType               OPTIONAL,   
+       rareDetails                     RareDetailsType               OPTIONAL,   
        ,...
    }
 
@@ -775,15 +774,11 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
            -- the day is given by the number of days from the first day of validity
            -- 0 = first day of validity              
        activatedDay                            SEQUENCE OF INTEGER (0..500)            OPTIONAL,  
-
-           -- in case the luggage restrictions are general and do not depend 
-       --    on the ticket type they should not be included
-       luggage                                 LuggageRestrictionType                  OPTIONAL,
-       ,...
+       ...
   }
 
-   RareConditionsType::= SEQUENCE {
-        -- rare conditions
+   RareDetailsType::= SEQUENCE {
+        -- rare details and conditions
 
         -- family of the product (value according to the product owner)
         -- (allows processing the product according to its family)
@@ -800,6 +795,10 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 
         -- to be used in case of special conditions that can be provided textual only
         conditionText                UTF8String                      OPTIONAL,
+
+        -- in case the luggage restrictions are general and do not depend 
+        --    on the ticket type they should not be included
+        luggage                     LuggageRestrictionType          OPTIONAL,        
         ...
        
    }
@@ -1526,8 +1525,8 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
         point-2-point-multiple-trips                                   (3),   -- multiple usage ticket for origin to/froim destination e.g. monthly ticket beaween A and B
         area-ticket-multiple-trips                                     (4),   -- multiple usage ticket for an area
         area-ticket-single-trip                                        (5),   -- single usage ticket for an area
-        upgrade-point-2-point-single-trip                              (6),   -- upgrade on a single usage ticket for origin to destination
-        upgrade-point-2-point-single-trip-mandatory-reservation        (7),   -- upgrade on a single usage ticket for origin to destination
+        upgrade-point-2-point-single-trip                              (6),   -- upgrade on a single usage ticket for origin to destination (e.g. 2nd to 1st classs, normal to premium train)
+        upgrade-point-2-point-single-trip-mandatory-reservation        (7),   -- upgrade on a single usage ticket for origin to destination (e.g. 2nd to 1st classs, normal to premium train)
         upgrade-point-2-point-return-trip                              (8),   -- upgrade on a single usage ticket for origin to destination and return
         upgrade-point-2-point-multiple-trips                           (9),   -- upgrade on a multiple usage ticket for origin to/froim destination e.g. monthly ticket beaween A and B
         upgrade-area-ticket-multiple-trips                             (10),   -- upgrade on a multiple usage ticket for an area
@@ -1541,14 +1540,12 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
     }      
     -- alternative:
     TicketUsageType ::= SEQUENCE {
-    
         -- single  vs. multiple trip ticket
         singleTrip           BOOLEAN,
         -- upgrade vs. base ticket    
-    upgrade              BOOLEAN.
-        -- point-2-point vs area ticket   (needed?)
+        upgrade              BOOLEAN.
+        -- point-2-point vs area ticket  
         point-2-point        BOOLEAN,
-
     }
 
     ServiceType        ::= ENUMERATED  {    
@@ -1703,6 +1700,7 @@ END
 --        - check-in / check-out barcode at check-in check-out point
 -- - other use cases?
 -- ############################################################################################
+
 
 
 
