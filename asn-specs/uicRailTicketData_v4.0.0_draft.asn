@@ -71,8 +71,8 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 -- # 
 -- #  example 1:  (31.12.2017 23:05 UTC == 01.01.2018 00:05 CET) : 
 -- #          issuing date (UTC):            31.12.2017 23:05  == 01.01.2018 00:05 CET
--- #                 issuingYear                 = 2017        
--- #               issuingDay                = 365   
+-- #              issuingYear                 = 2017        
+-- #              issuingDay                = 365   
 -- #              issuingTime                = 1385  
 -- #          local departure date (CET):   01.01.2018 00:15  == 31.12.2017 23:15 UTC   
 -- #              departureDate              = 1   (= 01.01.2018 - 31.12.2017)
@@ -82,8 +82,8 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 -- #  
 -- #  example 2:  (01.01.2018 00:05 UTC == 31.12.2017 20:05 AST)
 -- #          issuing date (UTC):            01.01.2018 00:05 UTC == 31.12.2017 20:05 AST
--- #                 issuingYear                 = 2018        
--- #               issuingDay                = 1   
+-- #              issuingYear                 = 2018        
+-- #              issuingDay                = 1   
 -- #              issuingTime                = 5  
 -- #          local departure date (AST):   31.12.2017 22:05 AST == 1.1.2018 02:05 UTC   
 -- #              departureDate              = -1   (= 31.12.2017 - 01.01.2018)
@@ -1703,6 +1703,7 @@ END
 --        - check-in / check-out barcode at check-in check-out point
 -- - other use cases?
 -- ############################################################################################
+
 
 
 
