@@ -29,18 +29,19 @@ class BitStringCoder implements Decoder, Encoder {
                 throw new UnsupportedOperationException(
                     "Bitstring with extensions is not implemented yet");
             }
-            FixedSize size = annotations.getAnnotation(FixedSize.class);
+            FixedSize fixedSize = annotations.getAnnotation(FixedSize.class);
+            SizeRange sizeRange = annotations.getAnnotation(SizeRange.class);
             int position = bitbuffer.position();
-            if (size != null) {
-            	if (!List.class.isAssignableFrom(type)) {
-            		throw new AssertionError("Field should be a list of booleans!"); 
-            	}
+        	@SuppressWarnings("unchecked")
+			List<Boolean> list = (List<Boolean>)obj;            
+            if (fixedSize != null) {
             	
-            	@SuppressWarnings("unchecked")
-				List<Boolean> list = (List<Boolean>)obj;
-                if (list.size() != size.value()) { 
+            	if (!List.class.isAssignableFrom(type)) {
+            		throw new AssertionError("BITSTRING Field should be a list of booleans!"); 
+            	}
+                if (list.size() != fixedSize.value()) { 
                 	throw new AssertionError(
-                        "Declared size (" + size.value() +
+                        "BITSTRING Declared size (" + fixedSize.value() +
                                 ") and number of fields (" + list.size() +
                                 ") do not match!"); 
                 }
@@ -54,9 +55,41 @@ class BitStringCoder implements Decoder, Encoder {
                 UperEncoder.logger.debug(String.format("BITSTRING %s, encoded as <%s>", obj.getClass().getName(),
                         bitbuffer.toBooleanStringFromPosition(position)));
                 return;
+            } else if (sizeRange != null) {
+                if (list.size() < sizeRange.minValue() 
+                    || list.size() > sizeRange.maxValue()) { 
+                	throw new AssertionError(
+                        "BITSTRING Declared size (" + sizeRange.minValue() + ".." +
+                         sizeRange.maxValue() + ") and number of fields (" + list.size() +
+                         ") do not match!"); 
+                }            	
+            	
+                int position1 = bitbuffer.position();
+                UperEncoder.encodeConstrainedInt(bitbuffer, list.size(), sizeRange.minValue(),
+                        sizeRange.maxValue());
+                int position2 = bitbuffer.position();
+                for (int i = 0; i < sizeRange.maxValue(); i++) {
+                    bitbuffer.put(list.get(i));
+                }
+                UperEncoder.logger.debug(String.format("BITSTRING %s size %s: %S", obj.getClass().getName(),
+                        bitbuffer.toBooleanString(position1, position2 - position1),
+                        bitbuffer.toBooleanStringFromPosition(position2)));
+                return;
             } else {
-                throw new UnsupportedOperationException(
-                        "Bitstrings of variable size are not implemented yet");
+            	int lastTrueBit = 0;   
+                for (int i = 0; i < list.size() ; i++) {
+                    if (list.get(i) == true) lastTrueBit = i + 1;
+                }
+                int position1 = bitbuffer.position();   
+                UperEncoder.encodeLengthDeterminant(bitbuffer, lastTrueBit);    
+                int position2 = bitbuffer.position(); 
+                for (int i = 0; i < lastTrueBit; i++) {
+                    bitbuffer.put(list.get(i));
+                }   
+                UperEncoder.logger.debug(String.format("BITSTRING %s size %s: %S", obj.getClass().getName(),
+                        bitbuffer.toBooleanString(position1, position2 - position1),
+                        bitbuffer.toBooleanStringFromPosition(position2)));          	
+            	return;            	
             }
         } else if (obj instanceof Asn1VarSizeBitstring) {
             int position = bitbuffer.position();
@@ -85,7 +118,20 @@ class BitStringCoder implements Decoder, Encoder {
                         bitbuffer.toBooleanStringFromPosition(position2)));
                 return;
             } else {
-                throw new IllegalArgumentException("Both SizeRange and FixedSize are null");
+            	int lastTrueBit = 0;   
+                for (int i = 0; i < bitstring.size(); i++) {
+                    if (bitstring.getBit(i)== true) lastTrueBit = i + 1;
+                }
+                int position1 = bitbuffer.position();   
+                UperEncoder.encodeLengthDeterminant(bitbuffer, lastTrueBit);    
+                int position2 = bitbuffer.position(); 
+                for (int i = 0; i < lastTrueBit; i++) {
+                    bitbuffer.put(bitstring.getBit(i));
+                }   
+                UperEncoder.logger.debug(String.format("BITSTRING %s size %s: %S", obj.getClass().getName(),
+                        bitbuffer.toBooleanString(position1, position2 - position1),
+                        bitbuffer.toBooleanStringFromPosition(position2)));          	
+            	return;
             }
         }
     }
@@ -102,11 +148,10 @@ class BitStringCoder implements Decoder, Encoder {
         AnnotationStore annotations = new AnnotationStore(classOfT.getAnnotations(),
                 extraAnnotations);
         if (!Asn1VarSizeBitstring.class.isAssignableFrom(classOfT)) {
-            UperEncoder.logger.debug("Bitlist(fixed-size, all-named)");
+            UperEncoder.logger.debug("Bitlist");
             FixedSize fixedSize = annotations.getAnnotation(FixedSize.class);
-            if (fixedSize == null) { throw new UnsupportedOperationException(
-                    "bitstrings of non-fixed size that do not extend Asn1VarSizeBitstring are not supported yet");
-            }
+            SizeRange sizeRange = annotations.getAnnotation(SizeRange.class);
+
             if (UperEncoder.hasExtensionMarker(annotations)) {
                 boolean extensionPresent = bitbuffer.get();
                 if (extensionPresent) { throw new UnsupportedOperationException(
@@ -114,6 +159,18 @@ class BitStringCoder implements Decoder, Encoder {
             }
             T result = UperEncoder.instantiate(classOfT);
             
+            long size = 0;
+            if (fixedSize != null) {
+            	size = fixedSize.value();
+                UperEncoder.logger.debug("Bitlist Fixed Size");
+            } else if (sizeRange != null) {
+                UperEncoder.logger.debug("Bitlist with Size Range");
+            	size = UperEncoder.decodeConstrainedInt(bitbuffer, UperEncoder.intRangeFromSizeRange(sizeRange));
+            } else {
+                UperEncoder.logger.debug("Bitlist unrestricted");
+                size = UperEncoder.decodeLengthDeterminant(bitbuffer);
+            }
+            	
             Method addBooleanMethod;
             try {
                 addBooleanMethod = classOfT.getDeclaredMethod("add", Object.class);
@@ -121,19 +178,40 @@ class BitStringCoder implements Decoder, Encoder {
             } catch (SecurityException | NoSuchMethodException e) {
                 throw new AssertionError("Can't find/access add " + e);
             }
-            
-            for (int i = 0; i < fixedSize.value(); i++) {
-                try {
-                    addBooleanMethod.invoke(result, bitbuffer.get());
-                } catch (IllegalArgumentException | InvocationTargetException | IllegalAccessException e) {
-                    throw new IllegalArgumentException("Can't invoke add", e);
-                }
+                
+            for (int i = 0; i < size; i++) {
+               try {
+                  addBooleanMethod.invoke(result, bitbuffer.get());
+               } catch (IllegalArgumentException | InvocationTargetException | IllegalAccessException e) {
+                  throw new IllegalArgumentException("Can't invoke add", e);
+               }
             }            
-            return result;
+            return result;            	            
+            
+
         } else {
-            UperEncoder.logger.debug("Bitlist(var-size)");
             FixedSize fixedSize = annotations.getAnnotation(FixedSize.class);
             SizeRange sizeRange = annotations.getAnnotation(SizeRange.class);
+
+            if (UperEncoder.hasExtensionMarker(annotations)) {
+                boolean extensionPresent = bitbuffer.get();
+                if (extensionPresent) { throw new UnsupportedOperationException(
+                        "extensions in fixed-size bitlist are not supported yet"); }
+            }
+            T result = UperEncoder.instantiate(classOfT);
+            
+            long size = 0L;
+            if (fixedSize != null) {
+            	size = fixedSize.value();
+                UperEncoder.logger.debug("Bitlist Fixed Size");
+            } else if (sizeRange != null) {
+                UperEncoder.logger.debug("Bitlist with Size Range");
+            	size = UperEncoder.decodeConstrainedInt(bitbuffer, UperEncoder.intRangeFromSizeRange(sizeRange));
+            } else {
+                UperEncoder.logger.debug("Bitlist unrestricted");
+                size = UperEncoder.decodeLengthDeterminant(bitbuffer);
+            }
+            
             // We use reflection here to access protected method of Asn1VarSizeBitstring.
             // Alternative would be to mandate BitSet constructors for all subclasses of
             // Asn1VarSizeBitstring.
@@ -145,11 +223,7 @@ class BitStringCoder implements Decoder, Encoder {
             } catch (SecurityException | NoSuchMethodException e) {
                 throw new AssertionError("Can't find/access setBit " + e);
             }
-            Long size = (fixedSize != null) ? fixedSize.value() :
-                    (sizeRange != null) ? UperEncoder.decodeConstrainedInt(bitbuffer,
-                            UperEncoder.intRangeFromSizeRange(sizeRange)) :
-                            badSize(classOfT);
-            T result = UperEncoder.instantiate(classOfT);
+
             for (int i = 0; i < size; i++) {
                 try {
                     setBitMethod.invoke(result, i, bitbuffer.get());
