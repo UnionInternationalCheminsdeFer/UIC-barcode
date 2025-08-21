@@ -8,8 +8,8 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-import org.uic.barcode.asn1.datatypes.FixedSize;
-import org.uic.barcode.asn1.datatypes.SizeRange;
+import org.uic.barcode.asn1.datatypes.SequenceFixedSize;
+import org.uic.barcode.asn1.datatypes.SequenceSizeRange;
 import org.uic.barcode.asn1.uper.SimpleTypeResolver.Unknown;
 
 
@@ -25,7 +25,7 @@ class SeqOfCoder implements Decoder, Encoder {
         AnnotationStore annotations = new AnnotationStore(type.getAnnotations(), extraAnnotations);
         List<?> list = (List<?>) obj;
 
-        final FixedSize fixedSize = annotations.getAnnotation(FixedSize.class);
+        final SequenceFixedSize fixedSize = annotations.getAnnotation(SequenceFixedSize.class);
 
         //CG pass annotations too each field encoding
         Annotation[] annotationArray = new Annotation[] {};
@@ -38,10 +38,10 @@ class SeqOfCoder implements Decoder, Encoder {
             }  
         } 
 
-        SizeRange sizeRange = annotations.getAnnotation(SizeRange.class);
+        SequenceSizeRange sizeRange = annotations.getAnnotation(SequenceSizeRange.class);
         if (fixedSize != null)
-            sizeRange = new SizeRange() {
-                @Override public Class<? extends Annotation> annotationType() { return SizeRange.class; }
+            sizeRange = new SequenceSizeRange() {
+                @Override public Class<? extends Annotation> annotationType() { return SequenceSizeRange.class; }
                 @Override public int minValue() { return fixedSize.value(); }
                 @Override public int maxValue() { return fixedSize.value(); }
                 @Override public boolean hasExtensionMarker() { return false; }
@@ -85,7 +85,7 @@ class SeqOfCoder implements Decoder, Encoder {
         UperEncoder.encodeConstrainedInt(bitbuffer, list.size(), sizeRange.minValue(), sizeRange.maxValue());
         UperEncoder.logger.debug(String.format("  all elems of Seq Of: %s", list));
         for (Object elem : list) {
-            UperEncoder.encode2(bitbuffer, elem, new Annotation[] {});
+            UperEncoder.encode2(bitbuffer, elem, annotationArray );
         }
     }
 
@@ -100,8 +100,8 @@ class SeqOfCoder implements Decoder, Encoder {
         AnnotationStore annotations = new AnnotationStore(classOfT.getAnnotations(),
                 extraAnnotations);
         UperEncoder.logger.debug(String.format("SEQUENCE OF for %s", classOfT));
-        FixedSize fixedSize = annotations.getAnnotation(FixedSize.class);
-        SizeRange sizeRange = annotations.getAnnotation(SizeRange.class);
+        SequenceFixedSize fixedSize = annotations.getAnnotation(SequenceFixedSize.class);
+        SequenceSizeRange sizeRange = annotations.getAnnotation(SequenceSizeRange.class);
 
         //CG pass annotations from the sequence to each element encoding
         Annotation[] annotationArray = new Annotation[] {};

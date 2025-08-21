@@ -18,6 +18,7 @@ import org.uic.barcode.asn1.datatypes.HasExtensionMarker;
 import org.uic.barcode.asn1.datatypes.IntRange;
 import org.uic.barcode.asn1.datatypes.IsExtension;
 import org.uic.barcode.asn1.datatypes.NoAsn1Field;
+import org.uic.barcode.asn1.datatypes.SequenceSizeRange;
 import org.uic.barcode.asn1.datatypes.SizeRange;
 import org.uic.barcode.logger.Logger;
 import org.uic.barcode.logger.LoggerFactory;
@@ -192,6 +193,10 @@ public final class UperEncoder {
     static IntRange intRangeFromSizeRange(SizeRange sizeRange) {
         return newRange(sizeRange.minValue(), sizeRange.maxValue(), sizeRange.hasExtensionMarker());
     }
+    
+    static IntRange intRangeFromSizeRange(SequenceSizeRange sizeRange) {
+        return newRange(sizeRange.minValue(), sizeRange.maxValue(), sizeRange.hasExtensionMarker());
+    }
 
     private static List<Encoder> encoders = new ArrayList<>();
     private static List<Decoder> decoders = new ArrayList<>();
@@ -206,6 +211,7 @@ public final class UperEncoder {
         encoders.add(new BitStringCoder());
         encoders.add(new SeqOfCoder());
         encoders.add(new StringCoder());
+        encoders.add(new NullCoder());        
 
         decoders.add(new IntCoder());
         decoders.add(new ByteCoder());
@@ -216,6 +222,7 @@ public final class UperEncoder {
         decoders.add(new BitStringCoder());
         decoders.add(new SeqOfCoder());
         decoders.add(new StringCoder());
+        decoders.add(new NullCoder());
 
     }
 
