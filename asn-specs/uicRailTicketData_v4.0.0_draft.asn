@@ -1,6 +1,7 @@
 -- Creator: ASN.1 Editor (http://asneditor.sourceforge.net)
 -- Author: ClemensGantert
 -- Created: Mon Jun 28 14:14:28 CEST 2021
+-- Last modification: Fri Sep 19 CEST 16:00:00 CEST 2025
 ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 
 -- imports and exports
@@ -112,479 +113,534 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 -- #  Bilateral Extensions:
 -- #    Bilateral extensions can be included in the data element "ExtensionData".
 -- #
--- #########################################################################################
+-- ##############################################################################################
 
 
-
--- ############################################################################################
+-- ##############################################################################################
 -- Type assignments
+-- ##############################################################################################
 
-    -- #########################################################################################
-    -- UniversalTicketData is the basic entry point of the data structure.
-    -- Its data include:
-    --   - issuer informations (this is the only mandatory information)
-    --   - informations on the travelers independent from the transport document
-    --   - informations on the group
-    --   - the details of the transport document
-    --   - informations required for the control process
-    --   - proprietary extensions
-    -- ##########################################################################################
-    UniversalTicketData ::= SEQUENCE {
+-- ##############################################################################################
+-- UniversalTicketData is the basic entry point of the data structure.
+-- Its data include:
+--   - issuer informations (this is the only mandatory information)
+--   - informations on the travelers independent from the transport document
+--   - informations on the group
+--   - the details of the transport document
+--   - informations required for the control process
+--   - proprietary extensions
+-- ##############################################################################################
+UniversalTicketData ::= SEQUENCE {
 
-        -- Data specific to the issuer
-        issuingDetail         IssuingData,
+    -- Data specific to the issuer
+    issuingDetail         IssuingData,
 
-        -- Traveler data. Present if personal data about the travelers are needed, otherwise omitted.
-        -- These data do not include tariff details of the booked tariffs.
-        -- Tariff data are included in the transport document details and might
-        --   have a reference to the traveler defined here.
-        -- The index of the sequence can be used to identify the
-        --   traveler within other contexts (e.g. in assigned tariffs)
-        traveler                SEQUENCE OF TravelerType                OPTIONAL,
+    -- Traveler data. Present if personal data about the travelers are needed, otherwise omitted.
+    -- These data do not include tariff details of the booked tariffs.
+    -- Tariff data are included in the transport document details and might
+    --   have a reference to the traveler defined here.
+    -- The index of the sequence can be used to identify the
+    --   traveler within other contexts (e.g. in assigned tariffs).
+    traveler              SEQUENCE OF TravelerType                OPTIONAL,
 
-        -- Group details. Present if the traveler is a member of a group, otherwise omitted.
-        groupDetails            GroupDetailsType                        OPTIONAL,
+    -- Group details. Present if the traveler is a member of a group, otherwise omitted.
+    groupDetails          GroupDetailsType                        OPTIONAL,
 
-        -- Data of the transport document
-        transportDocument       SEQUENCE OF DocumentData                OPTIONAL,
+    -- Data of the transport documents.
+    -- Only one element should be a transportProduct, the others being associated documents.
+    --   (e.g. associated commercial card, associated tokens, associated carCarriage, vouchers...)
+    transportDocument     SEQUENCE SIZE (1..16) OF DocumentData   OPTIONAL,
 
-        -- Data specific to support the ticket control process.
-        -- If TransportProduct is used, the control data should be defined in its conditions
-        --   and this global controlDetail element should be omitted.
-        controlDetail           ControlData                             OPTIONAL,
+    -- Data specific to support the ticket control process.
+    -- If TransportProduct is used, the control data should be defined in its conditions
+    --   and this global controlDetail element should be omitted.
+    controlDetail         ControlData                             OPTIONAL,
 
-        -- Proprietary data defined bilaterally
-        extension               SEQUENCE OF ExtensionData               OPTIONAL,
-        ...
-    }
+    -- Proprietary data defined bilaterally.
+    extension             SEQUENCE OF ExtensionData               OPTIONAL,
+    ...
+}
 
-   --  ###########################################################################################
-   --  The choice on the different transport documents that can be included in the bar code data:
-   --    - universal transport product
-   --    - reservation of car carriage (VET)
-   --    - voucher
-   --    - customer card (including bonus cards and reduction cards)
-   --    - parking ground tickets
-   --    - station access / station passage tickets
-   --    - delay confirmation
-   --    - token
-   --    - proprietary documents as an extension
-   --  ############################################################################################
-   DocumentData ::= CHOICE {
+-- ##############################################################################################
+-- The choice on the different transport documents that can be included in the bar code data:
+--   - universal transport product
+--   - reservation of car carriage (VET)
+--   - voucher
+--   - customer card (including bonus cards and reduction cards)
+--   - parking ground tickets
+--   - station access / station passage tickets
+--   - delay confirmation
+--   - token
+--   - proprietary documents as an extension
+-- #############################################################################################
+DocumentData ::= CHOICE {
 
-       -- Universal transport product.
-       -- Can be used for tickets (incl. FIP), passes, reservations, countermarks, customer cards and parking.
-       transportProduct               TransportProductData,
+    -- Universal transport product.
+    -- Can be used for tickets (incl. FIP), passes, reservations, countermarks, customer cards and parking.
+    transportProduct               TransportProductData,
 
-       -- Reservation of car carriage
-       carCarriageReservation         CarCarriageReservationData,
+    -- Reservation of car carriage.
+    carCarriageReservation         CarCarriageReservationData,
 
-       -- Voucher
-       voucher                        VoucherData,
+    -- Voucher.
+    voucher                        VoucherData,
 
-       -- Customer card either to identify a customer and / or to provide reductions
-       customerCard                   CustomerCardData,
+    -- Simple customer card either to identify a customer and / or to provide reductions or loyalty.
+    -- For detailed or complex commercial cards (e.g. valid only on a specific OD), use transportProduct instead.
+    customerCard                   CustomerCardData,
 
-       -- Car parking slot
-       parkingGround                  ParkingGroundData,
+    -- Standalone car parking slot.
+    -- For parking as a part of a global door-to-door journey, use transportProduct instead.
+    parkingGround                  ParkingGroundData,
 
-       -- Ticket to pass the gates at a station
-       stationPassage                 StationPassageData,
+    -- Ticket to pass the gates at a station.
+    stationPassage                 StationPassageData,
 
-       -- Delay confirmation
-       delayConfirmation              DelayConfirmation,
+    -- Delay confirmation.
+    delayConfirmation              DelayConfirmation,
 
-       -- Token (specific id linked to the ticket)
-       token                          TokenType,
+    -- Token (specific id linked to the ticket).
+    token                          TokenType,
 
-       -- Proprietary data defined bilaterally
-       extension                      ExtensionData,
-       ...
-    }
+    -- Proprietary data defined bilaterally.
+    extension                      ExtensionData,
+	
+    ...
+}
 
-   --  ########################################################################################
-   --  Confirmation of the delay of a transport
-   --  ########################################################################################
-   DelayConfirmation ::= SEQUENCE {
+-- ##############################################################################################
+-- Confirmation of the delay of a transport
+-- ##############################################################################################
+DelayConfirmation ::= SEQUENCE {
 
-        -- Transport number of the delayed transport
-        transportNumber              TransportNumberType                  OPTIONAL,
+    -- Transport number of the delayed transport.
+    transportNumber              TransportNumberType                  OPTIONAL,
 
-        -- Planned departure date of the delayed transport in local time at the station where delay
-        --   became relevant (see below)
-        departure                     ValidFromType                       OPTIONAL,
+    -- Planned departure date of the delayed transport in local time at the station where delay
+    --   became relevant (see below).
+    departure                     ValidFromType                       OPTIONAL,
 
-        -- Station where the delay became relevant
-        station                       StationType                         OPTIONAL,
+    -- Station where the delay became relevant.
+    station                       StationType                         OPTIONAL,
 
-        -- Delay in minutes at the mentioned station. Omitted if not relevant (e.g. if transport was cancelled)
-        delay                         INTEGER (1..999)                    OPTIONAL,
+    -- Delay in minutes at the mentioned station. Omitted if not relevant (e.g. if transport was cancelled).
+    delay                         INTEGER (1..999)                    OPTIONAL,
 
-        -- Indication that the transport was cancelled
-        transportCancelled            BOOLEAN,
+    -- Indication that the transport was cancelled.
+    transportCancelled            BOOLEAN,
 
-        -- Type of confirmation provided
-        confirmationType              ConfirmationType                    DEFAULT travelerDelayConfirmation,
+    -- Type of confirmation provided.
+    confirmationType              ConfirmationType                    DEFAULT travelerDelayConfirmation,
 
-        -- Affected original ticket(s)
-        affectedTickets               SEQUENCE OF TicketLinkType          OPTIONAL,
+    -- Affected original ticket(s).
+    affectedTickets               SEQUENCE OF TicketLinkType          OPTIONAL,
 
-        -- Info text
-        infoText                      UTF8String                          OPTIONAL,
+    -- Info text.
+    infoText                      UTF8String                          OPTIONAL,
 
-        -- Proprietary data defined bilaterally
-        extension                     ExtensionData                       OPTIONAL,
-        ...
+    -- Proprietary data defined bilaterally.
+    extension                     ExtensionData                       OPTIONAL,
+	
+    ...
+}
+
+-- ##############################################################################################
+-- Details of the issuer and the issue of the ticket
+--   - details on the issuer
+--   - indication of test tickets (specimen)
+--   - payment details: method of payment, currency
+--   - proprietary id & booking id of the issuer to be used to identify the sale within his ecosystem
+--   - web link to display more information for the customer
+--   - retail information
+--   - proprietary extension data
+-- ##############################################################################################
+IssuingData ::= SEQUENCE {
+
+    -- Provider of the signature, may be absent if present in UicBarcodeHeader.
+    securityProvider               CompanyCodeType               OPTIONAL,
+
+    -- Issuer of the binary content of the transport document, if different from the security provider.
+    issuer                         CompanyCodeType               OPTIONAL,
+
+    -- Issuing time stamp in UTC.
+    -- Number of year
+    issuingYear                    INTEGER (2016..2269),
+    -- Number of the day in the year (1.1. = 1)
+    issuingDay                     INTEGER (1..366),
+    -- The number of the minutes of issue might be used in case of account
+    --   based ticketing with a delay of n minutes for the replication of central
+    --   booking data to the control devices (e.g. at SBB).
+    -- The time can be compared with the last synchronization time of the control device.
+    issuingTime                    INTEGER (0..1439),
+
+    -- Name of the issuer (e.g. short name mentioned in RICS code table).
+    issuerName                     UTF8String                    OPTIONAL,
+
+    -- Specimen indicates a test specimen not valid for traveling.
+    specimen                       BOOLEAN,
+
+    -- Secure paper indicates that this barcode is issued with a secure paper ticket
+    --   to ensure the uniqueness of the ticket. This allows to use the same control
+    --   procedure as for e-tickets also for anonymous tickets.
+    --   The double use of the ticket is in this case excluded by the secure paper.
+    securePaperTicket              BOOLEAN,
+
+    -- Indicates that the ticket is valid for traveling or still needs activation.
+    activated                      BOOLEAN,
+
+    -- Currency of the price: ISO 4217 currency codes (upper case).
+    currency                       IA5String (SIZE(3))           DEFAULT "EUR",
+
+    -- Fraction of the prices included.
+    currencyFract                  INTEGER (1..3)                DEFAULT 2,
+
+    -- Id to uniquely identify this ticket (barcode) within the context of the issuer and an appropriate time range.
+    -- Used to reference the ticket in central control applications (e.g. ETCD).
+    id                             IA5String,
+
+    -- Booking reference to the booking containing this ticket (barcode). The booking might include more than one ticket (barcode).
+    bookingId                      IA5String                     OPTIONAL,
+
+    -- Location of sale (transport number and/or line number) in case of a sale on board of a transport.
+    issuedOnTransport              TransportNumberType           OPTIONAL,
+    issuedOnLine                   TransportNumberType           OPTIONAL,
+
+    -- Point of sale.
+    pointOfSale                    GeoCoordinateType             OPTIONAL,
+
+    -- Retail information.
+    productRetail                  ProductRetailData             OPTIONAL,
+
+    -- ISO 639-1 coding (lower case) of the language preferred for the traveler / ticket holder.
+    preferredLanguage              IA5String (SIZE(2))           OPTIONAL,
+
+    -- Proprietary data defined bilaterally.
+    extension                      ExtensionData                 OPTIONAL,
+	
+    ...
+}
+
+-- ##############################################################################################
+-- Data allowing to describe all possible information about product retail
+-- ##############################################################################################
+ProductRetailData ::= SEQUENCE {
+
+    -- Channel through which the traveler requested the contract / the barcode.
+    retailChannel             RetailChannelData                OPTIONAL,
+
+    -- Contract generation platform identifier.
+    retailGeneratorId         CompanyCodeType                  OPTIONAL,
+
+    -- Contract sales server identifier.
+    retailServerId           CompanyCodeType                   OPTIONAL,
+
+    -- Product retailer, as in ISO 24014-1.
+    retailerId                CompanyCodeType                  OPTIONAL,
+
+    -- Type of equipment that distributed the contract / the barcode
+    -- (value specific to the product retailer).
+    retailEquipmentType       INTEGER (0..127)                 OPTIONAL,
+
+    -- Identifier of the final distribution point of the barcode
+    --   (value specific to the product retailer).
+    retailPointId             INTEGER                          OPTIONAL,
+
+    -- Traceability information linked to the barcode or contract generation
+    --   (value specific to the product retailer).
+    retailTraceability        IA5String                        OPTIONAL,
+
+    ...
    }
 
-   --  ########################################################################################
-   --  Details of the issuer and the issue of the ticket
-   --   - details on the issuer
-   --   - indication of test tickets (specimen)
-   --   - payment details: method of payment, currency
-   --   - proprietary id & booking id of the issuer to be used to identify the sale within his ecosystem
-   --   - web link to display more information for the customer
-   --   - retail information
-   --   - proprietary extension data
-   --  ########################################################################################
-    IssuingData ::= SEQUENCE {
+-- ##############################################################################################
+-- Data supporting the control process
+-- - List of items which the traveler can use to identify himself or the unique
+--   usage of the ticket
+--   (card ids, parts or identity card numbers, credit card numbers...)
+-- - Instructions on the inspection to be made on board
+-- ##############################################################################################
+ControlData ::= SEQUENCE {
 
-        -- Provider of the signature, may be absent if present in UicBarcodeHeader
-        securityProvider               CompanyCodeType               OPTIONAL,
+    -- Cards that can be used to identify the ticket holder.
+    identificationByCardReference          SEQUENCE OF CardReferenceType OPTIONAL,
 
-        -- Issuer of the binary content of the transport document, if different from the security provider
-        issuer                         CompanyCodeType               OPTIONAL,
+    -- Indicator of wether id must be checked to identify the traveler.
+    -- Id-card or any official document proving identity and recognised by the carrier is acceptable.
+    identificationRequired                 BOOLEAN,
 
-        -- Issuing time stamp in UTC
-        -- Number of year
-        issuingYear                    INTEGER (2016..2269),
-        -- Number of the day in the year (1.1. = 1)
-        issuingDay                     INTEGER (1..366),
-        -- The number of the minutes of issue might be used in case of account
-        --   based ticketing with a delay of n minutes for the replication of central
-        --   booking data to the control devices (e.g. at SBB)
-        -- The time can be compared with the last synchronization time of the control device
-        issuingTime                    INTEGER (0..1439),
+    -- Indicator of wether passport id must be checked to identify the traveler.
+    identificationByPassportIdRequired     BOOLEAN,
 
-        -- Name of the issuer (e.g. short name mentioned in RICS code table)
-        issuerName                     UTF8String                    OPTIONAL,
+    -- Other items which could be used to identify the ticket holder
+    --   (for future use, code list to be defined).
+    identificationItem                     INTEGER                       OPTIONAL,
 
-        -- Specimen indicates a test specimen not valid for traveling
-        specimen                       BOOLEAN,
+    -- Indicator of wether validation of the passport is required for elements other than identity (e.g. in case of Eurail)
+    --   (verification of the passport's identity is controlled by identificationByPassportRequired).
+    passportValidationRequired             BOOLEAN,
 
-        -- Secure paper indicates that this barcode is issued with a secure paper ticket
-        --   to ensure the uniqueness of the ticket. This allows to use the same control
-        --   procedure as for e-tickets also for anonymous tickets.
-        --   The double use of the ticket is in this case excluded by the secure paper.
-        securePaperTicket              BOOLEAN,
+    -- Indicator of wether online validation of the ticket is required.
+    onlineValidationRequired               BOOLEAN,
 
-        -- Indicates that the ticket is valid for traveling or still needs activation
-        activated                      BOOLEAN,
+    -- Percentage of the tickets to be validated in more detail
+    --   (i.e. via online check or detailed checks later-on).
+    randomDetailedValidationRequired       INTEGER (0..99)               OPTIONAL,
 
-        -- Currency of the price: ISO4217 currency codes (upper case)
-        currency                       IA5String (SIZE(3))           DEFAULT "EUR",
+    -- Indicator of wether validation of the traveler age is required (e.g. in case of reductions).
+    ageCheckRequired                       BOOLEAN,
 
-        -- Fraction of the prices included
-        currencyFract                  INTEGER (1..3)                DEFAULT 2,
+    -- Indicator of wether validation of the travelers reduction card is required (e.g. in case of reductions).
+    reductionCardCheckRequired             BOOLEAN,
 
-        -- Id to uniquely identify this ticket (barcode) within the context of the issuer and an appropriate time range.
-        -- Used to reference the ticket in central control applications (e.g. ETCD)
-        id                              IA5String,
+    -- Info text for the inspector.
+    infoText                               UTF8String                                     OPTIONAL,
 
-        -- Booking reference to the booking containing this ticket (barcode). The booking might include more than one ticket (barcode).
-        bookingId                       IA5String                    OPTIONAL,
+    -- Additional tickets that should be controlled.
+    includedTickets                        SEQUENCE OF TicketLinkType                     OPTIONAL,
 
-        -- Location of sale in case of a sale on board of a transport
-        issuedOnTransport              TransportNumber               OPTIONAL,
-
-         -- Line number
-         issuedOnLine                  TransportNumber               OPTIONAL,
-
-        -- Point of sale
-        pointOfSale                    GeoCoordinateType             OPTIONAL,
-
-        -- Retail information
-        productRetail                  ProductRetailData             OPTIONAL,
-
-        -- ISO 639-1 coding (lower case) of the language preferred for the traveler / ticket holder
-        preferredLanguage              IA5String (SIZE(2))           OPTIONAL,
-
-        -- Proprietary data defined bilaterally
-        extension                      ExtensionData                 OPTIONAL,
-        ...
+    -- Proprietary data defined bilaterally.
+    extension                              ExtensionData                                  OPTIONAL,
+	
+     ...
    }
 
-   --  ###################################################################################
-   --  Data allowing to describe all possible information about product retail
-   --  ###################################################################################
-   ProductRetailData ::= SEQUENCE {
+-- ##############################################################################################
+-- Transport Product (ticket, right to travel, commercial card...)
+-- ##############################################################################################
+TransportProductData ::= SEQUENCE {
 
-       -- Channel through which the traveler requested the contract / the barcode
-       retailChannel             RetailChannelData                 OPTIONAL,
+    -- Geographical validity of the transport product.
+    -- This validity is described through successive segments that make up the route.
+    geoValidity               SEQUENCE SIZE (1..16) OF GeoValiditySegmentType  OPTIONAL,
 
-        -- Contract generation platform identifier
-       retailGeneratorId         CompanyCodeType                   OPTIONAL,
+    -- To be provided in case the return route differs.
+    returnGeoValidity         SEQUENCE SIZE (1..16) OF GeoValiditySegmentType  OPTIONAL,
 
-       -- Contract sales server identifier
-        retailServerId           CompanyCodeType                   OPTIONAL,
+    -- General conditions that apply to all segments of the route.
+    generalConditions         ConditionsType                                   OPTIONAL,
 
-       -- Product retailer, as in ISO 24014-1
-       retailerId                CompanyCodeType                   OPTIONAL,
+    -- Specific conditions that can be applied to segments of the route.
+    -- When a segment refers to specific conditions, these are added to the general conditions.
+    -- If a particular condition is defined in both the general and then specific conditions,
+    --   the one in specific conditions overrules the one in the general conditions.
+    specificConditions        SEQUENCE SIZE (1..32) OF ConditionsType          OPTIONAL,
 
-       -- Type of equipment that distributed the contract / the barcode
-       -- (value specific to the product retailer)
-       retailEquipmentType       INTEGER (0..99)                   OPTIONAL,
+    -- Proprietary data defined bilaterally.
+    extension                 ExtensionData                                    OPTIONAL,
+	
+    ...
+}
 
-       -- Identifier of the final distribution point of the barcode
-       -- (value specific to the product retailer)
-       retailPointId             INTEGER                           OPTIONAL,
+-- ##############################################################################################
+-- Car carriage for a car, motorcycle or trailer
+-- ##############################################################################################
+CarCarriageReservationData ::= SEQUENCE {
 
-       -- Traceability information linked to the barcode or contrat generation
-       -- (value specific to the product retailer)
-       retailTraceability        IA5String                         OPTIONAL,
+    -- Identification of the product (owner, id, textual description).
+    product                         ProductType,
 
-       ...
-   }
+    -- Transport number (= service number, train number).
+    transportNumber                 TransportNumberType               OPTIONAL,
 
-   --  ###################################################################################
-   --  Data supporting the control process
-   --  - List of items which the traveler can use to identify himself or the unique
-   --    usage of the ticket
-   --    (card ids, parts or identity card numbers, credit card numbers...)
-   --   - Instructions on the inspection to be made on board
-   --  ###################################################################################
-   ControlData ::= SEQUENCE {
+    -- Loading of the car in local date and time at the loading station.
+    -- Number of the days calculated from the issuing date.
+    beginLoading                     ValidFromType,
+    endLoading                       ValidUntilType                   OPTIONAL,
 
-        -- Cards that can be used to identify the ticket holder
-        identificationByCardReference          SEQUENCE OF CardReferenceType OPTIONAL,
+    -- Internal reference of the booking.
+    reference                       GenericIdType                     OPTIONAL,
 
-        -- Indicator of wether id must be checked to identify the traveler.
-        -- Id-card or any official document proving identity and recognised by the carrier is acceptable
-        identificationRequired                 BOOLEAN,
+    -- Service brand: code list https://uic.org/service-brand-code-list.
+    -- To identify the train service uniquely in combination with train number and departure date.
+    serviceBrand                     INTEGER (0..32000)                OPTIONAL,
+    serviceBrandAbrUTF8              UTF8String                        OPTIONAL,
 
-        -- Indicator of wether passport id must be checked to identify the traveler
-        identificationByPassportIdRequired     BOOLEAN,
+    -- fromStation is the loading station, toStation is the unloading station.
+    fromStation                      StationType,
+    toStation                        StationType,
 
-        -- Other items which could be used to identify the ticket holder
-        -- (for future use, code list to be defined)
-        identificationItem                     INTEGER                        OPTIONAL,
+    coach                            IA5String                         OPTIONAL,
+    place                            IA5String                         OPTIONAL,
 
-        -- Indicator of wether validation of the passport is required for elements other than identity (e.g. in case of Eurail)
-        -- (verification of the passport's identity is controlled by identificationByPassportRequired)
-        passportValidationRequired             BOOLEAN,
+    -- Description of the car.
+    numberPlate                     IA5String,
+    trailerPlate                    IA5String                          OPTIONAL,
+    carCategory                     INTEGER (0..9),
+    boatCategory                    INTEGER (0..6)                     OPTIONAL,
+    textileRoof                     BOOLEAN,
+    roofRackType                    RoofRackType                       DEFAULT  norack,
 
-        -- Indicator of wether online validation of the ticket is required
-        onlineValidationRequired               BOOLEAN,
+    -- Height of a roof rack in cm.
+    roofRackHeight                   INTEGER (0..99)                    OPTIONAL,
 
-        -- Percentage of the tickets to be validated in more detail
-        -- (i.e. via online check or detailed checks later-on)
-        randomDetailedValidationRequired       INTEGER (0..99)                OPTIONAL,
+    -- Number of boats on a rack.
+    attachedBoats                    INTEGER (0..2)                     OPTIONAL,
 
-        -- Indicator of wether validation of the traveler age is required (e.g. in case of reductions)
-        ageCheckRequired                       BOOLEAN,
+    -- Number of biycles on a rack.
+    attachedBicycles                 INTEGER (0..4)                     OPTIONAL,
 
-        -- Indicator of wether validation of the travelers reduction card is required (e.g. in case of reductions)
-        reductionCardCheckRequired             BOOLEAN,
+    -- Number of surf boards on a rack.
+    attachedSurfboards               INTEGER (0..5)                     OPTIONAL,
 
-        -- Info text for the inspector
-        infoText                               UTF8String                                     OPTIONAL,
+    -- Reference to an entry on the loading list.
+    loadingListEntry                INTEGER (0..999)                    OPTIONAL,
+    loadingDeck                     LoadingDeckType                     DEFAULT upper,
 
-        -- Additional tickets that should be controlled
-        includedTickets                        SEQUENCE OF TicketLinkType                     OPTIONAL,
+    -- Carriers responsible for the transport (RICS-Code).
+    carrier                         SEQUENCE OF CompanyCodeType         OPTIONAL,
 
-        -- Proprietary data defined bilaterally
-        extension                              ExtensionData                                  OPTIONAL,
-        ...
-   }
+    -- Tariff code.
+    tariffCode                      GenericIdType                       OPTIONAL,
 
-   --  ####################################################################################
-   --  Transport Product (ticket, right to travel, commercial card...)
-   --  ####################################################################################
-       TransportProductData ::= SEQUENCE {
+    -- Tariff description.
+    tariffDesc                      UTF8String                          OPTIONAL,
 
-         -- Detailed type of the transport product
-         productType               ProductTypeType,
+    -- Reduction cards applied (incl. discount cards, loyalty cards relevant for the tariff).
+    reductionCard                  SEQUENCE OF CardReferenceType        OPTIONAL,
 
-         -- Identification of the product (owner, id, textual description)
-         product                   ProductType,
+    infoText                       UTF8String                           OPTIONAL,
 
-         -- Area (city, region, country...) in which the transport document is valid
-         -- (allows defining local value tables depending on this area)
-         validityAreaCodeTable     CodeTableType                                    OPTIONAL,
-         validityAreaId            AreaIdType                                       OPTIONAL,
+	-- Proprietary data defined bilaterally.
+    extension                      ExtensionData                        OPTIONAL,
 
-         -- Version of the local code tables used in the area identified by:
-         -- - validityAreaId (if present)
-         -- - productOwner (if validityAreaId is absent)
-         localCodeTableVersion     INTEGER (0..255)                                 OPTIONAL,
+    ...
+}
 
-         -- Geographical validity of the transport product.
-         -- This validity is described through successive segments that make up the route.
-         geoValidity               SEQUENCE SIZE (1..16) OF GeoValiditySegmentType  OPTIONAL,
-
-          -- To be provided in case the return route differs
-         returnGeoValidity         SEQUENCE SIZE (1..16) OF GeoValiditySegmentType  OPTIONAL,
-
-         -- General conditions that apply to all segments of the route
-         generalConditions         ConditionsType                                   OPTIONAL,
-
-         -- Specific conditions that can be applied to segments of the route.
-         -- When a segment refers to specific conditions, these are added to the general conditions.
-         -- If a particular condition is defined in both the general and then specific conditions,
-         -- the one in specific conditions overrules the one in the general conditions.
-         specificConditions        SEQUENCE SIZE (1..32) OF ConditionsType          OPTIONAL,
-
-         -- Proprietary data defined bilaterally
-         extension                 ExtensionData                                    OPTIONAL,
-         ...
-   }
-
-   --  #################################################################################
-   --   Car carriage for a car, motorcycle or trailer
-   --  #################################################################################
-   CarCarriageReservationData ::= SEQUENCE {
-
-        -- Identification of the product (owner, id, textual description)
-         product                         ProductType,
-
-         -- Transport number (= service number, train number)
-         transportNumber                 TransportNumber                   OPTIONAL,
-
-        -- Loading of the car in local date and time at the loading station.
-        -- Number of the days calculated from the issuing date
-         beginLoadingDate                INTEGER (-1..500)                 DEFAULT 0,
-         beginLoadingTime                INTEGER (0..1439)                 OPTIONAL,
-         endLoadingTime                  INTEGER (0..1439)                 OPTIONAL,
-         -- Offset in units of 15 minutes from local time to UTC
-         -- (UTC = local + offset * 15 minutes)
-         -- Times to be shown on a ticket should always be the local times
-         loadingUTCOffset                INTEGER (-60..60)                 OPTIONAL,
-
-         -- Internal reference of the booking
-         reference                       GenericIdType                     OPTIONAL,
-
-         -- Service brand: code list https://uic.org/service-brand-code-list
-         -- To identify the train service uniquely in combination with train number and departure date
-        serviceBrand                     INTEGER (0..32000)                OPTIONAL,
-        serviceBrandAbrUTF8              UTF8String                        OPTIONAL,
-
-        fromStation                      StationType,
-        toStation                        StationType,
-
-        coach                            IA5String                         OPTIONAL,
-        place                            IA5String                         OPTIONAL,
-
-        -- Description of the car
-        numberPlate                     IA5String,
-        trailerPlate                    IA5String                          OPTIONAL,
-        carCategory                     INTEGER    (0..9),
-        boatCategory                    INTEGER    (0..6)                  OPTIONAL,
-        textileRoof                     BOOLEAN,
-        roofRackType                    RoofRackType                       DEFAULT  norack,
-
-        -- Height of a roof rack in cm
-       roofRackHeight                   INTEGER (0..99)                    OPTIONAL,
-
-       -- Number of boats on a rack
-       attachedBoats                    INTEGER (0..2)                     OPTIONAL,
-
-       -- Number of biycles on a rack
-       attachedBicycles                 INTEGER (0..4)                     OPTIONAL,
-
-       -- Number of surf boards on a rack
-       attachedSurfboards               INTEGER (0..5)                     OPTIONAL,
-
-       -- Reference to an entry on the loading list
-       loadingListEntry                INTEGER (0..999)                    OPTIONAL,
-       loadingDeck                     LoadingDeckType                     DEFAULT upper,
-
-       -- Carriers responsible for the transport (RICS-Code)
-       carrier                         SEQUENCE OF CompanyCodeType         OPTIONAL,
-
-       -- Tariff code
-       tariffCode                      GenericIdType                       OPTIONAL,
-
-       -- Tariff description
-       tariffDesc                      UTF8String                          OPTIONAL,
-
-       -- Reduction cards applied (incl. discount cards, loyalty cards relevant for the tariff)
-       reductionCard                  SEQUENCE OF CardReferenceType        OPTIONAL,
-
-       infoText                       UTF8String                           OPTIONAL,
-       extension                      ExtensionData                        OPTIONAL,
-       ...
-   }
-
-   ArrivalDateTimeType ::= SEQUENCE {
-      -- Arrival date and time in local time at the arrival station
-      -- Number of days counted from the departure date
-      arrivalDate           INTEGER (-1..20)                 DEFAULT 0,
-      arrivalTime           INTEGER (0..1439)                OPTIONAL,
-      -- Offset in units of 15 minutes from local time to UTC
-      -- (UTC = local + offset * 15 Minutes)
-      -- Should be omitted in case it is the same as for departure
-      -- The UTC offset can be used to calculate the duration of the travel
-      -- Times to be shown on a ticket should always be the local times
-      arrivalUTCOffset   INTEGER (-60..60)                   OPTIONAL
-   }
-
-   ReservationSegmentType ::= SEQUENCE {
-
-    -- TRUE if using this transport service is mandatory ("train link").
-    -- FALSE if the traveler can use another transport service
-    mandatoryService        BOOLEAN                            DEFAULT TRUE,
-
-    -- Station where the reservation begins
-    -- Valued only if it is different from the origin station of the associated segment,
-    originStation           StationType                        OPTIONAL,
-
-    -- Station where the reservation ends
-    -- Valued only if it is different from the destination station of the associated segment
-    destinationStation      StationType                        OPTIONAL,
-
-    -- Transport number (=service number, train number)
-    transportNumber         TransportNumber                    OPTIONAL,
-
-    -- Departure date in local time at the departure station
-    -- Number of the days calculated from the issuing date
-    departureDate           INTEGER  (-1..500)                 DEFAULT 0,
-    -- Departure time in local time at the departure station
-    departureTime           INTEGER (0..1439),
+-- ##############################################################################################
+DepartureDateTimeType ::= SEQUENCE {
+    -- Departure date and time in local time at the departure station.
+    -- Number of days counted from the issuing date.
+    departureDate      INTEGER (-1..500)                DEFAULT 0,
+    departureTime      INTEGER (0..1439),
+	
     -- Offset in units of 15 minutes from local time to UTC
-    -- (UTC = local + offset * 15 Minutes)
-    -- The UTC offset can be used to calculate the duration of the travel
-    -- If UTC offset is used in control devices the usage of UTC offset has to be agreed bilateral to be mandatory
-    -- Times to be shown on a ticket should always be the local times
-    departureUTCOffset       INTEGER (-60..60)                  OPTIONAL,
+    -- (UTC = local + offset * 15 minutes).
+    -- The UTC offset can be used to calculate the duration of the travel.
+    -- Times to be shown on a ticket should always be the local times.
+    departureUTCOffset INTEGER (-60..60)                OPTIONAL
+}
 
-    -- Service code list from 918.1 (seat, couchette...)
-    service                  ServiceType                        DEFAULT seat,
+-- ##############################################################################################
+ArrivalDateTimeType ::= SEQUENCE {
+    -- Arrival date and time in local time at the arrival station.
+    -- Number of days counted from the departure date.
+    arrivalDate        INTEGER (-1..20)                 DEFAULT 0,
+    arrivalTime        INTEGER (0..1439)                OPTIONAL,
+	
+    -- Offset in units of 15 minutes from local time to UTC
+    -- (UTC = local + offset * 15 minutes).
+    -- Should be omitted in case it is the same as for departure.
+    -- The UTC offset can be used to calculate the duration of the travel.
+    -- Times to be shown on a ticket should always be the local times.
+    arrivalUTCOffset   INTEGER (-60..60)                OPTIONAL
+}
 
-    -- Travel class
-    -- For transport modes where the concept of class does not exist, must be set to notApplicable
-    classCode                TravelClassType                    DEFAULT second,
+-- ##############################################################################################
+-- Transport link data.
+-- Describes a transport link associated to a route or to a part of a route.
+-- Quite similar to a reservation without assigned place(s).
+-- ##############################################################################################
+TransportLinkType ::= SEQUENCE {
 
-    -- Arrival date time in local time at the arrival station
-    arrivalDateTime          ArrivalDateTimeType                OPTIONAL,
+    -- TRUE if using this transport service is mandatory.
+    -- FALSE if the traveler can use another transport service
+    mandatoryService        BOOLEAN                           DEFAULT TRUE,
 
-    -- Service brand: code list https://uic.org/service-brand-code-list
-    -- To identify the transport service uniquely in combination with transport number and departure date
-    serviceBrand              INTEGER (0..32000)                OPTIONAL,
-    serviceBrandAbrUTF8       UTF8String                        OPTIONAL,
+    -- Station where the transport link begins.
+    -- Omitted if it is the same station as the origin station of the associated segment.
+    originStation           StationType                       OPTIONAL,
 
-    -- Service level code list from 918.1
-    serviceLevel              IA5String (SIZE(1..2))            OPTIONAL,
+    -- Station where the transport link ends.
+    -- Omitted if it is the same station as the destination station of the associated segment.
+    destinationStation      StationType                       OPTIONAL,
+
+    -- Transport numbers (= service number, train number) allowed for the transport link.
+	-- Multiple numbers are allowed (e.g. two trains coupled together, each of them having its own train number).
+    transportNumber         SEQUENCE OF TransportNumberType   OPTIONAL,
+
+    -- Departure date and time in local time at the departure station of the transport link.
+    departureDateTime       DepartureDateTimeType,
+
+    -- Arrival date time in local time at the arrival station of the transport link.
+    arrivalDateTime         ArrivalDateTimeType               OPTIONAL,
+
+    -- Travel class.
+    -- For transport modes where the concept of class does not exist, must be set to notApplicable.
+	-- Omitted if the class is the same as the class of the associated leg.
+    classCode               TravelClassType                   DEFAULT second,
+
+    -- Service brand: code list https://uic.org/service-brand-code-list.
+    -- To identify the transport service uniquely in combination with transport number and departure date.
+	-- Omitted if this specific service brand is already specified in the associated leg, and is the only one that is specified in this leg
+    --   (a leg can allow many service brands, but a reservation only specifies one).
+    serviceBrand            INTEGER (0..32000)                OPTIONAL,
+    serviceBrandAbrUTF8     UTF8String                        OPTIONAL,
+
+    -- Service level code list from 918.1.
+	-- Omitted if the same service level is already specified in the description of the associated leg.
+    serviceLevel            IA5String (SIZE(1..2))            OPTIONAL,
+
+    ...
+}
+
+-- ##############################################################################################
+-- Reservation data.
+-- Describes a reservation associated to a route or to a part of a route.
+-- Usable for a standalone reservation and for a reservation linked to a leg.
+-- ##############################################################################################
+ReservationSegmentType ::= SEQUENCE {
+
+    -- TRUE if using this transport service is mandatory.
+    -- FALSE if the traveler can use another transport service
+    mandatoryService        BOOLEAN                           DEFAULT TRUE,
+
+    -- Station where the reservation begins.
+    -- Omitted if it is the same station as the origin station of the associated segment.
+    originStation           StationType                       OPTIONAL,
+
+    -- Station where the reservation ends.
+    -- Omitted if it is the same station as the destination station of the associated segment.
+    destinationStation      StationType                       OPTIONAL,
+
+    -- Transport number (=service number, train number).
+    transportNumber         TransportNumberType               OPTIONAL,
+
+    -- Departure date and time in local time at the departure station.
+    departureDateTime       DepartureDateTimeType,
+
+    -- Arrival date time in local time at the arrival station.
+    arrivalDateTime         ArrivalDateTimeType               OPTIONAL,
+
+	-- Service code list from 918.1 (seat, couchette...).
+    service                 ServiceType                       DEFAULT seat,
+
+    -- Travel class.
+    -- For transport modes where the concept of class does not exist, must be set to notApplicable.
+	-- Omitted if the class is the same as the class of the associated leg.
+    classCode               TravelClassType                   DEFAULT second,
+
+    -- Service brand: code list https://uic.org/service-brand-code-list.
+    -- To identify the transport service uniquely in combination with transport number and departure date.
+	-- Omitted if this specific service brand is already specified in the associated leg, and is the only one that is specified in this leg
+    --   (a leg can allow many service brands, but a reservation only specifies one).
+    serviceBrand            INTEGER (0..32000)                OPTIONAL,
+    serviceBrandAbrUTF8     UTF8String                        OPTIONAL,
+
+    -- Service level code list from 918.1.
+	-- Omitted if the same service level is already specified in the description of the associated leg.
+    serviceLevel            IA5String (SIZE(1..2))            OPTIONAL,
 
     -- Reserved places
-    coachPlaces               SEQUENCE OF CoachPlacesType       OPTIONAL,
+    coachPlaces             SEQUENCE OF CoachPlacesType       OPTIONAL,
 
     -- Number of persons on the ticket having a reservation without assigned places
-    numberOfOverbooked        INTEGER (0..200)                  DEFAULT 0,
+    numberOfOverbooked      INTEGER (0..200)                  DEFAULT 0,
 
     -- Description of berths
-    berth                     SEQUENCE OF BerthDetailData      OPTIONAL
+    berth                   SEQUENCE OF BerthDetailData       OPTIONAL,
 
-   }
+    ...
+}
 
    IncludedTimeRangesType ::= SEQUENCE {
        dayTypes                     DayTypesType,
@@ -690,75 +746,87 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
     }
 
 
+-- ##############################################################################################
+-- Conditions that apply:
+-- - if used for generalConditions: to the entire product transport.
+-- - if used for specificConditions: to the associated leg.
+-- ##############################################################################################
+ConditionsType::= SEQUENCE {
 
-   -- #########################################
-   ConditionsType::= SEQUENCE {
+    -- Area (city, region, country...) in which the transport document / the leg is valid
+    --   (allows also defining local code tables depending on this area).
+    -- Omitted if the area is implicit or completely defined with the geoValidity elements.
+    concernedArea                    ConcernedAreaType               OPTIONAL,
 
-      -- Organization responsible for the product definition
-      productOwner                      CompanyCodeType                  OPTIONAL,
+    -- Code table to be used by default for all the elements in the transport document / in the leg.
+    locationCodeTable                CodeTableType                   OPTIONAL,
 
-      -- Product id to identify the issued product codelist defined by the product owner
-      productId                         ProductIdType                    OPTIONAL,
+    -- Version of the code tables used.
+	-- (only relevant if locationCodeTable indicates a bilaterally agreed code table)
+    locationCodeTableVersion         INTEGER (0..255)                OPTIONAL,
 
-       -- Short description of the product
-       productDescription               UTF8String                       OPTIONAL,
+    -- Detailed type of the transport product
+    productType                      ProductTypeType,
 
-       -- Internal reference to the document
-       reference                        GenericIdType                    OPTIONAL,
+    -- Identification of the product (owner, id, textual description)
+    product                          ProductType                     OPTIONAL,
 
-       -- Time validity
-       -- Having not validFrom is allowed (e.g. ticket not yet activated, which will be reissued with an explict validFrom upon activation).
-       -- Having not validUntil is allowed (e.g. ticket with unlimited validity - which should nevertheless have a security expiry date in the header requiring regular reissue).
-       validFrom                        ValidFromType                    OPTIONAL,
-       validUntil                       ValidUntilType                   OPTIONAL,
-       rareTimingConditions             RareTimingConditionsType         OPTIONAL,
+    -- Internal reference to the document (e.g. serial number of the document)
+    reference                        GenericIdType                   OPTIONAL,
 
-       locationCodeTable                CodeTableType                    DEFAULT locationUIC,
+    -- Time validity
+    -- Having no validFrom is allowed (e.g. ticket not yet activated, which will be reissued with an explict validFrom upon activation).
+    -- Having no validUntil is allowed (e.g. ticket with unlimited validity - which should nevertheless have a security expiry date in the header requiring regular reissue).
+    validFrom                        ValidFromType                   OPTIONAL,
+    validUntil                       ValidUntilType                  OPTIONAL,
+    rareTimingConditions             RareTimingConditionsType        OPTIONAL,
 
-       -- TRUE if the direction of travel must be followed as described:
-       -- - in generalConditions: the traveler must pass the sequence of segments in the provided order
-       -- - in specificConditions: the traveler must take the transport in the direction indicated by the segment (e.g. from O to D)
-       -- FALSE if the direction of travel is not mandatory:
-       -- - in generalConditions: the traveler can travel through the described segments in any order
-       -- - in specificConditions: the traveler can take the transport indicated by the segment in any direction (e.g. from O to D or from D to O)
-       -- omitted if the concept of direction is not relevant (e.g. for geographical validity as unordered areas)
-       directionIsMandatory             BOOLEAN                          OPTIONAL,
+    -- TRUE if the direction of travel must be followed as described:
+    -- - in generalConditions: the traveler must pass the sequence of segments in the provided order
+    --   (but some segments may be skipped, e.g. if 2 segments are 2 allowed alternatives for the same journey)
+    -- - in specificConditions: the traveler must take the transport in the direction indicated by the segment (e.g. from O to D)
+    -- FALSE if the direction of travel is not mandatory:
+    -- - in generalConditions: the traveler can travel through the described segments in any order
+    -- - in specificConditions: the traveler can take the transport indicated by the segment in any direction (e.g. from O to D or from D to O)
+    -- omitted if the concept of direction is not relevant (e.g. for geographical validity as unordered areas)
+    directionIsMandatory             BOOLEAN                         OPTIONAL,
 
-       -- Link to a specific transport service without reservation
-       transportLink                    TransportLinkType                OPTIONAL,
+    -- Link to a specific transport service without reservation
+    transportLink                    TransportLinkType               OPTIONAL,
 
-       -- Link to a specific transport service with reservation
-       reservation                      ReservationSegmentType           OPTIONAL,
+    -- Link to a specific transport service with reservation
+    reservation                      ReservationSegmentType          OPTIONAL,
 
-       -- Included carriers responsible for the transport starting at this station
-       includedCarrier                  SEQUENCE OF CompanyCodeType      OPTIONAL,
+    -- Included carriers responsible for the transport
+    includedCarrier                  SEQUENCE OF CompanyCodeType     OPTIONAL,
 
-       -- Included transport modes. Code list: EN 1545-1 (transport type code)
-        includedTransportType           SEQUENCE OF INTEGER (0..31)      OPTIONAL,
+    -- Included transport modes. Code list: EN 1545-1 (transport type code)
+    includedTransportType           SEQUENCE OF INTEGER (0..31)      OPTIONAL,
 
-       -- Service brands valid for the route. Code list https://uic.org/service-brand-code-list
-       -- In case this list is provided the ticket is invalid on all other service brands
-       includedServiceBrands            SEQUENCE OF INTEGER (1..32000)   OPTIONAL,
+    -- Service brands valid for the route. Code list https://uic.org/service-brand-code-list
+    -- In case this list is provided the ticket is invalid on all other service brands
+    includedServiceBrand            SEQUENCE OF INTEGER (1..32000)   OPTIONAL,
 
-       -- Travel class
-       -- For transport modes where the concept of class does not exist, must be set to notApplicable
-       classCode                       TravelClassType                  DEFAULT second,
+    -- Travel class
+    -- For transport modes where the concept of class does not exist, must be set to notApplicable
+    classCode                       TravelClassType                  DEFAULT second,
 
-       -- Servicelevel code according to leaflet 918.1 to encode other products (e.g. PREMIUM, ...)
-       serviceLevel                    IA5String (SIZE(1..2))           OPTIONAL,
+    -- Servicelevel code according to leaflet 918.1 to encode other products (e.g. PREMIUM, ...)
+    serviceLevel                    IA5String (SIZE(1..2))           OPTIONAL,
 
-       -- Tariff data (allowed passengers characteristics, discount cards used...)
-       -- If omitted, the ticket is valid:
-       -- - for all of the travelers described in the 'traveler' section if this section is present,
-       -- - for one passenger (without any further information) if the 'traveler' section is absent.
-       tariffs                         SEQUENCE OF TariffType           OPTIONAL,
+    -- Tariff data (allowed passengers characteristics, discount cards used...)
+    -- If omitted, the ticket is valid:
+    -- - for all of the travelers described in the 'traveler' section if this section is present,
+    -- - for one passenger (without any further information) if the 'traveler' section is absent.
+    tariff                          SEQUENCE OF TariffType           OPTIONAL,
 
-       -- Specific data to support the ticket inspection process
-       controlDetail                   ControlData                      OPTIONAL,
+    -- Specific data to support the ticket inspection process
+    controlDetail                   ControlData                      OPTIONAL,
 
-       rareDetails                     RareDetailsType               OPTIONAL,
-       ...
-   }
+    rareDetails                     RareDetailsType               OPTIONAL,
+	
+    ...
+}
 
 
    RareTimingConditions::= SEQUENCE {
@@ -972,6 +1040,13 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
          ...
    }
 
+-- ##############################################################################################
+-- Transport number
+-- ##############################################################################################
+TransportNumberType ::= CHOICE {
+    transportNumberNum INTEGER,
+	transportNumberIA5 IA5String
+}
 
    -- ######################################################################################
    -- Product identification
@@ -1813,3 +1888,4 @@ END
 --        - check-in / check-out barcode at check-in check-out point
 -- - other use cases?
 -- ############################################################################################
+
