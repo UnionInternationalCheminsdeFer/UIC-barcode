@@ -1148,18 +1148,6 @@ ExtensionData ::= SEQUENCE {
     extensionData OCTET STRING
 }
 
--- ##############################################################################################
---  VDV extension to be used to transport proprietary VDV codes.
---  extensionId "X_VDV" => /!\ not compliant with the rules concerning extensionId, replace with "*VDV1" ?
--- ##############################################################################################
-VDVExtension ::= SEQUENCE {
-    -- issuer code using the default code table of the product owner (today used e.g. by VDV)
-    externalIssuerId        INTEGER      OPTIONAL,
-    -- authorization id provided to the issuer by the poroduct owner (today used e.g. by VDV)
-    issuerAutorizationId            INTEGER      OPTIONAL,
-    ... -- /!\ TODO Manuel
-}
-
 
 -- ##############################################################################################
 --  Tariff data for transport products.
@@ -2032,6 +2020,7 @@ END
 --        - check-in / check-out barcode at check-in check-out point
 -- - other use cases?
 -- ##############################################################################################
+
 
 
 
