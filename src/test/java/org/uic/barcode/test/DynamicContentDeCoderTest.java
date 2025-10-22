@@ -1,5 +1,9 @@
 package org.uic.barcode.test;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 import org.junit.Before;
@@ -15,9 +19,11 @@ import org.uic.barcode.ticket.api.impl.SimpleGeoCoordinate;
 import org.uic.barcode.ticket.api.spec.IExtension;
 import org.uic.barcode.ticket.api.spec.IGeoCoordinate;
 
-public class DynamicContentCoderTest {
+public class DynamicContentDeCoderTest {
 	
 	IUicDynamicContent content = null; 
+	
+	DateFormat dateTimeFormat = new SimpleDateFormat( "yyyy.MM.dd-HH:mm" );
 	
 	@Before public void initialize() {
 		
@@ -48,12 +54,14 @@ public class DynamicContentCoderTest {
 	    g.setLatitude(  56789L);
 		content.setGeoCoordinate(g);
 	
-		Date date = new Date(1612438200000L);		
+		//Date date = new Date(1612438200000L);		
+		Date date = Calendar.getInstance().getTime();
 		content.setTimeStamp(date);	
 		
 	}
 
-	@Test public void testDynamicContentEncoding() {
+	
+	@Test public void testDynamicContentDecoding() {
 		
 		
 		byte[] encodedBytes = null;
@@ -63,15 +71,46 @@ public class DynamicContentCoderTest {
 			assert(false);
 		}
 		
-		String encoding = UperEncoder.hexStringFromBytes(encodedBytes);
-		
-		String expectedEncoding = "7C170F0E1262089437000230390300DDD504017A20C6D0C2D8D8CADCCECA40E6E8E4D2DCCE2F8F461D9B32EECF96FE5F1D32EEE7A77EEBFA72310282DA05E1A37EECA0507B409C30F3E60509B42F8F461D9B32EECF96FE5F1D32EEE7A77EEBFA72310282DA";
+		String encoding = UperEncoder.hexStringFromBytes(encodedBytes);		
 
-		assert(expectedEncoding.equals(encoding));
+	    //decode
+		IUicDynamicContent testContent = DynamicContentCoder.decode(UperEncoder.bytesFromHexString(encoding));
+			
+		
+		assert("appID".equals(testContent.getAppId()));
+		
+		assert("challenge string".equals(testContent.getChallengeString()));
+		
+		IExtension e1 = testContent.getExtension();
+		assert(UperEncoder.hexStringFromBytes(e1.getBinarydata()).equals("82DA"));
+		assert(e1.getId().equals("challenge_extension_id1"));
+		
+		
+		assert(testContent.getChallengeString().equals("challenge string"));
+				
+		byte[] ce = null;
+		for (IExtension e : testContent.getDynamicContentResponseList()) {
+			if (e.getId().equals("challenge_extension_id1")) {
+				ce = e.getBinarydata();
+			}
+		}
+		assert(UperEncoder.hexStringFromBytes(ce).equals("82DA"));
+		
+		assert(UperEncoder.hexStringFromBytes(testContent.getPhoneIdHash()).equals("83DA"));
+
+		assert(UperEncoder.hexStringFromBytes(testContent.getPassIdHash()).equals("84DA"));
+	
+		assert(testContent.getGeoCoordinate() != null);
+		assert(testContent.getGeoCoordinate().getLongitude() == 12345L);
+		assert(testContent.getGeoCoordinate().getLatitude() == 56789L);			
+		
+		String nowString = dateTimeFormat.format(content.getTimeStamp());
+		String contentTimeStampString = dateTimeFormat.format(testContent.getTimeStamp());		
+		
+		assert(nowString.equals(contentTimeStampString));
 		
 	}
 	
-
 	
 	
 }
