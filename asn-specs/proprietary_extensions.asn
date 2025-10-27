@@ -12,7 +12,7 @@
 -- ##############################################################################################
 --  extensionId = "*VDV1"
 -- ##############################################################################################
-VDVExtension ::= SEQUENCE {
+VDV1Extension ::= SEQUENCE {
     -- issuer code using the default code table of the product owner (today used e.g. by VDV)
     externalIssuerId        INTEGER      OPTIONAL,
     -- authorization id provided to the issuer by the poroduct owner (today used e.g. by VDV)
