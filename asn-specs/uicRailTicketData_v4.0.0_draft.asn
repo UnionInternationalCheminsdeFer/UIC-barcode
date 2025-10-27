@@ -1,7 +1,7 @@
 -- Creator: ASN.1 Editor (http://asneditor.sourceforge.net)
 -- Author: ClemensGantert
 -- Created: Mon Jun 28 14:14:28 CEST 2021
--- Last modification: Fri Sep 23 CEST 18:00:00 CEST 2025
+-- Last modification: Fri Oct 27 CEST 18:00:00 CEST 2025
 ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 
 -- imports and exports
@@ -221,19 +221,23 @@ DelayConfirmation ::= SEQUENCE {
     -- Transport number of the delayed transport.
     transportNumber              TransportNumberType                  OPTIONAL,
 
-    -- Planned departure date of the delayed transport in local time at the station where delay
-    --   became relevant (see below).
+    -- Planned departure date and time of the delayed transport in local time at the station where
+    --   delay became relevant (see below).
     departure                     ValidFromType                       OPTIONAL,
 
     -- Station where the delay became relevant.
     station                       StationType                         OPTIONAL,
 
-    -- Delay in minutes at the mentioned station. Omitted if not relevant (e.g. if transport was cancelled).
-    delay                         INTEGER (1..999)                    OPTIONAL,
+    -- Indication if the transport has been delayed (and how long) or canceled
+   delayOrCancellation CHOICE {
+        -- Indication that the transport was delayed, and delay in minutes at the mentioned station.
+        -- The delay is negative if the transport left earlier than scheduled.
+        delay                     INTEGER (-1439..1439),
 
-    -- Indication that the transport was cancelled.
-    transportCancelled            BOOLEAN,
-
+        -- Indication that the transport was cancelled.
+        transportCancelled        NULL,
+    },
+    
     -- Type of confirmation provided.
     confirmationType              ConfirmationType                    DEFAULT travelerDelayConfirmation,
 
@@ -291,20 +295,21 @@ IssuingData ::= SEQUENCE {
     securePaperTicket              BOOLEAN,
 
     -- Indicates that the ticket is valid for traveling or still needs activation.
-    activated                      BOOLEAN,
+    activated                      BOOLEAN                       DEFAULT TRUE,
 
     -- Currency of the price: ISO 4217 currency codes (upper case).
     currency                       IA5String (SIZE(3))           DEFAULT "EUR",
 
     -- Fraction of the prices included.
-    currencyFract                  INTEGER (1..3)                DEFAULT 2,
+    currencyFract                  INTEGER (0..3)                DEFAULT 2,
 
     -- Id to uniquely identify this ticket (barcode) within the context of the issuer and an appropriate time range.
     -- Used to reference the ticket in central control applications (e.g. ETCD).
-    id                             IA5String,
+    id                             GenericIdType,
 
-    -- Booking reference to the booking containing this ticket (barcode). The booking might include more than one ticket (barcode).
-    bookingId                      IA5String                     OPTIONAL,
+    -- Booking reference to the booking containing this ticket (barcode), within the context of the issuer.
+    -- The booking might include more than one ticket (barcode).
+    bookingId                      GenericIdType                 OPTIONAL,
 
     -- Location of sale (transport number and/or line number) in case of a sale on board of a transport.
     issuedOnTransport              TransportNumberType           OPTIONAL,
@@ -352,7 +357,7 @@ ProductRetailData ::= SEQUENCE {
     --   (code table of the product retailer).
     retailPointId             INTEGER                          OPTIONAL,
 
-    -- Traceability information linked to the barcode or contract generation
+    -- Traceability information linked to the barcode or contract generation (e.g. software version)
     --   (code table of the product retailer).
     retailTraceability        IA5String                        OPTIONAL,
 
@@ -360,13 +365,31 @@ ProductRetailData ::= SEQUENCE {
    }
 
 -- ##############################################################################################
---  Data supporting the control process
+--  Data supporting the control process, wether it is an automatic check carried out by a gate,
+--    or a manuel check carried out by an inspector:
 --    - List of items which the traveler can use to identify himself or the unique
 --      usage of the ticket
---      (card ids, parts or identity card numbers, credit card numbers...)
+--      (card ids, parts of identity card numbers, credit card numbers...)
 --    - Instructions on the inspection to be made on board
 -- ##############################################################################################
 ControlData ::= SEQUENCE {
+
+    -- Indicator of wether online validation of the ticket is required.
+    -- TRUE if online operations must be performed to validate or check this ticket. E.g.:
+    --   - For a Pay-as-you-go ticket, check during inspection that it has been validated.
+    --   - For a ticket valid for 3 hours from the first validation, check when this first validation took place.
+    --   - For a fully ABT ticket: check the details of the ticket in the ABT account.
+    --   - For a ticket authorizing a limited number of trips: check how many trips have already been made.
+    --   - For a ticket that can be refunded until the last moment: check if the ticket has been cancelled and refunded.
+    -- FALSE if no information is available online so it is useless to check.
+    -- Omitted if the ticket can be fully validated and checked offline, i.e. if the ticket
+    --   contains all the information necessary for validation and inspection and is therefore self-sufficient,
+    --   but some operators, in an interoperability scenario, nevertheless choose to operate this ticket in ABT mode and validate it online.
+    onlineValidationRequired               BOOLEAN                       OPTIONAL,
+
+    -- Percentage of the tickets to be validated in more detail
+    --   (i.e. via online check or detailed checks later-on).
+    randomDetailedValidationRequired       INTEGER (0..99)               OPTIONAL,
 
     -- Cards that can be used to identify the ticket holder.
     identificationByCardReference          SEQUENCE OF CardReferenceType OPTIONAL,
@@ -386,50 +409,52 @@ ControlData ::= SEQUENCE {
     --   (verification of the passport's identity is controlled by identificationByPassportRequired).
     passportValidationRequired             BOOLEAN,
 
-    -- Indicator of wether online validation of the ticket is required.
-    onlineValidationRequired               BOOLEAN,
-
-    -- Percentage of the tickets to be validated in more detail
-    --   (i.e. via online check or detailed checks later-on).
-    randomDetailedValidationRequired       INTEGER (0..99)               OPTIONAL,
-
     -- Indicator of wether validation of the traveler age is required (e.g. in case of reductions).
     ageCheckRequired                       BOOLEAN,
 
     -- Indicator of wether validation of the travelers reduction card is required (e.g. in case of reductions).
     reductionCardCheckRequired             BOOLEAN,
 
-    -- Readable information or instructions for the inspector.
-    infoText                               UTF8String                                     OPTIONAL,
-
     -- Additional tickets that should be controlled.
-    includedTickets                        SEQUENCE OF TicketLinkType                     OPTIONAL,
+    includedTickets                        SEQUENCE OF TicketLinkType    OPTIONAL,
+
+    -- Readable information or instructions for the inspector.
+    infoText                               UTF8String                    OPTIONAL,
 
     -- Proprietary data defined bilaterally.
-    extension                              ExtensionData                                  OPTIONAL,
+    extension                              ExtensionData                 OPTIONAL,
 
-     ...
-   }
+    ...
+}
 
 -- ##############################################################################################
---  Transport Product (ticket, right to travel, commercial card...)
+--  Description of a transport product, which may be:
+--    - A 'ticket' (allowing the use of a transportation service).
+--    - A 'reservation' (assigning a place in a transport, but not allowing travel unless accompanied by a ticket).
+--    - A 'commercialCard' (granting benefits when purchasing a ticket).
+--    - A 'proprietary' product (very specific product, in case none of the above choices apply).
+--  The type of the product is indicated by generalConditions.productType.
 -- ##############################################################################################
 TransportProductData ::= SEQUENCE {
 
     -- Geographical validity of the transport product.
     -- This validity is described through successive segments that make up the route.
+    -- Omitted if the transport product is a 'reservation' (the concerned segment or transport being described by generalConditions.transportService.reservation)
     geoValidity               SEQUENCE SIZE (1..16) OF GeoValiditySegmentType  OPTIONAL,
 
     -- To be provided in case the return route differs.
+    -- Omitted if the transport product is a 'reservation'.
     returnGeoValidity         SEQUENCE SIZE (1..16) OF GeoValiditySegmentType  OPTIONAL,
 
     -- General conditions that apply to all segments of the route.
+    -- Mandatory if the transport product is a 'reservation' (this reservation being described through this 'generalConditions' element).
     generalConditions         ConditionsType                                   OPTIONAL,
 
     -- Specific conditions that can be applied to segments of the route.
     -- When a segment refers to specific conditions, these are added to the general conditions.
     -- If a particular condition is defined in both the general and then specific conditions,
     --   the one in specific conditions overrules the one in the general conditions.
+    -- Omitted if the transport product is a 'reservation'.
     specificConditions        SEQUENCE SIZE (1..32) OF ConditionsType          OPTIONAL,
 
     -- Proprietary data defined bilaterally.
@@ -457,10 +482,8 @@ CarCarriageReservationData ::= SEQUENCE {
     -- Internal reference of the booking.
     reference                       GenericIdType                     OPTIONAL,
 
-    -- Service brand: code list https://uic.org/service-brand-code-list.
-    -- To identify the train service uniquely in combination with train number and departure date.
-    serviceBrand                     INTEGER (0..32000)                OPTIONAL,
-    serviceBrandAbrUTF8              UTF8String                        OPTIONAL,
+    -- Service brand
+    serviceBrand                     ServiceBrandType                 OPTIONAL,
 
     -- fromStation is the loading station, toStation is the unloading station.
     fromStation                      StationType,
@@ -470,8 +493,8 @@ CarCarriageReservationData ::= SEQUENCE {
     place                            IA5String                         OPTIONAL,
 
     -- Description of the car.
-    numberPlate                     IA5String,
-    trailerPlate                    IA5String                          OPTIONAL,
+    vehiclePlate                    PlateType,
+    trailerPlate                    PlateType                          OPTIONAL,
     carCategory                     INTEGER (0..9),
     boatCategory                    INTEGER (0..6)                     OPTIONAL,
     textileRoof                     BOOLEAN,
@@ -491,7 +514,7 @@ CarCarriageReservationData ::= SEQUENCE {
 
     -- Reference to an entry on the loading list.
     loadingListEntry                INTEGER (0..999)                    OPTIONAL,
-    loadingDeck                     LoadingDeckType                     DEFAULT upper,
+    loadingDeck                     LoadingDeckType                     OPTIONAL,
 
     -- Carriers responsible for the transport (RICS-Code).
     carrier                         SEQUENCE OF CompanyCodeType         OPTIONAL,
@@ -535,7 +558,7 @@ DepartureDateTimeType ::= SEQUENCE {
 ArrivalDateTimeType ::= SEQUENCE {
     -- Arrival date and time in local time at the arrival station.
     -- Number of days counted from the departure date.
-    arrivalDate        INTEGER (-1..20)                 DEFAULT 0,
+    arrivalDate        INTEGER (-1..30)                 DEFAULT 0,
     arrivalTime        INTEGER (0..1439)                OPTIONAL,
 
     -- Offset in units of 15 minutes from local time to UTC
@@ -549,9 +572,7 @@ ArrivalDateTimeType ::= SEQUENCE {
 -- ##############################################################################################
 --  Transport link data.
 --  Describes a transport link associated to a route or to a part of a route.
---  Quite similar to a reservation but:
---    - without assigned place(s)
---    - without classCode/serviceBrand/serviceLevel (which must be described in the ConditionsType containing this transport Link)
+--  Quite similar to ReservationSegmentType but without assigned place(s).
 -- ##############################################################################################
 TransportLinkType ::= SEQUENCE {
 
@@ -582,12 +603,10 @@ TransportLinkType ::= SEQUENCE {
     -- Omitted if the class is the same as the class of the associated leg.
     classCode               TravelClassType                   DEFAULT second,
 
-    -- Service brand: code list https://uic.org/service-brand-code-list.
-    -- To identify the transport service uniquely in combination with transport number and departure date.
+    -- Service brand
     -- Omitted if this specific service brand is already specified in the associated leg, and is the only one that is specified for this leg
-    --   (a leg can allow many service brands, but a reservation only specifies one).
-    serviceBrand            INTEGER (0..32000)                OPTIONAL,
-    serviceBrandAbrUTF8     UTF8String                        OPTIONAL,
+    --   (a leg can allow many service brands, but a transport link only specifies one).
+    serviceBrand            ServiceBrandType                  OPTIONAL,
 
     -- Service level code list from 918.1.
     -- Omitted if the same service level is already specified in the description of the associated leg.
@@ -629,12 +648,10 @@ ReservationSegmentType ::= SEQUENCE {
     -- Omitted if the class is the same as the class of the associated leg.
     classCode               TravelClassType                   DEFAULT second,
 
-    -- Service brand: code list https://uic.org/service-brand-code-list.
-    -- To identify the transport service uniquely in combination with transport number and departure date.
+    -- Service brand
     -- Omitted if this specific service brand is already specified in the associated leg, and is the only one that is specified for this leg.
     --   (a leg can allow many service brands, but a reservation only specifies one).
-    serviceBrand            INTEGER (0..32000)                OPTIONAL,
-    serviceBrandAbrUTF8     UTF8String                        OPTIONAL,
+    serviceBrand            ServiceBrandType                  OPTIONAL,
 
     -- Service level code list from 918.1.
     -- Omitted if the same service level is already specified in the description of the associated leg.
@@ -714,6 +731,7 @@ GroupDetailsType ::= SEQUENCE {
 --  Types describing temporal conditions, used in several other type definitions
 -- ----------------------------------------------------------------------------------------------
 ValidFromType ::= SEQUENCE {
+
     -- Date/time validity in local time of the location where the journey starts.
     -- Number of days from issuing date (-398 allows reissuing the ticket up to 13 months after the start of its validity, 800 allows issuing the ticket up to 2 years in advance).
     validFromDay     INTEGER (-398..800)                DEFAULT 0,
@@ -723,6 +741,7 @@ ValidFromType ::= SEQUENCE {
 }
 
 ValidUntilType ::= SEQUENCE {
+
     -- Date/time validity in local time of the location where the journey ends.
     -- Number of days from validFrom date, 0 = validUntilDay is equal to the first day of validity.
     validUntilDay     INTEGER (-1..500)            DEFAULT 0,
@@ -730,42 +749,71 @@ ValidUntilType ::= SEQUENCE {
 }
 
 ExtendedValidUntilType ::= SEQUENCE {
+
     -- Extended date/time validity (up to just over 5 years) in local time of the location where the journey ends.
     -- Number of days from validFrom date.
     validUntilDay    INTEGER (501..2000),
     validUntilTime    INTEGER (0..1439)                 DEFAULT 1439
 }
 
+-- ----------------------------------------------------------------------------------------------
+--  Time range when a product can be used.
+--  Use case examples:
+--    - School transport pass valid Monday through Friday, between 07:00 and 19:00, whether it is a pollution day or not, but not on public holidays:
+--      { allowedWeekdays { monday TRUE, tuesday TRUE, wednesday TRUE, thursday TRUE, friday TRUE, saturday FALSE, sunday FALSE },
+--        specialDays { nationalHolidays FALSE, stateHolidays FALSE, countyHolidays FALSE, localHolidays FALSE },
+--        includedTimeRange { { fromTime 420, untilTime 1440 } } }
+--    - Tourist week-end pass valid every Friday-Saturday-Sunday, wether it is a special day or not:
+--      { allowedWeekdays { monday FALSE, tuesday FALSE, wednesday FALSE, thursday FALSE, friday TRUE, saturday TRUE, sunday TRUE } }
+--    - Pollution ticket valid only on pollution days:
+--      { specialDays { pollutionDay TRUE } }
+-- ----------------------------------------------------------------------------------------------
 IncludedTimeRangesType ::= SEQUENCE {
-    dayTypes                     DayTypesType,
+
+    -- Days of the week when the product can be used. For each day of the week:
+    --   - TRUE means the corresponding day is allowed.
+    --   - FALSE means the corresponding day is forbidden.
+    -- However, this authorization must take specialDays into account, if this element is also present.
+    -- If allowedWeekDays is omitted, the product validity does not depend on the day of the week.
+    allowedWeekdays              WeekdaysType                 OPTIONAL,
+
+    -- Impact of special days on product validity. This impact takes precedence over valid weekdays. For each special day:
+    --   - TRUE means the product can be used on this special day (even if the weekday is not allowed by allowedWeekdays).
+    --   - FALSE means the product can NOT be used on this special day (even if the weekday is allowed by allowedWeekdays).
+    --   - Omitted means that this special day does not affect the validity defined by allowedWeekdays.
+    -- If specialDays is omitted, the product validity does not depend on any special day.
+    specialDays                  SpecialDaysType             OPTIONAL,
+
+    -- Time ranges when the product can be used, during the days described above.
+    -- Omitted if the product validity does not depend on any time (but is defined for the entire days).
     includedTimeRange            SEQUENCE OF TimeRangeType   OPTIONAL
 }
 
-DayTypesType ::= SEQUENCE {
-    --  monday = true, national_holiday = true --> true on mondays or national_holidays.
+WeekdaysType ::= SEQUENCE {
     monday              BOOLEAN,
     tuesday             BOOLEAN,
     wednesday           BOOLEAN,
     thursday            BOOLEAN,
     friday              BOOLEAN,
     saturday            BOOLEAN,
-    sunday              BOOLEAN,
-    -- National holiday (e.g. Christmas)
-    nationalHolidays    BOOLEAN,
-    -- County holiday (e.g. Corpus Christi)
-    countyHolidays      BOOLEAN,
-    -- Local holiday (e.g. Augsburger Friedensfest)
-    localHolidays       BOOLEAN,
-    -- Days when pollution levels exceed the threshold
-    pollutionDay        BOOLEAN,
+    sunday              BOOLEAN
+}
+
+SpecialDaysType ::= SEQUENCE {
+    
+    nationalHolidays    BOOLEAN OPTIONAL, -- National holiday (e.g. Christmas in France, as it is a public holiday throughout the whole country)
+    stateHolidays       BOOLEAN OPTIONAL, -- State holiday (e.g. Buss- und Bettag in german Sachsen Bundesland)
+    countyHolidays      BOOLEAN OPTIONAL, -- County holiday (e.g. Corpus Christi)
+    localHolidays       BOOLEAN OPTIONAL, -- Local holiday (e.g. Friedensfest in german city of Augsburg)
+    
+    pollutionDay        BOOLEAN OPTIONAL, -- Days when pollution levels exceed the threshold
+    
     ...
 }
 
 TimeRangeType ::= SEQUENCE {
-    -- Local time
-    fromTime                INTEGER (0..1439),
-    -- Local time
-    untilTime               INTEGER (0..1439)
+    fromTime                INTEGER (0..1439), -- Local time
+    untilTime               INTEGER (0..1439)  -- Local time
 }
 
 -- ##############################################################################################
@@ -774,6 +822,9 @@ TimeRangeType ::= SEQUENCE {
 --    - if used for specificConditions: to the associated leg.
 -- ##############################################################################################
 ConditionsType ::= SEQUENCE {
+
+    -- Detailed type of the transport product (ticket, reservation, commercial card...).
+    productType                      ProductTypeType,
 
     -- Area (city, region, country...) in which the transport document / the leg is valid
     --   (allows also defining local code tables depending on this area).
@@ -786,9 +837,6 @@ ConditionsType ::= SEQUENCE {
     -- Version of the code tables used.
     -- Only relevant if locationCodeTable indicates a bilaterally agreed code table.
     locationCodeTableVersion         INTEGER (0..255)                OPTIONAL,
-
-    -- Detailed type of the transport product (ticket, reservation, commercial card...).
-    productType                      ProductTypeType,
 
     -- Identification of the product (owner, id, textual description).
     product                          ProductType                     OPTIONAL,
@@ -813,11 +861,14 @@ ConditionsType ::= SEQUENCE {
     -- omitted if the concept of direction is not relevant (e.g. for geographical validity as unordered areas).
     directionIsMandatory             BOOLEAN                         OPTIONAL,
 
-    -- Link to a specific transport service without reservation
-    transportLink                    TransportLinkType               OPTIONAL,
+    -- Link to a specific transport service
+    transportService CHOICE {
+        -- Link to a specific transport service without reservation
+        transportLink                TransportLinkType,
 
-    -- Link to a specific transport service with reservation
-    reservation                      ReservationSegmentType          OPTIONAL,
+        -- Link to a specific transport service with reservation
+        reservation                  ReservationSegmentType
+    },
 
     -- Included carriers responsible for the transport
     includedCarrier                  SEQUENCE OF CompanyCodeType     OPTIONAL,
@@ -825,9 +876,9 @@ ConditionsType ::= SEQUENCE {
     -- Included transport modes. Code list: EN 1545-1 (transport type code)
     includedTransportType           SEQUENCE OF INTEGER (0..31)      OPTIONAL,
 
-    -- Service brands valid for the route. Code list https://uic.org/service-brand-code-list
+    -- Service brands valid for the route.
     -- In case this list is provided the ticket is invalid on all other service brands
-    includedServiceBrand            SEQUENCE OF INTEGER (1..32000)   OPTIONAL,
+    includedServiceBrand            SEQUENCE OF ServiceBrandType     OPTIONAL,
 
     -- Travel class
     -- For transport modes where the concept of class does not exist, must be set to notApplicable
@@ -924,7 +975,7 @@ RareDetailsType::= SEQUENCE {
     -- Excluded service brands for the route.
     -- In case this list is provided, the ticket is valid on all other service brands,
     --   and includedServiceBrand (in ConditionsType) shall not be used.
-    excludedServiceBrand      SEQUENCE OF INTEGER (1..32000)  OPTIONAL,
+    excludedServiceBrand      SEQUENCE OF ServiceBrandType    OPTIONAL,
 
     -- Price of the tranport product (if in generalConditions) or of the segment (if in specificConditions),
     --   in the currency and fraction defined in IssuingData.
@@ -1084,7 +1135,7 @@ ParkingType ::= SEQUENCE {
     entryTrack                    UTF8String                    OPTIONAL,
 
     -- Number plate of the car parked.
-    numberPlate                   IA5String                     OPTIONAL,
+    vehiclePlate                   PlateType                    OPTIONAL,
 
     -- Number of days or hours of allowed parking in case this number is limited and less than the validity period.
     -- If present, the count of the remaining number of allowed days or hours is centrally held in a back office,
@@ -1184,8 +1235,9 @@ TariffType ::= SEQUENCE {
     tariffDesc                       UTF8String                        OPTIONAL,
 
     -- Reduction cards applied (incl. discount cards, loyalty cards relevant for the tariff).
+    -- To require verification of these cards during an inspection, use ControlData.reductionCardCheckRequired.
     -- Omitted if these cards have already been verified at the time of purchase,
-    --   or if their verification is not requested during inspection.
+    --   and if their verification is not requested during inspection.
     reductionCard                    SEQUENCE OF CardReferenceType     OPTIONAL,
 
     ...
@@ -1207,7 +1259,7 @@ CardReferenceType ::= SEQUENCE {
 
     -- Card ID
     -- According to cardIdFormat, the ID is full, limited to the leading part, or limited to the trailing part.
-    cardId               CardIdType                       OPTIONAL,
+    cardId               GenericIdType                    OPTIONAL,
       
     -- Indication whether the full or only the leading or trailing part is provided.
     cardIdFormat         CardIdFormatType                 DEFAULT full,
@@ -1228,7 +1280,7 @@ TravelerType ::= SEQUENCE {
     secondName                       UTF8String                                OPTIONAL,
     lastName                         UTF8String                                OPTIONAL,
 
-    passengerType                   PassengerType                              DEFAULT adult,
+    passengerType                   PassengerType                              OPTIONAL,
 
     dateOfBirth                     DateType                                   OPTIONAL,
 
@@ -1412,35 +1464,36 @@ LineCodeType ::= CHOICE {
 -- ##############################################################################################
 ZoneType ::= SEQUENCE {
 
-    -- The specific zones, and how one can move around them.
-    -- Code table is defined in the container object.
-    zonalValidity CHOICE {
+    -- Code table of the zones is defined in the container object.
 
-        -- Zones in which the traveler can enter, travel and leave without any restrictions.
-        unorderedZones           AreaIdType, 
-
-        -- Zones with restrictions: zones the traveler has to start in / is only allowed to travel through / has to end in.
-        -- At least one of the three elements has to be present.
-        orderedZones SEQUENCE {
-
-            -- Zones where the traveler must begin his journey.
-            entryZoneId          AreaIdType              OPTIONAL,
-
-            -- Zones that the traveler is allowed to cross, but in which he may neither begin nor end his journey.
-            transitZoneId        AreaIdType              OPTIONAL,
-            
-            -- Zones where the traveler must terminate his journey.
-            terminatingZoneId    AreaIdType              OPTIONAL,
-        }
+    -- In case the allowed journey must begin in specific stations or specific zones. E.g.:
+    --   - local city traffic starting from the station where a train journey ends.
+    --   - journey starting in a city described with a specific set of zones.
+    -- Omitted if there are no restrictions on where the journey must begin.
+    restrictedEntry CHOICE {
+       station                 StationSetType,
+       zones                   AreaIdType
     } OPTIONAL,
-         
-    -- In case the allowed zones must be entered via specific stations
-    --   (e.g. local city traffic  starting from the station where a train journey ends).
-    entryStation                 StationSetType          OPTIONAL,
 
-    -- In case the zone must be left via a specific station
-    --   (e.g. local city traffic ending in the station where a train journey begins).
-    terminatingStation           StationSetType          OPTIONAL,
+    -- Description of the allowed zones.
+    -- The zones described in restrictedEntry:zones and/or restrictedExit:zones must not be repeated in the included or excluded zones.
+    -- If restrictedEntry is absent, the journey can begin anywhere in the allowed zones.
+    -- If restrictedExit is absent, the journey can end anywhere in the allowed zones.
+    -- If restrictedEntry and restrictedExit are present, the allowed zones are only transit zones:
+    --   the traveler is allowed to cross them, but he may neither begin nor end his journey in them.
+    zones CHOICE { 
+       included                AreaIdType,
+       excluded                AreaIdType  -- clarify that when we use this element, concernedArea must be present (and the validity is eveywehre in the concernedArea but not in excluded zones)
+    },
+
+    -- In case the allowed journey must end in specific stations or specific zones. E.g.:
+    --   - local city traffic ending in the station where a train journey ends.
+    --   - journey ending in a city described with a specific set of zones.
+    -- Omitted if there are no restrictions on where the journey must end.
+    restrictedExit CHOICE {
+       station                 StationSetType,
+       zones                   AreaIdType
+    } OPTIONAL,
 
     -- Readable name of the area of validity.
     zoneNameUTF8                 UTF8String              OPTIONAL,
@@ -1481,7 +1534,7 @@ ComplexRouteType ::= SEQUENCE {
 RouteItemType ::= CHOICE {
 
     -- The route item is the destination station from the previous validity segment. 
-    destinationStationOfPreviousSegment  BOOLEAN, -- /!\ we should use NULL instead of BOOLEAN (because FALSE has no sense in this CHOICE)
+    destinationStationOfPreviousSegment  NULL,
 
     -- The route item is a specific station
     station                              StationType,
@@ -1614,7 +1667,7 @@ CoachPlacesType ::= SEQUENCE {
 BerthDetailData ::= SEQUENCE {
     berthType              BerthTypeType,
     numberOfBerths         INTEGER (1..999),
-    gender                 CompartmentGenderType         DEFAULT family,
+    gender                 CompartmentGenderType         DEFAULT mixed,
     ...
 }
 
@@ -1771,27 +1824,13 @@ CodeTableType ::= CHOICE {
 -- ##############################################################################################
 ProductTypeType ::= CHOICE {
 
-    -- /!\ The 2 first choices hereunder ('ticket' and 'rightToTravel') are not exclusive:
-    -- - a ticket may need a back office management (e.g. book of tickets)
-    -- - a rightToTravel may include a description of the allowed zones
-    -- - a barcode could simultaneously include the full description of a product and an Account-Based-Ticketing code,
-    --     in order to allow some operators to validate/check it using the barcode content, and some others to validate it using only the ABT code.
-    -- Proposal: we should only keep the 'ticket' choice (in other words: we should merge 'ticket' and 'rightToTravel'),
-    --   and just add a 'onlineValidationNeeded' boolean in TicketDetailsType to differentiate both situations.
-    -- By doing this, this unified 'ticket' choice would cover all documents that allow traveling.
-
-    -- Transport service fully described in the barcode document: single ticket, return ticket, travelcard, pass, access to a (car, bike...) parking lot, carsharing service...
+    -- Ticket authorizing the use of the transportation service (single ticket, return ticket, ticket book, pass, access to a parking lot, car sharing service...)
     -- This choice also describes some associated characteristics:
-    --   - number of possible use (single/return/multiple/unlimited),
-    --   - is the ticket an initial ticket or an upgrade
-    --   - does the ticket need an associated reservation to be usable
+    --   - how many journeys are possible (single/return/multiple/unlimited),
+    --   - is an online connection required to validate or check the ticket,
+    --   - is the ticket an initial ticket or an upgrade,
+    --   - does the ticket need an associated reservation to be usable.
     ticket         TicketDetailsType, 
-
-    -- Transport right not (or not fully) described in the barcode. ,  managed in a back office. E.g.:
-    -- - pay-as-you-go: 
-    -- - account-based-ticketing: validation and control are granted according to an ABT identifier contained in the barcode
-    -- - standalone transportLink on a specific transport
-    rightToTravel  NULL,
 
     -- Standalone reservation, which does not authorize travel unless accompanied by a ticket.
     reservation    NULL,
@@ -1806,7 +1845,7 @@ ProductTypeType ::= CHOICE {
 }
 
 -- ----------------------------------------------------------------------------------------------
---  Description of a ticket characteristics
+--  Description of a ticket characteristics.
 -- ----------------------------------------------------------------------------------------------
 TicketDetailsType ::= SEQUENCE {
 
@@ -1821,6 +1860,24 @@ TicketDetailsType ::= SEQUENCE {
     --   - FALSE if no associated reservation is required (this value covers the case when the reservation is included in the ticket conditions).
     additionalReservationRequired BOOLEAN            DEFAULT FALSE, 
     ...
+}
+
+-- ##############################################################################################
+--  Service brand description.
+--    Identifies a train service uniquely in combination with train number and departure date.
+--    Code list: https://uic.org/service-brand-code-list
+-- ##############################################################################################
+ServiceBrandType ::= SEQUENCE {
+    serviceBrand                     INTEGER (1..32000)                OPTIONAL,
+    serviceBrandAbrUTF8              UTF8String                        OPTIONAL
+}
+
+-- ##############################################################################################
+--  Vehicle plate description.
+-- ##############################################################################################
+PlateType ::= SEQUENCE {
+    plateCountry                     INTEGER (1..999), -- Numeric ISO 3166 country code
+    plateNumber                      IA5String
 }
 
 -- ##############################################################################################
@@ -1840,37 +1897,6 @@ TokenCategoryType ::= ENUMERATED {
     accountBasedTicketing (1), -- 'token' is the ID of the account with which the ticket is linked
     ...
 }
-
--- ProductTypeType ::= ENUMERATED {
---        point-2-point-single-trip                                      (0),   -- single usage ticket for origin to destination
---        point-2-point-single-trip-mandatory-reservation                (1),   -- single usage ticket for origin to destination
---        point-2-point-return-trip                                      (2),   -- single usage ticket for origin to destination and return
---        point-2-point-multiple-trips                                   (3),   -- multiple usage ticket for origin to/froim destination e.g. monthly ticket beaween A and B
---        area-ticket-multiple-trips                                     (4),   -- multiple usage ticket for an area
---        area-ticket-single-trip                                        (5),   -- single usage ticket for an area
---        upgrade-point-2-point-single-trip                              (6),   -- upgrade on a single usage ticket for origin to destination (e.g. 2nd to 1st classs, normal to premium train)
---        upgrade-point-2-point-single-trip-mandatory-reservation        (7),   -- upgrade on a single usage ticket for origin to destination (e.g. 2nd to 1st classs, normal to premium train)
---        upgrade-point-2-point-return-trip                              (8),   -- upgrade on a single usage ticket for origin to destination and return
---        upgrade-point-2-point-multiple-trips                           (9),   -- upgrade on a multiple usage ticket for origin to/froim destination e.g. monthly ticket beaween A and B
---        upgrade-area-ticket-multiple-trips                             (10),   -- upgrade on a multiple usage ticket for an area
---        upgrade-area-ticket-single-trip                                (11),   -- upgrade on a single usage ticket for an area
---        reservation-with-supplement                                    (12),
---        bicycle-reservation                                            (13),   -- reservation of a bicycle to be attached to the bike
---        pay-as-you-go                                                  (14),   -- right to travel
---        standalone-reservation                                         (15),   -- reservation without the associated ticket
---        commercial-card                                                (16),   -- card allowing to buy tickets with reductions
---        ...
--- }
---
--- -- alternative:
--- TicketUsageType ::= SEQUENCE {
---        -- single  vs. multiple trip ticket
---        singleTrip           BOOLEAN,
---        -- upgrade vs. base ticket
---        upgrade              BOOLEAN.
---        -- point-2-point vs area ticket
---        point-2-point        BOOLEAN,
--- }
 
 ServiceType ::= ENUMERATED {
     seat              (0),
@@ -1977,9 +2003,8 @@ LoadingDeckType ::= ENUMERATED {
 }
 
 CompartmentPositionType ::= ENUMERATED {
-    unspecified          (0),
-    upperLevel           (1),
-    lowerLevel           (2)
+    upperLevel           (0),
+    lowerLevel           (1)
 }
 
 RoofRackType ::= ENUMERATED {
@@ -2020,6 +2045,7 @@ END
 --        - check-in / check-out barcode at check-in check-out point
 -- - other use cases?
 -- ##############################################################################################
+
 
 
 
