@@ -357,7 +357,8 @@ ProductRetailData ::= SEQUENCE {
     --   (code table of the product retailer).
     retailPointId             INTEGER                          OPTIONAL,
 
-    -- Traceability information linked to the barcode or contract generation (e.g. software version)
+    -- Traceability information linked to the barcode or contract generation
+    --   (e.g. name and version of the generation software)
     --   (code table of the product retailer).
     retailTraceability        IA5String                        OPTIONAL,
 
@@ -378,7 +379,7 @@ ControlData ::= SEQUENCE {
     -- TRUE if online operations must be performed to validate or check this ticket. E.g.:
     --   - For a Pay-as-you-go ticket, check during inspection that it has been validated.
     --   - For a ticket valid for 3 hours from the first validation, check when this first validation took place.
-    --   - For a fully ABT ticket: check the details of the ticket in the ABT account.
+    --   - For a fully ABT (Account Based Ticketing) document: check the details of the ticket in the ABT account.
     --   - For a ticket authorizing a limited number of trips: check how many trips have already been made.
     --   - For a ticket that can be refunded until the last moment: check if the ticket has been cancelled and refunded.
     -- FALSE if no information is available online so it is useless to check.
@@ -593,7 +594,8 @@ TransportLinkType ::= SEQUENCE {
     transportNumber         SEQUENCE OF TransportNumberType   OPTIONAL,
 
     -- Departure date and time in local time at the departure station of the transport link.
-    departureDateTime       DepartureDateTimeType,
+    -- If omitted, departureDateTime is assumed to be equal to validFrom and validFromUTCOffset of the container object.
+    departureDateTime       DepartureDateTimeType             OPTIONAL,
 
     -- Arrival date time in local time at the arrival station of the transport link.
     arrivalDateTime         ArrivalDateTimeType               OPTIONAL,
@@ -638,7 +640,8 @@ ReservationSegmentType ::= SEQUENCE {
     transportNumber         TransportNumberType               OPTIONAL,
 
     -- Departure date and time in local time at the departure station.
-    departureDateTime       DepartureDateTimeType,
+    -- If omitted, departureDateTime is assumed to be equal to validFrom and validFromUTCOffset of the container object.
+    departureDateTime       DepartureDateTimeType             OPTIONAL,
 
     -- Arrival date time in local time at the arrival station.
     arrivalDateTime         ArrivalDateTimeType               OPTIONAL,
@@ -864,10 +867,10 @@ ConditionsType ::= SEQUENCE {
     -- Link to a specific transport service
     transportService CHOICE {
         -- Link to a specific transport service without reservation
-        transportLink                TransportLinkType,
+        transportLink                SEQUENCE OF TransportLinkType,
 
         -- Link to a specific transport service with reservation
-        reservation                  ReservationSegmentType
+        reservation                  SEQUENCE OF ReservationSegmentType
     },
 
     -- Included carriers responsible for the transport
@@ -931,19 +934,21 @@ RareTimingConditionsType ::= SEQUENCE {
     -- In case included time ranges are defined, the validity is restricted to these ranges.
     includedTimeRanges                       SEQUENCE OF IncludedTimeRangesType         OPTIONAL,
 
-    -- For return tickets only:
-    -- - TRUE means that the outward journey must be made on validFomDay/Time and the return journey must be made on validUntilDay/Time.
-    -- - FALSE means that the outward and return journey can be made any moment between validFromDay/Time and validUntilDay/Time.
-    -- For other tickets: this element is not relevant and shall be set to FALSE.
-    TravelAllowedOnlyOnValidFromAndUntilDay  BOOLEAN,
-
     -- List of activated days in case the entire ticket is not activated.
+    --   The ticket can only be used on the days it is activated.
+    --   If the ticket is a return ticket, activatedDay only applies to the outward journey (use activatedReturnDay for the return journey).
     -- Each day is given by the number of days from the first day of validity (validFrom) (0 = first day of validity).
     -- For day that the ticket is activated, the activation is valid from 00:00 to 23:59 in the time zone of the traveler's current location,
     --   thereby the activation might include more or less that 24 hours in case time zone borders are crossed.
     -- Travel days of a ticket might be subject to a separate activation to be valid for traveling.
+    -- Omitted if there are no restrictions on days of use between validFrom and validUntil.
     activatedDay                            SEQUENCE OF INTEGER (0..500)                OPTIONAL,
 
+    -- In case of a return ticket only: list of activated days for the return journey.
+    -- Same use as activatedDay but for the return journey
+    -- Omitted if there are no restrictions on days of use between validFrom and validUntil for the return journey.
+    activatedReturnDay                      SEQUENCE OF INTEGER (0..500)                OPTIONAL,
+    
     -- Proprietary data defined bilaterally.
     extension                               ExtensionData                               OPTIONAL,
 
@@ -1078,7 +1083,7 @@ CustomerCardData ::= SEQUENCE {
 
     -- List of included services,
     --     1 = Rail Plus
-    --     2 = access to launch
+    --     2 = access to lounge
     --     > 50  code list of the issuer
     includedServices        SEQUENCE OF INTEGER                  OPTIONAL,
 
@@ -1142,7 +1147,7 @@ ParkingType ::= SEQUENCE {
     --   that must be queried to verify whether the traveler still has a right of parking.
     numberAllowed CHOICE {
         days                      INTEGER,
-        hours                     INTEGER
+        minutes                   INTEGER (1..1439)
     }
 
     -- Additional readable information that cannot be described using the other elements.
@@ -1223,10 +1228,10 @@ TariffType ::= SEQUENCE {
     -- The number indicates the position in the traveler sequence starting from 1.
     travelerid                       SEQUENCE OF INTEGER (1..254)      OPTIONAL,
 
-    -- Restriction on country of residence.
-    -- TRUE if this tariff is restricted by the country of residence given in the traveler data
-    --   (e.g. Eurail tickets are not valid in the country of residence).
-    restrictedToCountryOfResidence   BOOLEAN,
+    -- Validity restrictions depending on country.
+    --   (e.g. for Eurail tickets that are not valid in the country of residence).
+    -- Omitted if there are no restrictions related to countries. 
+    countryValidity                  countryValidityType               OPTIONAL,
 
     -- Tariff code.
     tariffId                         GenericIdType                     OPTIONAL,
@@ -1244,27 +1249,45 @@ TariffType ::= SEQUENCE {
 }
 
 -- ##############################################################################################
---  Card reference (for any kinf of card: customer card, loyaly card, reduction card...)
+--  Card reference (for any kind of card: customer card, loyaly card, reduction card...)
 -- ##############################################################################################
 CardReferenceType ::= SEQUENCE {
 
     -- Issuer of the card.
-    cardIssuer            CompanyCodeType,
+    issuer                CompanyCodeType,
 
-    -- Readable name of the card e.g. "VISA-CARD".
-    cardName              UTF8String                      OPTIONAL,
+    -- Readable name of the card, e.g. "VISA-CARD", "Carte Avantage Jeune", "Vorteilscard Senior"...
+    name                 UTF8String                      OPTIONAL,
 
     -- Type of the card, code list defined by the issuer of the card.
-    cardType             INTEGER                          OPTIONAL,
+    type                 INTEGER                          OPTIONAL,
 
     -- Card ID
     -- According to cardIdFormat, the ID is full, limited to the leading part, or limited to the trailing part.
-    cardId               GenericIdType                    OPTIONAL,
+    id                   GenericIdType                    OPTIONAL,
       
-    -- Indication whether the full or only the leading or trailing part is provided.
-    cardIdFormat         CardIdFormatType                 DEFAULT full,
+    -- Indication whether the full or only the leading or trailing part of the ID is provided.
+    format               CardIdFormatType                 DEFAULT full,
 
     ...
+}
+
+-- ##############################################################################################
+-- Description of an identity document
+-- ##############################################################################################
+IdentificationDocumentType ::= SEQUENCE {
+
+    -- Numeric ISO 3166 country code of the issuing country of the document
+    country              INTEGER (1..999),
+
+    -- Category of the document (passport, ID card...)
+    category             IdentificationDocumentCategoryType,
+
+    -- Number of the document
+    number               IA5String,
+
+    -- Indication whether the full or only the leading or trailing part of the document number is provided.
+    format         CardIdFormatType                 DEFAULT full,
 }
 
 -- ##############################################################################################
@@ -1301,9 +1324,9 @@ DateType :== SEQUENCE {
 --  Rare traveler data
 -- ----------------------------------------------------------------------------------------------
 RareTravelerDetailsType ::= SEQUENCE {
-   
-    idCardId                         IA5String                                 OPTIONAL,
-    passportId                       IA5String                                 OPTIONAL,
+
+    -- Details of the document (ID card, passport...) identifying the traveler
+    identificationDocument           IdentificationDocumentType                OPTIONAL,
 
     -- Cards (reduction, discount, loyalty...) held by the traveler.
     -- Only present if they serve a purpose (e.g. access to a lounge in a station).
@@ -1319,13 +1342,9 @@ RareTravelerDetailsType ::= SEQUENCE {
    passengerWithReducedMobility    BOOLEAN                                    OPTIONAL,
 
    -- Country of residence (numeric ISO 3166 country code).
-   -- To be used in case there are product restrictions on the country of residence (e.g. Eurail passes),
-   --   such restrictions are then indicated with the 'restrictedToCountryOfResidence' boolean in 'TariffType'.
+   -- To be used in case there are product restrictions linked to the country of residence (e.g. Eurail passes),
+   --   such restrictions are then indicated with the 'countryValidity' element in 'TariffType'.
    countryOfResidence              INTEGER (1..999)                           OPTIONAL,
-
-   -- Country of ID documents (numeric ISO 3166 country code).
-   countryOfPassport               INTEGER (1..999)                           OPTIONAL,
-   countryOfIdCard                 INTEGER (1..999)                           OPTIONAL,
 
    status                          SEQUENCE OF CustomerStatusType             OPTIONAL,
 
@@ -1408,7 +1427,6 @@ OriginDestinationType ::= SEQUENCE {
     intermediateStation          SEQUENCE OF StationType            OPTIONAL,
     
     ...
-
 }
 
 -- ----------------------------------------------------------------------------------------------
@@ -1481,9 +1499,14 @@ ZoneType ::= SEQUENCE {
     -- If restrictedExit is absent, the journey can end anywhere in the allowed zones.
     -- If restrictedEntry and restrictedExit are present, the allowed zones are only transit zones:
     --   the traveler is allowed to cross them, but he may neither begin nor end his journey in them.
-    zones CHOICE { 
-       included                AreaIdType,
-       excluded                AreaIdType  -- clarify that when we use this element, concernedArea must be present (and the validity is eveywehre in the concernedArea but not in excluded zones)
+    zones CHOICE {
+    
+       -- The allowed zones are those explicitely described in the 'included' element.
+       included                AreaIdType, -- list of allowed zones
+
+       -- The allowed zones are all the zones of the applicable 'concernedArea' element, except those
+       --   described in 'excluded', in 'restrictedEntry' and in 'restrictedExit'.
+       excluded                AreaIdType
     },
 
     -- In case the allowed journey must end in specific stations or specific zones. E.g.:
@@ -1514,7 +1537,7 @@ ZoneType ::= SEQUENCE {
 -- ##############################################################################################
 ComplexRouteType ::= SEQUENCE {
 
-    routeItem                        RouteItemType,
+    routeItem                        SEQUENCE OF RouteItemType,
 
     -- Information about the change of the service at this route item:
     -- - TRUE: change is mandatory
@@ -1746,6 +1769,13 @@ DeltaCoordinates ::= SEQUENCE {
 --  Generic definitions for various data using numeric, alphanumeric and/or binary codings.
 -- ##############################################################################################
 
+-- Identification of any element using a numerical, alphanumerical or binary ID, according to the code list defined in the container object.
+GenericIdType ::= CHOICE {
+    idNum           INTEGER,      -- for numerical IDs
+    idIA5           IA5String,    -- for alphanumerical IDs
+    idOct           OCTET STRING  -- for binary IDs such as UUIDs
+}
+
 -- Identification of a product, according to the code list defined in the container object.
 ProductIdType ::= CHOICE {
     productIdNum   INTEGER (0..65535),
@@ -1769,13 +1799,6 @@ AreaIdType ::= CHOICE {
     -- Bit representation of zones.
     -- Recommended encoding if applicable: bit n (considering that bit 0 = right-most bit) encodes zone n+1, bit value 1 = zone is allowed, bit value 0 = zone is forbidden.
     areaIdBit    BIT STRING                -- e.g. bitmap of allowed zones such as '10101110010'B for zones 2, 5, 6, 7, 9 and 11
-}
-
--- Identification of any element using a numerical, alphanumerical or binary ID, according to the code list defined in the container object.
-GenericIdType ::= CHOICE {
-    idNum           INTEGER,      -- for numerical IDs
-    idIA5           IA5String,    -- for alphanumerical IDs
-    idOct           OCTET STRING  -- for binary IDs such as UUIDs
 }
 
 -- Identification of a company.
@@ -1967,6 +1990,14 @@ CardIdFormatType ::= ENUMERATED {
     trailingPart      (2)
 }
 
+IdentificationDocumentCategoryType :== ENUMERATED {
+    passport          (0),
+    idCard            (1),
+    residencePermit   (2),
+    driverLicense     (3),
+    ...
+}
+
 TravelClassType ::= ENUMERATED {
     notApplicable  (0),
     first          (1),
@@ -1981,6 +2012,13 @@ TravelClassType ::= ENUMERATED {
     premiumSecond  (10),
     standardSecond (11),
     ...
+}
+
+CountryValidityType ::= ENUMERATED {
+   onlyInCountryOfResidence    (0),
+   includingCountryOfResidence (1),
+   excludingCountryOfResidence (2),
+   ...
 }
 
 GeoCoordinateSystemType ::= ENUMERATED {
@@ -2045,6 +2083,7 @@ END
 --        - check-in / check-out barcode at check-in check-out point
 -- - other use cases?
 -- ##############################################################################################
+
 
 
 
