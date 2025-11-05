@@ -144,7 +144,23 @@ public class StaticFrameBarcodeSignatureAlgorithmDetectionTest {
         
         SimpleTestTicketLayout.compare(layout, dec.getLayout());
 
-
+        String keyId = null;
+        try {
+			keyId = dec.getLevel1KeyId();
+		} catch (EncodingFormatException e) {
+			assert(false);
+		}
+        String securityProvider = null;
+        try {
+			securityProvider = dec.getLevel1SecurityProvider();
+		} catch (EncodingFormatException e) {
+			assert(false);
+		}
+        
+        assert("1".equals(keyId));
+        assert("1080".equals(securityProvider));
+        
+        
 	}
 	
 	/**

@@ -245,6 +245,22 @@ public class DynamicFrameV2SignatureInsertTest {
         assert(signatureCheck == Constants.LEVEL2_VALIDATION_OK);              
 
         
+        try {
+			keyId = dec.getLevel1KeyId();
+		} catch (EncodingFormatException e) {
+			assert(false);
+		}
+        String securityProvider = null;
+        try {
+			securityProvider = dec.getLevel1SecurityProvider();
+		} catch (EncodingFormatException e) {
+			assert(false);
+		}
+        
+        assert("1".equals(keyId));
+        assert("1080".equals(securityProvider));
+        
+        
 	}	
 	
 	public KeyPair generateECDSAKeys(String keyAlgorithmName, String paramName)  throws NoSuchAlgorithmException, NoSuchProviderException, InvalidAlgorithmParameterException{
