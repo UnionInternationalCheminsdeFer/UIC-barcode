@@ -417,6 +417,22 @@ public class Decoder {
 			&& dynamicFrame.getLevel2Data().getLevel1Data() != null) {
 			return dynamicFrame.getLevel2Data().getLevel1Data().getKeyId().toString();
 		} else if (staticFrame != null) {
+			return staticFrame.getSignatureKey();
+		} else if (ssbFrame != null) {
+			return String.valueOf(ssbFrame.getHeader().getKeyId());
+		} else {
+			throw new EncodingFormatException("Unknown Header");
+		}
+		
+	}
+	
+	public String getTrimmedLevel1KeyId() throws EncodingFormatException {
+		
+		if (dynamicFrame != null 
+			&& dynamicFrame.getLevel2Data() != null 
+			&& dynamicFrame.getLevel2Data().getLevel1Data() != null) {
+			return dynamicFrame.getLevel2Data().getLevel1Data().getKeyId().toString();
+		} else if (staticFrame != null) {
 			return trimLeadingZeros(staticFrame.getSignatureKey());
 		} else if (ssbFrame != null) {
 			return String.valueOf(ssbFrame.getHeader().getKeyId());
