@@ -686,7 +686,31 @@ public class StaticFrame {
 	 * @deprecated
 	 */
 	public boolean verifyByAlgorithmOid(PublicKey key, String signingAlg) throws InvalidKeyException, NoSuchAlgorithmException, SignatureException, IllegalArgumentException, UnsupportedOperationException, IOException, EncodingFormatException {
-		return verifyByAlgorithmOid(key, signingAlg, null);
+		
+		String signatureAlgorithmOid = signingAlg;
+		
+		
+		// guess the signature algorithm based on the signature size
+		if ((signingAlg == null || signingAlg.length() < 1) && this.getSignature() != null) {			
+			signatureAlgorithmOid = SecurityUtils.getDsaAlgorithm(this.getSignature());
+		}
+		
+		//find the algorithm name for the signature OID
+		String algo = null;
+		Provider[] provs = Security.getProviders();
+		for (Provider prov : provs) {
+	       Service service = prov.getService("Signature",signatureAlgorithmOid);
+	       if (service != null) {
+	    	   algo = service.getAlgorithm();
+	       }
+		}
+		if (algo == null) {
+			throw new NoSuchAlgorithmException("No service for algorithm found: " + signingAlg);
+		}
+		Signature sig = Signature.getInstance(algo);
+		sig.initVerify(key);
+		sig.update(getDataForSignature());
+		return sig.verify(this.getSignature());
 	}
 
 	/**
@@ -762,7 +786,26 @@ public class StaticFrame {
 	 * @deprecated
 	 */
 	public void signByAlgorithmOID(PrivateKey key,String signatureAlgorithmOid) throws NoSuchAlgorithmException, InvalidKeyException, SignatureException, IOException, EncodingFormatException {
-		signByAlgorithmOID(key,signatureAlgorithmOid,null);
+		//find the algorithm name for the signature OID
+		//find the algorithm name for the signature OID
+		String algo = null;
+		Provider[] provs = Security.getProviders();
+		for (Provider p : provs) {
+			   if (algo == null) {
+				   Service service = p.getService("Signature",signatureAlgorithmOid);
+				   if (service != null) {
+					   algo = service.getAlgorithm();
+				   }
+			   }
+		}
+		if (algo == null) {
+			throw new NoSuchAlgorithmException("No service for algorithm found: " + signatureAlgorithmOid);
+		}
+		Signature sig = Signature.getInstance(algo);
+		sig.initSign(key);
+		signedData = buildDataForSignature();
+		sig.update(signedData);
+		signature = sig.sign();
 	}
 	
 
