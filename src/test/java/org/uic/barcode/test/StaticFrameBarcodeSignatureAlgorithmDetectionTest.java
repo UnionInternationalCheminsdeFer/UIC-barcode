@@ -146,7 +146,7 @@ public class StaticFrameBarcodeSignatureAlgorithmDetectionTest {
 
         String keyId = null;
         try {
-			keyId = dec.getLevel1KeyId();
+			keyId = dec.getTrimmedLevel1KeyId();
 		} catch (EncodingFormatException e) {
 			assert(false);
 		}
