@@ -27,7 +27,7 @@ import org.uic.barcode.ticket.EncodingFormatException;
 /**
  * The Class StaticFrameBarcodeTest.
  */
-public class SsbFrameBarcodeTestGroup {
+public class SsbFrameBarcodeTest {
 	
 	/** The algorithm OID. */
 	public String algorithmOID = Constants.DSA_SHA224;
@@ -181,29 +181,22 @@ public class SsbFrameBarcodeTestGroup {
         assert(dec.getSsbFrame().getHeader().getTicketType().equals(ref.getHeader().getTicketType()));
         assert(dec.getSsbFrame().getHeader().getVersion() == 1);
                 
-        assert(dec.getSsbFrame().getGroupData() != null);
+   
+        String keyId = null;
+        try {
+			keyId = dec.getLevel1KeyId();
+		} catch (EncodingFormatException e) {
+			assert(false);
+		}
+        String securityProvider = null;
+        try {
+			securityProvider = dec.getLevel1SecurityProvider();
+		} catch (EncodingFormatException e) {
+			assert(false);
+		}
         
-        assert(dec.getSsbFrame().getGroupData().getClassCode().equals(ref.getGroupData().getClassCode()));
-        assert(dec.getSsbFrame().getGroupData().isSpecimen() == ref.getGroupData().isSpecimen());
-        assert(dec.getSsbFrame().getGroupData().getFirstDayOfValidity() == ref.getGroupData().getFirstDayOfValidity());
-        assert(dec.getSsbFrame().getGroupData().getLastDayOfValidity() == ref.getGroupData().getLastDayOfValidity());
-        
-        
-        assert(dec.getSsbFrame().getGroupData().getStations() != null);
-        
-        SsbTicketFactory.compareStations(dec.getSsbFrame().getGroupData().getStations(),  ref.getGroupData().getStations());
-        
-        SsbTicketFactory.compareCommonTicketPart(dec.getSsbFrame().getGroupData(), ref.getGroupData());
-        
-
-        assert(dec.getSsbFrame().getGroupData().getFirstDayOfValidity() == ref.getGroupData().getFirstDayOfValidity());
-        assert(dec.getSsbFrame().getGroupData().getLastDayOfValidity() == ref.getGroupData().getLastDayOfValidity());
-        
-        assert(dec.getSsbFrame().getGroupData().getInfoCode() == ref.getGroupData().getInfoCode());
-        assert(dec.getSsbFrame().getGroupData().getText().equalsIgnoreCase(ref.getGroupData().getText()));
-        
-        assert(dec.getSsbFrame().getGroupData().getCounterMarkNumber() == ref.getGroupData().getCounterMarkNumber());
-        assert(dec.getSsbFrame().getGroupData().getGroupName().equalsIgnoreCase(ref.getGroupData().getGroupName()));
+        assert("1".equals(keyId));
+        assert("4711".equals(securityProvider));
         
 	}	
 	
