@@ -1991,10 +1991,13 @@ CardIdFormatType ::= ENUMERATED {
 }
 
 IdentificationDocumentCategoryType :== ENUMERATED {
-    passport          (0),
-    idCard            (1),
-    residencePermit   (2),
-    driverLicense     (3),
+    passport            (0),
+    idCard              (1),
+    residencePermit     (2),
+    driverLicense       (3),
+    creditCard          (4),
+    socialBenefitsCard  (5),
+    studentId           (6),
     ...
 }
 
