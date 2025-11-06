@@ -1831,7 +1831,9 @@ PlaceNumberType ::= CHOICE {
 -- ##############################################################################################
 CodeTableType ::= CHOICE {
     nuts          NULL,               -- European NUTS code.
-    locationUIC   NULL,               -- UIC station code from MERITS (UIC country code + 5 digit local code (= ERA rail station code) / 2-digit scope code + UIC country code + 5 digit local code).
+    locationUIC   NULL,               -- UIC station code from MERITS.
+                                      -- A 7 digit code (UIC country code + 5 digit local code) equates to an ERA retail station code; not to be confused with an ERA infrastructure station code.
+                                      -- A 9 digit code (2-digit scope code + UIC country code + 5 digit local code) equates to non rail infrastructure.
     issuer        NULL,               -- Bilaterally agreed code table of the 'issuer' defined in issuingDetail.
     productOwner  NULL,               -- Bilaterally agreed code table provided by the product owner.
     carrier       NULL,               -- Bilaterally agreed code table provided by the carrier(s) participating in the related route segment.
