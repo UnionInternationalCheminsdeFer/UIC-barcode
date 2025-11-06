@@ -392,23 +392,12 @@ ControlData ::= SEQUENCE {
     --   (i.e. via online check or detailed checks later-on).
     randomDetailedValidationRequired       INTEGER (0..99)               OPTIONAL,
 
-    -- Cards that can be used to identify the ticket holder.
-    identificationByCardReference          SEQUENCE OF CardReferenceType OPTIONAL,
-
-    -- Indicator of wether id must be checked to identify the traveler.
-    -- Id-card or any official document proving identity and recognised by the carrier is acceptable.
+    -- Indicator of whether ID must be checked to identify the traveler.
+    -- Field meaning:
+    --  FALSE: don’t check ID documents at all, regardless of contents of the traveler's identificationDocument field
+    --  TRUE, but with an empty identificationDocument field: check the traveler's identity, using whatever document is acceptable to the carrier
+    --  TRUE, with an identificationDocument field: check the traveler's identity, using the identification document specified
     identificationRequired                 BOOLEAN,
-
-    -- Indicator of wether passport id must be checked to identify the traveler.
-    identificationByPassportIdRequired     BOOLEAN,
-
-    -- Other items which could be used to identify the ticket holder
-    --   (for future use, code list to be defined).
-    identificationItem                     INTEGER                       OPTIONAL,
-
-    -- Indicator of wether validation of the passport is required for elements other than identity (e.g. in case of Eurail)
-    --   (verification of the passport's identity is controlled by identificationByPassportRequired).
-    passportValidationRequired             BOOLEAN,
 
     -- Indicator of wether validation of the traveler age is required (e.g. in case of reductions).
     ageCheckRequired                       BOOLEAN,
@@ -1274,20 +1263,24 @@ CardReferenceType ::= SEQUENCE {
 
 -- ##############################################################################################
 -- Description of an identity document
+-- If number is not provided, this sequence merely defines the acceptable type of identification
+-- document, but does not specify and exact document; i.e. the traveler may be identified via
+-- their passport, but no stipulation is made on which specific passport is presented.
+-- If the country field is also blank, then this means any country (or no country at all) is valid.
 -- ##############################################################################################
 IdentificationDocumentType ::= SEQUENCE {
 
     -- Numeric ISO 3166 country code of the issuing country of the document
-    country              INTEGER (1..999),
+    country     INTEGER (1..999)                    OPTIONAL,
 
     -- Category of the document (passport, ID card...)
-    category             IdentificationDocumentCategoryType,
+    category    IdentificationDocumentCategoryType,
 
     -- Number of the document
-    number               IA5String,
+    number      IA5String                           OPTIONAL,
 
     -- Indication whether the full or only the leading or trailing part of the document number is provided.
-    format         CardIdFormatType                 DEFAULT full,
+    format      CardIdFormatType                    DEFAULT full,
 }
 
 -- ##############################################################################################
@@ -1326,7 +1319,7 @@ DateType :== SEQUENCE {
 RareTravelerDetailsType ::= SEQUENCE {
 
     -- Details of the document (ID card, passport...) identifying the traveler
-    identificationDocument           IdentificationDocumentType                OPTIONAL,
+    identificationDocument           SEQUENCE OF IdentificationDocumentType (SIZE(1..16)),
 
     -- Cards (reduction, discount, loyalty...) held by the traveler.
     -- Only present if they serve a purpose (e.g. access to a lounge in a station).
