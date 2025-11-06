@@ -1217,11 +1217,17 @@ TariffType ::= SEQUENCE {
     numberOfPassengers                INTEGER (1..200)                 DEFAULT 1,
 
     -- Type indication (youth, adult, senior...).
+    -- Must not be set when the tariff is valid for any kind of passenger.
     passengerType                    PassengerType                     OPTIONAL,
 
     -- Age restrictions of the tariff.
-    ageBelow                         INTEGER (1..64)                   OPTIONAL,
-    ageAbove                         INTEGER (1..128)                  OPTIONAL,
+    age CHOICE {
+        specificAge INTEGER (1..128),
+        ageRange    SEQUENCE {
+            ageBelow    INTEGER (1..128) OPTIONAL,
+            ageAbove    INTEGER (1..128) OPTIONAL
+        }
+    } OPTIONAL,
 
     -- Named traveler list.
     -- Link to the traveler in case the travelers have to be named (e.g. Eurail passes).
@@ -1332,7 +1338,11 @@ RareTravelerDetailsType ::= SEQUENCE {
     -- Only present if they serve a purpose (e.g. access to a lounge in a station).
     reductionCard                    SEQUENCE OF CardReferenceType             OPTIONAL,
 
-    title                            IA5String (SIZE(1..3))                    OPTIONAL,
+    -- This field should almost never be used.
+    -- Take particular care when using this field, in light of the CJEU decision C‑394/23.
+    -- Specifically: "the processing of personal data relating to the title of the customers
+    -- of a transport undertaking, the purpose of which is to personalise the commercial communication
+    -- based on their gender identity ... cannot be regarded as necessary for the performance of that contract"
     gender                           GenderType                                OPTIONAL,
 
     -- Customer id might be numerical or alphanumerical.
