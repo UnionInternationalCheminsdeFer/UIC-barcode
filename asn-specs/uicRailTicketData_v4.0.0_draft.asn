@@ -1319,7 +1319,7 @@ DateType :== SEQUENCE {
 RareTravelerDetailsType ::= SEQUENCE {
 
     -- Details of the document (ID card, passport...) identifying the traveler
-    identificationDocument           SEQUENCE OF IdentificationDocumentType (SIZE(1..16)),
+    identificationDocument           SEQUENCE OF IdentificationDocumentType (SIZE(0..15)),
 
     -- Cards (reduction, discount, loyalty...) held by the traveler.
     -- Only present if they serve a purpose (e.g. access to a lounge in a station).
