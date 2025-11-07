@@ -375,19 +375,31 @@ ProductRetailData ::= SEQUENCE {
 -- ##############################################################################################
 ControlData ::= SEQUENCE {
 
-    -- Indicator of wether online validation of the ticket is required.
-    -- TRUE if online operations must be performed to validate or check this ticket. E.g.:
+    -- Indicator of wether online validation of the ticket is 'notPossible', 'possible' or 'required'.
+    -- 'notPossible' means no information is available online so it is useless to check.
+    -- 'required' means online operations must be performed to validate or check this ticket. E.g.:
     --   - For a Pay-as-you-go ticket, check during inspection that it has been validated.
     --   - For a ticket valid for 3 hours from the first validation, check when this first validation took place.
     --   - For a fully ABT (Account Based Ticketing) document: check the details of the ticket in the ABT account.
     --   - For a ticket authorizing a limited number of trips: check how many trips have already been made.
     --   - For a ticket that can be refunded until the last moment: check if the ticket has been cancelled and refunded.
-    -- FALSE if no information is available online so it is useless to check.
-    -- Omitted if the ticket can be fully validated and checked offline, i.e. if the ticket
+    -- 'possible' means that the ticket can be fully validated and checked offline, i.e. the ticket
     --   contains all the information necessary for validation and inspection and is therefore self-sufficient,
     --   but some operators, in an interoperability scenario, nevertheless choose to operate this ticket in ABT mode and validate it online.
-    onlineValidationRequired               BOOLEAN                       OPTIONAL,
+    onlineValidation                       OnlineValidationType          DEFAULT notPossible,
 
+    -- Indicator of the means of validating the ticket online.
+    -- Omitted if onlineValidation is 'notPossible'.
+    onlineValidationMeans CHOICE {
+        etcd                               NULL,             -- Validation through ETCD
+        proprietarySecurityProvider        NULL,             -- Validation through the company identified by 'securityProvider'
+        proprietaryIssuer                  NULL,             -- Validation through the company identified by 'issuer'
+        proprietaryToken                   NULL,             -- Validation through an ABT account described with one of the ABT tokens
+        external                           CompanyCodeType,  -- Validation through the company identified by 'external'
+        other                              GenericIdType     -- Validation through another means, identified by 'other'
+        ...
+    }                                                                    OPTIONAL,
+    
     -- Percentage of the tickets to be validated in more detail
     --   (i.e. via online check or detailed checks later-on).
     randomDetailedValidationRequired       INTEGER (0..99)               OPTIONAL,
@@ -499,7 +511,7 @@ CarCarriageReservationData ::= SEQUENCE {
     carCategory                     INTEGER (0..9),
     boatCategory                    INTEGER (0..6)                     OPTIONAL,
     textileRoof                     BOOLEAN,
-    roofRackType                    RoofRackType                       DEFAULT  norack,
+    roofRack                        RoofRackType                       DEFAULT  norack,
 
     -- Height of a roof rack in cm.
     roofRackHeight                   INTEGER (0..99)                    OPTIONAL,
@@ -1216,7 +1228,9 @@ TariffType ::= SEQUENCE {
     -- Number of passengers using the tariff.
     numberOfPassengers                INTEGER (1..200)                 DEFAULT 1,
 
-    -- Type indication (youth, adult, senior...).
+    -- Type indication (youth, adult, senior... but also pet, bicycle).
+    -- Omitted if the ticket has no restrictions regarding the type of passenger,
+    --   or if the restriction is based on the product type and not on this element.
     passengerType                    PassengerType                     OPTIONAL,
 
     -- Age restrictions of the tariff.
@@ -1228,9 +1242,11 @@ TariffType ::= SEQUENCE {
     -- The number indicates the position in the traveler sequence starting from 1.
     travelerid                       SEQUENCE OF INTEGER (1..254)      OPTIONAL,
 
-    -- Validity restrictions depending on country.
+    -- Validity restriction based on the traveler's country of residence.
     --   (e.g. for Eurail tickets that are not valid in the country of residence).
-    -- Omitted if there are no restrictions related to countries. 
+    -- This field does not indicate a global geographic validity, but only a possible
+    --   restriction of this geographic validity related to the country of residence.
+    -- Omitted if there is no restriction related to the traveler's country of residence. 
     countryValidity                  countryValidityType               OPTIONAL,
 
     -- Tariff code.
@@ -1305,7 +1321,10 @@ TravelerType ::= SEQUENCE {
 
     passengerType                   PassengerType                              OPTIONAL,
 
-    dateOfBirth                     DateType                                   OPTIONAL,
+    ageOrBirth CHOICE {
+        dateOfBirth                 DateType,
+        age                         INTEGER (0..127)
+    }                                                                          OPTIONAL,
 
     rareDetails                     RareTravelerDetailsType                    OPTIONAL
 }
@@ -1332,7 +1351,9 @@ RareTravelerDetailsType ::= SEQUENCE {
     -- Only present if they serve a purpose (e.g. access to a lounge in a station).
     reductionCard                    SEQUENCE OF CardReferenceType             OPTIONAL,
 
-    title                            IA5String (SIZE(1..3))                    OPTIONAL,
+    -- The two following elements should only be used when absolutely necessary,
+    --   due to their sensitivity from a GDPR perspective.
+    title                            IA5String (SIZE(1..16))                   OPTIONAL,
     gender                           GenderType                                OPTIONAL,
 
     -- Customer id might be numerical or alphanumerical.
@@ -1915,6 +1936,13 @@ TicketCategoryType ::= ENUMERATED {
     ...
 }
 
+OnlineValidationType ::= ENUMERATED {
+    notPossible (0),
+    possible    (1),
+    required    (2),
+    ...
+}
+
 TokenCategoryType ::= ENUMERATED {
     media                 (0), -- 'token' is the ID of the media (phone, SIP ticket includind a serial number...) with which the ticket is linked
     accountBasedTicketing (1), -- 'token' is the ID of the account with which the ticket is linked
@@ -2035,9 +2063,8 @@ GeoUnitType ::= ENUMERATED {
 }
 
 LoadingDeckType ::= ENUMERATED {
-    unspecified          (0),
-    upper                (1),
-    lower                (2)
+    upper                (0),
+    lower                (1)
 }
 
 CompartmentPositionType ::= ENUMERATED {
@@ -2083,6 +2110,7 @@ END
 --        - check-in / check-out barcode at check-in check-out point
 -- - other use cases?
 -- ##############################################################################################
+
 
 
 
