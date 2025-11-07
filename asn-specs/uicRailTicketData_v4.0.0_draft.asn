@@ -1997,7 +1997,7 @@ IdentificationDocumentCategoryType :== ENUMERATED {
     driverLicense       (3),
     creditCard          (4),
     socialBenefitsCard  (5),
-    studentId           (6),
+    studentIdCard       (6),
     ...
 }
 
