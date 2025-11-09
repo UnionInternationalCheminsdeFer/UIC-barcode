@@ -400,7 +400,7 @@ ControlData ::= SEQUENCE {
         other                              GenericIdType     -- Validation through another means, identified by 'other'
         ...
     }                                                                    OPTIONAL,
-    
+
     -- Percentage of the tickets to be validated in more detail
     --   (i.e. via online check or detailed checks later-on).
     randomDetailedValidationRequired       INTEGER (0..99)               OPTIONAL,
@@ -1224,8 +1224,13 @@ TariffType ::= SEQUENCE {
     passengerType                    PassengerType                     OPTIONAL,
 
     -- Age restrictions of the tariff.
-    ageBelow                         INTEGER (1..64)                   OPTIONAL,
-    ageAbove                         INTEGER (1..128)                  OPTIONAL,
+    age CHOICE {
+        specificAge INTEGER (1..128),
+        ageRange    SEQUENCE {
+            ageBelow    INTEGER (1..128) OPTIONAL,
+            ageAbove    INTEGER (1..128) OPTIONAL
+        }
+    } OPTIONAL,
 
     -- Named traveler list.
     -- Link to the traveler in case the travelers have to be named (e.g. Eurail passes).
@@ -1236,7 +1241,7 @@ TariffType ::= SEQUENCE {
     --   (e.g. for Eurail tickets that are not valid in the country of residence).
     -- This field does not indicate a global geographic validity, but only a possible
     --   restriction of this geographic validity related to the country of residence.
-    -- Omitted if there is no restriction related to the traveler's country of residence. 
+    -- Omitted if there is no restriction related to the traveler's country of residence.
     countryValidity                  countryValidityType               OPTIONAL,
 
     -- Tariff code.
@@ -1345,9 +1350,11 @@ RareTravelerDetailsType ::= SEQUENCE {
     -- Only present if they serve a purpose (e.g. access to a lounge in a station).
     reductionCard                    SEQUENCE OF CardReferenceType             OPTIONAL,
 
-    -- The two following elements should only be used when absolutely necessary,
-    --   due to their sensitivity from a GDPR perspective.
-    title                            IA5String (SIZE(1..16))                   OPTIONAL,
+    -- This field should almost never be used.
+    -- Take particular care when using this field, in light of the CJEU decision C‑394/23.
+    -- Specifically: "the processing of personal data relating to the title of the customers
+    -- of a transport undertaking, the purpose of which is to personalise the commercial communication
+    -- based on their gender identity ... cannot be regarded as necessary for the performance of that contract"
     gender                           GenderType                                OPTIONAL,
 
     -- Customer id might be numerical or alphanumerical.
