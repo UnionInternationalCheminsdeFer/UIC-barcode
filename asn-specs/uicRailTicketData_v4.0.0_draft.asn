@@ -265,10 +265,7 @@ DelayConfirmation ::= SEQUENCE {
 -- ##############################################################################################
 IssuingData ::= SEQUENCE {
 
-    -- Provider of the signature, may be absent if present in UicBarcodeHeader.
-    securityProvider               CompanyCodeType               OPTIONAL,
-
-    -- Issuer of the binary content of the transport document, if different from the security provider.
+    -- Issuer of the binary content of the transport document, if different from the security provider as encoded in the barcode header.
     issuer                         CompanyCodeType               OPTIONAL,
 
     -- Issuing time stamp in UTC.
@@ -281,9 +278,6 @@ IssuingData ::= SEQUENCE {
     --   booking data to the control devices (e.g. at SBB).
     -- The time can be compared with the last synchronization time of the control device.
     issuingTime                    INTEGER (0..1439),
-
-    -- Readable name of the issuer (e.g. short name mentioned in RICS code table).
-    issuerName                     UTF8String                    OPTIONAL,
 
     -- Specimen indicates a test specimen not valid for traveling.
     specimen                       BOOLEAN,
