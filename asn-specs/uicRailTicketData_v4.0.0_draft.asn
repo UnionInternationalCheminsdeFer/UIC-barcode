@@ -288,11 +288,7 @@ IssuingData ::= SEQUENCE {
     -- Specimen indicates a test specimen not valid for traveling.
     specimen                       BOOLEAN,
 
-    -- Secure paper indicates that this barcode is issued with a secure paper ticket
-    --   to ensure the uniqueness of the ticket. This allows to use the same control
-    --   procedure as for e-tickets also for anonymous tickets.
-    --   The double use of the ticket is in this case excluded by the secure paper.
-    securePaperTicket              BOOLEAN,
+    securePaperTicket              SecurePaperTicket,
 
     -- Indicates that the ticket is valid for traveling or still needs activation.
     activated                      BOOLEAN                       DEFAULT TRUE,
@@ -328,6 +324,17 @@ IssuingData ::= SEQUENCE {
     extension                      ExtensionData                 OPTIONAL,
 
     ...
+}
+
+-- Secure paper indicates that this barcode is issued with a secure paper ticket
+--   to ensure the uniqueness of the ticket. This allows to use the same control
+--   procedure as for e-tickets also for anonymous tickets.
+--   The double use of the ticket is in this case excluded by the secure paper.
+SecurePaperTicket ::= ENUMERATED {
+    notOnSecurePaper                        (0),
+    onSecurePaper                           (1),
+    -- The ticket is only valid if additionally physically stamped (DE: Entwerten)
+    onSecurePaperValidationStampRequired    (2)
 }
 
 -- ##############################################################################################
