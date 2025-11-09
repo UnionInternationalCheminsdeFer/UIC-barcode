@@ -376,30 +376,9 @@ ProductRetailData ::= SEQUENCE {
 -- ##############################################################################################
 ControlData ::= SEQUENCE {
 
-    -- Indicator of wether online validation of the ticket is 'notPossible', 'possible' or 'required'.
-    -- 'notPossible' means no information is available online so it is useless to check.
-    -- 'required' means online operations must be performed to validate or check this ticket. E.g.:
-    --   - For a Pay-as-you-go ticket, check during inspection that it has been validated.
-    --   - For a ticket valid for 3 hours from the first validation, check when this first validation took place.
-    --   - For a fully ABT (Account Based Ticketing) document: check the details of the ticket in the ABT account.
-    --   - For a ticket authorizing a limited number of trips: check how many trips have already been made.
-    --   - For a ticket that can be refunded until the last moment: check if the ticket has been cancelled and refunded.
-    -- 'possible' means that the ticket can be fully validated and checked offline, i.e. the ticket
-    --   contains all the information necessary for validation and inspection and is therefore self-sufficient,
-    --   but some operators, in an interoperability scenario, nevertheless choose to operate this ticket in ABT mode and validate it online.
-    onlineValidation                       OnlineValidationType          DEFAULT notPossible,
-
-    -- Indicator of the means of validating the ticket online.
-    -- Omitted if onlineValidation is 'notPossible'.
-    onlineValidationMeans CHOICE {
-        etcd                               NULL,             -- Validation through ETCD
-        proprietarySecurityProvider        NULL,             -- Validation through the company identified by 'securityProvider'
-        proprietaryIssuer                  NULL,             -- Validation through the company identified by 'issuer'
-        proprietaryToken                   NULL,             -- Validation through an ABT account described with one of the ABT tokens
-        external                           CompanyCodeType,  -- Validation through the company identified by 'external'
-        other                              GenericIdType     -- Validation through another means, identified by 'other'
-        ...
-    }                                                                    OPTIONAL,
+    -- Indicator of whether online validation of the ticket is required, and how it may be performed.
+    onlineValidationRequired               OnlineValidationStatus       DEFAULT notPossible,
+    onlineValidationType                   OnlineValidationType         OPTIONAL,
 
     -- Percentage of the tickets to be validated in more detail
     --   (i.e. via online check or detailed checks later-on).
@@ -427,6 +406,28 @@ ControlData ::= SEQUENCE {
     -- Proprietary data defined bilaterally.
     extension                              ExtensionData                 OPTIONAL,
 
+    ...
+}
+
+OnlineValidationStatus ::= ENUMERATED {
+    notPossible (1), -- no information is available online so it is useless to check.
+    optional    (2), -- the ticket can be fully validated and checked offline, i.e. if the ticket
+                     -- contains all the information necessary for validation and inspection and is therefore self-sufficient,
+                     -- but some operators, in an interoperability scenario, nevertheless choose to operate this ticket in ABT mode and validate it online.
+    mandatory   (3)  -- online operations must be performed to validate or check this ticket:
+                     --   - For a Pay-as-you-go ticket, check during inspection that it has been validated.
+                     --   - For a ticket valid for 3 hours from the first validation, check when this first validation took place.
+                     --   - For a fully ABT (Account Based Ticketing) document: check the details of the ticket in the ABT account.
+                     --   - For a ticket authorizing a limited number of trips: check how many trips have already been made.
+                     --   - For a ticket that can be refunded until the last moment: check if the ticket has been cancelled and refunded.
+}
+
+OnlineValidationType ::= CHOICE {
+    eTCD                        NULL,            -- The ticket may be checked against the UIC's eTCD
+    securityProviderProprietary NULL,            -- The ticket may be checked against a proprietary platform of the security provider; e.g. the Deutschlandtarifverbund's security portal.
+    issuerProprietary           NULL,            -- The ticket may be checked against a proprietary platform of the issuer; e.g. bwegt check-in check-out (Baden-Württemburg).
+    external                    CompanyCodeType, -- The ticket may be checked against the platform operated by the specified company; e.g. Entur
+    other                       IA5String,       -- The ticket may be checked against some other external platform, as identified by the string
     ...
 }
 
