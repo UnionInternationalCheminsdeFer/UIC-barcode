@@ -497,8 +497,18 @@ CarCarriageReservationData ::= SEQUENCE {
     place                            IA5String                         OPTIONAL,
 
     -- Description of the car.
-    vehiclePlate                    PlateType,
-    trailerPlate                    PlateType                          OPTIONAL,
+    --
+    -- Unless spaces form an integral part of identifying a plate, the must not be included.
+	-- E.g. a German car with the plate SB[TÜV Sticker]A 123 is to be encoded as "SB-A123".
+	-- Dutch duplicate codes are not encoded, i.e. the small number above the first dash does not
+	-- form part of the plate.
+	--
+	-- The plate should be represented in the Latin alphabet and Arabic numerals where possible,
+	-- but not that this isn't always possible, e.g. the registration district of a Chinese plate.
+	--
+	-- The country of registration must not be encoded in the plate.
+    vehiclePlate                    UTF8String,
+    trailerPlate                    UTF8String                         OPTIONAL,
     carCategory                     INTEGER (0..9),
     boatCategory                    INTEGER (0..6)                     OPTIONAL,
     textileRoof                     BOOLEAN,
@@ -1143,7 +1153,8 @@ ParkingType ::= SEQUENCE {
     entryTrack                    UTF8String                    OPTIONAL,
 
     -- Number plate of the car parked.
-    vehiclePlate                   PlateType                    OPTIONAL,
+    -- See note in CarCarriageReservationData on the meaning of this field.
+    vehiclePlate                  UTF8String                    OPTIONAL,
 
     -- Number of days or hours of allowed parking in case this number is limited and less than the validity period.
     -- If present, the count of the remaining number of allowed days or hours is centrally held in a back office,
@@ -1918,29 +1929,6 @@ TicketDetailsType ::= SEQUENCE {
 ServiceBrandType ::= SEQUENCE {
     serviceBrand                     INTEGER (1..32000)                OPTIONAL,
     serviceBrandAbrUTF8              UTF8String                        OPTIONAL
-}
-
--- ##############################################################################################
---  Vehicle plate description.
---
---  The registrationAuthority element must contain the ISO 3166 code of the national or
---  subnational authority that assigned the plate.
---  In countries where plates are assigned subnationally and it is not possible to distinguish
---	the subnational authority from the plate identifier (e.g. the US), an ISO 3166 part 2
---  subdivision code must be used.
---  In all other cases an ISO 3166 part 1 national code must be used.
---
---  Unless spaces form an integral part of identifying a plate, the must not be included.
---  E.g. a German car with the plate SB[TÜV Sticker]A 123 is to be encoded as "SB-A123".
---  Dutch duplicate codes are not encoded, i.e. the small number above the first dash does not
---  form part of the plate.
---
---  The plate should be represented in the Latin alphabet and Arabic numerals where possible,
---  but not that this isn't always possible, e.g. the registration district of a Chinese plate.
--- ##############################################################################################
-PlateType ::= SEQUENCE {
-    registrationAuthority	IA5String (FROM ("A".."Z"|"0".."9"|"-")), -- ISO 3166 code,
-    plate					UTF8String
 }
 
 -- ##############################################################################################
