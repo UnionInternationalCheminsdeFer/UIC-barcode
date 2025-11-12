@@ -335,36 +335,34 @@ SecurePaperTicket ::= ENUMERATED {
 --  Data allowing to describe all possible information about product retail
 -- ##############################################################################################
 ProductRetailData ::= SEQUENCE {
+    -- Identifier of the company that is the retailer for this contract of carriage, as per the definition of a retailer in ISO 24014-1.
+    retailerId           	CompanyCodeType		OPTIONAL,
+
+    -- Retailer specific identifier of the server that sold the contract of carriage.
+    retailServerId        	GenericIdType		OPTIONAL,
+
+    -- Retailer specific identifier of the ticket generation platform.
+    -- If omitted, identical to retailServerId
+    retailGeneratorId		GenericIdType		OPTIONAL
 
     -- Channel through which the traveler requested the contract / the barcode.
-    retailChannel             RetailChannelType                OPTIONAL,
-
-    -- Contract generation platform identifier.
-    -- If omitted this plaform is the one of the server identified by 'retailServerId'. 
-    retailGeneratorId         CompanyCodeType                  OPTIONAL,
-
-    -- Contract sales server identifier.
-    -- If omitted this server is the one of the retailer identified by 'retailerId'.
-    retailServerId           CompanyCodeType                   OPTIONAL,
-
-    -- Product retailer, as in ISO 24014-1.
-    retailerId                CompanyCodeType                  OPTIONAL,
+    retailChannel			RetailChannelType	OPTIONAL,
 
     -- Type of equipment that distributed the contract / the barcode
     --   (code table of the product retailer).
-    retailEquipmentType       INTEGER (0..127)                 OPTIONAL,
+    retailEquipmentType		GenericIdType		OPTIONAL,
 
     -- Identifier of the final distribution point of the barcode
     --   (code table of the product retailer).
-    retailPointId             INTEGER                          OPTIONAL,
+    retailPointId			GenericIdType		OPTIONAL,
 
     -- Traceability information linked to the barcode or contract generation
     --   (e.g. name and version of the generation software)
     --   (code table of the product retailer).
-    retailTraceability        IA5String                        OPTIONAL,
+    retailTraceability		IA5String			OPTIONAL,
 
     ...
-   }
+}
 
 -- ##############################################################################################
 --  Data supporting the control process, wether it is an automatic check carried out by a gate,
