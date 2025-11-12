@@ -830,7 +830,8 @@ TimeRangeType ::= SEQUENCE {
 ConditionsType ::= SEQUENCE {
 
     -- Detailed type of the transport product (ticket, reservation, commercial card...).
-    productType                      ProductTypeType,
+    -- MUST either be present in the generalConditions, or present in all specificConditions.
+    productType                      ProductTypeType				OPTIONAL,
 
     -- Area (city, region, country...) in which the transport document / the leg is valid
     --   (allows also defining local code tables depending on this area).
