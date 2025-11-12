@@ -1619,7 +1619,7 @@ StationSetType ::= SEQUENCE {
 -- ##############################################################################################
 PolygoneType ::= SEQUENCE {
     firstEdge     GeoCoordinateType,
-    edges         SEQUENCE OF DeltaCoordinates
+    edges         SEQUENCE OF GeoUnit
 }
 
 
@@ -1771,21 +1771,42 @@ RegisteredLuggageType ::= SEQUENCE {
 -- Generic types for geo coordinates
 -- ##############################################################################################
 GeoCoordinateType ::= SEQUENCE {
-    geoUnit                   GeoUnitType             DEFAULT milliDegree,
+    position                  GeoUnit,
     coordinateSystem          GeoCoordinateSystemType DEFAULT wgs84,
-    longitude                 INTEGER,
-    latitude                  INTEGER,
     accuracy                  GeoUnitType             OPTIONAL  -- If omitted the accuracy is unknown
 }
 
-DeltaCoordinates ::= SEQUENCE {
-
-    -- Longitude difference to a reference point
-    longitude                 INTEGER,
-    
-    -- Latitude difference to a reference point
-    latitude                  INTEGER
+GeoCoordinateSystemType ::= ENUMERATED {
+    wgs84         (0), -- WGS 84 standard system
+    grs80         (1)  -- (outdated) GRS 80 coordinate system
 }
+
+GeoUnitType ::= ENUMERATED {
+    tenthmilliDegree      (0), -- 1 / 10000 degree is approx. 11 meter on earth surface
+    milliDegree           (1), -- approx 110 meter on earth surface
+    centiDegree           (2),
+    deciDegree            (3)
+}
+
+GeoUnit ::= CHOICE {
+  tenthmilliDegree SEQUENCE {
+    longitude INTEGER (-1800000..1800000),
+    latitude  INTEGER (-900000..900000)
+  },
+  milliDegree SEQUENCE {
+    longitude INTEGER (-180000..180000),
+    latitude  INTEGER (-90000..90000)
+  },
+  centiDegree SEQUENCE {
+    longitude INTEGER (-18000..18000),
+    latitude  INTEGER (-9000..9000)
+  },
+  deciDegree SEQUENCE {
+    longitude INTEGER (-1800..1800),
+    latitude  INTEGER (-900..900)
+  }
+}
+
 
 -- ##############################################################################################
 --  Generic definitions for various data using numeric, alphanumeric and/or binary codings.
@@ -2055,19 +2076,6 @@ CountryValidityType ::= ENUMERATED {
    includingCountryOfResidence (1),
    excludingCountryOfResidence (2),
    ...
-}
-
-GeoCoordinateSystemType ::= ENUMERATED {
-    wgs84         (0), -- WGS 84 standard system
-    grs80         (1)  -- (outdated) GRS 80 coordinate system
-}
-
-GeoUnitType ::= ENUMERATED {
-    microDegree           (0), -- approx. 11 cm on earth surface
-    tenthmilliDegree      (1), -- 1 / 10000 degree is approx. 11 meter on earth surface
-    milliDegree           (2), -- approx 110 meter on earth surface
-    centiDegree           (3),
-    deciDegree            (4)
 }
 
 LoadingDeckType ::= ENUMERATED {
