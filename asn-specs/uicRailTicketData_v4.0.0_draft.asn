@@ -1865,7 +1865,7 @@ CodeTableType ::= CHOICE {
     company      CompanyCodeType,     -- Bilaterally agreed code table provided by the company defined according to its CompanyCodeType.
     ...
 }
-    
+
 -- ##############################################################################################
 --  Product type indicates the type of the transport product,
 --    as well as some specific characteristics it may have.
@@ -1878,7 +1878,7 @@ ProductTypeType ::= CHOICE {
     --   - is an online connection required to validate or check the ticket,
     --   - is the ticket an initial ticket or an upgrade,
     --   - does the ticket need an associated reservation to be usable.
-    ticket         TicketDetailsType, 
+    ticket         TicketDetailsType,
 
     -- Standalone reservation, which does not authorize travel unless accompanied by a ticket.
     reservation    NULL,
@@ -1888,7 +1888,7 @@ ProductTypeType ::= CHOICE {
 
     -- Very specific product, in case none of the above choices apply.
     proprietary    NULL,
-    
+
     ...
 }
 
@@ -1906,7 +1906,7 @@ TicketDetailsType ::= SEQUENCE {
     -- Indicates if an associated reservation (as a separate standalone document) is required for the ticket to be usable:
     --   - TRUE if an associated reservation is required.
     --   - FALSE if no associated reservation is required (this value covers the case when the reservation is included in the ticket conditions).
-    additionalReservationRequired BOOLEAN            DEFAULT FALSE, 
+    additionalReservationRequired BOOLEAN            DEFAULT FALSE,
     ...
 }
 
@@ -1922,10 +1922,25 @@ ServiceBrandType ::= SEQUENCE {
 
 -- ##############################################################################################
 --  Vehicle plate description.
+--
+--  The registrationAuthority element must contain the ISO 3166 code of the national or
+--  subnational authority that assigned the plate.
+--  In countries where plates are assigned subnationally and it is not possible to distinguish
+--	the subnational authority from the plate identifier (e.g. the US), an ISO 3166 part 2
+--  subdivision code must be used.
+--  In all other cases an ISO 3166 part 1 national code must be used.
+--
+--  Unless spaces form an integral part of identifying a plate, the must not be included.
+--  E.g. a German car with the plate SB[TÜV Sticker]A 123 is to be encoded as "SB-A123".
+--  Dutch duplicate codes are not encoded, i.e. the small number above the first dash does not
+--  form part of the plate.
+--
+--  The plate should be represented in the Latin alphabet and Arabic numerals where possible,
+--  but not that this isn't always possible, e.g. the registration district of a Chinese plate.
 -- ##############################################################################################
 PlateType ::= SEQUENCE {
-    plateCountry                     INTEGER (1..999), -- Numeric ISO 3166 country code
-    plateNumber                      IA5String
+    registrationAuthority	IA5String (FROM ("A".."Z"|"0".."9"|"-")), -- ISO 3166 code,
+    plate					UTF8String
 }
 
 -- ##############################################################################################
