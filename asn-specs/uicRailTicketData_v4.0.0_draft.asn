@@ -287,8 +287,8 @@ IssuingData ::= SEQUENCE {
     -- Indicates that the ticket is valid for traveling or still needs activation.
     activated                      BOOLEAN                       DEFAULT TRUE,
 
-    -- Currency of the price: ISO 4217 currency codes (upper case).
-    currency                       IA5String (SIZE(3))           DEFAULT "EUR",
+    -- Currency of the price: ISO 4217 numeric currency code.
+    currency                       INTEGER (0..999)				DEFAULT 978, -- 978 = Euro
 
     -- Fraction of the prices included.
     currencyFract                  INTEGER (0..3)                DEFAULT 2,
@@ -312,7 +312,7 @@ IssuingData ::= SEQUENCE {
     productRetail                  ProductRetailData             OPTIONAL,
 
     -- ISO 639-1 coding (lower case) of the language preferred for the traveler / ticket holder.
-    preferredLanguage              IA5String (SIZE(2))           OPTIONAL,
+    preferredLanguage              IA5String (SIZE(2) ^ FROM ("a".."z"))  OPTIONAL,
 
     -- Proprietary data defined bilaterally.
     extension                      ExtensionData                 OPTIONAL,
@@ -611,9 +611,9 @@ TransportLinkType ::= SEQUENCE {
     --   (a leg can allow many service brands, but a transport link only specifies one).
     serviceBrand            ServiceBrandType                  OPTIONAL,
 
-    -- Service level code list from 918.1.
+    -- Service level code list from IRS 90918-1.
     -- Omitted if the same service level is already specified in the description of the associated leg.
-    serviceLevel            IA5String (SIZE(1..2))            OPTIONAL,
+    serviceLevel            IA5String (SIZE(1..2) ^ FROM ("A".."Z"|"0".."9"))            OPTIONAL,
 
     ...
 }
@@ -657,9 +657,9 @@ ReservationSegmentType ::= SEQUENCE {
     --   (a leg can allow many service brands, but a reservation only specifies one).
     serviceBrand            ServiceBrandType                  OPTIONAL,
 
-    -- Service level code list from 918.1.
+    -- Service level code list from IRS 90918-1.
     -- Omitted if the same service level is already specified in the description of the associated leg.
-    serviceLevel            IA5String (SIZE(1..2))            OPTIONAL,
+    serviceLevel            IA5String (SIZE(1..2) ^ FROM ("A".."Z"|"0".."9"))            OPTIONAL,
 
     -- Service code list from 918.1 (seat, couchette...).
     service                 ServiceType                       DEFAULT seat,
@@ -889,8 +889,8 @@ ConditionsType ::= SEQUENCE {
     -- For transport modes where the concept of class does not exist, must be set to notApplicable
     classCode                       TravelClassType                  DEFAULT second,
 
-    -- Servicelevel code according to leaflet 918.1 to encode other products (e.g. PREMIUM, ...)
-    serviceLevel                    IA5String (SIZE(1..2))           OPTIONAL,
+    -- Service level code according to leaflet IRS 90918-1 to encode other products (e.g. PREMIUM, ...)
+    serviceLevel                    IA5String (SIZE(1..2) ^ FROM ("A".."Z"|"0".."9"))           OPTIONAL,
 
     -- Tariff data (allowed passengers characteristics, discount cards used...)
     -- If omitted, the ticket is valid:
@@ -1166,7 +1166,7 @@ ParkingType ::= SEQUENCE {
 -- ##############################################################################################
 TransportNumberType ::= CHOICE {
     transportNumberNum INTEGER,
-    transportNumberIA5 IA5String
+    transportNumberIA5 IA5String (FROM ("A".."Z"|"0".."9"|" "))
 }
 
 -- ##############################################################################################
@@ -1496,7 +1496,7 @@ LineIdType ::= SEQUENCE {
 -- ----------------------------------------------------------------------------------------------
 LineCodeType ::= CHOICE {
     lineIdNum INTEGER,
-    lineIdIA5 IA5String
+    lineIdIA5 IA5String (FROM ("A".."Z"|"0".."9"|" "))
 }
 
 -- ##############################################################################################
@@ -1827,12 +1827,13 @@ AreaIdType ::= CHOICE {
 CompanyCodeType ::= CHOICE {
     -- Values 1..9999 are RICS codes defined by UIC and registered on https://uic.org/support-activities/it/rics
     -- Values > 9999 are proprietary codes defined by the product owner defined in the container object, who must ensure their uniqueness.
-    codeNum       INTEGER (1..32000),
+    codeNum		INTEGER (1..32000),
 
     -- Values of exactly 4 characters are RICS codes defined by ERA.
-    -- A numerical value shall never be stored with codeIA5 but only with codeNum.
+    -- A numerical value shall never be stored with eraCode but only with codeNum.
+    eraCode 	IA5String (SIZE (4) ^ FROM ("A".."Z"|"0".."9")),
     -- Values of less or more than 4 characters are proprietary codes defined by the product owner defined in the container object, who must ensure their uniqueness.
-    codeIA5       IA5String 
+    otherCode 	IA5String
 }
 
 -- Identification of a station, according to the code list defined in the container object.
@@ -1860,7 +1861,7 @@ CodeTableType ::= CHOICE {
     productOwner  NULL,               -- Bilaterally agreed code table provided by the product owner.
     carrier       NULL,               -- Bilaterally agreed code table provided by the carrier(s) participating in the related route segment.
     area          NULL,               -- Bilaterally agreed code table for the area defined by the element 'concernedArea' defined in the container object.
-    national     IA5String (SIZE(2)), -- National code list of the national authority the country defined by its ISO 3166-1 alpha-2 code (uppercase).
+    national     INTEGER (0..999),    -- National code list of the national authority the country defined by its ISO 3166-1 numeric code.
     company      CompanyCodeType,     -- Bilaterally agreed code table provided by the company defined according to its CompanyCodeType.
     ...
 }
