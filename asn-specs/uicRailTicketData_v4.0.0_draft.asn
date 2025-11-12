@@ -1783,18 +1783,13 @@ GeoCoordinateSystemType ::= ENUMERATED {
 }
 
 GeoUnitType ::= ENUMERATED {
-    microDegree           (0), -- approx. 11 cm on earth surface
-    tenthmilliDegree      (1), -- 1 / 10000 degree is approx. 11 meter on earth surface
-    milliDegree           (2), -- approx 110 meter on earth surface
-    centiDegree           (3),
-    deciDegree            (4)
+    tenthmilliDegree      (0), -- 1 / 10000 degree is approx. 11 meter on earth surface
+    milliDegree           (1), -- approx 110 meter on earth surface
+    centiDegree           (2),
+    deciDegree            (3)
 }
 
 GeoUnit ::= CHOICE {
-  microDegree SEQUENCE {
-    longitude INTEGER (-180000000..180000000),
-    latitude  INTEGER (-90000000..90000000)
-  },
   tenthmilliDegree SEQUENCE {
     longitude INTEGER (-1800000..1800000),
     latitude  INTEGER (-900000..900000)
