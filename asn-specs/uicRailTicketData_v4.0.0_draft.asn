@@ -2023,14 +2023,15 @@ CardIdFormatType ::= ENUMERATED {
     trailingPart      (2)
 }
 
-IdentificationDocumentCategoryType ::== ENUMERATED {
-    passport            (0),
-    idCard              (1),
-    residencePermit     (2),
-    driverLicense       (3),
-    creditCard          (4),
-    socialBenefitsCard  (5),
-    studentIdCard       (6),
+IdentificationDocumentCategoryType :== ENUMERATED {
+    passport            	(0),
+    idCard              	(1),
+    residencePermit     	(2),
+    driverLicense       	(3),
+    creditCard        		(4),
+    socialBenefitsCard  	(5),
+    studentIdCard      	 	(6),
+    specialTravelDocument	(7), -- e.g. those issued under the Convention of the 28th of September 1954, or a Laissez-Passer
     ...
 }
 
