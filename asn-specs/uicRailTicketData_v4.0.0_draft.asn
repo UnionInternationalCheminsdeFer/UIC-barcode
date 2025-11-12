@@ -350,7 +350,7 @@ ProductRetailData ::= SEQUENCE {
 
     -- Type of equipment that distributed the contract / the barcode
     --   (code table of the product retailer).
-    retailEquipmentType		INTEGER (0..127)	OPTIONAL,
+    retailEquipmentType		GenericIdType		OPTIONAL,
 
     -- Identifier of the final distribution point of the barcode
     --   (code table of the product retailer).
