@@ -109,7 +109,7 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 -- #    Bilateral extensions can be included in the data element "ExtensionData".
 -- #    They should only be used:
 -- #      - to add elements that are not present in the current ASN.1 file (but not to replace them).
--- #      - to add elements that are truly specific. If these elements could be useful to others 
+-- #      - to add elements that are truly specific. If these elements could be useful to others
 -- #        by being integrated into the current ASN.1 file, it is recommended to contact the
 -- #        UIC "FCB User Group" to propose their integration into the standard.
 -- #      - through a bilateral agreement if they are to be used by others.
@@ -235,9 +235,9 @@ DelayConfirmation ::= SEQUENCE {
         delay                     INTEGER (-1439..1439),
 
         -- Indication that the transport was cancelled.
-        transportCancelled        NULL,
+        transportCancelled        NULL
     },
-    
+
     -- Type of confirmation provided.
     confirmationType              ConfirmationType                    DEFAULT travelerDelayConfirmation,
 
@@ -343,7 +343,7 @@ ProductRetailData ::= SEQUENCE {
 
     -- Retailer specific identifier of the ticket generation platform.
     -- If omitted, identical to retailServerId
-    retailGeneratorId		GenericIdType		OPTIONAL
+    retailGeneratorId		GenericIdType		OPTIONAL,
 
     -- Channel through which the traveler requested the contract / the barcode.
     retailChannel			RetailChannelType	OPTIONAL,
@@ -814,14 +814,14 @@ WeekdaysType ::= SEQUENCE {
 }
 
 SpecialDaysType ::= SEQUENCE {
-    
+
     nationalHolidays    BOOLEAN OPTIONAL, -- National holiday (e.g. Christmas in France, as it is a public holiday throughout the whole country)
     stateHolidays       BOOLEAN OPTIONAL, -- State holiday (e.g. Buss- und Bettag in german Sachsen Bundesland)
     countyHolidays      BOOLEAN OPTIONAL, -- County holiday (e.g. Corpus Christi)
     localHolidays       BOOLEAN OPTIONAL, -- Local holiday (e.g. Friedensfest in german city of Augsburg)
-    
+
     pollutionDay        BOOLEAN OPTIONAL, -- Days when pollution levels exceed the threshold
-    
+
     ...
 }
 
@@ -883,7 +883,7 @@ ConditionsType ::= SEQUENCE {
 
         -- Link to a specific transport service with reservation
         reservation                  SEQUENCE OF ReservationSegmentType
-    },
+    } OPTIONAL,
 
     -- Included carriers responsible for the transport
     includedCarrier                  SEQUENCE OF CompanyCodeType     OPTIONAL,
@@ -960,7 +960,7 @@ RareTimingConditionsType ::= SEQUENCE {
     -- Same use as activatedDay but for the return journey
     -- Omitted if there are no restrictions on days of use between validFrom and validUntil for the return journey.
     activatedReturnDay                      SEQUENCE OF INTEGER (0..500)                OPTIONAL,
-    
+
     -- Proprietary data defined bilaterally.
     extension                               ExtensionData                               OPTIONAL,
 
@@ -1007,7 +1007,7 @@ RareDetailsType::= SEQUENCE {
 
     -- Proprietary data defined bilaterally.
     extension                               ExtensionData     OPTIONAL,
-    
+
     ...
 }
 
@@ -1161,7 +1161,7 @@ ParkingType ::= SEQUENCE {
     numberAllowed CHOICE {
         days                      INTEGER,
         minutes                   INTEGER (1..1439)
-    }
+    },
 
     -- Additional readable information that cannot be described using the other elements.
     infoText                      UTF8String                    OPTIONAL,
@@ -1200,7 +1200,7 @@ ProductType ::= SEQUENCE {
 
 -- ##############################################################################################
 --  Generic extension element.
--- 
+--
 --  The value of 'extensionId' describes how 'extensionData' is encoded:
 --    "+" + [2-letters uppercase ISO 3166 country code] + [addon, chosen by the registrar of that country]
 --      means that 'extensionData' is encoded as defined by this registrar,
@@ -1287,7 +1287,7 @@ CardReferenceType ::= SEQUENCE {
     -- Card ID
     -- According to cardIdFormat, the ID is full, limited to the leading part, or limited to the trailing part.
     id                   GenericIdType                    OPTIONAL,
-      
+
     -- Indication whether the full or only the leading or trailing part of the ID is provided.
     format               CardIdFormatType                 DEFAULT full,
 
@@ -1313,7 +1313,7 @@ IdentificationDocumentType ::= SEQUENCE {
     number      IA5String                           OPTIONAL,
 
     -- Indication whether the full or only the leading or trailing part of the document number is provided.
-    format      CardIdFormatType                    DEFAULT full,
+    format      CardIdFormatType                    DEFAULT full
 }
 
 -- ##############################################################################################
@@ -1343,7 +1343,7 @@ TravelerType ::= SEQUENCE {
 --  Date type, used to indicate the date of birth.
 --  All elements are optional to allow indicating only a part of the date (e.g. only the year).
 -- ----------------------------------------------------------------------------------------------
-DateType ::== SEQUENCE {
+DateType ::= SEQUENCE {
     year                     INTEGER    (1901..2155)                      OPTIONAL,
     month                    INTEGER    (1..12)                           OPTIONAL,
     day                      INTEGER    (1..31)                           OPTIONAL
@@ -1382,8 +1382,8 @@ RareTravelerDetailsType ::= SEQUENCE {
    status                          SEQUENCE OF CustomerStatusType             OPTIONAL,
 
     -- Proprietary data defined bilaterally.
-    extension                      ExtensionData                              OPTIONAL,   
-    
+    extension                      ExtensionData                              OPTIONAL,
+
    ...
 }
 
@@ -1425,7 +1425,7 @@ CustomerStatusType ::= SEQUENCE {
     -- The specific conditions are in the indicated conditions list. 1 corresponds to the first entry of the sequence.
     -- The edge case of having no general condition and no specific conditions is a valid case. This could be a full fare ticket without any restrictions.
     appliedSpecificConditionsIndex         INTEGER (1..16)        OPTIONAL,
-     
+
     ...
 }
 
@@ -1444,6 +1444,9 @@ GeoValidityType ::= CHOICE {
     ...
 }
 
+-- TODO
+SharedVehicleType ::= SEQUENCE {}
+
 -- ##############################################################################################
 --  Geographical validity from an origin station to a destination station
 -- ##############################################################################################
@@ -1458,7 +1461,7 @@ OriginDestinationType ::= SEQUENCE {
 
     -- If necessary the (ordered) stations between origin and destination can be indicated.
     intermediateStation          SEQUENCE OF StationType            OPTIONAL,
-    
+
     ...
 }
 
@@ -1470,7 +1473,7 @@ StationType ::= SEQUENCE {
     -- Code table in which the station code is defined.
     -- If this code table is not provided the code table of the container object applies.
     stationCodeTable     CodeTableType            OPTIONAL,
-       
+
     station              StationCodeType,
     stationNameUTF8      UTF8String               OPTIONAL
 }
@@ -1490,7 +1493,7 @@ LineType ::= SEQUENCE {
 
     -- In case the line must be left via a specific station
     terminatingStation          StationSetType                    OPTIONAL,
-    
+
     ...
 }
 
@@ -1533,7 +1536,7 @@ ZoneType ::= SEQUENCE {
     -- If restrictedEntry and restrictedExit are present, the allowed zones are only transit zones:
     --   the traveler is allowed to cross them, but he may neither begin nor end his journey in them.
     zones CHOICE {
-    
+
        -- The allowed zones are those explicitely described in the 'included' element.
        included                AreaIdType, -- list of allowed zones
 
@@ -1553,7 +1556,7 @@ ZoneType ::= SEQUENCE {
 
     -- Readable name of the area of validity.
     zoneNameUTF8                 UTF8String              OPTIONAL,
-    
+
     ...
 }
 
@@ -1580,16 +1583,16 @@ ComplexRouteType ::= SEQUENCE {
 
     -- In case different carriers and/or different service brands need to be indicated on the routes or alternative routes.
     appliedSpecificConditionsIndex   INTEGER (1..16)                OPTIONAL,
-    
+
     ...
 }
 
 -- ----------------------------------------------------------------------------------------------
 --  Description of a route item
--- ----------------------------------------------------------------------------------------------   
+-- ----------------------------------------------------------------------------------------------
 RouteItemType ::= CHOICE {
 
-    -- The route item is the destination station from the previous validity segment. 
+    -- The route item is the destination station from the previous validity segment.
     destinationStationOfPreviousSegment  NULL,
 
     -- The route item is a specific station
@@ -1603,7 +1606,7 @@ RouteItemType ::= CHOICE {
 
     -- The route item is a list of alternative routes, one of these has to be taken
     alternativeRoutes                    SEQUENCE OF ComplexRouteType,
-    
+
     ...
 }
 
@@ -1612,7 +1615,7 @@ RouteItemType ::= CHOICE {
 -- It can be defined through a code, and/or a name, and/or the explicit list of its stations.
 -- ----------------------------------------------------------------------------------------------
 StationSetType ::= SEQUENCE {
-   
+
     -- Code for the set of stations.
     -- If the code table is not provided the code table of the container object applies.
     stationSetCodeTable  CodeTableType                      OPTIONAL,
@@ -1620,9 +1623,9 @@ StationSetType ::= SEQUENCE {
 
     -- Readable name of the set of stations.
     stationSetNameUTF8   UTF8String                         OPTIONAL,
-       
+
     -- Explicit list of the stations of the station set.
-    stationSetStations   SEQUENCE of StationType            OPTIONAL
+    stationSetStations   SEQUENCE OF StationType            OPTIONAL
 }
 
 -- ##############################################################################################
@@ -1667,7 +1670,7 @@ TokenType ::= SEQUENCE {
 
     -- Value of the token, encoded according to tokenSpecification.
     token                   OCTET STRING,
-    
+
     ...
 }
 
@@ -1693,7 +1696,7 @@ TicketLinkType ::= SEQUENCE {
 
     -- Type of link
     linkMode                    LinkModeType             DEFAULT issuedTogether,
-    
+
     ...
 }
 
@@ -1729,9 +1732,9 @@ BerthDetailData ::= SEQUENCE {
 
 -- ##############################################################################################
 --  Compartment details corresponding to leaflet 918.1
---    918.1 pos 1/2 --> 1..99
---    918.1 pos 3/4 --> 101..199
---    918.1 pos 5/6 --> 201..299
+--    918.1 pos 1/2 -> 1..99
+--    918.1 pos 3/4 -> 101..199
+--    918.1 pos 5/6 -> 201..299
 -- ##############################################################################################
 PlaceDetailsType ::= SEQUENCE {
     coachType          INTEGER (1..999),
@@ -1752,12 +1755,12 @@ LuggageRestrictionType ::= SEQUENCE {
 
     -- Allowed hand luggage pieces on this ticket (3 = default in current NRT tariff).
     maxHandLuggagePieces         INTEGER(0..99)                              DEFAULT 3,
-    
+
     -- Allowed non-hand luggage pieces on this ticket.
     maxNonHandLuggagePieces      INTEGER(0..99)                              DEFAULT 1,
-    
+
     registeredLuggage            SEQUENCE OF RegisteredLuggageType           OPTIONAL,
-    
+
     ...
 }
 
@@ -1768,13 +1771,13 @@ RegisteredLuggageType ::= SEQUENCE {
 
     -- Id of the additional registered luggage
     registrationId             GenericIdType         OPTIONAL,
-    
+
     -- Maximum weight in kg
     maxWeight                  INTEGER (1..99)       OPTIONAL,
-    
+
     -- Sum of length with and height in cm
     maxSize                   INTEGER (1..300)       OPTIONAL,
-    
+
     ...
 }
 
@@ -1849,7 +1852,7 @@ AreaIdType ::= CHOICE {
     areaIdNum    SEQUENCE OF INTEGER,      -- e.g. sequence of allowed zone numbers such as {1,5,23}
     areaIdIA5    SEQUENCE OF IA5String,    -- e.g. sequence of european NUTS code such as {"FRF11","FRF12","DE1"}, or zones described with text such as {"M","1-3"}
     areaIdOct    SEQUENCE OF OCTET STRING, -- e.g. sequence of Calypso NetworkIds such as {'250901'H,'250072'H}
-       
+
     -- Bit representation of zones.
     -- Recommended encoding if applicable: bit n (considering that bit 0 = right-most bit) encodes zone n+1, bit value 1 = zone is allowed, bit value 0 = zone is forbidden.
     areaIdBit    BIT STRING                -- e.g. bitmap of allowed zones such as '10101110010'B for zones 2, 5, 6, 7, 9 and 11
@@ -2046,7 +2049,7 @@ CardIdFormatType ::= ENUMERATED {
     trailingPart      (2)
 }
 
-IdentificationDocumentCategoryType :== ENUMERATED {
+IdentificationDocumentCategoryType ::= ENUMERATED {
     passport            	(0),
     idCard              	(1),
     residencePermit     	(2),
