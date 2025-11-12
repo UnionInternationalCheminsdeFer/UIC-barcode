@@ -265,10 +265,7 @@ DelayConfirmation ::= SEQUENCE {
 -- ##############################################################################################
 IssuingData ::= SEQUENCE {
 
-    -- Provider of the signature, may be absent if present in UicBarcodeHeader.
-    securityProvider               CompanyCodeType               OPTIONAL,
-
-    -- Issuer of the binary content of the transport document, if different from the security provider.
+    -- Issuer of the binary content of the transport document, if different from the security provider as encoded in the barcode header.
     issuer                         CompanyCodeType               OPTIONAL,
 
     -- Issuing time stamp in UTC.
@@ -282,17 +279,10 @@ IssuingData ::= SEQUENCE {
     -- The time can be compared with the last synchronization time of the control device.
     issuingTime                    INTEGER (0..1439),
 
-    -- Readable name of the issuer (e.g. short name mentioned in RICS code table).
-    issuerName                     UTF8String                    OPTIONAL,
-
     -- Specimen indicates a test specimen not valid for traveling.
     specimen                       BOOLEAN,
 
-    -- Secure paper indicates that this barcode is issued with a secure paper ticket
-    --   to ensure the uniqueness of the ticket. This allows to use the same control
-    --   procedure as for e-tickets also for anonymous tickets.
-    --   The double use of the ticket is in this case excluded by the secure paper.
-    securePaperTicket              BOOLEAN,
+    securePaperTicket              SecurePaperTicket,
 
     -- Indicates that the ticket is valid for traveling or still needs activation.
     activated                      BOOLEAN                       DEFAULT TRUE,
@@ -328,6 +318,17 @@ IssuingData ::= SEQUENCE {
     extension                      ExtensionData                 OPTIONAL,
 
     ...
+}
+
+-- Secure paper indicates that this barcode is issued with a secure paper ticket
+--   to ensure the uniqueness of the ticket. This allows to use the same control
+--   procedure as for e-tickets also for anonymous tickets.
+--   The double use of the ticket is in this case excluded by the secure paper.
+SecurePaperTicket ::= ENUMERATED {
+    notOnSecurePaper                        (0),
+    onSecurePaper                           (1),
+    -- The ticket is only valid if additionally physically stamped (DE: Entwerten)
+    onSecurePaperValidationStampRequired    (2)
 }
 
 -- ##############################################################################################
@@ -375,40 +376,20 @@ ProductRetailData ::= SEQUENCE {
 -- ##############################################################################################
 ControlData ::= SEQUENCE {
 
-    -- Indicator of wether online validation of the ticket is required.
-    -- TRUE if online operations must be performed to validate or check this ticket. E.g.:
-    --   - For a Pay-as-you-go ticket, check during inspection that it has been validated.
-    --   - For a ticket valid for 3 hours from the first validation, check when this first validation took place.
-    --   - For a fully ABT (Account Based Ticketing) document: check the details of the ticket in the ABT account.
-    --   - For a ticket authorizing a limited number of trips: check how many trips have already been made.
-    --   - For a ticket that can be refunded until the last moment: check if the ticket has been cancelled and refunded.
-    -- FALSE if no information is available online so it is useless to check.
-    -- Omitted if the ticket can be fully validated and checked offline, i.e. if the ticket
-    --   contains all the information necessary for validation and inspection and is therefore self-sufficient,
-    --   but some operators, in an interoperability scenario, nevertheless choose to operate this ticket in ABT mode and validate it online.
-    onlineValidationRequired               BOOLEAN                       OPTIONAL,
+    -- Indicator of whether online validation of the ticket is required, and how it may be performed.
+    onlineValidationRequired               OnlineValidationStatus       DEFAULT notPossible,
+    onlineValidationType                   OnlineValidationType         OPTIONAL,
 
     -- Percentage of the tickets to be validated in more detail
     --   (i.e. via online check or detailed checks later-on).
     randomDetailedValidationRequired       INTEGER (0..99)               OPTIONAL,
 
-    -- Cards that can be used to identify the ticket holder.
-    identificationByCardReference          SEQUENCE OF CardReferenceType OPTIONAL,
-
-    -- Indicator of wether id must be checked to identify the traveler.
-    -- Id-card or any official document proving identity and recognised by the carrier is acceptable.
+    -- Indicator of whether ID must be checked to identify the traveler.
+    -- Field meaning:
+    --  FALSE: don’t check ID documents at all, regardless of contents of the traveler's identificationDocument field
+    --  TRUE, but with an empty identificationDocument field: check the traveler's identity, using whatever document is acceptable to the carrier
+    --  TRUE, with an identificationDocument field: check the traveler's identity, using the identification document specified
     identificationRequired                 BOOLEAN,
-
-    -- Indicator of wether passport id must be checked to identify the traveler.
-    identificationByPassportIdRequired     BOOLEAN,
-
-    -- Other items which could be used to identify the ticket holder
-    --   (for future use, code list to be defined).
-    identificationItem                     INTEGER                       OPTIONAL,
-
-    -- Indicator of wether validation of the passport is required for elements other than identity (e.g. in case of Eurail)
-    --   (verification of the passport's identity is controlled by identificationByPassportRequired).
-    passportValidationRequired             BOOLEAN,
 
     -- Indicator of wether validation of the traveler age is required (e.g. in case of reductions).
     ageCheckRequired                       BOOLEAN,
@@ -425,6 +406,28 @@ ControlData ::= SEQUENCE {
     -- Proprietary data defined bilaterally.
     extension                              ExtensionData                 OPTIONAL,
 
+    ...
+}
+
+OnlineValidationStatus ::= ENUMERATED {
+    notPossible (1), -- no information is available online so it is useless to check.
+    optional    (2), -- the ticket can be fully validated and checked offline, i.e. if the ticket
+                     -- contains all the information necessary for validation and inspection and is therefore self-sufficient,
+                     -- but some operators, in an interoperability scenario, nevertheless choose to operate this ticket in ABT mode and validate it online.
+    mandatory   (3)  -- online operations must be performed to validate or check this ticket:
+                     --   - For a Pay-as-you-go ticket, check during inspection that it has been validated.
+                     --   - For a ticket valid for 3 hours from the first validation, check when this first validation took place.
+                     --   - For a fully ABT (Account Based Ticketing) document: check the details of the ticket in the ABT account.
+                     --   - For a ticket authorizing a limited number of trips: check how many trips have already been made.
+                     --   - For a ticket that can be refunded until the last moment: check if the ticket has been cancelled and refunded.
+}
+
+OnlineValidationType ::= CHOICE {
+    eTCD                        NULL,            -- The ticket may be checked against the UIC's eTCD
+    securityProviderProprietary NULL,            -- The ticket may be checked against a proprietary platform of the security provider; e.g. the Deutschlandtarifverbund's security portal.
+    issuerProprietary           NULL,            -- The ticket may be checked against a proprietary platform of the issuer; e.g. bwegt check-in check-out (Baden-Württemburg).
+    external                    CompanyCodeType, -- The ticket may be checked against the platform operated by the specified company; e.g. Entur
+    other                       IA5String,       -- The ticket may be checked against some other external platform, as identified by the string
     ...
 }
 
@@ -499,7 +502,7 @@ CarCarriageReservationData ::= SEQUENCE {
     carCategory                     INTEGER (0..9),
     boatCategory                    INTEGER (0..6)                     OPTIONAL,
     textileRoof                     BOOLEAN,
-    roofRackType                    RoofRackType                       DEFAULT  norack,
+    roofRack                        RoofRackType                       DEFAULT  norack,
 
     -- Height of a roof rack in cm.
     roofRackHeight                   INTEGER (0..99)                    OPTIONAL,
@@ -827,7 +830,8 @@ TimeRangeType ::= SEQUENCE {
 ConditionsType ::= SEQUENCE {
 
     -- Detailed type of the transport product (ticket, reservation, commercial card...).
-    productType                      ProductTypeType,
+    -- MUST either be present in the generalConditions, or present in all specificConditions.
+    productType                      ProductTypeType				OPTIONAL,
 
     -- Area (city, region, country...) in which the transport document / the leg is valid
     --   (allows also defining local code tables depending on this area).
@@ -1216,22 +1220,31 @@ TariffType ::= SEQUENCE {
     -- Number of passengers using the tariff.
     numberOfPassengers                INTEGER (1..200)                 DEFAULT 1,
 
-    -- Type indication (youth, adult, senior...).
+    -- Type indication (youth, adult, senior... but also pet, bicycle).
+    -- Omitted if the ticket has no restrictions regarding the type of passenger,
+    --   or if the restriction is based on the product type and not on this element.
     passengerType                    PassengerType                     OPTIONAL,
 
     -- Age restrictions of the tariff.
-    ageBelow                         INTEGER (1..64)                   OPTIONAL,
-    ageAbove                         INTEGER (1..128)                  OPTIONAL,
+    age CHOICE {
+        specificAge INTEGER (1..128),
+        ageRange    SEQUENCE {
+            ageBelow    INTEGER (1..128) OPTIONAL,
+            ageAbove    INTEGER (1..128) OPTIONAL
+        }
+    } OPTIONAL,
 
     -- Named traveler list.
     -- Link to the traveler in case the travelers have to be named (e.g. Eurail passes).
     -- The number indicates the position in the traveler sequence starting from 1.
     travelerid                       SEQUENCE OF INTEGER (1..254)      OPTIONAL,
 
-    -- Validity restrictions depending on country.
+    -- Validity restriction based on the traveler's country of residence.
     --   (e.g. for Eurail tickets that are not valid in the country of residence).
-    -- Omitted if there are no restrictions related to countries. 
-    countryValidity                  countryValidityType               OPTIONAL,
+    -- This field does not indicate a global geographic validity, but only a possible
+    --   restriction of this geographic validity related to the country of residence.
+    -- Omitted if there is no restriction related to the traveler's country of residence.
+    countryValidity                  CountryValidityType               OPTIONAL,
 
     -- Tariff code.
     tariffId                         GenericIdType                     OPTIONAL,
@@ -1274,20 +1287,24 @@ CardReferenceType ::= SEQUENCE {
 
 -- ##############################################################################################
 -- Description of an identity document
+-- If number is not provided, this sequence merely defines the acceptable type of identification
+-- document, but does not specify and exact document; i.e. the traveler may be identified via
+-- their passport, but no stipulation is made on which specific passport is presented.
+-- If the country field is also blank, then this means any country (or no country at all) is valid.
 -- ##############################################################################################
 IdentificationDocumentType ::= SEQUENCE {
 
     -- Numeric ISO 3166 country code of the issuing country of the document
-    country              INTEGER (1..999),
+    country     INTEGER (1..999)                    OPTIONAL,
 
     -- Category of the document (passport, ID card...)
-    category             IdentificationDocumentCategoryType,
+    category    IdentificationDocumentCategoryType,
 
     -- Number of the document
-    number               IA5String,
+    number      IA5String                           OPTIONAL,
 
     -- Indication whether the full or only the leading or trailing part of the document number is provided.
-    format         CardIdFormatType                 DEFAULT full,
+    format      CardIdFormatType                    DEFAULT full,
 }
 
 -- ##############################################################################################
@@ -1305,7 +1322,10 @@ TravelerType ::= SEQUENCE {
 
     passengerType                   PassengerType                              OPTIONAL,
 
-    dateOfBirth                     DateType                                   OPTIONAL,
+    ageOrBirth CHOICE {
+        dateOfBirth                 DateType,
+        age                         INTEGER (0..127)
+    }                                                                          OPTIONAL,
 
     rareDetails                     RareTravelerDetailsType                    OPTIONAL
 }
@@ -1314,7 +1334,7 @@ TravelerType ::= SEQUENCE {
 --  Date type, used to indicate the date of birth.
 --  All elements are optional to allow indicating only a part of the date (e.g. only the year).
 -- ----------------------------------------------------------------------------------------------
-DateType :== SEQUENCE {
+DateType ::== SEQUENCE {
     year                     INTEGER    (1901..2155)                      OPTIONAL,
     month                    INTEGER    (1..12)                           OPTIONAL,
     day                      INTEGER    (1..31)                           OPTIONAL
@@ -1326,13 +1346,17 @@ DateType :== SEQUENCE {
 RareTravelerDetailsType ::= SEQUENCE {
 
     -- Details of the document (ID card, passport...) identifying the traveler
-    identificationDocument           IdentificationDocumentType                OPTIONAL,
+    identificationDocument           SEQUENCE OF IdentificationDocumentType (SIZE(0..15)),
 
     -- Cards (reduction, discount, loyalty...) held by the traveler.
     -- Only present if they serve a purpose (e.g. access to a lounge in a station).
     reductionCard                    SEQUENCE OF CardReferenceType             OPTIONAL,
 
-    title                            IA5String (SIZE(1..3))                    OPTIONAL,
+    -- This field should almost never be used.
+    -- Take particular care when using this field, in light of the CJEU decision C‑394/23.
+    -- Specifically: "the processing of personal data relating to the title of the customers
+    -- of a transport undertaking, the purpose of which is to personalise the commercial communication
+    -- based on their gender identity ... cannot be regarded as necessary for the performance of that contract"
     gender                           GenderType                                OPTIONAL,
 
     -- Customer id might be numerical or alphanumerical.
@@ -1831,7 +1855,9 @@ PlaceNumberType ::= CHOICE {
 -- ##############################################################################################
 CodeTableType ::= CHOICE {
     nuts          NULL,               -- European NUTS code.
-    locationUIC   NULL,               -- UIC station code from MERITS (UIC country code + 5 digit local code (= ERA rail station code) / 2-digit scope code + UIC country code + 5 digit local code).
+    locationUIC   NULL,               -- UIC station code from MERITS.
+                                      -- A 7 digit code (UIC country code + 5 digit local code) equates to an ERA retail station code; not to be confused with an ERA infrastructure station code.
+                                      -- A 9 digit code (2-digit scope code + UIC country code + 5 digit local code) equates to non rail infrastructure.
     issuer        NULL,               -- Bilaterally agreed code table of the 'issuer' defined in issuingDetail.
     productOwner  NULL,               -- Bilaterally agreed code table provided by the product owner.
     carrier       NULL,               -- Bilaterally agreed code table provided by the carrier(s) participating in the related route segment.
@@ -1912,6 +1938,13 @@ TicketCategoryType ::= ENUMERATED {
     return    (1), -- Return ticket: only one outward journey and one return journey are permitted.
     multiple  (2), -- Multiple but not unlimited journeys are permitted (e.g. ticket book). The counting is made in a backoffice.
     unlimited (3), -- As many journeys as desired are permitted (e.g. pass).
+    ...
+}
+
+OnlineValidationType ::= ENUMERATED {
+    notPossible (0),
+    possible    (1),
+    required    (2),
     ...
 }
 
@@ -2039,9 +2072,8 @@ GeoUnitType ::= ENUMERATED {
 }
 
 LoadingDeckType ::= ENUMERATED {
-    unspecified          (0),
-    upper                (1),
-    lower                (2)
+    upper                (0),
+    lower                (1)
 }
 
 CompartmentPositionType ::= ENUMERATED {
@@ -2087,6 +2119,8 @@ END
 --        - check-in / check-out barcode at check-in check-out point
 -- - other use cases?
 -- ##############################################################################################
+
+
 
 
 
