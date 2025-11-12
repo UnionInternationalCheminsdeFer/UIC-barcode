@@ -1243,7 +1243,7 @@ TariffType ::= SEQUENCE {
     -- This field does not indicate a global geographic validity, but only a possible
     --   restriction of this geographic validity related to the country of residence.
     -- Omitted if there is no restriction related to the traveler's country of residence.
-    countryValidity                  countryValidityType               OPTIONAL,
+    countryValidity                  CountryValidityType               OPTIONAL,
 
     -- Tariff code.
     tariffId                         GenericIdType                     OPTIONAL,
@@ -1333,7 +1333,7 @@ TravelerType ::= SEQUENCE {
 --  Date type, used to indicate the date of birth.
 --  All elements are optional to allow indicating only a part of the date (e.g. only the year).
 -- ----------------------------------------------------------------------------------------------
-DateType :== SEQUENCE {
+DateType ::== SEQUENCE {
     year                     INTEGER    (1901..2155)                      OPTIONAL,
     month                    INTEGER    (1..12)                           OPTIONAL,
     day                      INTEGER    (1..31)                           OPTIONAL
@@ -2022,7 +2022,7 @@ CardIdFormatType ::= ENUMERATED {
     trailingPart      (2)
 }
 
-IdentificationDocumentCategoryType :== ENUMERATED {
+IdentificationDocumentCategoryType ::== ENUMERATED {
     passport            (0),
     idCard              (1),
     residencePermit     (2),
@@ -2117,6 +2117,7 @@ END
 --        - check-in / check-out barcode at check-in check-out point
 -- - other use cases?
 -- ##############################################################################################
+
 
 
 
