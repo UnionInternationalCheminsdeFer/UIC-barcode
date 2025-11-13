@@ -2,7 +2,6 @@ package org.uic.barcode.asn1.uper;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
-import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
@@ -10,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.uic.barcode.asn1.datatypes.Alphabet;
 import org.uic.barcode.asn1.datatypes.Asn1Default;
 import org.uic.barcode.asn1.datatypes.Asn1String;
 import org.uic.barcode.asn1.datatypes.CharacterRestriction;
@@ -200,11 +200,28 @@ class StringCoder implements Decoder, Encoder {
 
     private static void encodeChar(BitBuffer bitbuffer, char c, RestrictedString restriction) throws Asn1EncodingException {
         UperEncoder.logger.debug(String.format("char %s", c));
+        
+        //encode via Alphabet
+        if (restriction.alphabet() != DefaultAlphabet.class) {
+            Alphabet alphabet = null;
+            try {
+            	alphabet = UperEncoder.instantiate(restriction.alphabet());
+            } catch (IllegalArgumentException e) {
+            	UperEncoder.logger.info("Uninstantinatable alphabet ", e);
+                throw new IllegalArgumentException("Uninstantinatable alphabet" + restriction.alphabet().getName());
+            }
+            int index = alphabet.getIndex(c);
+            if (index < 0) { throw new IllegalArgumentException("can't find character " + c + " in alphabet " + Alphabet.class.getSimpleName()); }
+            UperEncoder.encodeConstrainedInt(
+                        bitbuffer,
+                        index,
+                        0,
+                        alphabet.getSize() - 1);
+            return;
+        }        
+
         switch (restriction.value()) {
             case IA5String:
-                if (restriction.alphabet() != DefaultAlphabet.class) {
-                    throw new UnsupportedOperationException("alphabet for IA5String is not supported yet.");
-                }
                 UperEncoder.encodeConstrainedInt(
                         bitbuffer,
                         Charset.forName("US-ASCII").encode(CharBuffer.wrap(new char[] { c })).get() & 0xff,
@@ -212,9 +229,6 @@ class StringCoder implements Decoder, Encoder {
                         127);
                 return;
             case UTF8String:
-                if (restriction.alphabet() != DefaultAlphabet.class) {
-                    throw new UnsupportedOperationException("alphabet for UTF8 is not supported yet.");
-                }
                 ByteBuffer buffer = Charset.forName("UTF-8").encode(CharBuffer.wrap(new char[] { c }));
                 for (int i = 0; i < buffer.limit(); i++) {
                     UperEncoder.encodeConstrainedInt(bitbuffer, buffer.get() & 0xff, 0, 255);
@@ -222,44 +236,13 @@ class StringCoder implements Decoder, Encoder {
                 return;
             case VisibleString:
             case ISO646String:
-                if (restriction.alphabet() != DefaultAlphabet.class) {
-                    char[] chars;
-                    try {
-                        chars = UperEncoder.instantiate(restriction.alphabet()).chars().toCharArray();
-                    } catch (IllegalArgumentException e) {
-                    	UperEncoder.logger.info("Uninstantinatable alphabet ", e);
-                        throw new IllegalArgumentException("Uninstantinatable alphabet" + restriction.alphabet().getName());
-                    }
-                    if (BigInteger.valueOf(chars.length - 1).bitLength() < BigInteger.valueOf(126)
-                            .bitLength()) {
-                        Arrays.sort(chars);
-                        String strAlphabet = new String(chars);
-                        int index = strAlphabet.indexOf(c);
-                        if (index < 0) { throw new IllegalArgumentException("can't find character " + c + " in alphabet " + strAlphabet); }
-                        UperEncoder.encodeConstrainedInt(
-                                bitbuffer,
-                                index,
-                                0,
-                                chars.length - 1);
-                        return;
-                    } else {
-                        UperEncoder.encodeConstrainedInt(
-                                bitbuffer,
-                                Charset.forName("US-ASCII").encode(CharBuffer.wrap(new char[] { c }))
-                                        .get() & 0xff,
-                                0,
-                                126);
-                        return;
-                    }
-                } else {
-                    UperEncoder.encodeConstrainedInt(
+                 UperEncoder.encodeConstrainedInt(
                             bitbuffer,
                             Charset.forName("US-ASCII").encode(CharBuffer.wrap(new char[] { c }))
                                     .get() & 0xff,
                             0,
                             126);
-                    return;
-                }
+                  return;
             default:
                 throw new UnsupportedOperationException("String type " + restriction
                         + " is not supported yet");
@@ -268,12 +251,24 @@ class StringCoder implements Decoder, Encoder {
 
     private static String decodeRestrictedChar(BitBuffer bitqueue,
             RestrictedString restrictionAnnotation) {
+    	
+    	// decode via Alphabet
+        if (restrictionAnnotation.alphabet() != DefaultAlphabet.class) {
+            Alphabet alphabet = null;
+            try {
+            	alphabet = UperEncoder.instantiate(restrictionAnnotation.alphabet());
+            } catch (IllegalArgumentException e) {
+            	UperEncoder.logger.info("Uninstantinatable alphabet ", e);
+                throw new IllegalArgumentException("Uninstantinatable alphabet " + restrictionAnnotation.alphabet().getName());
+            }
+            int index = (byte) UperEncoder.decodeConstrainedInt(bitqueue, UperEncoder.newRange(0, alphabet.getSize() - 1, false));
+            char c = alphabet.getChar(index);
+            return new String("" + c);
+        }    	
+    	
         switch (restrictionAnnotation.value()) {
+
             case IA5String: {
-                if (restrictionAnnotation.alphabet() != DefaultAlphabet.class) {
-                    throw new UnsupportedOperationException(
-                        "alphabet for IA5String is not supported yet.");
-                }
                 byte charByte = (byte) UperEncoder.decodeConstrainedInt(bitqueue, UperEncoder.newRange(0, 127, false));
                 byte[] bytes = new byte[] { charByte };
                 String result = Charset.forName("US-ASCII").decode(ByteBuffer.wrap(bytes)).toString();
@@ -284,40 +279,13 @@ class StringCoder implements Decoder, Encoder {
             }
             case VisibleString:
             case ISO646String: {
-                if (restrictionAnnotation.alphabet() != DefaultAlphabet.class) {
-                    char[] chars;
-                    try {
-                        chars = UperEncoder.instantiate(restrictionAnnotation.alphabet()).chars().toCharArray();
-                    } catch (IllegalArgumentException e) {
-                    	UperEncoder.logger.info("Uninstantinatable alphabet ", e);
-                        throw new IllegalArgumentException("Uninstantinatable alphabet " + restrictionAnnotation.alphabet().getName());
-                    }
-                    if (BigInteger.valueOf(chars.length - 1).bitLength() < BigInteger.valueOf(126)
-                            .bitLength()) {
-                        Arrays.sort(chars);
-                        int index = (byte) UperEncoder.decodeConstrainedInt(bitqueue, UperEncoder.newRange(0, chars.length - 1, false));
-                        String strAlphabet = new String(chars);
-                        char c = strAlphabet.charAt(index);
-                        String result = new String("" + c);
-                        return result;
-                    } else {  // Encode normally
-                        byte charByte = (byte) UperEncoder.decodeConstrainedInt(bitqueue, UperEncoder.newRange(0, 126, false));
-                        byte[] bytes = new byte[] { charByte };
-                        String result = Charset.forName("US-ASCII").decode(ByteBuffer.wrap(bytes)).toString();
-                        if (result.length() != 1) { throw new AssertionError(
-                                "decoded more than one char (" + result + ")");
-                        }
-                        return result;
-                    }
-                } else {  // Encode normally
-                    byte charByte = (byte) UperEncoder.decodeConstrainedInt(bitqueue, UperEncoder.newRange(0, 126, false));
-                    byte[] bytes = new byte[] { charByte };
-                    String result = Charset.forName("US-ASCII").decode(ByteBuffer.wrap(bytes)).toString();
-                    if (result.length() != 1) {
-                        throw new AssertionError("decoded more than one char (" + result + ")");
-                    }
-                    return result;
+                byte charByte = (byte) UperEncoder.decodeConstrainedInt(bitqueue, UperEncoder.newRange(0, 126, false));
+                byte[] bytes = new byte[] { charByte };
+                String result = Charset.forName("US-ASCII").decode(ByteBuffer.wrap(bytes)).toString();
+                if (result.length() != 1) {
+                    throw new AssertionError("decoded more than one char (" + result + ")");
                 }
+                return result;
             }
             default:
                 throw new UnsupportedOperationException("String type " + restrictionAnnotation + " is not supported yet");
