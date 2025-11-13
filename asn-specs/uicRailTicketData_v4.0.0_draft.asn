@@ -293,13 +293,14 @@ IssuingData ::= SEQUENCE {
     -- Fraction of the prices included.
     currencyFract                  INTEGER (0..3)                DEFAULT 2,
 
-    -- Id to uniquely identify this ticket (barcode) within the context of the issuer and an appropriate time range.
-    -- Used to reference the ticket in central control applications (e.g. ETCD).
-    id                             GenericIdType,
+    -- ID to uniquely identify this barcode within the context of the issuer and an appropriate time range.
+    -- This corresponds to the bookingId field in the eTCD.
+    bookingId                             GenericIdType,
 
-    -- Booking reference to the booking containing this ticket (barcode), within the context of the issuer.
-    -- The booking might include more than one ticket (barcode).
-    bookingId                      GenericIdType                 OPTIONAL,
+    -- An ID to identify the complete transaction that included this ticket.
+    -- An order transaction may generate more than one barcode; these are to have different bookingId
+    -- values but share the same orderReference.
+    orderReference                      GenericIdType                 OPTIONAL,
 
     -- Location of sale (transport number and/or line number) in case of a sale on board of a transport.
     issuedOnTransport              TransportNumberType           OPTIONAL,
