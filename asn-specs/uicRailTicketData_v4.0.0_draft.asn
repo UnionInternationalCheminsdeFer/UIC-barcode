@@ -1867,8 +1867,8 @@ CompanyCodeType ::= CHOICE {
     -- Values of exactly 4 characters are RICS codes defined by ERA.
     -- A numerical value shall never be stored with eraCode but only with codeNum.
     eraCode 	IA5String (SIZE (4) ^ FROM ("A".."Z"|"0".."9")),
-    -- Values of less or more than 4 characters are proprietary codes defined by the product owner defined in the container object, who must ensure their uniqueness.
-    otherCode 	IA5String
+    -- Proprietary company codes must be 5 characters or more, and must start with an X.
+    otherCode 	IA5String (SIZE (5..))
 }
 
 -- Identification of a station, according to the code list defined in the container object.
