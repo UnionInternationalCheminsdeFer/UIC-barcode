@@ -246,6 +246,7 @@ public class Decoder {
 				uicTicket = uicTicketCoder.decodeFromAsn(level1Content.getData(), 3);
 			}
 		}
+		
 	}
 	
 	private void decodeStaticFrame(byte[] data) throws EncodingFormatException, DataFormatException, IOException {
@@ -423,6 +424,48 @@ public class Decoder {
 			throw new EncodingFormatException("Unknown Header");
 		}
 		
+	}
+	
+	public String getTrimmedLevel1KeyId() throws EncodingFormatException {
+		
+		if (dynamicFrame != null 
+			&& dynamicFrame.getLevel2Data() != null 
+			&& dynamicFrame.getLevel2Data().getLevel1Data() != null) {
+			return dynamicFrame.getLevel2Data().getLevel1Data().getKeyId().toString();
+		} else if (staticFrame != null) {
+			return trimLeadingZeros(staticFrame.getSignatureKey());
+		} else if (ssbFrame != null) {
+			return String.valueOf(ssbFrame.getHeader().getKeyId());
+		} else {
+			throw new EncodingFormatException("Unknown Header");
+		}
+		
+	}
+	
+	private static String trimLeadingZeros(String source) {
+	    for (int i = 0; i < source.length(); ++i) {
+	        char c = source.charAt(i);
+	        if (c != '0') {
+	            return source.substring(i);
+	        }
+	    }
+	    return "";
+	}
+	
+	public String getLevel1SecurityProvider() throws EncodingFormatException {
+	
+		if (dynamicFrame != null 
+			&& dynamicFrame.getLevel2Data() != null 
+			&& dynamicFrame.getLevel2Data().getLevel1Data() != null) {
+			return dynamicFrame.getLevel2Data().getLevel1Data().getSecurityProvider();
+		} else if (staticFrame != null) {
+			return staticFrame.getSecurityProvider();
+		} else if (ssbFrame != null) {
+			return String.valueOf(ssbFrame.getHeader().getIssuer());
+		} else {
+			throw new EncodingFormatException("Unknown Header");
+		}
+
 	}
 
 	public SsbFrame getSsbFrame() {
