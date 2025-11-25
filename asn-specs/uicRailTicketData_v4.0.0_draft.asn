@@ -2,6 +2,7 @@
 -- Author: ClemensGantert
 -- Created: Mon Jun 28 14:14:28 CEST 2021
 -- Last modification: Fri Oct 27 CEST 18:00:00 CEST 2025
+-- Copyright UIC 2025
 ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 
 -- imports and exports
@@ -2133,6 +2134,7 @@ END
 --        - check-in / check-out barcode at check-in check-out point
 -- - other use cases?
 -- ##############################################################################################
+
 
 
 
