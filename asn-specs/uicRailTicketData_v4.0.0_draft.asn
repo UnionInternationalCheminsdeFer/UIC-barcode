@@ -294,13 +294,8 @@ IssuingData ::= SEQUENCE {
     currencyFract                  INTEGER (0..3)                DEFAULT 2,
 
     -- ID to uniquely identify this barcode within the context of the issuer and an appropriate time range.
-    -- This corresponds to the bookingId field in the eTCD.
-    bookingId                             GenericIdType,
-
-    -- An ID to identify the complete transaction that included this ticket.
-    -- An order transaction may generate more than one barcode; these are to have different bookingId
-    -- values but share the same orderReference.
-    orderReference                      GenericIdType                 OPTIONAL,
+    -- This can be used to query the ticket in the eTCD.
+    ticketControlNumber                             GenericIdType,
 
     -- Location of sale (transport number and/or line number) in case of a sale on board of a transport.
     issuedOnTransport              TransportNumberType           OPTIONAL,
