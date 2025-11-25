@@ -855,6 +855,9 @@ ConditionsType ::= SEQUENCE {
     -- Internal reference to the document (e.g. serial number of the document)
     reference                        GenericIdType                   OPTIONAL,
 
+    -- The company that defined the above reference, if different from the document issuer.
+    referenceCompany				CompanyCodeType					OPTIONAL,
+
     -- Time validity
     -- Having no validFrom is allowed (e.g. ticket not yet activated, which will be reissued with an explict validFrom upon activation).
     -- Having no validUntil is allowed (e.g. ticket with unlimited validity - which should nevertheless have a security expiry date in the header requiring regular reissue).
