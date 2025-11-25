@@ -835,7 +835,7 @@ ConditionsType ::= SEQUENCE {
 
     -- Detailed type of the transport product (ticket, reservation, commercial card...).
     -- MUST either be present in the generalConditions, or present in all specificConditions.
-    productType                      ProductTypeType				OPTIONAL,
+    productVariety                      ProductVarietyType				OPTIONAL,
 
     -- Area (city, region, country...) in which the transport document / the leg is valid
     --   (allows also defining local code tables depending on this area).
@@ -1684,7 +1684,7 @@ TicketLinkType ::= SEQUENCE {
     ticketIssuerName            UTF8String               OPTIONAL,
 
     -- Type of linked ticket
-    ticketType                  ProductTypeType          DEFAULT ticket:{},
+    ticketType                  ProductVarietyType          DEFAULT ticket:{},
 
     -- Type of link
     linkMode                    LinkModeType             DEFAULT issuedTogether,
@@ -1903,10 +1903,10 @@ CodeTableType ::= CHOICE {
 }
 
 -- ##############################################################################################
---  Product type indicates the type of the transport product,
+--  Product variety indicates the type of the transport product,
 --    as well as some specific characteristics it may have.
 -- ##############################################################################################
-ProductTypeType ::= CHOICE {
+ProductVarietyType ::= CHOICE {
 
     -- Ticket authorizing the use of the transportation service (single ticket, return ticket, ticket book, pass, access to a parking lot, car sharing service...)
     -- This choice also describes some associated characteristics:
