@@ -62,7 +62,7 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 -- #      'validUntil' date -> location where the journey covered by the ticket ends
 -- #
 -- #    There could be rare cases where this does not provide a unique interpretation:
--- #      e.g. open ticket or pass without start and end location for a collection of zones or countries with different time zones.
+-- #      e.g. open ticket or pass without start and end location for a collection of areas/zones or countries with different time zones.
 -- #      In these cases the fare conditions must clarify the rules for these cases (e.g. by allowing to use the
 -- #        ticket a few hours after the end of validity).
 -- #
@@ -289,7 +289,7 @@ IssuingData ::= SEQUENCE {
     activated                      BOOLEAN                       DEFAULT TRUE,
 
     -- Currency of the price: ISO 4217 numeric currency code.
-    currency                       INTEGER (0..999)				DEFAULT 978, -- 978 = Euro
+    currency                       INTEGER (0..999)              DEFAULT 978, -- 978 = Euro
 
     -- Fraction of the prices included.
     currencyFract                  INTEGER (0..3)                DEFAULT 2,
@@ -333,30 +333,30 @@ SecurePaperTicket ::= ENUMERATED {
 -- ##############################################################################################
 ProductRetailData ::= SEQUENCE {
     -- Identifier of the company that is the retailer for this contract of carriage, as per the definition of a retailer in ISO 24014-1.
-    retailerId           	CompanyCodeType		OPTIONAL,
+    retailerId            CompanyCodeType   OPTIONAL,
 
     -- Retailer specific identifier of the server that sold the contract of carriage.
-    retailServerId        	GenericIdType		OPTIONAL,
+    retailServerId        GenericIdType     OPTIONAL,
 
     -- Retailer specific identifier of the ticket generation platform.
     -- If omitted, identical to retailServerId
-    retailGeneratorId		GenericIdType		OPTIONAL,
+    retailGeneratorId     GenericIdType     OPTIONAL,
 
     -- Channel through which the traveler requested the contract / the barcode.
-    retailChannel			RetailChannelType	OPTIONAL,
+    retailChannel         RetailChannelType OPTIONAL,
 
     -- Type of equipment that distributed the contract / the barcode
     --   (code table of the product retailer).
-    retailEquipmentType		GenericIdType		OPTIONAL,
+    retailEquipmentType   GenericIdType     OPTIONAL,
 
     -- Identifier of the final distribution point of the barcode
     --   (code table of the product retailer).
-    retailPointId			GenericIdType		OPTIONAL,
+    retailPointId         GenericIdType     OPTIONAL,
 
     -- Traceability information linked to the barcode or contract generation
     --   (e.g. name and version of the generation software)
     --   (code table of the product retailer).
-    retailTraceability		VisibleString			OPTIONAL,
+    retailTraceability    VisibleString     OPTIONAL,
 
     ...
 }
@@ -494,14 +494,14 @@ CarCarriageReservationData ::= SEQUENCE {
     -- Description of the car.
     --
     -- Unless spaces form an integral part of identifying a plate, the must not be included.
-	-- E.g. a German car with the plate SB[TÜV Sticker]A 123 is to be encoded as "SB-A123".
-	-- Dutch duplicate codes are not encoded, i.e. the small number above the first dash does not
-	-- form part of the plate.
-	--
-	-- The plate should be represented in the Latin alphabet and Arabic numerals where possible,
-	-- but not that this isn't always possible, e.g. the registration district of a Chinese plate.
-	--
-	-- The country of registration must not be encoded in the plate.
+    -- E.g. a German car with the plate SB[TÜV Sticker]A 123 is to be encoded as "SB-A123".
+    -- Dutch duplicate codes are not encoded, i.e. the small number above the first dash does not
+    -- form part of the plate.
+    --
+    -- The plate should be represented in the Latin alphabet and Arabic numerals where possible,
+    -- but not that this isn't always possible, e.g. the registration district of a Chinese plate.
+    --
+    -- The country of registration must not be encoded in the plate.
     vehiclePlate                    UTF8String,
     trailerPlate                    UTF8String                         OPTIONAL,
     carCategory                     INTEGER (0..9),
@@ -836,12 +836,12 @@ ConditionsType ::= SEQUENCE {
 
     -- Detailed type of the transport product (ticket, reservation, commercial card...).
     -- MUST either be present in the generalConditions, or present in all specificConditions.
-    productVariety                      ProductVarietyType				OPTIONAL,
+    productVariety                   ProductVarietyType              OPTIONAL,
 
     -- Area (city, region, country...) in which the transport document / the leg is valid
     --   (allows also defining local code tables depending on this area).
     -- Omitted if the area is implicit or completely defined with the geoValidity elements.
-    concernedArea                    ConcernedAreaType               OPTIONAL,
+    concernedArea                    AreaSetType                     OPTIONAL,
 
     -- Code table to be used by default for all the elements in the transport document / in the leg.
     locationCodeTable                CodeTableType                   OPTIONAL,
@@ -1431,8 +1431,8 @@ CustomerStatusType ::= SEQUENCE {
 GeoValidityType ::= CHOICE {
     originDestination  OriginDestinationType, -- Simple journey from an Origin to a Destination, with optional description of intermediate stations.
     complexRoute       ComplexRouteType,      -- Complex journey allowing multiple origins, multiple destinations, alternative routes, etc.
-    zones              ZoneType,              -- Zonal validity.
-    lines              LineType,              -- Set of authorized transport lines.
+    area               AreaType,              -- Validity defined with areas/zones.
+    line               LineType,              -- Set of authorized transport lines.
     polygone           PolygoneType,          -- Area defined using geocoordinates.
     parking            ParkingType,           -- Parking right (for a car, a bike...).
     sharedVehicle      SharedVehicleType,     -- Access to a shared vehicle service. /!\ Type yet to be defined
@@ -1510,48 +1510,48 @@ LineCodeType ::= CHOICE {
 }
 
 -- ##############################################################################################
---  Geographical validity defined with zones
+--  Geographical validity defined with areas/zones
 -- ##############################################################################################
-ZoneType ::= SEQUENCE {
+AreaType ::= SEQUENCE {
 
-    -- Code table of the zones is defined in the container object.
-
-    -- In case the allowed journey must begin in specific stations or specific zones. E.g.:
+    -- In case the allowed journey must begin in specific stations or specific areas/zones. E.g.:
     --   - local city traffic starting from the station where a train journey ends.
-    --   - journey starting in a city described with a specific set of zones.
+    --   - journey starting in a specific set of areas/zones of a city.
+    --   - journey starting anywhere in a city described with its NUTS code or its Calypso NetworkId.
     -- Omitted if there are no restrictions on where the journey must begin.
     restrictedEntry CHOICE {
        station                 StationSetType,
-       zones                   AreaIdType
+       area                    AreaIdType
     } OPTIONAL,
 
-    -- Description of the allowed zones.
-    -- The zones described in restrictedEntry:zones and/or restrictedExit:zones must not be repeated in the included or excluded zones.
-    -- If restrictedEntry is absent, the journey can begin anywhere in the allowed zones.
-    -- If restrictedExit is absent, the journey can end anywhere in the allowed zones.
-    -- If restrictedEntry and restrictedExit are present, the allowed zones are only transit zones:
+    -- Description of the allowed areas/zones.
+    -- The areas described in restrictedEntry:area and/or restrictedExit:area (if any) must not be repeated in the included or excluded areas.
+    -- If restrictedEntry is absent, the journey can begin anywhere in the allowed areas/zones.
+    -- If restrictedExit is absent, the journey can end anywhere in the allowed areas/zones.
+    -- If restrictedEntry and restrictedExit and area are present, the allowed areas/zones are only transit areas/zones:
     --   the traveler is allowed to cross them, but he may neither begin nor end his journey in them.
-    zones CHOICE {
+    -- If restrictedEntry and restrictedExit are present, and area is absent, there are no specific restrictions on how to travel
+    --   from restrictedEntry to restrictedExit (the only restrictions that apply are those described by the applicable ConditionsType).
+    area CHOICE {
+       -- The allowed areas/zones are those explicitely described in the 'included' element.
+       included                AreaIdType, -- list of allowed areas/zones
 
-       -- The allowed zones are those explicitely described in the 'included' element.
-       included                AreaIdType, -- list of allowed zones
-
-       -- The allowed zones are all the zones of the applicable 'concernedArea' element, except those
+       -- The allowed areas/zones are all the areas/zones of the applicable 'concernedArea' element, except those
        --   described in 'excluded', in 'restrictedEntry' and in 'restrictedExit'.
        excluded                AreaIdType
-    },
+    } OPTIONAL,
 
-    -- In case the allowed journey must end in specific stations or specific zones. E.g.:
+    -- In case the allowed journey must end in specific stations or specific areas/zones. E.g.:
     --   - local city traffic ending in the station where a train journey ends.
-    --   - journey ending in a city described with a specific set of zones.
+    --   - journey ending in a city described with a specific set of areas/zones.
     -- Omitted if there are no restrictions on where the journey must end.
     restrictedExit CHOICE {
        station                 StationSetType,
-       zones                   AreaIdType
+       area                    AreaIdType
     } OPTIONAL,
 
     -- Readable name of the area of validity.
-    zoneNameUTF8                 UTF8String              OPTIONAL,
+    areaNameUTF8               UTF8String              OPTIONAL,
 
     ...
 }
@@ -1832,23 +1832,27 @@ ProductIdType ::= CHOICE {
     productIdIA5   VisibleString
 }
 
--- Identification of the area in which the elements of the container object are applicable.
-ConcernedAreaType ::= SEQUENCE {
+-- ----------------------------------------------------------------------------------------------
+-- Set of areas/zones.
+-- It can be defined through a name, and/or the explicit list of the area/zone ids.
+-- Quite similar to 'stationSetType' but for areas/zones.
+-- ----------------------------------------------------------------------------------------------
+AreaSetType ::= SEQUENCE {
+
+    -- Code for the areas/zones.
     -- If the code table is not provided the code table of the container object applies.
-    codeTable CodeTableType OPTIONAL,
-    areaId    AreaIdType
-}
+    areaSetCodeTable CodeTableType OPTIONAL,
 
--- Identification of a set of zones, each zone identification (Num, IA5, Oct, Bit) being defined according to the code list defined in the container object.
-AreaIdType ::= CHOICE {
-    -- Sequence of zone identifiers
-    areaIdNum    SEQUENCE OF INTEGER,      -- e.g. sequence of allowed zone numbers such as {1,5,23}
-    areaIdIA5    SEQUENCE OF VisibleString,    -- e.g. sequence of european NUTS code such as {"FRF11","FRF12","DE1"}, or zones described with text such as {"M","1-3"}
-    areaIdOct    SEQUENCE OF OCTET STRING, -- e.g. sequence of Calypso NetworkIds such as {'250901'H,'250072'H}
+    areaSet ::= CHOICE {
+        -- Sequence of area/zone identifiers
+        idNum    SEQUENCE OF INTEGER,       -- e.g. sequence of allowed area/zone numbers such as {1,5,23}
+        idIA5    SEQUENCE OF VisibleString, -- e.g. sequence of european NUTS code such as {"FRF11","FRF12","DE1"}, or areas/zones described with text such as {"M","1-3"}
+        idOct    SEQUENCE OF OCTET STRING,  -- e.g. sequence of Calypso NetworkIds such as {'250901'H,'250072'H}
 
-    -- Bit representation of zones.
-    -- Recommended encoding if applicable: bit n (considering that bit 0 = right-most bit) encodes zone n+1, bit value 1 = zone is allowed, bit value 0 = zone is forbidden.
-    areaIdBit    BIT STRING                -- e.g. bitmap of allowed zones such as '10101110010'B for zones 2, 5, 6, 7, 9 and 11
+        -- Bit representation of areas/zones.
+        -- Recommended encoding if applicable: bit n (considering that bit 0 = right-most bit) encodes area/zone n+1, bit value 1 = area/zone is allowed, bit value 0 = area/zone is forbidden.
+        idBit    BIT STRING                -- e.g. bitmap of allowed areas/zones such as '10101110010'B for areas/zones 2, 5, 6, 7, 9 and 11
+    }
 }
 
 -- Identification of a company.
@@ -1858,7 +1862,7 @@ CompanyCodeType ::= CHOICE {
 
     -- Company codes as defined by the ERA
     -- A RICS shall never be stored with eraCode but only with rics.
-    eraCode 	IA5String (SIZE (4) ^ FROM ("A".."Z"|"0".."9")),
+    eraCode 	VisibleString (SIZE (4) ^ FROM ("A".."Z"|"0".."9")),
 
 	otherCode	SEQUENCE {
 		--  The value of 'codeTable' identifies the company identifier format according to the following:
@@ -1868,8 +1872,8 @@ CompanyCodeType ::= CHOICE {
 		--    Any other value only after registration in the company_code.csv registry.
 		--    The use of unregistered values (outside of the national, company, and private use ranges) is strictly forbidden.
 		--    All values should be registered via the UIC Github repository.
-		codeTable	IA5String,
-		code		IA5String
+		codeTable	VisibleString,
+		code		VisibleString
 	}
 }
 
@@ -2052,14 +2056,14 @@ CardIdFormatType ::= ENUMERATED {
 }
 
 IdentificationDocumentCategoryType ::= ENUMERATED {
-    passport            	(0),
-    idCard              	(1),
-    residencePermit     	(2),
-    driverLicense       	(3),
-    creditCard        		(4),
-    socialBenefitsCard  	(5),
-    studentIdCard      	 	(6),
-    specialTravelDocument	(7), -- e.g. those issued under the Convention of the 28th of September 1954, or a Laissez-Passer
+    passport              (0),
+    idCard                (1),
+    residencePermit       (2),
+    driverLicense         (3),
+    creditCard            (4),
+    socialBenefitsCard    (5),
+    studentIdCard         (6),
+    specialTravelDocument (7), -- e.g. those issued under the Convention of the 28th of September 1954, or a Laissez-Passer
     ...
 }
 
@@ -2134,7 +2138,6 @@ END
 --        - check-in / check-out barcode at check-in check-out point
 -- - other use cases?
 -- ##############################################################################################
-
 
 
 
