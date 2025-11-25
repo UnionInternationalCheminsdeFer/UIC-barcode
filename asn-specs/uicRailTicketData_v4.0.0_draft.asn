@@ -37,7 +37,7 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 -- #
 -- #  Stations can be coded using the UIC and upcoming ERA code lists. Proprietary codes are
 -- #    possible based on bilateral agreements. Format: 1..9999999 or alphanumeric without
--- #    special character (IA5String).
+-- #    special character (VisibleString).
 -- #
 -- # !  INTEGERS must not exceed the value of 9,223,372,036,854,775,807 (64 bit) even in case
 -- # !     they are unrestricted!!!
@@ -293,13 +293,9 @@ IssuingData ::= SEQUENCE {
     -- Fraction of the prices included.
     currencyFract                  INTEGER (0..3)                DEFAULT 2,
 
-    -- Id to uniquely identify this ticket (barcode) within the context of the issuer and an appropriate time range.
-    -- Used to reference the ticket in central control applications (e.g. ETCD).
-    id                             GenericIdType,
-
-    -- Booking reference to the booking containing this ticket (barcode), within the context of the issuer.
-    -- The booking might include more than one ticket (barcode).
-    bookingId                      GenericIdType                 OPTIONAL,
+    -- ID to uniquely identify this barcode within the context of the issuer and an appropriate time range.
+    -- This can be used to query the ticket in the eTCD.
+    ticketControlNumber                             GenericIdType,
 
     -- Location of sale (transport number and/or line number) in case of a sale on board of a transport.
     issuedOnTransport              TransportNumberType           OPTIONAL,
@@ -312,7 +308,7 @@ IssuingData ::= SEQUENCE {
     productRetail                  ProductRetailData             OPTIONAL,
 
     -- ISO 639-1 coding (lower case) of the language preferred for the traveler / ticket holder.
-    preferredLanguage              IA5String (SIZE(2) ^ FROM ("a".."z"))  OPTIONAL,
+    preferredLanguage              VisibleString (SIZE(2) ^ FROM ("a".."z"))  OPTIONAL,
 
     -- Proprietary data defined bilaterally.
     extension                      ExtensionData                 OPTIONAL,
@@ -359,7 +355,7 @@ ProductRetailData ::= SEQUENCE {
     -- Traceability information linked to the barcode or contract generation
     --   (e.g. name and version of the generation software)
     --   (code table of the product retailer).
-    retailTraceability		IA5String			OPTIONAL,
+    retailTraceability		VisibleString			OPTIONAL,
 
     ...
 }
@@ -425,7 +421,7 @@ OnlineValidationType ::= CHOICE {
     securityProviderProprietary NULL,            -- The ticket may be checked against a proprietary platform of the security provider; e.g. the Deutschlandtarifverbund's security portal.
     issuerProprietary           NULL,            -- The ticket may be checked against a proprietary platform of the issuer; e.g. bwegt check-in check-out (Baden-Württemburg).
     external                    CompanyCodeType, -- The ticket may be checked against the platform operated by the specified company; e.g. Entur
-    other                       IA5String,       -- The ticket may be checked against some other external platform, as identified by the string
+    other                       VisibleString,       -- The ticket may be checked against some other external platform, as identified by the string
     ...
 }
 
@@ -491,8 +487,8 @@ CarCarriageReservationData ::= SEQUENCE {
     fromStation                      StationType,
     toStation                        StationType,
 
-    coach                            IA5String                         OPTIONAL,
-    place                            IA5String                         OPTIONAL,
+    coach                            VisibleString                         OPTIONAL,
+    place                            VisibleString                         OPTIONAL,
 
     -- Description of the car.
     --
@@ -623,7 +619,7 @@ TransportLinkType ::= SEQUENCE {
 
     -- Service level code list from IRS 90918-1.
     -- Omitted if the same service level is already specified in the description of the associated leg.
-    serviceLevel            IA5String (SIZE(1..2) ^ FROM ("A".."Z"|"0".."9"))            OPTIONAL,
+    serviceLevel            VisibleString (SIZE(1..2) ^ FROM ("A".."Z"|"0".."9"))            OPTIONAL,
 
     ...
 }
@@ -669,7 +665,7 @@ ReservationSegmentType ::= SEQUENCE {
 
     -- Service level code list from IRS 90918-1.
     -- Omitted if the same service level is already specified in the description of the associated leg.
-    serviceLevel            IA5String (SIZE(1..2) ^ FROM ("A".."Z"|"0".."9"))            OPTIONAL,
+    serviceLevel            VisibleString (SIZE(1..2) ^ FROM ("A".."Z"|"0".."9"))            OPTIONAL,
 
     -- Service code list from 918.1 (seat, couchette...).
     service                 ServiceType                       DEFAULT seat,
@@ -839,7 +835,7 @@ ConditionsType ::= SEQUENCE {
 
     -- Detailed type of the transport product (ticket, reservation, commercial card...).
     -- MUST either be present in the generalConditions, or present in all specificConditions.
-    productType                      ProductTypeType				OPTIONAL,
+    productVariety                      ProductVarietyType				OPTIONAL,
 
     -- Area (city, region, country...) in which the transport document / the leg is valid
     --   (allows also defining local code tables depending on this area).
@@ -858,6 +854,9 @@ ConditionsType ::= SEQUENCE {
 
     -- Internal reference to the document (e.g. serial number of the document)
     reference                        GenericIdType                   OPTIONAL,
+
+    -- The company that defined the above reference, if different from the document issuer.
+    referenceCompany				CompanyCodeType					OPTIONAL,
 
     -- Time validity
     -- Having no validFrom is allowed (e.g. ticket not yet activated, which will be reissued with an explict validFrom upon activation).
@@ -900,7 +899,7 @@ ConditionsType ::= SEQUENCE {
     classCode                       TravelClassType                  DEFAULT second,
 
     -- Service level code according to leaflet IRS 90918-1 to encode other products (e.g. PREMIUM, ...)
-    serviceLevel                    IA5String (SIZE(1..2) ^ FROM ("A".."Z"|"0".."9"))           OPTIONAL,
+    serviceLevel                    VisibleString (SIZE(1..2) ^ FROM ("A".."Z"|"0".."9"))           OPTIONAL,
 
     -- Tariff data (allowed passengers characteristics, discount cards used...)
     -- If omitted, the ticket is valid:
@@ -977,7 +976,7 @@ RareDetailsType::= SEQUENCE {
 
     -- Family of the product, allowing to process the product according to its family.
     -- Value according to the product owner.
-    productFamily             IA5String                       OPTIONAL,
+    productFamily             VisibleString                       OPTIONAL,
 
     -- Excluded carriers responsible for the transport starting at this station.
     -- In case this list is provided, the ticket is valid on all other carriers,
@@ -1091,7 +1090,7 @@ CustomerCardData ::= SEQUENCE {
     customerStatus      INTEGER                                  OPTIONAL,
 
     -- Readable customer status, e.g. "gold",
-    customerStatusDescr IA5String                                OPTIONAL,
+    customerStatusDescr VisibleString                                OPTIONAL,
 
     -- List of included services,
     --     1 = Rail Plus
@@ -1136,10 +1135,10 @@ ParkingGroundData ::= SEQUENCE {
 ParkingType ::= SEQUENCE {
 
     -- Code provided by the product.productOwner.
-    parkingGroundId               IA5String,
+    parkingGroundId               VisibleString,
 
     -- Code needed to access the parking lot.
-    accessCode                    IA5String                     OPTIONAL,
+    accessCode                    VisibleString                     OPTIONAL,
 
     -- Readable name of the parking location.
     -- Omitted if the vehicle can park anywhere in the parking ground.
@@ -1177,7 +1176,7 @@ ParkingType ::= SEQUENCE {
 -- ##############################################################################################
 TransportNumberType ::= CHOICE {
     transportNumberNum INTEGER,
-    transportNumberIA5 IA5String (FROM ("A".."Z"|"0".."9"|" "))
+    transportNumberIA5 VisibleString (FROM ("A".."Z"|"0".."9"|" "))
 }
 
 -- ##############################################################################################
@@ -1201,22 +1200,18 @@ ProductType ::= SEQUENCE {
 -- ##############################################################################################
 --  Generic extension element.
 --
---  The value of 'extensionId' describes how 'extensionData' is encoded:
---    "+" + [2-letters uppercase ISO 3166 country code] + [addon, chosen by the registrar of that country]
---      means that 'extensionData' is encoded as defined by this registrar,
---      according to the format identified as 'addon' by this registrar.
---    "_" + [CompanyCode] + "_" + [addon, chosen by this company]
---      means that 'extensionData' is encoded as specified by the company identified by CompanyCode,
---      according to the format identified as 'addon' by this company.
---    "*" + [addon] means that 'extensionData' is a content specific to this barcode,
---      identified as 'addon', with no further information on who defined it.
---  Others values are reserved for future UIC use and shall not be used.
+--  The value of 'extensionId' identifies show 'extensionData' is encoded:
+--    "+" + [2-letters uppercase ISO 3166 country code] + [addon, chosen by the national standards body of that country]
+--    "_" + [RICS or ERA company code] + [addon, chosen by this company]
+--    "*" + [addon] - private use, not guaranteed to avoid clashes
+--    Any other value only after registration in the extension_data.csv registry
+--    The use of unregistered values (outside of the national, company, and private use ranges) is strictly forbidden.
+--    All values should be registered via the UIC Github repository.
 -- ##############################################################################################
 ExtensionData ::= SEQUENCE {
-    extensionId   IA5String,
+    extensionId   VisibleString,
     extensionData OCTET STRING
 }
-
 
 -- ##############################################################################################
 --  Tariff data for transport products.
@@ -1310,7 +1305,7 @@ IdentificationDocumentType ::= SEQUENCE {
     category    IdentificationDocumentCategoryType,
 
     -- Number of the document
-    number      IA5String                           OPTIONAL,
+    number      VisibleString                           OPTIONAL,
 
     -- Indication whether the full or only the leading or trailing part of the document number is provided.
     format      CardIdFormatType                    DEFAULT full
@@ -1407,7 +1402,7 @@ CustomerStatusType ::= SEQUENCE {
     customerStatus                 INTEGER           OPTIONAL,
 
     -- Customer status text description (e.g. "gold").
-    customerStatusDescr            IA5String         OPTIONAL
+    customerStatusDescr            VisibleString         OPTIONAL
 }
 
 -- ##############################################################################################
@@ -1510,7 +1505,7 @@ LineIdType ::= SEQUENCE {
 -- ----------------------------------------------------------------------------------------------
 LineCodeType ::= CHOICE {
     lineIdNum INTEGER,
-    lineIdIA5 IA5String (FROM ("A".."Z"|"0".."9"|" "))
+    lineIdIA5 VisibleString (FROM ("A".."Z"|"0".."9"|" "))
 }
 
 -- ##############################################################################################
@@ -1656,17 +1651,14 @@ TokenType ::= SEQUENCE {
     tokenProvider           CompanyCodeType                       OPTIONAL,
 
     -- Format of the 'token' element:
-    --   "+" + [2-letters uppercase ISO 3166 country code] + [addon, chosen by the registrar of that country]
-    --     means that 'token' is encoded as defined by this registrar,
-    --     according to the format identified as 'addon' by this registrar.
-    --   "_" + [CompanyCode] + "_" + [addon, chosen by this company]
-    --     means that 'token' is encoded as specified by the company identified by CompanyCode,
-    --     according to the format identified as 'addon' by this company.
-    --   "*" + [addon] means that 'token' is encoded as specified by the token provider,
-    --     identified as 'addon' by its provider.
-    --   Others values are reserved for future UIC use and shall not be used.
-    -- Omitted if the format is  implicit for the token provider.
-    tokenSpecification      IA5String                             OPTIONAL,
+	--    "+" + [2-letters uppercase ISO 3166 country code] + [addon, chosen by the national standards body of that country]
+	--    "_" + [RICS or ERA company code] + [addon, chosen by this company]
+	--    "*" + [addon] - private use, not guaranteed to avoid clashes
+	--    Any other value only after registration in the token_specification.csv registry
+	--    The use of unregistered values (outside of the national, company, and private use ranges) is strictly forbidden.
+	--    All values should be registered via the UIC Github repository.
+    -- Omitted if the format is implicit for the token provider.
+    tokenSpecification      VisibleString                             OPTIONAL,
 
     -- Value of the token, encoded according to tokenSpecification.
     token                   OCTET STRING,
@@ -1692,7 +1684,7 @@ TicketLinkType ::= SEQUENCE {
     ticketIssuerName            UTF8String               OPTIONAL,
 
     -- Type of linked ticket
-    ticketType                  ProductTypeType          DEFAULT ticket:{},
+    ticketType                  ProductVarietyType          DEFAULT ticket:{},
 
     -- Type of link
     linkMode                    LinkModeType             DEFAULT issuedTogether,
@@ -1706,10 +1698,10 @@ TicketLinkType ::= SEQUENCE {
 -- ##############################################################################################
 CoachPlacesType ::= SEQUENCE {
 
-    coach                   IA5String                           OPTIONAL,
+    coach                   VisibleString                           OPTIONAL,
 
     -- Printable place string  (e.g. "15-18, 21, 22")
-    placeString            IA5String                            OPTIONAL,
+    placeString            VisibleString                            OPTIONAL,
 
     -- Printable place description
     placeDescription       UTF8String                           OPTIONAL,
@@ -1829,14 +1821,14 @@ GeoUnit ::= CHOICE {
 -- Identification of any element using a numerical, alphanumerical or binary ID, according to the code list defined in the container object.
 GenericIdType ::= CHOICE {
     idNum           INTEGER,      -- for numerical IDs
-    idIA5           IA5String,    -- for alphanumerical IDs
+    idIA5           VisibleString,    -- for alphanumerical IDs
     idOct           OCTET STRING  -- for binary IDs such as UUIDs
 }
 
 -- Identification of a product, according to the code list defined in the container object.
 ProductIdType ::= CHOICE {
     productIdNum   INTEGER (0..65535),
-    productIdIA5   IA5String
+    productIdIA5   VisibleString
 }
 
 -- Identification of the area in which the elements of the container object are applicable.
@@ -1850,7 +1842,7 @@ ConcernedAreaType ::= SEQUENCE {
 AreaIdType ::= CHOICE {
     -- Sequence of zone identifiers
     areaIdNum    SEQUENCE OF INTEGER,      -- e.g. sequence of allowed zone numbers such as {1,5,23}
-    areaIdIA5    SEQUENCE OF IA5String,    -- e.g. sequence of european NUTS code such as {"FRF11","FRF12","DE1"}, or zones described with text such as {"M","1-3"}
+    areaIdIA5    SEQUENCE OF VisibleString,    -- e.g. sequence of european NUTS code such as {"FRF11","FRF12","DE1"}, or zones described with text such as {"M","1-3"}
     areaIdOct    SEQUENCE OF OCTET STRING, -- e.g. sequence of Calypso NetworkIds such as {'250901'H,'250072'H}
 
     -- Bit representation of zones.
@@ -1860,27 +1852,36 @@ AreaIdType ::= CHOICE {
 
 -- Identification of a company.
 CompanyCodeType ::= CHOICE {
-    -- Values 1..9999 are RICS codes defined by UIC and registered on https://uic.org/support-activities/it/rics
-    -- Values > 9999 are proprietary codes defined by the product owner defined in the container object, who must ensure their uniqueness.
-    codeNum		INTEGER (1..32000),
+    -- RICS codes as defined by UIC and registered on https://uic.org/support-activities/it/rics
+    rics		INTEGER (1..9999),
 
-    -- Values of exactly 4 characters are RICS codes defined by ERA.
-    -- A numerical value shall never be stored with eraCode but only with codeNum.
+    -- Company codes as defined by the ERA
+    -- A RICS shall never be stored with eraCode but only with rics.
     eraCode 	IA5String (SIZE (4) ^ FROM ("A".."Z"|"0".."9")),
-    -- Values of less or more than 4 characters are proprietary codes defined by the product owner defined in the container object, who must ensure their uniqueness.
-    otherCode 	IA5String
+
+	otherCode	SEQUENCE {
+		--  The value of 'codeTable' identifies the company identifier format according to the following:
+		--    "+" + [2-letter uppercase ISO 3166 country code] + [addon, chosen by the national standards body of that country]
+		--    "_" + [RICS or ERA company code] + [addon, chosen by this company]
+		--    "*" + [addon] - private use, not guaranteed to avoid clashes
+		--    Any other value only after registration in the company_code.csv registry.
+		--    The use of unregistered values (outside of the national, company, and private use ranges) is strictly forbidden.
+		--    All values should be registered via the UIC Github repository.
+		codeTable	IA5String,
+		code		IA5String
+	}
 }
 
 -- Identification of a station, according to the code list defined in the container object.
 StationCodeType ::= CHOICE {
     stationNum        INTEGER (1..999999999),
-    stationIA5        IA5String
+    stationIA5        VisibleString
 }
 
 -- Identification of a place
 PlaceNumberType ::= CHOICE {
     placeNum      INTEGER (1..254),
-    placeIA5      IA5String
+    placeIA5      VisibleString
 }
 
 -- ##############################################################################################
@@ -1902,10 +1903,10 @@ CodeTableType ::= CHOICE {
 }
 
 -- ##############################################################################################
---  Product type indicates the type of the transport product,
+--  Product variety indicates the type of the transport product,
 --    as well as some specific characteristics it may have.
 -- ##############################################################################################
-ProductTypeType ::= CHOICE {
+ProductVarietyType ::= CHOICE {
 
     -- Ticket authorizing the use of the transportation service (single ticket, return ticket, ticket book, pass, access to a parking lot, car sharing service...)
     -- This choice also describes some associated characteristics:
