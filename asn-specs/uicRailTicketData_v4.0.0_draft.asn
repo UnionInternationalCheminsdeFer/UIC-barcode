@@ -1197,22 +1197,18 @@ ProductType ::= SEQUENCE {
 -- ##############################################################################################
 --  Generic extension element.
 --
---  The value of 'extensionId' describes how 'extensionData' is encoded:
---    "+" + [2-letters uppercase ISO 3166 country code] + [addon, chosen by the registrar of that country]
---      means that 'extensionData' is encoded as defined by this registrar,
---      according to the format identified as 'addon' by this registrar.
---    "_" + [CompanyCode] + "_" + [addon, chosen by this company]
---      means that 'extensionData' is encoded as specified by the company identified by CompanyCode,
---      according to the format identified as 'addon' by this company.
---    "*" + [addon] means that 'extensionData' is a content specific to this barcode,
---      identified as 'addon', with no further information on who defined it.
---  Others values are reserved for future UIC use and shall not be used.
+--  The value of 'extensionId' identifies show 'extensionData' is encoded:
+--    "+" + [2-letters uppercase ISO 3166 country code] + [addon, chosen by the national standards body of that country]
+--    "_" + [RICS or ERA company code] + [addon, chosen by this company]
+--    "*" + [addon] - private use, not guaranteed to avoid clashes
+--    Any other value only after registration in the extension_data.csv registry
+--    The use of unregistered values (outside of the national, company, and private use ranges) is strictly forbidden.
+--    All values should be registered via the UIC Github repository.
 -- ##############################################################################################
 ExtensionData ::= SEQUENCE {
     extensionId   VisibleString,
     extensionData OCTET STRING
 }
-
 
 -- ##############################################################################################
 --  Tariff data for transport products.
@@ -1652,16 +1648,13 @@ TokenType ::= SEQUENCE {
     tokenProvider           CompanyCodeType                       OPTIONAL,
 
     -- Format of the 'token' element:
-    --   "+" + [2-letters uppercase ISO 3166 country code] + [addon, chosen by the registrar of that country]
-    --     means that 'token' is encoded as defined by this registrar,
-    --     according to the format identified as 'addon' by this registrar.
-    --   "_" + [CompanyCode] + "_" + [addon, chosen by this company]
-    --     means that 'token' is encoded as specified by the company identified by CompanyCode,
-    --     according to the format identified as 'addon' by this company.
-    --   "*" + [addon] means that 'token' is encoded as specified by the token provider,
-    --     identified as 'addon' by its provider.
-    --   Others values are reserved for future UIC use and shall not be used.
-    -- Omitted if the format is  implicit for the token provider.
+	--    "+" + [2-letters uppercase ISO 3166 country code] + [addon, chosen by the national standards body of that country]
+	--    "_" + [RICS or ERA company code] + [addon, chosen by this company]
+	--    "*" + [addon] - private use, not guaranteed to avoid clashes
+	--    Any other value only after registration in the token_specification.csv registry
+	--    The use of unregistered values (outside of the national, company, and private use ranges) is strictly forbidden.
+	--    All values should be registered via the UIC Github repository.
+    -- Omitted if the format is implicit for the token provider.
     tokenSpecification      VisibleString                             OPTIONAL,
 
     -- Value of the token, encoded according to tokenSpecification.
@@ -1856,15 +1849,24 @@ AreaIdType ::= CHOICE {
 
 -- Identification of a company.
 CompanyCodeType ::= CHOICE {
-    -- Values 1..9999 are RICS codes defined by UIC and registered on https://uic.org/support-activities/it/rics
-    -- Values > 9999 are proprietary codes defined by the product owner defined in the container object, who must ensure their uniqueness.
-    codeNum		INTEGER (1..32000),
+    -- RICS codes as defined by UIC and registered on https://uic.org/support-activities/it/rics
+    rics		INTEGER (1..9999),
 
-    -- Values of exactly 4 characters are RICS codes defined by ERA.
-    -- A numerical value shall never be stored with eraCode but only with codeNum.
-    eraCode 	VisibleString (SIZE (4) ^ FROM ("A".."Z"|"0".."9")),
-    -- Proprietary company codes must be 5 characters or more, and must start with an X.
-    otherCode 	VisibleString (SIZE (5..))
+    -- Company codes as defined by the ERA
+    -- A RICS shall never be stored with eraCode but only with rics.
+    eraCode 	IA5String (SIZE (4) ^ FROM ("A".."Z"|"0".."9")),
+
+	otherCode	SEQUENCE {
+		--  The value of 'codeTable' identifies the company identifier format according to the following:
+		--    "+" + [2-letter uppercase ISO 3166 country code] + [addon, chosen by the national standards body of that country]
+		--    "_" + [RICS or ERA company code] + [addon, chosen by this company]
+		--    "*" + [addon] - private use, not guaranteed to avoid clashes
+		--    Any other value only after registration in the company_code.csv registry.
+		--    The use of unregistered values (outside of the national, company, and private use ranges) is strictly forbidden.
+		--    All values should be registered via the UIC Github repository.
+		codeTable	IA5String,
+		code		IA5String
+	}
 }
 
 -- Identification of a station, according to the code list defined in the container object.
