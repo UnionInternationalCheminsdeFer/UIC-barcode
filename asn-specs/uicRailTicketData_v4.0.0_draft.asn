@@ -128,11 +128,11 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 -- ##############################################################################################
 --  UniversalTicketData is the basic entry point of the data structure.
 --  Its data include:
---    - issuer informations (this is the only mandatory information)
---    - informations on the travelers independent from the transport document
---    - informations on the group
+--    - issuer information (this is the only mandatory information)
+--    - information on the travelers independent from the transport document
+--    - information on the group
 --    - the details of the transport document
---    - informations required for the control process
+--    - information required for the control process
 --    - proprietary extensions
 -- ##############################################################################################
 UniversalTicketData ::= SEQUENCE {
@@ -362,7 +362,7 @@ ProductRetailData ::= SEQUENCE {
 }
 
 -- ##############################################################################################
---  Data supporting the control process, wether it is an automatic check carried out by a gate,
+--  Data supporting the control process, whether it is an automatic check carried out by a gate,
 --    or a manuel check carried out by an inspector:
 --    - List of items which the traveler can use to identify himself or the unique
 --      usage of the ticket
@@ -386,10 +386,10 @@ ControlData ::= SEQUENCE {
     --  TRUE, with an identificationDocument field: check the traveler's identity, using the identification document specified
     identificationRequired                 BOOLEAN,
 
-    -- Indicator of wether validation of the traveler age is required (e.g. in case of reductions).
+    -- Indicator of whether validation of the traveler age is required (e.g. in case of reductions).
     ageCheckRequired                       BOOLEAN,
 
-    -- Indicator of wether validation of the travelers reduction card is required (e.g. in case of reductions).
+    -- Indicator of whether validation of the travelers reduction card is required (e.g. in case of reductions).
     reductionCardCheckRequired             BOOLEAN,
 
     -- Additional tickets that should be controlled.
@@ -515,7 +515,7 @@ CarCarriageReservationData ::= SEQUENCE {
     -- Number of boats on a rack.
     attachedBoats                    INTEGER (0..2)                     OPTIONAL,
 
-    -- Number of biycles on a rack.
+    -- Number of bicycles on a rack.
     attachedBicycles                 INTEGER (0..4)                     OPTIONAL,
 
     -- Number of surf boards on a rack.
@@ -774,7 +774,7 @@ ExtendedValidUntilType ::= SEQUENCE {
 --      { allowedWeekdays { monday TRUE, tuesday TRUE, wednesday TRUE, thursday TRUE, friday TRUE, saturday FALSE, sunday FALSE },
 --        specialDays { nationalHolidays FALSE, stateHolidays FALSE, countyHolidays FALSE, localHolidays FALSE },
 --        includedTimeRange { { fromTime 420, untilTime 1440 } } }
---    - Tourist week-end pass valid every Friday-Saturday-Sunday, wether it is a special day or not:
+--    - Tourist week-end pass valid every Friday-Saturday-Sunday, whether it is a special day or not:
 --      { allowedWeekdays { monday FALSE, tuesday FALSE, wednesday FALSE, thursday FALSE, friday TRUE, saturday TRUE, sunday TRUE } }
 --    - Pollution ticket valid only on pollution days:
 --      { specialDays { pollutionDay TRUE } }
@@ -813,9 +813,9 @@ WeekdaysType ::= SEQUENCE {
 SpecialDaysType ::= SEQUENCE {
 
     nationalHolidays    BOOLEAN OPTIONAL, -- National holiday (e.g. Christmas in France, as it is a public holiday throughout the whole country)
-    stateHolidays       BOOLEAN OPTIONAL, -- State holiday (e.g. Buss- und Bettag in german Sachsen Bundesland)
+    stateHolidays       BOOLEAN OPTIONAL, -- State holiday (e.g. Buss- und Bettag in the German Bundesland of Sachsen)
     countyHolidays      BOOLEAN OPTIONAL, -- County holiday (e.g. Corpus Christi)
-    localHolidays       BOOLEAN OPTIONAL, -- Local holiday (e.g. Friedensfest in german city of Augsburg)
+    localHolidays       BOOLEAN OPTIONAL, -- Local holiday (e.g. Friedensfest in the German city of Augsburg)
 
     pollutionDay        BOOLEAN OPTIONAL, -- Days when pollution levels exceed the threshold
 
@@ -923,7 +923,7 @@ RareTimingConditionsType ::= SEQUENCE {
 
     -- Extended validity for tickets valid up to just over 5 years.
     -- If this element is used, the eponymous element in ConditionsType shall not be used.
-    -- For security reasons, such a longlasting ticket should:
+    -- For security reasons, such a long lasting ticket should:
     -- - either have a shorter security expiry date set in the header and be regularly reissued,
     -- - or integrate other countermeasures such a Security In Paper and/or the use a dedicated key.
     validUntil                              ExtendedValidUntilType                      OPTIONAL,
@@ -1120,7 +1120,7 @@ ParkingGroundData ::= SEQUENCE {
 
     -- Start and end of validity of parking entitlement. Date and time in time zone of the parking.
     -- When validFromTime == 0, validity is the whole day depending on opening hours of the parking facility.
-    validfrom                     ValidFromType,
+    validFrom                     ValidFromType,
     validUntil                    ValidUntilType,
 
     ...,
@@ -1242,7 +1242,7 @@ TariffType ::= SEQUENCE {
     -- Named traveler list.
     -- Link to the traveler in case the travelers have to be named (e.g. Eurail passes).
     -- The number indicates the position in the traveler sequence starting from 1.
-    travelerid                       SEQUENCE OF INTEGER (1..254)      OPTIONAL,
+    travelerId                       SEQUENCE OF INTEGER (1..254)      OPTIONAL,
 
     -- Validity restriction based on the traveler's country of residence.
     --   (e.g. for Eurail tickets that are not valid in the country of residence).
@@ -1267,7 +1267,7 @@ TariffType ::= SEQUENCE {
 }
 
 -- ##############################################################################################
---  Card reference (for any kind of card: customer card, loyaly card, reduction card...)
+--  Card reference (for any kind of card: customer card, loyalty card, reduction card...)
 -- ##############################################################################################
 CardReferenceType ::= SEQUENCE {
 
@@ -1533,7 +1533,7 @@ AreaType ::= SEQUENCE {
     -- If restrictedEntry and restrictedExit are present, and area is absent, there are no specific restrictions on how to travel
     --   from restrictedEntry to restrictedExit (the only restrictions that apply are those described by the applicable ConditionsType).
     area CHOICE {
-       -- The allowed areas/zones are those explicitely described in the 'included' element.
+       -- The allowed areas/zones are those explicitly described in the 'included' element.
        included                AreaIdType, -- list of allowed areas/zones
 
        -- The allowed areas/zones are all the areas/zones of the applicable 'concernedArea' element, except those
@@ -1638,7 +1638,7 @@ PolygoneType ::= SEQUENCE {
 --  Known use cases:
 --     - Identifier of the media linked with the barcode, e.g.:
 --       > Mobile phone for tickets linked with a specific phone (e.g. VDV standard)
---       > Serial number of a Security In Paper ticket hosting the barcorde
+--       > Serial number of a Security In Paper ticket hosting the barcode
 --    - Identifier of an ABT (Account Based Ticketing) system
 -- ##############################################################################################
 TokenType ::= SEQUENCE {
@@ -1736,7 +1736,7 @@ PlaceDetailsType ::= SEQUENCE {
 
 -- ##############################################################################################
 --  Luggage restrictions.
---  The basis for these data is week:
+--  The basis for these data is weak:
 --    - SCIC mentions a maximum of three pieces of hand luggage but does not includes
 --      a definition of hand luggage.
 --    - SCIC refers to special conditions on registered luggage,
@@ -1789,14 +1789,14 @@ GeoCoordinateSystemType ::= ENUMERATED {
 }
 
 GeoUnitType ::= ENUMERATED {
-    tenthmilliDegree      (0), -- 1 / 10000 degree is approx. 11 meter on earth surface
+    tenthMilliDegree      (0), -- 1 / 10000 degree is approx. 11 meter on earth surface
     milliDegree           (1), -- approx 110 meter on earth surface
     centiDegree           (2),
     deciDegree            (3)
 }
 
 GeoUnit ::= CHOICE {
-  tenthmilliDegree SEQUENCE {
+  tenthMilliDegree SEQUENCE {
     longitude INTEGER (-1800000..1800000),
     latitude  INTEGER (-900000..900000)
   },
@@ -1990,7 +1990,7 @@ ServiceType ::= ENUMERATED {
     seat              (0),
     couchette         (1),
     berth             (2),
-    carcarriage       (3),
+    carCarriage       (3),
     ...
 }
 
