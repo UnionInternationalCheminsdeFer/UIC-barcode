@@ -185,9 +185,6 @@ DocumentData ::= CHOICE {
     -- Can be used for tickets (incl. FIP), passes, reservations, countermarks, customer cards and parking.
     transportProduct               TransportProductData,
 
-    -- Reservation of car carriage.
-    carCarriageReservation         CarCarriageReservationData,
-
     -- Voucher.
     voucher                        VoucherData,
 
@@ -463,36 +460,9 @@ TransportProductData ::= SEQUENCE {
 }
 
 -- ##############################################################################################
---  Car carriage for a car, motorcycle or trailer
+--  Information for linking a car to a reservation
 -- ##############################################################################################
-CarCarriageReservationData ::= SEQUENCE {
-
-    -- Identification of the product (owner, id, textual description).
-    product                         ProductType,
-
-    -- Transport number (= service number, train number).
-    transportNumber                 TransportNumberType               OPTIONAL,
-
-    -- Loading of the car in local date and time at the loading station.
-    -- Number of the days calculated from the issuing date.
-    beginLoading                     ValidFromType,
-    endLoading                       ValidUntilType                   OPTIONAL,
-
-    -- Internal reference of the booking.
-    reference                       GenericIdType                     OPTIONAL,
-
-    -- Service brand
-    serviceBrand                     ServiceBrandType                 OPTIONAL,
-
-    -- fromStation is the loading station, toStation is the unloading station.
-    fromStation                      StationType,
-    toStation                        StationType,
-
-    coach                            VisibleString                         OPTIONAL,
-    place                            VisibleString                         OPTIONAL,
-
-    -- Description of the car.
-    --
+CarType ::= SEQUENCE {
     -- Unless spaces form an integral part of identifying a plate, the must not be included.
     -- E.g. a German car with the plate SB[TÜV Sticker]A 123 is to be encoded as "SB-A123".
     -- Dutch duplicate codes are not encoded, i.e. the small number above the first dash does not
@@ -524,26 +494,6 @@ CarCarriageReservationData ::= SEQUENCE {
     -- Reference to an entry on the loading list.
     loadingListEntry                INTEGER (0..999)                    OPTIONAL,
     loadingDeck                     LoadingDeckType                     OPTIONAL,
-
-    -- Carriers responsible for the transport (RICS-Code).
-    carrier                         SEQUENCE OF CompanyCodeType         OPTIONAL,
-
-    -- Tariff code.
-    tariffCode                      GenericIdType                       OPTIONAL,
-
-    -- Readable tariff description.
-    tariffDesc                      UTF8String                          OPTIONAL,
-
-    -- Reduction cards applied (incl. discount cards, loyalty cards relevant for the tariff).
-    -- Omitted if these cards have already been verified at the time of purchase,
-    --   or if their verification is not requested during inspection.
-    reductionCard                  SEQUENCE OF CardReferenceType        OPTIONAL,
-
-    -- Additional readable information that cannot be described using the other elements.
-    infoText                       UTF8String                           OPTIONAL,
-
-    -- Proprietary data defined bilaterally.
-    extension                      ExtensionData                        OPTIONAL,
 
     ...
 }
@@ -634,51 +584,55 @@ ReservationSegmentType ::= SEQUENCE {
 
     -- TRUE if using this transport service is mandatory.
     -- FALSE if the traveler can use another transport service
-    mandatoryService        BOOLEAN                           DEFAULT TRUE,
+    mandatoryService        BOOLEAN                                                 DEFAULT TRUE,
 
     -- Station where the reservation begins.
     -- Omitted if it is the same station as the origin station of the associated segment.
-    originStation           StationType                       OPTIONAL,
+    originStation           StationType                                             OPTIONAL,
 
     -- Station where the reservation ends.
     -- Omitted if it is the same station as the destination station of the associated segment.
-    destinationStation      StationType                       OPTIONAL,
+    destinationStation      StationType                                             OPTIONAL,
 
     -- Transport number (=service number, train number).
-    transportNumber         TransportNumberType               OPTIONAL,
+    transportNumber         TransportNumberType                                     OPTIONAL,
 
     -- Departure date and time in local time at the departure station.
     -- If omitted, departureDateTime is assumed to be equal to validFrom and validFromUTCOffset of the container object.
-    departureDateTime       DepartureDateTimeType             OPTIONAL,
+    departureDateTime       DepartureDateTimeType                                   OPTIONAL,
 
     -- Arrival date time in local time at the arrival station.
-    arrivalDateTime         ArrivalDateTimeType               OPTIONAL,
+    arrivalDateTime         ArrivalDateTimeType                                     OPTIONAL,
 
     -- Travel class.
     -- For transport modes where the concept of class does not exist, must be set to notApplicable.
     -- Omitted if the class is the same as the class of the associated leg.
-    classCode               TravelClassType                   DEFAULT second,
+    classCode               TravelClassType                                         DEFAULT second,
 
     -- Service brand
     -- Omitted if this specific service brand is already specified in the associated leg, and is the only one that is specified for this leg.
     --   (a leg can allow many service brands, but a reservation only specifies one).
-    serviceBrand            ServiceBrandType                  OPTIONAL,
+    serviceBrand            ServiceBrandType                                        OPTIONAL,
 
     -- Service level code list from IRS 90918-1.
     -- Omitted if the same service level is already specified in the description of the associated leg.
-    serviceLevel            VisibleString (SIZE(1..2) ^ FROM ("A".."Z"|"0".."9"))            OPTIONAL,
+    serviceLevel            VisibleString (SIZE(1..2) ^ FROM ("A".."Z"|"0".."9"))   OPTIONAL,
 
-    -- Service code list from 918.1 (seat, couchette...).
-    service                 ServiceType                       DEFAULT seat,
+    -- Service code list from 918.1 (seat, couchette, carCarriage, ...).
+    service                 ServiceType                                             DEFAULT seat,
 
     -- Reserved places
-    coachPlaces             SEQUENCE OF CoachPlacesType       OPTIONAL,
+    coachPlaces             SEQUENCE OF CoachPlacesType                             OPTIONAL,
 
     -- Number of persons on the ticket having a reservation without assigned places
-    numberOfOverbooked      INTEGER (0..200)                  DEFAULT 0,
+    numberOfOverbooked      INTEGER (0..200)                                        DEFAULT 0,
 
     -- Description of berths
-    berth                   SEQUENCE OF BerthDetailData       OPTIONAL,
+    berth                   SEQUENCE OF BerthDetailData                             OPTIONAL,
+
+	-- When a reservation includes transportation of a car, this field is used
+	-- include details of the book car or cars.
+	cars					SEQUENCE OF CarType                                     OPTIONAL,
 
     ...
 }
@@ -2130,7 +2084,6 @@ END
 -- TODO
 -- - indication of different FIP tickets - producttype, tariff, ...
 -- - naming of geo... (areas, regions,..)
--- - can car carriage be integrated in transport document?
 -- - use cases for micro mobility
 --    - check-in / check-out barcode in app
 --    - barcodes on fixed items
