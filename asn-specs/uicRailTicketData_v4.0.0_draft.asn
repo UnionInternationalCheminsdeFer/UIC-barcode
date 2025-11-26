@@ -1029,7 +1029,7 @@ StationPassageData ::= SEQUENCE {
 
     -- List of areas in a station where the access is allowed.
     -- The code table used to identify the areas depends on the station.
-    area                          AreaIdType                       OPTIONAL,
+    area                          SEQUENCE OF GenericIdType        OPTIONAL,
     -- Readable area names.
     areaNameUTF8                  SEQUENCE OF UTF8String           OPTIONAL,
 
@@ -1521,7 +1521,7 @@ AreaType ::= SEQUENCE {
     -- Omitted if there are no restrictions on where the journey must begin.
     restrictedEntry CHOICE {
        station                 StationSetType,
-       area                    AreaIdType
+       area                    GenericIdType
     } OPTIONAL,
 
     -- Description of the allowed areas/zones.
@@ -1534,11 +1534,11 @@ AreaType ::= SEQUENCE {
     --   from restrictedEntry to restrictedExit (the only restrictions that apply are those described by the applicable ConditionsType).
     area CHOICE {
        -- The allowed areas/zones are those explicitly described in the 'included' element.
-       included                AreaIdType, -- list of allowed areas/zones
+       included                GenericIdType, -- list of allowed areas/zones
 
        -- The allowed areas/zones are all the areas/zones of the applicable 'concernedArea' element, except those
        --   described in 'excluded', in 'restrictedEntry' and in 'restrictedExit'.
-       excluded                AreaIdType
+       excluded                GenericIdType
     } OPTIONAL,
 
     -- In case the allowed journey must end in specific stations or specific areas/zones. E.g.:
@@ -1547,7 +1547,7 @@ AreaType ::= SEQUENCE {
     -- Omitted if there are no restrictions on where the journey must end.
     restrictedExit CHOICE {
        station                 StationSetType,
-       area                    AreaIdType
+       area                    GenericIdType
     } OPTIONAL,
 
     -- Readable name of the area of validity.
@@ -1843,7 +1843,7 @@ AreaSetType ::= SEQUENCE {
     -- If the code table is not provided the code table of the container object applies.
     areaSetCodeTable CodeTableType OPTIONAL,
 
-    areaSet ::= CHOICE {
+    areaSet CHOICE {
         -- Sequence of area/zone identifiers
         idNum    SEQUENCE OF INTEGER,       -- e.g. sequence of allowed area/zone numbers such as {1,5,23}
         idIA5    SEQUENCE OF VisibleString, -- e.g. sequence of european NUTS code such as {"FRF11","FRF12","DE1"}, or areas/zones described with text such as {"M","1-3"}
@@ -1970,13 +1970,6 @@ TicketCategoryType ::= ENUMERATED {
     return    (1), -- Return ticket: only one outward journey and one return journey are permitted.
     multiple  (2), -- Multiple but not unlimited journeys are permitted (e.g. ticket book). The counting is made in a backoffice.
     unlimited (3), -- As many journeys as desired are permitted (e.g. pass).
-    ...
-}
-
-OnlineValidationType ::= ENUMERATED {
-    notPossible (0),
-    possible    (1),
-    required    (2),
     ...
 }
 
