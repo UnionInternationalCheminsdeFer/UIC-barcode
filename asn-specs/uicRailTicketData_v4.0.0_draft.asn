@@ -1435,13 +1435,53 @@ GeoValidityType ::= CHOICE {
     line               LineType,              -- Set of authorized transport lines.
     polygone           PolygoneType,          -- Area defined using geocoordinates.
     parking            ParkingType,           -- Parking right (for a car, a bike...).
-    sharedVehicle      SharedVehicleType,     -- Access to a shared vehicle service. /!\ Type yet to be defined
+    sharedVehicle      SharedVehicleType,     -- Access to a shared vehicle service.
     proprietary        ExtensionData,         -- Specific proprietary geographical validity in case the above predefined types do not allow it to be described.
     ...
 }
 
--- TODO
-SharedVehicleType ::= SEQUENCE {}
+-- ##############################################################################################
+--  Access to a shared vehicle service, e.g. car sharing or bike/e-scooter rental
+-- ##############################################################################################
+SharedVehicleType ::= SEQUENCE {
+
+    -- Which kinds of shared vehicles are included in this entitlement
+    vehicleTypes                    SEQUENCE OF SharedVehicleVariety    OPTIONAL,
+
+    -- The vehicle must be collected from this station.
+    station                         StationType                         OPTIONAL,
+
+    -- Included amount of time allowed to access a shared vehicle, if more restrictive than the validity period.
+    -- If present, indicates that the entitlement is valid for a given amount of time within the validity period.
+    -- If present, the count of the remaining number of allowed days or hours is centrally held in a back office,
+    -- that must be queried to verify whether the traveler still has any remaining time.
+    -- Whether an operator allows the traveler to pay additionally for more time once the allotted time is up is
+    -- per local operator policy.
+    allowedTime CHOICE {
+        days                      INTEGER,
+        minutes                   INTEGER (1..1439)
+    } OPTIONAL,
+
+    -- Additional readable information that cannot be described using the other elements.
+    infoText                      UTF8String                        OPTIONAL,
+
+    -- Proprietary data defined bilaterally.
+    extension                     ExtensionData                     OPTIONAL,
+
+}
+
+-- Values taken from GBFS
+SharedVehicleVariety ::= ENUMERATED {
+    bicycle (0),
+    cargoBicycle (1),
+    car (2),
+    moped (3),
+    scooterStanding (4),
+    scooterSeated (5),
+    other (6),
+    scooter (7),
+    ...
+}
 
 -- ##############################################################################################
 --  Geographical validity from an origin station to a destination station
