@@ -31,16 +31,23 @@ FixedPointData ::= SEQUENCE {
 }
 
 Object ::= CHOICE {
-    station         StationType, -- for check-in/check-out by scanning
+    station         Station, -- for check-in/check-out by scanning
     railVehicle     RailVehicle, -- e.g. for at-seat ordering, customer reporting of vehicle defects
     sharedVehicle   SharedVehicle, -- e.g. bike, e-scooter, car sharing
     proprietary     GenericIdType, -- defined by the issuer
     ...
 }
 
+Station ::= SEQUENCE {
+    station                 StationType,
+    platform                VisibleString   OPTIONAL,
+    subLocationProprietary  GenericIdType   OPTIONAL, -- values defined by the issuer
+}
+
 RailVehicle ::= SEQUENCE {
-    id      RailVehicleIdentifier,
-    place   PlaceNumberType OPTIONAL,
+    id                      RailVehicleIdentifier,
+    place                   PlaceNumberType OPTIONAL, -- for identifying at which seat/compartment this barcode is placed, if at a seat
+    subLocationProprietary  GenericIdType   OPTIONAL, -- when affixed non-seat items or sub-items within a compartment, values defined by the issuer
     ...
 }
 
