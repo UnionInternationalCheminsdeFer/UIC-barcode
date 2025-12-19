@@ -1180,16 +1180,9 @@ TransportNumberType ::= CHOICE {
 -- ##############################################################################################
 --  Product identification
 --
---  A FIP travel coupon shall be coded with the following product type:
---    {
---      productOwner rics : 3011,
---      productId productIdIA5 : "FIP-Coupon"
---    }
---  A FIP discount card shall be coded with the following product type:
---    {
---      productOwner rics : 3011,
---      productId productIdIA5 : "FIP-Card"
---    }
+--  FIP products shall be coded under the product owner of RICS 3011 and product IDs of the
+--  variant IA5 with said value starting with "FIP-". The exact product IDs are left to be
+--  defined by the FIP working group.
 -- ##############################################################################################
 ProductType ::= SEQUENCE {
 
