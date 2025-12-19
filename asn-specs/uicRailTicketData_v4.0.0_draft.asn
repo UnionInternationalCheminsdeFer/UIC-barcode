@@ -1076,11 +1076,8 @@ CustomerCardData ::= SEQUENCE {
     -- For transport modes where the concept of class does not exist, must be set to notApplicable.
     classCode            TravelClassType                         OPTIONAL,
 
-    -- Code of the card type code list defined by the issuer.
-    cardType            INTEGER (1..1000)                        OPTIONAL,
-
-    -- Readable description of the card type.
-    cardTypeDescr       UTF8String                               OPTIONAL,
+    -- Identification of what variety of customer card it is
+   	product              ProductType                              OPTIONAL,
 
     -- Customer status code
     --     1 = basic
@@ -1184,6 +1181,10 @@ TransportNumberType ::= CHOICE {
 
 -- ##############################################################################################
 --  Product identification
+--
+--  FIP products shall be coded under the product owner of RICS 3011 and product IDs of the
+--  variant IA5 with said value starting with "FIP-". The exact product IDs are left to be
+--  defined by the FIP working group.
 -- ##############################################################################################
 ProductType ::= SEQUENCE {
 
@@ -2123,7 +2124,6 @@ END
 
 -- ##############################################################################################
 -- TODO
--- - indication of different FIP tickets - producttype, tariff, ...
 -- - naming of geo... (areas, regions,..)
 -- - can car carriage be integrated in transport document?
 -- - use cases for micro mobility
