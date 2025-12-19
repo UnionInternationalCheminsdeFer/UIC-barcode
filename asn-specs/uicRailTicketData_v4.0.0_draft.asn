@@ -1483,7 +1483,7 @@ AreaType ::= SEQUENCE {
     -- Omitted if there are no restrictions on where the journey must begin.
     restrictedEntry CHOICE {
        station                 StationSetType,
-       area                    GenericIdType
+       area                    AreaSetType,
     } OPTIONAL,
 
     -- Description of the allowed areas/zones.
@@ -1496,11 +1496,11 @@ AreaType ::= SEQUENCE {
     --   from restrictedEntry to restrictedExit (the only restrictions that apply are those described by the applicable ConditionsType).
     area CHOICE {
        -- The allowed areas/zones are those explicitly described in the 'included' element.
-       included                GenericIdType, -- list of allowed areas/zones
+       included                AreaSetType, -- list of allowed areas/zones
 
        -- The allowed areas/zones are all the areas/zones of the applicable 'concernedArea' element, except those
        --   described in 'excluded', in 'restrictedEntry' and in 'restrictedExit'.
-       excluded                GenericIdType
+       excluded                AreaSetType
     } OPTIONAL,
 
     -- In case the allowed journey must end in specific stations or specific areas/zones. E.g.:
@@ -1509,7 +1509,7 @@ AreaType ::= SEQUENCE {
     -- Omitted if there are no restrictions on where the journey must end.
     restrictedExit CHOICE {
        station                 StationSetType,
-       area                    GenericIdType
+       area                    AreaSetType
     } OPTIONAL,
 
     -- Readable name of the area of validity.
