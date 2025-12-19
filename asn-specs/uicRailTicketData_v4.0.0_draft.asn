@@ -495,6 +495,11 @@ CarType ::= SEQUENCE {
     loadingListEntry                INTEGER (0..999)                    OPTIONAL,
     loadingDeck                     LoadingDeckType                     OPTIONAL,
 
+    -- Loading of the car in local date and time at the loading station.
+    -- Number of the days calculated from the issuing date.
+    beginLoading                     ValidFromType,
+    endLoading                       ValidUntilType                   OPTIONAL,
+
     ...
 }
 
