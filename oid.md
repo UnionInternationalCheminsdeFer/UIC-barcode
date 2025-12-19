@@ -17,10 +17,10 @@ It may only be marked as deprecated.
   - `0`: UIC FCB Object Identifiers
   - `1`: Header (DOSIPAS)
     - `1`: Header v1.0:
-      - `0`: : UIC Barcode Header - version 1.0.0
+      - `0`: UIC Barcode Header - version 1.0.0
     - `2`: Header v2.0:
-      - `0`: : UIC Barcode Header - version 2.0.0
-      - `1`: : UIC Barcode Header - version 2.0.1
+      - `0`: UIC Barcode Header - version 2.0.0
+      - `1`: UIC Barcode Header - version 2.0.1
   - `2`: Rail Ticket Data
     - `1`: RTDv1.3:
       - `0`: UIC Rail Ticket Data - version 1.3.0
