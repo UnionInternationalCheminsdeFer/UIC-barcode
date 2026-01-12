@@ -118,7 +118,14 @@ ASN-Module-RailTicketData { iso(1) identified-organization(3) dod(6)
 -- #      the system MUST transliterate according to IACO 9303 Part 3, specifically sections 4.6 and 6.
 -- #    The text stored in the ticket SHOULD be in its original script, with transliteration performed by the reading device.
 -- #    The reading device SHOULD show both the original script, and the Latinized form.
+-- #
 -- #    The "language" field, if present, MUST be used to select to correct Latinization of Cyrillic characters.
+-- #    The relevant languages for special considerations in IACO 9303 Latinization are:
+-- #      - be: Belarusian
+-- #      - bg: Bulgarian
+-- #      - uk: Ukrainian
+-- #      - mk: Macedonian
+-- #      - sr: Serbian
 -- #
 -- #  ASN.1 Extensions:
 -- #    The specification makes use of the ASN.1 extension marker ("...").
