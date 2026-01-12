@@ -1,0 +1,38 @@
+ASN-Module-DynamicContentData { iso(1) identified-organization(3) dod(6)
+    internet(1) private(4) enterprise(1) uic(17218) fcb(1) modules(0) dcd(3) v2(2) 0 }
+    DEFINITIONS AUTOMATIC TAGS ::= BEGIN
+
+-- imports and exports
+-- EXPORTS ALL;
+
+IMPORTS Timestamp, GeoCoordinate, Data
+ FROM ASN-Module-GeneralData { iso(1) identified-organization(3) dod(6) internet(1) private(4) enterprise(1) uic(17218) fcb(1) modules(0) general(5) v1(1) 0 };
+
+UICDynamicContentData ::= SEQUENCE {
+    -- Identification of the mobile application that generated the barcode and filled in the dynamic part.
+    -- Values as defined by the security provider.
+    dynamicContentMobileAppId           VisibleString       OPTIONAL,
+
+    -- Generation of the dynamic content
+    dynamicContentTimeStamp             Timestamp           OPTIONAL,
+
+    -- Coordinates of the location where the dynamic content was been generated
+    dynamicContentGeoCoordinate         GeoCoordinate       OPTIONAL,
+
+    -- Format of the data identifier:
+	--    "+" + [2-letters uppercase ISO 3166 country code] + [addon, chosen by the national standards body of that country]
+	--    "_" + [RICS or ERA company code] + [addon, chosen by this company]
+	--    "*" + [addon] - private use, not guaranteed to avoid clashes
+    --    Compressed company form (i.e. "!I", "!C", "!P") are not permitted here.
+	--    Any other value only after registration in the challenge_response.csv registry
+	--    The use of unregistered values (outside of the national, company, and private use ranges) is strictly forbidden.
+	--    All values should be registered via the UIC Github repository.
+    dynamicContentResponseToChallenge   SEQUENCE OF Data,
+
+    -- Proprietary data defined bilaterally
+    dynamicContentExtension             Data                OPTIONAL,
+
+    ...
+}
+
+END

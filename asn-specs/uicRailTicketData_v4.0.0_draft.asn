@@ -3,11 +3,15 @@
 -- Created: Mon Jun 28 14:14:28 CEST 2021
 -- Last modification: Fri Oct 27 CEST 18:00:00 CEST 2025
 -- Copyright UIC 2025
-ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
+ASN-Module-RailTicketData { iso(1) identified-organization(3) dod(6)
+    internet(1) private(4) enterprise(1) uic(17218) fcb(1) modules(0) mmtd(4) v1(1) 0 }
+    DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 
 -- imports and exports
 -- EXPORTS ALL;
 
+IMPORTS GenericId, CompanyCode, Station, StationCode, CodeTable, GeoCoordinate, GeoUnit, PlaceNumber, Data, UnicodeText, Timestamp
+ FROM ASN-Module-GeneralData { iso(1) identified-organization(3) dod(6) internet(1) private(4) enterprise(1) uic(17218) fcb(1) modules(0) general(5) v1(1) 0 };
 
 -- Changes:
 --    New ticket structure merging openTicket, pass, reservation and allowing defining a commercialCard.
@@ -17,24 +21,12 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 -- ##############################################################################################
 -- #
 -- #   version 4.0.0       - Value 4 in the UIC bar code version element
--- #                         (see element 2 in U_FLEX record definition in leaflet 918.9)
+-- #                         (see element 2 in U_FLEX record definition in TAP TSI B.12)
 -- #                       - Value "FCB4" in element dataFormat of UicBarcodeHeader
 -- #
 -- ##############################################################################################
 
-
 -- ##############################################################################################
--- #
--- #  Naming and encoding conventions
--- #
--- #  ISO Country codes are used to code countries.
--- #    As Kosovo does not have an official ISO Country Code the following codes are used:
--- #      926 for Kosovo as numeric ISO Country Code.
--- #      XK  for Kosovo as alphanumeric 2-character ISO Country Code.
--- #
--- #  RICS codes must be used to encode companies ('issuer', 'productOwner'...) where available.
--- #    Other codes are possible based on bilateral agreements.
--- #    The format is kept more flexible to cover upcoming extensions of the RICS code by ERA.
 -- #
 -- #  Stations can be coded using the UIC and upcoming ERA code lists. Proprietary codes are
 -- #    possible based on bilateral agreements. Format: 1..9999999 or alphanumeric without
@@ -49,10 +41,6 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 -- # !   Please ensure to use a tool capable of dealing with larger numbers.
 -- #
 -- #  Optional BOOLEANs have three values: TRUE, FALSE, "unknown" = the boolean is absent from the data.
--- #
--- #  Encoding of time:
--- #    Time is encoded as the number of minutes of the day from 0 = 00:00 to 1439 = 23:59.
--- #    Time data elements end with "time" in their name.
 -- #
 -- #  Encoding of date:
 -- #    The issuing date is given in UTC, but some other date values are given in local time where the exact time zone is not known.
@@ -107,7 +95,7 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 -- #    ASN.1 extensions will be defined by UIC. It is not allowed to define bilateral extensions.
 -- #
 -- #  Bilateral Extensions:
--- #    Bilateral extensions can be included in the data element "ExtensionData".
+-- #    Bilateral extensions can be included in the data element "Data".
 -- #    They should only be used:
 -- #      - to add elements that are not present in the current ASN.1 file (but not to replace them).
 -- #      - to add elements that are truly specific. If these elements could be useful to others
@@ -163,7 +151,7 @@ UniversalTicketData ::= SEQUENCE {
     controlDetail         ControlData                             OPTIONAL,
 
     -- Proprietary data defined bilaterally.
-    extension             SEQUENCE OF ExtensionData               OPTIONAL,
+    extension             SEQUENCE OF Data                      OPTIONAL,
     ...
 }
 
@@ -184,9 +172,6 @@ DocumentData ::= CHOICE {
     -- Universal transport product.
     -- Can be used for tickets (incl. FIP), passes, reservations, countermarks, customer cards and parking.
     transportProduct               TransportProductData,
-
-    -- Reservation of car carriage.
-    carCarriageReservation         CarCarriageReservationData,
 
     -- Voucher.
     voucher                        VoucherData,
@@ -209,7 +194,7 @@ DocumentData ::= CHOICE {
     token                          TokenType,
 
     -- Proprietary data defined bilaterally.
-    extension                      ExtensionData,
+    extension                      Data,
 
     ...
 }
@@ -218,38 +203,37 @@ DocumentData ::= CHOICE {
 --  Confirmation of the delay of a transport
 -- ##############################################################################################
 DelayConfirmation ::= SEQUENCE {
-
     -- Transport number of the delayed transport.
-    transportNumber              TransportNumberType                  OPTIONAL,
+    transportNumber TransportNumberType             OPTIONAL,
 
     -- Planned departure date and time of the delayed transport in local time at the station where
     --   delay became relevant (see below).
-    departure                     ValidFromType                       OPTIONAL,
+    departure       ValidFromType                   OPTIONAL,
 
     -- Station where the delay became relevant.
-    station                       StationType                         OPTIONAL,
+    station         Station                         OPTIONAL,
 
     -- Indication if the transport has been delayed (and how long) or canceled
    delayOrCancellation CHOICE {
         -- Indication that the transport was delayed, and delay in minutes at the mentioned station.
         -- The delay is negative if the transport left earlier than scheduled.
-        delay                     INTEGER (-1439..1439),
+        delay               INTEGER (-1439..1439),
 
         -- Indication that the transport was cancelled.
-        transportCancelled        NULL
+        transportCancelled  NULL
     },
 
     -- Type of confirmation provided.
-    confirmationType              ConfirmationType                    DEFAULT travelerDelayConfirmation,
+    confirmationType    ConfirmationType            DEFAULT travelerDelayConfirmation,
 
     -- Affected original ticket(s).
-    affectedTickets               SEQUENCE OF TicketLinkType          OPTIONAL,
+    affectedTickets     SEQUENCE OF TicketLinkType  OPTIONAL,
 
     -- Additional readable information that cannot be described using the other elements.
-    infoText                      UTF8String                          OPTIONAL,
+    infoText            UnicodeText                 OPTIONAL,
 
     -- Proprietary data defined bilaterally.
-    extension                     ExtensionData                       OPTIONAL,
+    extension           Data                        OPTIONAL,
 
     ...
 }
@@ -265,20 +249,10 @@ DelayConfirmation ::= SEQUENCE {
 --    - proprietary extension data
 -- ##############################################################################################
 IssuingData ::= SEQUENCE {
-
     -- Issuer of the binary content of the transport document, if different from the security provider as encoded in the barcode header.
-    issuer                         CompanyCodeType               OPTIONAL,
+    issuer                         CompanyCode                 OPTIONAL,
 
-    -- Issuing time stamp in UTC.
-    -- Number of year
-    issuingYear                    INTEGER (2016..2269),
-    -- Number of the day in the year (1.1. = 1)
-    issuingDay                     INTEGER (1..366),
-    -- The number of the minutes of issue might be used in case of account
-    --   based ticketing with a delay of n minutes for the replication of central
-    --   booking data to the control devices (e.g. at SBB).
-    -- The time can be compared with the last synchronization time of the control device.
-    issuingTime                    INTEGER (0..1439),
+    issuedAt                        Timestamp,
 
     -- Specimen indicates a test specimen not valid for traveling.
     specimen                       BOOLEAN,
@@ -288,7 +262,7 @@ IssuingData ::= SEQUENCE {
     -- Indicates that the ticket is valid for traveling or still needs activation.
     activated                      BOOLEAN                       DEFAULT TRUE,
 
-    -- Currency of the price: ISO 4217 numeric currency code.
+    -- Currency of the price - ISO 4217 numeric currency code.
     currency                       INTEGER (0..999)              DEFAULT 978, -- 978 = Euro
 
     -- Fraction of the prices included.
@@ -296,14 +270,15 @@ IssuingData ::= SEQUENCE {
 
     -- ID to uniquely identify this barcode within the context of the issuer and an appropriate time range.
     -- This can be used to query the ticket in the eTCD.
-    ticketControlNumber                             GenericIdType,
+    ticketControlNumber                             GenericId,
 
     -- Location of sale (transport number and/or line number) in case of a sale on board of a transport.
+    -- Values per the code table of the issuer.
     issuedOnTransport              TransportNumberType           OPTIONAL,
     issuedOnLine                   TransportNumberType           OPTIONAL,
 
     -- Point of sale.
-    pointOfSale                    GeoCoordinateType             OPTIONAL,
+    pointOfSale                    GeoCoordinate                OPTIONAL,
 
     -- Retail information.
     productRetail                  ProductRetailData             OPTIONAL,
@@ -312,7 +287,7 @@ IssuingData ::= SEQUENCE {
     preferredLanguage              VisibleString (SIZE(2) ^ FROM ("a".."z"))  OPTIONAL,
 
     -- Proprietary data defined bilaterally.
-    extension                      ExtensionData                 OPTIONAL,
+    extension                      Data                         OPTIONAL,
 
     ...
 }
@@ -333,25 +308,25 @@ SecurePaperTicket ::= ENUMERATED {
 -- ##############################################################################################
 ProductRetailData ::= SEQUENCE {
     -- Identifier of the company that is the retailer for this contract of carriage, as per the definition of a retailer in ISO 24014-1.
-    retailerId            CompanyCodeType   OPTIONAL,
+    retailerId            CompanyCode       OPTIONAL,
 
     -- Retailer specific identifier of the server that sold the contract of carriage.
-    retailServerId        GenericIdType     OPTIONAL,
+    retailServerId        GenericId         OPTIONAL,
 
     -- Retailer specific identifier of the ticket generation platform.
     -- If omitted, identical to retailServerId
-    retailGeneratorId     GenericIdType     OPTIONAL,
+    retailGeneratorId     GenericId         OPTIONAL,
 
     -- Channel through which the traveler requested the contract / the barcode.
     retailChannel         RetailChannelType OPTIONAL,
 
     -- Type of equipment that distributed the contract / the barcode
     --   (code table of the product retailer).
-    retailEquipmentType   GenericIdType     OPTIONAL,
+    retailEquipmentType   GenericId         OPTIONAL,
 
     -- Identifier of the final distribution point of the barcode
     --   (code table of the product retailer).
-    retailPointId         GenericIdType     OPTIONAL,
+    retailPointId         GenericId         OPTIONAL,
 
     -- Traceability information linked to the barcode or contract generation
     --   (e.g. name and version of the generation software)
@@ -370,36 +345,35 @@ ProductRetailData ::= SEQUENCE {
 --    - Instructions on the inspection to be made on board
 -- ##############################################################################################
 ControlData ::= SEQUENCE {
-
     -- Indicator of whether online validation of the ticket is required, and how it may be performed.
-    onlineValidationRequired               OnlineValidationStatus       DEFAULT notPossible,
-    onlineValidationType                   OnlineValidationType         OPTIONAL,
+    onlineValidationRequired            OnlineValidationStatus      DEFAULT notPossible,
+    onlineValidationType                OnlineValidationType        OPTIONAL,
 
     -- Percentage of the tickets to be validated in more detail
     --   (i.e. via online check or detailed checks later-on).
-    randomDetailedValidationRequired       INTEGER (0..99)               OPTIONAL,
+    randomDetailedValidationRequired    INTEGER (0..99)             OPTIONAL,
 
     -- Indicator of whether ID must be checked to identify the traveler.
     -- Field meaning:
     --  FALSE: don’t check ID documents at all, regardless of contents of the traveler's identificationDocument field
     --  TRUE, but with an empty identificationDocument field: check the traveler's identity, using whatever document is acceptable to the carrier
     --  TRUE, with an identificationDocument field: check the traveler's identity, using the identification document specified
-    identificationRequired                 BOOLEAN,
+    identificationRequired              BOOLEAN,
 
     -- Indicator of whether validation of the traveler age is required (e.g. in case of reductions).
-    ageCheckRequired                       BOOLEAN,
+    ageCheckRequired                    BOOLEAN,
 
     -- Indicator of whether validation of the travelers reduction card is required (e.g. in case of reductions).
-    reductionCardCheckRequired             BOOLEAN,
+    reductionCardCheckRequired          BOOLEAN,
 
     -- Additional tickets that should be controlled.
-    includedTickets                        SEQUENCE OF TicketLinkType    OPTIONAL,
+    includedTickets                     SEQUENCE OF TicketLinkType  OPTIONAL,
 
     -- Readable information or instructions for the inspector.
-    infoText                               UTF8String                    OPTIONAL,
+    infoText                            UnicodeText                 OPTIONAL,
 
     -- Proprietary data defined bilaterally.
-    extension                              ExtensionData                 OPTIONAL,
+    extension                           Data                        OPTIONAL,
 
     ...
 }
@@ -421,8 +395,8 @@ OnlineValidationType ::= CHOICE {
     eTCD                        NULL,            -- The ticket may be checked against the UIC's eTCD
     securityProviderProprietary NULL,            -- The ticket may be checked against a proprietary platform of the security provider; e.g. the Deutschlandtarifverbund's security portal.
     issuerProprietary           NULL,            -- The ticket may be checked against a proprietary platform of the issuer; e.g. bwegt check-in check-out (Baden-Württemburg).
-    external                    CompanyCodeType, -- The ticket may be checked against the platform operated by the specified company; e.g. Entur
-    other                       VisibleString,       -- The ticket may be checked against some other external platform, as identified by the string
+    external                    CompanyCode,     -- The ticket may be checked against the platform operated by the specified company; e.g. Entur
+    other                       VisibleString,   -- The ticket may be checked against some other external platform, as identified by the string
     ...
 }
 
@@ -457,42 +431,15 @@ TransportProductData ::= SEQUENCE {
     specificConditions        SEQUENCE SIZE (1..32) OF ConditionsType          OPTIONAL,
 
     -- Proprietary data defined bilaterally.
-    extension                 ExtensionData                                    OPTIONAL,
+    extension                 Data                                         OPTIONAL,
 
     ...
 }
 
 -- ##############################################################################################
---  Car carriage for a car, motorcycle or trailer
+--  Information for linking a car to a reservation
 -- ##############################################################################################
-CarCarriageReservationData ::= SEQUENCE {
-
-    -- Identification of the product (owner, id, textual description).
-    product                         ProductType,
-
-    -- Transport number (= service number, train number).
-    transportNumber                 TransportNumberType               OPTIONAL,
-
-    -- Loading of the car in local date and time at the loading station.
-    -- Number of the days calculated from the issuing date.
-    beginLoading                     ValidFromType,
-    endLoading                       ValidUntilType                   OPTIONAL,
-
-    -- Internal reference of the booking.
-    reference                       GenericIdType                     OPTIONAL,
-
-    -- Service brand
-    serviceBrand                     ServiceBrandType                 OPTIONAL,
-
-    -- fromStation is the loading station, toStation is the unloading station.
-    fromStation                      StationType,
-    toStation                        StationType,
-
-    coach                            VisibleString                         OPTIONAL,
-    place                            VisibleString                         OPTIONAL,
-
-    -- Description of the car.
-    --
+CarType ::= SEQUENCE {
     -- Unless spaces form an integral part of identifying a plate, the must not be included.
     -- E.g. a German car with the plate SB[TÜV Sticker]A 123 is to be encoded as "SB-A123".
     -- Dutch duplicate codes are not encoded, i.e. the small number above the first dash does not
@@ -502,48 +449,35 @@ CarCarriageReservationData ::= SEQUENCE {
     -- but not that this isn't always possible, e.g. the registration district of a Chinese plate.
     --
     -- The country of registration must not be encoded in the plate.
-    vehiclePlate                    UTF8String,
-    trailerPlate                    UTF8String                         OPTIONAL,
-    carCategory                     INTEGER (0..9),
-    boatCategory                    INTEGER (0..6)                     OPTIONAL,
-    textileRoof                     BOOLEAN,
-    roofRack                        RoofRackType                       DEFAULT  norack,
+    vehiclePlate        UnicodeText,
+    trailerPlate        UnicodeText         OPTIONAL,
+    -- Per TAP TSI Code List B.5.29
+    carCategory         INTEGER (1..8),
+    -- Per TAP TSI Code List B.5.29
+    boatCategory        INTEGER (1..8)      OPTIONAL,
+    textileRoof         BOOLEAN,
+    roofRack            RoofRackType        DEFAULT  norack,
 
     -- Height of a roof rack in cm.
-    roofRackHeight                   INTEGER (0..99)                    OPTIONAL,
+    roofRackHeight      INTEGER (0..99)     OPTIONAL,
 
     -- Number of boats on a rack.
-    attachedBoats                    INTEGER (0..2)                     OPTIONAL,
+    attachedBoats       INTEGER (0..2)      OPTIONAL,
 
     -- Number of bicycles on a rack.
-    attachedBicycles                 INTEGER (0..4)                     OPTIONAL,
+    attachedBicycles    INTEGER (0..4)      OPTIONAL,
 
     -- Number of surf boards on a rack.
-    attachedSurfboards               INTEGER (0..5)                     OPTIONAL,
+    attachedSurfboards  INTEGER (0..5)      OPTIONAL,
 
     -- Reference to an entry on the loading list.
-    loadingListEntry                INTEGER (0..999)                    OPTIONAL,
-    loadingDeck                     LoadingDeckType                     OPTIONAL,
+    loadingListEntry    INTEGER (0..999)    OPTIONAL,
+    loadingDeck         LoadingDeckType     OPTIONAL,
 
-    -- Carriers responsible for the transport (RICS-Code).
-    carrier                         SEQUENCE OF CompanyCodeType         OPTIONAL,
-
-    -- Tariff code.
-    tariffCode                      GenericIdType                       OPTIONAL,
-
-    -- Readable tariff description.
-    tariffDesc                      UTF8String                          OPTIONAL,
-
-    -- Reduction cards applied (incl. discount cards, loyalty cards relevant for the tariff).
-    -- Omitted if these cards have already been verified at the time of purchase,
-    --   or if their verification is not requested during inspection.
-    reductionCard                  SEQUENCE OF CardReferenceType        OPTIONAL,
-
-    -- Additional readable information that cannot be described using the other elements.
-    infoText                       UTF8String                           OPTIONAL,
-
-    -- Proprietary data defined bilaterally.
-    extension                      ExtensionData                        OPTIONAL,
+    -- Loading of the car in local date and time at the loading station.
+    -- Number of the days calculated from the issuing date.
+    beginLoading        ValidFromType,
+    endLoading          ValidUntilType      OPTIONAL,
 
     ...
 }
@@ -587,40 +521,40 @@ TransportLinkType ::= SEQUENCE {
 
     -- TRUE if using this transport service is mandatory.
     -- FALSE if the traveler can use another transport service
-    mandatoryService        BOOLEAN                           DEFAULT TRUE,
+    mandatoryService        BOOLEAN                                                 DEFAULT TRUE,
 
     -- Station where the transport link begins.
     -- Omitted if it is the same station as the origin station of the associated segment.
-    originStation           StationType                       OPTIONAL,
+    originStation           Station                                                 OPTIONAL,
 
     -- Station where the transport link ends.
     -- Omitted if it is the same station as the destination station of the associated segment.
-    destinationStation      StationType                       OPTIONAL,
+    destinationStation      Station                                                 OPTIONAL,
 
     -- Transport numbers (= service number, train number) allowed for the transport link.
     -- Multiple numbers are allowed (e.g. two trains coupled together, each of them having its own train number).
-    transportNumber         SEQUENCE OF TransportNumberType   OPTIONAL,
+    transportNumber         SEQUENCE OF TransportNumberType                         OPTIONAL,
 
     -- Departure date and time in local time at the departure station of the transport link.
     -- If omitted, departureDateTime is assumed to be equal to validFrom and validFromUTCOffset of the container object.
-    departureDateTime       DepartureDateTimeType             OPTIONAL,
+    departureDateTime       DepartureDateTimeType                                   OPTIONAL,
 
     -- Arrival date time in local time at the arrival station of the transport link.
-    arrivalDateTime         ArrivalDateTimeType               OPTIONAL,
+    arrivalDateTime         ArrivalDateTimeType                                     OPTIONAL,
 
     -- Travel class.
     -- For transport modes where the concept of class does not exist, must be set to notApplicable.
     -- Omitted if the class is the same as the class of the associated leg.
-    classCode               TravelClassType                   DEFAULT second,
+    classCode               TravelClassType                                         DEFAULT second,
 
     -- Service brand
     -- Omitted if this specific service brand is already specified in the associated leg, and is the only one that is specified for this leg
     --   (a leg can allow many service brands, but a transport link only specifies one).
-    serviceBrand            ServiceBrandType                  OPTIONAL,
+    serviceBrand            ServiceBrandType                                        OPTIONAL,
 
-    -- Service level code list from IRS 90918-1.
+    -- Per TAP TSI Code List B.5.308
     -- Omitted if the same service level is already specified in the description of the associated leg.
-    serviceLevel            VisibleString (SIZE(1..2) ^ FROM ("A".."Z"|"0".."9"))            OPTIONAL,
+    serviceLevel            VisibleString (SIZE(1..2) ^ FROM ("A".."Z"|"0".."9"))   OPTIONAL,
 
     ...
 }
@@ -634,51 +568,55 @@ ReservationSegmentType ::= SEQUENCE {
 
     -- TRUE if using this transport service is mandatory.
     -- FALSE if the traveler can use another transport service
-    mandatoryService        BOOLEAN                           DEFAULT TRUE,
+    mandatoryService        BOOLEAN                                                 DEFAULT TRUE,
 
     -- Station where the reservation begins.
     -- Omitted if it is the same station as the origin station of the associated segment.
-    originStation           StationType                       OPTIONAL,
+    originStation           Station                                                 OPTIONAL,
 
     -- Station where the reservation ends.
     -- Omitted if it is the same station as the destination station of the associated segment.
-    destinationStation      StationType                       OPTIONAL,
+    destinationStation      Station                                                 OPTIONAL,
 
     -- Transport number (=service number, train number).
-    transportNumber         TransportNumberType               OPTIONAL,
+    transportNumber         TransportNumberType                                     OPTIONAL,
 
     -- Departure date and time in local time at the departure station.
     -- If omitted, departureDateTime is assumed to be equal to validFrom and validFromUTCOffset of the container object.
-    departureDateTime       DepartureDateTimeType             OPTIONAL,
+    departureDateTime       DepartureDateTimeType                                   OPTIONAL,
 
     -- Arrival date time in local time at the arrival station.
-    arrivalDateTime         ArrivalDateTimeType               OPTIONAL,
+    arrivalDateTime         ArrivalDateTimeType                                     OPTIONAL,
 
     -- Travel class.
     -- For transport modes where the concept of class does not exist, must be set to notApplicable.
     -- Omitted if the class is the same as the class of the associated leg.
-    classCode               TravelClassType                   DEFAULT second,
+    classCode               TravelClassType                                         DEFAULT second,
 
     -- Service brand
     -- Omitted if this specific service brand is already specified in the associated leg, and is the only one that is specified for this leg.
     --   (a leg can allow many service brands, but a reservation only specifies one).
-    serviceBrand            ServiceBrandType                  OPTIONAL,
+    serviceBrand            ServiceBrandType                                        OPTIONAL,
 
-    -- Service level code list from IRS 90918-1.
+    -- Per TAP TSI Code List B.5.308
     -- Omitted if the same service level is already specified in the description of the associated leg.
-    serviceLevel            VisibleString (SIZE(1..2) ^ FROM ("A".."Z"|"0".."9"))            OPTIONAL,
+    serviceLevel            VisibleString (SIZE(1..2) ^ FROM ("A".."Z"|"0".."9"))   OPTIONAL,
 
-    -- Service code list from 918.1 (seat, couchette...).
-    service                 ServiceType                       DEFAULT seat,
+    -- Per TAP TSI B.5
+    service                 ServiceType                                             DEFAULT seat,
 
     -- Reserved places
-    coachPlaces             SEQUENCE OF CoachPlacesType       OPTIONAL,
+    coachPlaces             SEQUENCE OF CoachPlacesType                             OPTIONAL,
 
     -- Number of persons on the ticket having a reservation without assigned places
-    numberOfOverbooked      INTEGER (0..200)                  DEFAULT 0,
+    numberOfOverbooked      INTEGER (0..200)                                        DEFAULT 0,
 
     -- Description of berths
-    berth                   SEQUENCE OF BerthDetailData       OPTIONAL,
+    berth                   SEQUENCE OF BerthDetailData                             OPTIONAL,
+
+	-- When a reservation includes transportation of a car, this field is used
+	-- include details of the book car or cars.
+	cars					SEQUENCE OF CarType                                     OPTIONAL,
 
     ...
 }
@@ -688,36 +626,35 @@ ReservationSegmentType ::= SEQUENCE {
 --    /!\ included are quite basic, further study is required (e.g. through a meeting with people knowing vouchers).
 -- ##############################################################################################
 VoucherData ::= SEQUENCE {
-
     -- Identification of the product (owner, id, textual description).
-    product                          ProductType,
+    product         ProductType,
 
     -- Internal reference of the voucher.
-    reference                        GenericIdType                      OPTIONAL,
+    reference       GenericId               OPTIONAL,
 
     -- Begin / end of validity in local date wherever the traveler is located.
     -- Valid from 00:00 to 23:59.
     -- Number of year.
-    validFromYear                    INTEGER (2016..2269),
+    validFromYear   INTEGER (2016..2269),
     -- Number of the day in the year (1.1. = 1).
-    validFromDay                     INTEGER (0..500),
+    validFromDay    INTEGER (0..500),
 
     -- Number of year.
-    validUntilYear                   INTEGER (2016..2269),
+    validUntilYear  INTEGER (2016..2269),
     -- Number of the day in the year (1.1. = 1).
-    validUntilDay                    INTEGER (0..500),
+    validUntilDay   INTEGER (0..500),
 
     -- Value of the voucher, in the currency and fraction defined in IssuingData.
-    value                            INTEGER                          DEFAULT 0,
+    value           INTEGER                 DEFAULT 0,
 
     -- Type of the voucher, code list defined by the product owner.
-    type                              INTEGER (1..32000)               OPTIONAL,
+    type            INTEGER (1..32000)      OPTIONAL,
 
     -- Additional readable information that cannot be described using the other elements.
-    infoText                          UTF8String                       OPTIONAL,
+    infoText        UnicodeText             OPTIONAL,
 
     -- Proprietary data defined bilaterally.
-    extension                         ExtensionData                    OPTIONAL,
+    extension       Data                    OPTIONAL,
 
     ...
 }
@@ -726,14 +663,13 @@ VoucherData ::= SEQUENCE {
 --  Data for groups of travelers
 -- ##############################################################################################
 GroupDetailsType ::= SEQUENCE {
-
     -- TRUE if this ticket is the participant card (= countermark) only, not valid without the real ticket of the ticket holder.
     -- In case participant cards are used, all members of the group except the ticket holder (group leader) will have isGroupParticipantCard == TRUE.
     -- FALSE if this ticket is the real ticket from the group leader.
-    isGroupParticipantCard       BOOLEAN,
+    isGroupParticipantCard  BOOLEAN,
 
     -- Readable name of the group in case of a group ticket.
-    groupName                    UTF8String                           OPTIONAL,
+    groupName               UnicodeText OPTIONAL,
 
     ...
 }
@@ -742,7 +678,6 @@ GroupDetailsType ::= SEQUENCE {
 --  Types describing temporal conditions, used in several other type definitions
 -- ----------------------------------------------------------------------------------------------
 ValidFromType ::= SEQUENCE {
-
     -- Date/time validity in local time of the location where the journey starts.
     -- Number of days from issuing date (-398 allows reissuing the ticket up to 13 months after the start of its validity, 800 allows issuing the ticket up to 2 years in advance).
     validFromDay     INTEGER (-398..800)                DEFAULT 0,
@@ -752,7 +687,6 @@ ValidFromType ::= SEQUENCE {
 }
 
 ValidUntilType ::= SEQUENCE {
-
     -- Date/time validity in local time of the location where the journey ends.
     -- Number of days from validFrom date, 0 = validUntilDay is equal to the first day of validity.
     validUntilDay     INTEGER (-1..500)            DEFAULT 0,
@@ -810,8 +744,8 @@ WeekdaysType ::= SEQUENCE {
     sunday              BOOLEAN
 }
 
+-- The definition of what is a national, state, county, etc. holiday is per the tariff conditions of the product owner.
 SpecialDaysType ::= SEQUENCE {
-
     nationalHolidays    BOOLEAN OPTIONAL, -- National holiday (e.g. Christmas in France, as it is a public holiday throughout the whole country)
     stateHolidays       BOOLEAN OPTIONAL, -- State holiday (e.g. Buss- und Bettag in the German Bundesland of Sachsen)
     countyHolidays      BOOLEAN OPTIONAL, -- County holiday (e.g. Corpus Christi)
@@ -844,7 +778,7 @@ ConditionsType ::= SEQUENCE {
     concernedArea                    AreaSetType                     OPTIONAL,
 
     -- Code table to be used by default for all the elements in the transport document / in the leg.
-    locationCodeTable                CodeTableType                   OPTIONAL,
+    locationCodeTable                CodeTable                      OPTIONAL,
 
     -- Version of the code tables used.
     -- Only relevant if locationCodeTable indicates a bilaterally agreed code table.
@@ -854,10 +788,10 @@ ConditionsType ::= SEQUENCE {
     product                          ProductType                     OPTIONAL,
 
     -- Internal reference to the document (e.g. serial number of the document)
-    reference                        GenericIdType                   OPTIONAL,
+    reference                        GenericId                      OPTIONAL,
 
     -- The company that defined the above reference, if different from the document issuer.
-    referenceCompany				CompanyCodeType					OPTIONAL,
+    referenceCompany				CompanyCode                     OPTIONAL,
 
     -- Time validity
     -- Having no validFrom is allowed (e.g. ticket not yet activated, which will be reissued with an explict validFrom upon activation).
@@ -886,7 +820,7 @@ ConditionsType ::= SEQUENCE {
     } OPTIONAL,
 
     -- Included carriers responsible for the transport
-    includedCarrier                  SEQUENCE OF CompanyCodeType     OPTIONAL,
+    includedCarrier                  SEQUENCE OF CompanyCode        OPTIONAL,
 
     -- Included transport modes. Code list: EN 1545-1 (transport type code)
     includedTransportType           SEQUENCE OF INTEGER (0..31)      OPTIONAL,
@@ -899,7 +833,7 @@ ConditionsType ::= SEQUENCE {
     -- For transport modes where the concept of class does not exist, must be set to notApplicable
     classCode                       TravelClassType                  DEFAULT second,
 
-    -- Service level code according to leaflet IRS 90918-1 to encode other products (e.g. PREMIUM, ...)
+    -- Per TAP TSI Code List B.5.308
     serviceLevel                    VisibleString (SIZE(1..2) ^ FROM ("A".."Z"|"0".."9"))           OPTIONAL,
 
     -- Tariff data (allowed passengers characteristics, discount cards used...)
@@ -962,7 +896,7 @@ RareTimingConditionsType ::= SEQUENCE {
     activatedReturnDay                      SEQUENCE OF INTEGER (0..500)                OPTIONAL,
 
     -- Proprietary data defined bilaterally.
-    extension                               ExtensionData                               OPTIONAL,
+    extension                               Data                                        OPTIONAL,
 
     ...
 }
@@ -971,42 +905,41 @@ RareTimingConditionsType ::= SEQUENCE {
 --  Rare non-temporal details and conditions.
 -- ----------------------------------------------------------------------------------------------
 RareDetailsType::= SEQUENCE {
-
     -- Associated online identifier (e.g. Account Based Ticketing identifier)
-    token                     TokenType                       OPTIONAL,
+    token                   TokenType                       OPTIONAL,
 
     -- Family of the product, allowing to process the product according to its family.
     -- Value according to the product owner.
-    productFamily             VisibleString                       OPTIONAL,
+    productFamily           VisibleString                   OPTIONAL,
 
     -- Excluded carriers responsible for the transport starting at this station.
     -- In case this list is provided, the ticket is valid on all other carriers,
     --   and includedCarrier (in ConditionsType) shall not be used.
-    excludedCarrier           SEQUENCE OF CompanyCodeType      OPTIONAL,
+    excludedCarrier         SEQUENCE OF CompanyCode          OPTIONAL,
 
     -- Excluded transport modes. Code list: EN 1545-1 (transport type code).
     -- In case this list is provided, the ticket is valid on all other transport modes,
     --   and includedTransportType (in ConditionsType) shall not be used.
-    excludedTransportType     SEQUENCE OF INTEGER (0..31)     OPTIONAL,
+    excludedTransportType   SEQUENCE OF INTEGER (0..31)     OPTIONAL,
 
     -- Excluded service brands for the route.
     -- In case this list is provided, the ticket is valid on all other service brands,
     --   and includedServiceBrand (in ConditionsType) shall not be used.
-    excludedServiceBrand      SEQUENCE OF ServiceBrandType    OPTIONAL,
+    excludedServiceBrand    SEQUENCE OF ServiceBrandType    OPTIONAL,
 
-    -- Price of the tranport product (if in generalConditions) or of the segment (if in specificConditions),
+    -- Price of the transport product (if in generalConditions) or of the segment (if in specificConditions),
     --   in the currency and fraction defined in IssuingData.
-    price                     INTEGER                         OPTIONAL,
+    price                   INTEGER                         OPTIONAL,
 
     -- To be used in case of special conditions that can only be provided as a readable text.
-    conditionText             UTF8String                      OPTIONAL,
+    conditionText           UnicodeText                     OPTIONAL,
 
     -- In case the luggage restrictions are general and do not depend
     --    on the ticket type they should not be included
-    luggage                   LuggageRestrictionType          OPTIONAL,
+    luggage                 LuggageRestrictionType          OPTIONAL,
 
     -- Proprietary data defined bilaterally.
-    extension                               ExtensionData     OPTIONAL,
+    extension               Data                            OPTIONAL,
 
     ...
 }
@@ -1017,34 +950,33 @@ RareDetailsType::= SEQUENCE {
 --  E.g. for staff working in a station.
 -- ##############################################################################################
 StationPassageData ::= SEQUENCE {
-
     -- Identification of the product (owner, id, textual description).
-    product                       ProductType,
+    product             ProductType,
 
     -- Internal reference to the document.
-    reference                     GenericIdType                    OPTIONAL,
+    reference           GenericId                   OPTIONAL,
 
     -- Station(s) concerned.
-    station                       StationSetType                   OPTIONAL,
+    station             StationSetType              OPTIONAL,
 
     -- List of areas in a station where the access is allowed.
     -- The code table used to identify the areas depends on the station.
-    area                          SEQUENCE OF GenericIdType        OPTIONAL,
+    area                SEQUENCE OF GenericId       OPTIONAL,
     -- Readable area names.
-    areaNameUTF8                  SEQUENCE OF UTF8String           OPTIONAL,
+    areaNameUTF8        SEQUENCE OF UnicodeText     OPTIONAL,
 
     -- Period of validity of the right of passage.
-    validFrom                     ValidFromType                    OPTIONAL,
-    validUntil                    ValidUntilType                   OPTIONAL,
+    validFrom           ValidFromType               OPTIONAL,
+    validUntil          ValidUntilType              OPTIONAL,
 
     -- Number of days for station passage in case the number of days
     --   is limited and less than the validity period.
     -- If present, the count of the remaining number of valid days is centrally held in a back office,
     --   that must be queried to verify whether the traveler still has a right of passage.
-    numberOfDaysValid             INTEGER                          OPTIONAL,
+    numberOfDaysValid   INTEGER                     OPTIONAL,
 
     -- Proprietary data defined bilaterally
-    extension                     ExtensionData                    OPTIONAL,
+    extension           Data                        OPTIONAL,
 
     ...
 }
@@ -1058,13 +990,12 @@ StationPassageData ::= SEQUENCE {
 --  Note: customer data are included in the traveler data structure
 -- ##############################################################################################
 CustomerCardData ::= SEQUENCE {
-
     -- Customer details.
     -- Optional, as there might be anonymous cards.
     customer             TravelerType                            OPTIONAL,
 
     -- Card id.
-    cardId               GenericIdType                           OPTIONAL,
+    cardId               GenericId                              OPTIONAL,
 
     -- Begin / end of validity in local date wherever the traveler is located.
     validFrom            ValidFromType                           OPTIONAL,
@@ -1074,11 +1005,8 @@ CustomerCardData ::= SEQUENCE {
     -- For transport modes where the concept of class does not exist, must be set to notApplicable.
     classCode            TravelClassType                         OPTIONAL,
 
-    -- Code of the card type code list defined by the issuer.
-    cardType            INTEGER (1..1000)                        OPTIONAL,
-
-    -- Readable description of the card type.
-    cardTypeDescr       UTF8String                               OPTIONAL,
+    -- Identification of what variety of customer card it is
+   	product              ProductType                              OPTIONAL,
 
     -- Customer status code
     --     1 = basic
@@ -1100,7 +1028,7 @@ CustomerCardData ::= SEQUENCE {
     includedServices        SEQUENCE OF INTEGER                  OPTIONAL,
 
     -- Proprietary data defined bilaterally
-    extension               ExtensionData                        OPTIONAL,
+    extension               Data                                OPTIONAL,
 
     ...
 }
@@ -1116,7 +1044,7 @@ ParkingGroundData ::= SEQUENCE {
     product                       ProductType,
 
     -- Internal reference to the document
-    reference                     GenericIdType                  OPTIONAL,
+    reference                     GenericId                  OPTIONAL,
 
     -- Start and end of validity of parking entitlement. Date and time in time zone of the parking.
     -- When validFromTime == 0, validity is the whole day depending on opening hours of the parking facility.
@@ -1134,40 +1062,39 @@ ParkingGroundData ::= SEQUENCE {
 ---   Suitable for cars but also for motorbikes, bikes...
 -- ##############################################################################################
 ParkingType ::= SEQUENCE {
-
     -- Code provided by the product.productOwner.
-    parkingGroundId               VisibleString,
+    parkingGroundId VisibleString,
 
     -- Code needed to access the parking lot.
-    accessCode                    VisibleString                     OPTIONAL,
+    accessCode      VisibleString   OPTIONAL,
 
     -- Readable name of the parking location.
     -- Omitted if the vehicle can park anywhere in the parking ground.
-    location                      UTF8String,
+    location        UnicodeText     OPTIONAL,
 
     -- In case the parking ground is associated with a station.
-    station                       StationType                   OPTIONAL,
+    station         Station         OPTIONAL,
 
     -- In case a special entry can or must be taken (e.g. VIP entry), readable name of this entry.
-    entryTrack                    UTF8String                    OPTIONAL,
+    entryTrack      UnicodeText     OPTIONAL,
 
     -- Number plate of the car parked.
     -- See note in CarCarriageReservationData on the meaning of this field.
-    vehiclePlate                  UTF8String                    OPTIONAL,
+    vehiclePlate    UnicodeText     OPTIONAL,
 
     -- Number of days or hours of allowed parking in case this number is limited and less than the validity period.
     -- If present, the count of the remaining number of allowed days or hours is centrally held in a back office,
     --   that must be queried to verify whether the traveler still has a right of parking.
     numberAllowed CHOICE {
-        days                      INTEGER,
-        minutes                   INTEGER (1..1439)
-    },
+        days    INTEGER,
+        minutes INTEGER (1..1439)
+    }                               OPTIONAL,
 
     -- Additional readable information that cannot be described using the other elements.
-    infoText                      UTF8String                    OPTIONAL,
+    infoText        UnicodeText     OPTIONAL,
 
     -- Proprietary data defined bilaterally.
-    extension                     ExtensionData                 OPTIONAL,
+    extension       Data            OPTIONAL,
 
     ...
 }
@@ -1182,36 +1109,22 @@ TransportNumberType ::= CHOICE {
 
 -- ##############################################################################################
 --  Product identification
+--
+--  FIP products shall be coded under the product owner of RICS 3011 and product IDs of the
+--  variant IA5 with said value starting with "FIP-". The exact product IDs are left to be
+--  defined by the FIP working group.
 -- ##############################################################################################
 ProductType ::= SEQUENCE {
-
     -- Organization responsible for the product definition.
     -- If omitted in specificConditions, productOwner is the one described in generalConditions.
     -- If omitted in generalConditions, productOwner is the 'issuer' element in issuingDetail.
-    productOwner                   CompanyCodeType                OPTIONAL,
+    productOwner        CompanyCode     OPTIONAL,
 
     -- Product id to identify the issued product codelist defined by the product owner.
-    productId                      ProductIdType                  OPTIONAL,
+    productId           ProductIdType   OPTIONAL,
 
     -- Short readable description of the product.
-    productDescription             UTF8String                     OPTIONAL
-}
-
-
--- ##############################################################################################
---  Generic extension element.
---
---  The value of 'extensionId' identifies show 'extensionData' is encoded:
---    "+" + [2-letters uppercase ISO 3166 country code] + [addon, chosen by the national standards body of that country]
---    "_" + [RICS or ERA company code] + [addon, chosen by this company]
---    "*" + [addon] - private use, not guaranteed to avoid clashes
---    Any other value only after registration in the extension_data.csv registry
---    The use of unregistered values (outside of the national, company, and private use ranges) is strictly forbidden.
---    All values should be registered via the UIC Github repository.
--- ##############################################################################################
-ExtensionData ::= SEQUENCE {
-    extensionId   VisibleString,
-    extensionData OCTET STRING
+    productDescription  UnicodeText     OPTIONAL
 }
 
 -- ##############################################################################################
@@ -1221,14 +1134,14 @@ ExtensionData ::= SEQUENCE {
 --  - optionally a link to the traveler data.
 -- ##############################################################################################
 TariffType ::= SEQUENCE {
-
     -- Number of passengers using the tariff.
-    numberOfPassengers                INTEGER (1..200)                 DEFAULT 1,
+    numberOfPassengers  INTEGER (1..200)                DEFAULT 1,
 
     -- Type indication (youth, adult, senior... but also pet, bicycle).
+    -- The definition of which passenger is which type in this field is per the product owner.
     -- Omitted if the ticket has no restrictions regarding the type of passenger,
     --   or if the restriction is based on the product type and not on this element.
-    passengerType                    PassengerType                     OPTIONAL,
+    passengerType       PassengerType                   OPTIONAL,
 
     -- Age restrictions of the tariff.
     age CHOICE {
@@ -1242,26 +1155,26 @@ TariffType ::= SEQUENCE {
     -- Named traveler list.
     -- Link to the traveler in case the travelers have to be named (e.g. Eurail passes).
     -- The number indicates the position in the traveler sequence starting from 1.
-    travelerId                       SEQUENCE OF INTEGER (1..254)      OPTIONAL,
+    travelerId          SEQUENCE OF INTEGER (1..254)    OPTIONAL,
 
     -- Validity restriction based on the traveler's country of residence.
     --   (e.g. for Eurail tickets that are not valid in the country of residence).
     -- This field does not indicate a global geographic validity, but only a possible
     --   restriction of this geographic validity related to the country of residence.
     -- Omitted if there is no restriction related to the traveler's country of residence.
-    countryValidity                  CountryValidityType               OPTIONAL,
+    countryValidity     CountryValidityType             OPTIONAL,
 
     -- Tariff code.
-    tariffId                         GenericIdType                     OPTIONAL,
+    tariffId            GenericId                       OPTIONAL,
 
     -- Readable tariff description.
-    tariffDesc                       UTF8String                        OPTIONAL,
+    tariffDesc          UnicodeText                     OPTIONAL,
 
     -- Reduction cards applied (incl. discount cards, loyalty cards relevant for the tariff).
     -- To require verification of these cards during an inspection, use ControlData.reductionCardCheckRequired.
     -- Omitted if these cards have already been verified at the time of purchase,
     --   and if their verification is not requested during inspection.
-    reductionCard                    SEQUENCE OF CardReferenceType     OPTIONAL,
+    reductionCard       SEQUENCE OF CardReferenceType   OPTIONAL,
 
     ...
 }
@@ -1270,22 +1183,21 @@ TariffType ::= SEQUENCE {
 --  Card reference (for any kind of card: customer card, loyalty card, reduction card...)
 -- ##############################################################################################
 CardReferenceType ::= SEQUENCE {
-
     -- Issuer of the card.
-    issuer                CompanyCodeType,
+    issuer  CompanyCode,
 
     -- Readable name of the card, e.g. "VISA-CARD", "Carte Avantage Jeune", "Vorteilscard Senior"...
-    name                 UTF8String                      OPTIONAL,
+    name    UnicodeText         OPTIONAL,
 
     -- Type of the card, code list defined by the issuer of the card.
-    type                 INTEGER                          OPTIONAL,
+    type    INTEGER             OPTIONAL,
 
     -- Card ID
     -- According to cardIdFormat, the ID is full, limited to the leading part, or limited to the trailing part.
-    id                   GenericIdType                    OPTIONAL,
+    id      GenericId           OPTIONAL,
 
     -- Indication whether the full or only the leading or trailing part of the ID is provided.
-    format               CardIdFormatType                 DEFAULT full,
+    format  CardIdFormatType    DEFAULT full,
 
     ...
 }
@@ -1318,21 +1230,25 @@ IdentificationDocumentType ::= SEQUENCE {
 --    from the type of travel document.
 --  E.g. it can include the date of birth as this is part of the traveler,
 --    but not the indication "Senior" as this is tariff dependent.
+-- All parts of the traveler's name are to be encoded using the SCSU.
 -- ##############################################################################################
 TravelerType ::= SEQUENCE {
+    firstName       OCTET STRING                                OPTIONAL,
+    secondName      OCTET STRING                                OPTIONAL,
+    lastName        OCTET STRING                                OPTIONAL,
+    -- ISO 639-1 coding (lower case) of the names's language
+    language        VisibleString (SIZE(2) ^ FROM ("a".."z"))   OPTIONAL,
 
-    firstName                        UTF8String                                OPTIONAL,
-    secondName                       UTF8String                                OPTIONAL,
-    lastName                         UTF8String                                OPTIONAL,
-
-    passengerType                   PassengerType                              OPTIONAL,
+    -- The definition of which passenger is which type in this field is per the issuer,
+    --  and may be overridden by product owner for a specific segment using TariffType.passengerType.
+    passengerType   PassengerType                               OPTIONAL,
 
     ageOrBirth CHOICE {
-        dateOfBirth                 DateType,
-        age                         INTEGER (0..127)
-    }                                                                          OPTIONAL,
+        dateOfBirth DateType,
+        age         INTEGER (0..127)
+    }                                                           OPTIONAL,
 
-    rareDetails                     RareTravelerDetailsType                    OPTIONAL
+    rareDetails RareTravelerDetailsType                         OPTIONAL
 }
 
 -- ----------------------------------------------------------------------------------------------
@@ -1365,7 +1281,7 @@ RareTravelerDetailsType ::= SEQUENCE {
     gender                           GenderType                                OPTIONAL,
 
     -- Customer id might be numerical or alphanumerical.
-    customerId                       GenericIdType                             OPTIONAL,
+    customerId                       GenericId                             OPTIONAL,
 
    -- Omitted if no information is available.
    passengerWithReducedMobility    BOOLEAN                                    OPTIONAL,
@@ -1378,7 +1294,7 @@ RareTravelerDetailsType ::= SEQUENCE {
    status                          SEQUENCE OF CustomerStatusType             OPTIONAL,
 
     -- Proprietary data defined bilaterally.
-    extension                      ExtensionData                              OPTIONAL,
+    extension                       Data                                    OPTIONAL,
 
    ...
 }
@@ -1390,7 +1306,7 @@ CustomerStatusType ::= SEQUENCE {
 
     -- Company providing the status.
     -- Omitted if this company is the ticket issuer.
-    statusProvider                 CompanyCodeType   OPTIONAL,
+    statusProvider                 CompanyCode      OPTIONAL,
 
     -- Customer status code:
     --     1 = basic
@@ -1400,10 +1316,10 @@ CustomerStatusType ::= SEQUENCE {
     --     5 = platinum
     --     6 = senator
     --     > 50 - code table of the card issuer
-    customerStatus                 INTEGER           OPTIONAL,
+    customerStatus                 INTEGER          OPTIONAL,
 
     -- Customer status text description (e.g. "gold").
-    customerStatusDescr            VisibleString         OPTIONAL
+    customerStatusDescr            VisibleString    OPTIONAL
 }
 
 -- ##############################################################################################
@@ -1411,16 +1327,15 @@ CustomerStatusType ::= SEQUENCE {
 --  Specification of the geographical validity of one segment of the whole journey.
 -- ##############################################################################################
   GeoValiditySegmentType ::= SEQUENCE {
-
     -- Human readable description of the segment.
-    description                            UTF8String             OPTIONAL,
+    description                     UnicodeText     OPTIONAL,
 
     -- Geographical description of the segment.
-    validitySegment                        GeoValidityType,
+    validitySegment                 GeoValidityType,
 
     -- The specific conditions are in the indicated conditions list. 1 corresponds to the first entry of the sequence.
     -- The edge case of having no general condition and no specific conditions is a valid case. This could be a full fare ticket without any restrictions.
-    appliedSpecificConditionsIndex         INTEGER (1..16)        OPTIONAL,
+    appliedSpecificConditionsIndex  INTEGER (1..16) OPTIONAL,
 
     ...
 }
@@ -1429,14 +1344,14 @@ CustomerStatusType ::= SEQUENCE {
 --  Specification of the geographical validity for a segment.
 -- ##############################################################################################
 GeoValidityType ::= CHOICE {
-    originDestination  OriginDestinationType, -- Simple journey from an Origin to a Destination, with optional description of intermediate stations.
-    complexRoute       ComplexRouteType,      -- Complex journey allowing multiple origins, multiple destinations, alternative routes, etc.
-    area               AreaType,              -- Validity defined with areas/zones.
-    line               LineType,              -- Set of authorized transport lines.
-    polygone           PolygoneType,          -- Area defined using geocoordinates.
-    parking            ParkingType,           -- Parking right (for a car, a bike...).
-    sharedVehicle      SharedVehicle,     -- Access to a shared vehicle service.
-    proprietary        ExtensionData,         -- Specific proprietary geographical validity in case the above predefined types do not allow it to be described.
+    originDestination  OriginDestinationType,   -- Simple journey from an Origin to a Destination, with optional description of intermediate stations.
+    complexRoute       ComplexRouteType,        -- Complex journey allowing multiple origins, multiple destinations, alternative routes, etc.
+    area               AreaType,                -- Validity defined with areas/zones.
+    line               LineType,                -- Set of authorized transport lines.
+    polygone           PolygoneType,            -- Area defined using geocoordinates.
+    parking            ParkingType,             -- Parking right (for a car, a bike...).
+    sharedVehicle      SharedVehicle,       -- Access to a shared vehicle service. /!\ Type yet to be defined
+    proprietary        Data,                -- Specific proprietary geographical validity in case the above predefined types do not allow it to be described.
     ...
 }
 
@@ -1523,32 +1438,19 @@ SharedVehicleReturnConstraint ::= ENUMERATED {
 --  Geographical validity from an origin station to a destination station
 -- ##############################################################################################
 OriginDestinationType ::= SEQUENCE {
-
     -- Origin station of the OD journey.
     -- Omitted if this origin station is the destination station of the previous section of the journey.
-    originStation                StationType                       OPTIONAL,
+    originStation       Station             OPTIONAL,
 
     -- Destination station of the OD journey.
-    destinationStation           StationType,
+    destinationStation  Station,
 
     -- If necessary the (ordered) stations between origin and destination can be indicated.
-    intermediateStation          SEQUENCE OF StationType            OPTIONAL,
+    intermediateStation SEQUENCE OF Station OPTIONAL,
 
     ...
 }
 
--- ----------------------------------------------------------------------------------------------
---  Identification of a station.
--- ----------------------------------------------------------------------------------------------
-StationType ::= SEQUENCE {
-
-    -- Code table in which the station code is defined.
-    -- If this code table is not provided the code table of the container object applies.
-    stationCodeTable     CodeTableType            OPTIONAL,
-
-    station              StationCodeType,
-    stationNameUTF8      UTF8String               OPTIONAL
-}
 
 -- ##############################################################################################
 --  Geographical validity using a set of lines
@@ -1573,8 +1475,8 @@ LineType ::= SEQUENCE {
 --  Identification of a line: code + name
 -- ----------------------------------------------------------------------------------------------
 LineIdType ::= SEQUENCE {
-    lineId            LineCodeType,
-    lineNameUTF8      UTF8String    OPTIONAL
+    lineId          LineCodeType,
+    lineNameUTF8    UnicodeText OPTIONAL
 }
 
 -- ----------------------------------------------------------------------------------------------
@@ -1589,15 +1491,14 @@ LineCodeType ::= CHOICE {
 --  Geographical validity defined with areas/zones
 -- ##############################################################################################
 AreaType ::= SEQUENCE {
-
     -- In case the allowed journey must begin in specific stations or specific areas/zones. E.g.:
     --   - local city traffic starting from the station where a train journey ends.
     --   - journey starting in a specific set of areas/zones of a city.
     --   - journey starting anywhere in a city described with its NUTS code or its Calypso NetworkId.
     -- Omitted if there are no restrictions on where the journey must begin.
     restrictedEntry CHOICE {
-       station                 StationSetType,
-       area                    GenericIdType
+       station  StationSetType,
+       area     AreaSetType
     } OPTIONAL,
 
     -- Description of the allowed areas/zones.
@@ -1610,11 +1511,11 @@ AreaType ::= SEQUENCE {
     --   from restrictedEntry to restrictedExit (the only restrictions that apply are those described by the applicable ConditionsType).
     area CHOICE {
        -- The allowed areas/zones are those explicitly described in the 'included' element.
-       included                GenericIdType, -- list of allowed areas/zones
+       included AreaSetType, -- list of allowed areas/zones
 
        -- The allowed areas/zones are all the areas/zones of the applicable 'concernedArea' element, except those
        --   described in 'excluded', in 'restrictedEntry' and in 'restrictedExit'.
-       excluded                GenericIdType
+       excluded AreaSetType
     } OPTIONAL,
 
     -- In case the allowed journey must end in specific stations or specific areas/zones. E.g.:
@@ -1622,12 +1523,12 @@ AreaType ::= SEQUENCE {
     --   - journey ending in a city described with a specific set of areas/zones.
     -- Omitted if there are no restrictions on where the journey must end.
     restrictedExit CHOICE {
-       station                 StationSetType,
-       area                    GenericIdType
+       station  StationSetType,
+       area     AreaSetType
     } OPTIONAL,
 
     -- Readable name of the area of validity.
-    areaNameUTF8               UTF8String              OPTIONAL,
+    areaNameUTF8    UnicodeText OPTIONAL,
 
     ...
 }
@@ -1668,7 +1569,7 @@ RouteItemType ::= CHOICE {
     destinationStationOfPreviousSegment  NULL,
 
     -- The route item is a specific station
-    station                              StationType,
+    station                              Station,
 
     -- The route item is a set of stations that are equivalent (OSDM: FareStationSet).
     stationSet                           StationSetType,
@@ -1687,24 +1588,23 @@ RouteItemType ::= CHOICE {
 -- It can be defined through a code, and/or a name, and/or the explicit list of its stations.
 -- ----------------------------------------------------------------------------------------------
 StationSetType ::= SEQUENCE {
-
     -- Code for the set of stations.
     -- If the code table is not provided the code table of the container object applies.
-    stationSetCodeTable  CodeTableType                      OPTIONAL,
-    stationSetCode       StationCodeType                    OPTIONAL,
+    stationSetCodeTable CodeTable           OPTIONAL,
+    stationSetCode      StationCode         OPTIONAL,
 
     -- Readable name of the set of stations.
-    stationSetNameUTF8   UTF8String                         OPTIONAL,
+    stationSetNameUTF8  UnicodeText         OPTIONAL,
 
     -- Explicit list of the stations of the station set.
-    stationSetStations   SEQUENCE OF StationType            OPTIONAL
+    stationSetStations  SEQUENCE OF Station OPTIONAL
 }
 
 -- ##############################################################################################
 --  Geographical validity defined as a polygone.
 -- ##############################################################################################
 PolygoneType ::= SEQUENCE {
-    firstEdge     GeoCoordinateType,
+    firstEdge     GeoCoordinate,
     edges         SEQUENCE OF GeoUnit
 }
 
@@ -1718,24 +1618,26 @@ PolygoneType ::= SEQUENCE {
 --    - Identifier of an ABT (Account Based Ticketing) system
 -- ##############################################################################################
 TokenType ::= SEQUENCE {
-
     -- Category of the token.
     -- Omitted if the token category is implicit or unspecified.
-    tokenCategory           TokenCategoryType                     OPTIONAL,
+    tokenCategory           TokenCategoryType   OPTIONAL,
 
     -- Provider of the token.
     -- Omitted if the provider is the 'issuer' identified in IssuingData.
-    tokenProvider           CompanyCodeType                       OPTIONAL,
+    tokenProvider           CompanyCode         OPTIONAL,
 
     -- Format of the 'token' element:
 	--    "+" + [2-letters uppercase ISO 3166 country code] + [addon, chosen by the national standards body of that country]
 	--    "_" + [RICS or ERA company code] + [addon, chosen by this company]
 	--    "*" + [addon] - private use, not guaranteed to avoid clashes
+    --    "!I" + [addon, chosen by the issuer] - equivalent to the _RICS format, without repetition of the issuer's code
+    --    "!C" + [addon, chosen by the carrier] - equivalent to the _RICS format, without repetition of the carriers's code
+    --    "!P" + [addon, chosen by the product owner] - equivalent to the _RICS format, without repetition of the product owner's code
 	--    Any other value only after registration in the token_specification.csv registry
 	--    The use of unregistered values (outside of the national, company, and private use ranges) is strictly forbidden.
 	--    All values should be registered via the UIC Github repository.
     -- Omitted if the format is implicit for the token provider.
-    tokenSpecification      VisibleString                             OPTIONAL,
+    tokenSpecification      VisibleString       OPTIONAL,
 
     -- Value of the token, encoded according to tokenSpecification.
     token                   OCTET STRING,
@@ -1752,45 +1654,43 @@ TokenType ::= SEQUENCE {
 --    - open ticket and vouchers for meals.
 -- ##############################################################################################
 TicketLinkType ::= SEQUENCE {
-
     -- Data to reference the external ticket
-    ticketIssuer                CompanyCodeType          OPTIONAL,
-    ticketId                    GenericIdType            OPTIONAL,
+    ticketIssuer        CompanyCode         OPTIONAL,
+    ticketId            GenericId           OPTIONAL,
 
     -- Readable name of the issuer of the external ticket
-    ticketIssuerName            UTF8String               OPTIONAL,
+    ticketIssuerName    UnicodeText         OPTIONAL,
 
     -- Type of linked ticket
-    ticketType                  ProductVarietyType          DEFAULT ticket:{},
+    ticketType          ProductVarietyType  DEFAULT ticket:{},
 
     -- Type of link
-    linkMode                    LinkModeType             DEFAULT issuedTogether,
+    linkMode            LinkModeType        DEFAULT issuedTogether,
 
     ...
 }
 
 -- ##############################################################################################
---  Place data corresponding to leaflet 918.1.
+--  Place data according to TAP TSI B.5
 --  placeString = place number ranges in case of groups
 -- ##############################################################################################
 CoachPlacesType ::= SEQUENCE {
-
-    coach                   VisibleString                           OPTIONAL,
+    coach               VisibleString               OPTIONAL,
 
     -- Printable place string  (e.g. "15-18, 21, 22")
-    placeString            VisibleString                            OPTIONAL,
+    placeString         VisibleString               OPTIONAL,
 
     -- Printable place description
-    placeDescription       UTF8String                           OPTIONAL,
+    placeDescription    UnicodeText                 OPTIONAL,
 
     -- Individual places
-    placeNumber            SEQUENCE OF PlaceNumberType          OPTIONAL,
+    placeNumber         SEQUENCE OF PlaceNumber     OPTIONAL,
 
-    details               PlaceDetailsType                      OPTIONAL
+    details             PlaceDetailsType            OPTIONAL
 }
 
 -- ##############################################################################################
---  Sleeper compartment types corresponding to leaflet 918.1
+--  Sleeper compartment according to TAP TSI B.5
 -- ##############################################################################################
 BerthDetailData ::= SEQUENCE {
     berthType              BerthTypeType,
@@ -1800,14 +1700,16 @@ BerthDetailData ::= SEQUENCE {
 }
 
 -- ##############################################################################################
---  Compartment details corresponding to leaflet 918.1
---    918.1 pos 1/2 -> 1..99
---    918.1 pos 3/4 -> 101..199
---    918.1 pos 5/6 -> 201..299
+--  Compartment details according to TAP TSI B.5
 -- ##############################################################################################
 PlaceDetailsType ::= SEQUENCE {
-    coachType          INTEGER (1..999),
-    description        UTF8String            OPTIONAL
+    -- Per TAP TSI Code List B.5.51.1
+    coachType       INTEGER (0..99),
+    -- Per TAP TSI Code List B.5.51.2
+    compartmentType INTEGER (0..99),
+    -- Per TAP TSI Code List B.5.51.3
+    specialOffers   INTEGER (0..99),
+    description     UnicodeText     OPTIONAL
 }
 
 -- ##############################################################################################
@@ -1839,67 +1741,15 @@ LuggageRestrictionType ::= SEQUENCE {
 RegisteredLuggageType ::= SEQUENCE {
 
     -- Id of the additional registered luggage
-    registrationId             GenericIdType         OPTIONAL,
+    registrationId             GenericId        OPTIONAL,
 
     -- Maximum weight in kg
-    maxWeight                  INTEGER (1..99)       OPTIONAL,
+    maxWeight                  INTEGER (1..99)  OPTIONAL,
 
     -- Sum of length with and height in cm
-    maxSize                   INTEGER (1..300)       OPTIONAL,
+    maxSize                   INTEGER (1..300)  OPTIONAL,
 
     ...
-}
-
--- ##############################################################################################
--- Generic types for geo coordinates
--- ##############################################################################################
-GeoCoordinateType ::= SEQUENCE {
-    position                  GeoUnit,
-    coordinateSystem          GeoCoordinateSystemType DEFAULT wgs84,
-    accuracy                  GeoUnitType             OPTIONAL  -- If omitted the accuracy is unknown
-}
-
-GeoCoordinateSystemType ::= ENUMERATED {
-    wgs84         (0), -- WGS 84 standard system
-    grs80         (1)  -- (outdated) GRS 80 coordinate system
-}
-
-GeoUnitType ::= ENUMERATED {
-    tenthMilliDegree      (0), -- 1 / 10000 degree is approx. 11 meter on earth surface
-    milliDegree           (1), -- approx 110 meter on earth surface
-    centiDegree           (2),
-    deciDegree            (3)
-}
-
-GeoUnit ::= CHOICE {
-  tenthMilliDegree SEQUENCE {
-    longitude INTEGER (-1800000..1800000),
-    latitude  INTEGER (-900000..900000)
-  },
-  milliDegree SEQUENCE {
-    longitude INTEGER (-180000..180000),
-    latitude  INTEGER (-90000..90000)
-  },
-  centiDegree SEQUENCE {
-    longitude INTEGER (-18000..18000),
-    latitude  INTEGER (-9000..9000)
-  },
-  deciDegree SEQUENCE {
-    longitude INTEGER (-1800..1800),
-    latitude  INTEGER (-900..900)
-  }
-}
-
-
--- ##############################################################################################
---  Generic definitions for various data using numeric, alphanumeric and/or binary codings.
--- ##############################################################################################
-
--- Identification of any element using a numerical, alphanumerical or binary ID, according to the code list defined in the container object.
-GenericIdType ::= CHOICE {
-    idNum           INTEGER,      -- for numerical IDs
-    idIA5           VisibleString,    -- for alphanumerical IDs
-    idOct           OCTET STRING  -- for binary IDs such as UUIDs
 }
 
 -- Identification of a product, according to the code list defined in the container object.
@@ -1917,7 +1767,7 @@ AreaSetType ::= SEQUENCE {
 
     -- Code for the areas/zones.
     -- If the code table is not provided the code table of the container object applies.
-    areaSetCodeTable CodeTableType OPTIONAL,
+    areaSetCodeTable    CodeTable   OPTIONAL,
 
     areaSet CHOICE {
         -- Sequence of area/zone identifiers
@@ -1929,58 +1779,6 @@ AreaSetType ::= SEQUENCE {
         -- Recommended encoding if applicable: bit n (considering that bit 0 = right-most bit) encodes area/zone n+1, bit value 1 = area/zone is allowed, bit value 0 = area/zone is forbidden.
         idBit    BIT STRING                -- e.g. bitmap of allowed areas/zones such as '10101110010'B for areas/zones 2, 5, 6, 7, 9 and 11
     }
-}
-
--- Identification of a company.
-CompanyCodeType ::= CHOICE {
-    -- RICS codes as defined by UIC and registered on https://uic.org/support-activities/it/rics
-    rics		INTEGER (1..9999),
-
-    -- Company codes as defined by the ERA
-    -- A RICS shall never be stored with eraCode but only with rics.
-    eraCode 	VisibleString (SIZE (4) ^ FROM ("A".."Z"|"0".."9")),
-
-	otherCode	SEQUENCE {
-		--  The value of 'codeTable' identifies the company identifier format according to the following:
-		--    "+" + [2-letter uppercase ISO 3166 country code] + [addon, chosen by the national standards body of that country]
-		--    "_" + [RICS or ERA company code] + [addon, chosen by this company]
-		--    "*" + [addon] - private use, not guaranteed to avoid clashes
-		--    Any other value only after registration in the company_code.csv registry.
-		--    The use of unregistered values (outside of the national, company, and private use ranges) is strictly forbidden.
-		--    All values should be registered via the UIC Github repository.
-		codeTable	VisibleString,
-		code		VisibleString
-	}
-}
-
--- Identification of a station, according to the code list defined in the container object.
-StationCodeType ::= CHOICE {
-    stationNum        INTEGER (1..999999999),
-    stationIA5        VisibleString
-}
-
--- Identification of a place
-PlaceNumberType ::= CHOICE {
-    placeNum      INTEGER (1..254),
-    placeIA5      VisibleString
-}
-
--- ##############################################################################################
---  Code table choice.
---  Defines the code table used, e.g. to define station code or area code or line code.
--- ##############################################################################################
-CodeTableType ::= CHOICE {
-    nuts          NULL,               -- European NUTS code.
-    locationUIC   NULL,               -- UIC station code from MERITS.
-                                      -- A 7 digit code (UIC country code + 5 digit local code) equates to an ERA retail station code; not to be confused with an ERA infrastructure station code.
-                                      -- A 9 digit code (2-digit scope code + UIC country code + 5 digit local code) equates to non rail infrastructure.
-    issuer        NULL,               -- Bilaterally agreed code table of the 'issuer' defined in issuingDetail.
-    productOwner  NULL,               -- Bilaterally agreed code table provided by the product owner.
-    carrier       NULL,               -- Bilaterally agreed code table provided by the carrier(s) participating in the related route segment.
-    area          NULL,               -- Bilaterally agreed code table for the area defined by the element 'concernedArea' defined in the container object.
-    national     INTEGER (0..999),    -- National code list of the national authority the country defined by its ISO 3166-1 numeric code.
-    company      CompanyCodeType,     -- Bilaterally agreed code table provided by the company defined according to its CompanyCodeType.
-    ...
 }
 
 -- ##############################################################################################
@@ -2033,8 +1831,8 @@ TicketDetailsType ::= SEQUENCE {
 --    Code list: https://uic.org/service-brand-code-list
 -- ##############################################################################################
 ServiceBrandType ::= SEQUENCE {
-    serviceBrand                     INTEGER (1..32000)                OPTIONAL,
-    serviceBrandAbrUTF8              UTF8String                        OPTIONAL
+    serviceBrand        INTEGER (1..32000)  OPTIONAL,
+    serviceBrandAbrUTF8 UnicodeText         OPTIONAL
 }
 
 -- ##############################################################################################
@@ -2197,9 +1995,7 @@ END
 
 -- ##############################################################################################
 -- TODO
--- - indication of different FIP tickets - producttype, tariff, ...
 -- - naming of geo... (areas, regions,..)
--- - can car carriage be integrated in transport document?
 -- - use cases for micro mobility
 --    - check-in / check-out barcode in app
 --    - barcodes on fixed items
