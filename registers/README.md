@@ -17,6 +17,7 @@ Extension identifiers can one of 4 possible formats:
 
 - National: `"+" + [2-letter uppercase ISO 3166 country code] + [addon, chosen by the national standards body of that country]`
 - Company specific: `"_" + [RICS or ERA company code] + [addon, chosen by this company]`
+- Compressed company specific: `"!I" + [addon, chosen by the issuer]`, `"!C" + [addon, chosen by the carrier]`, and `"!P" + [addon, chosen by the product owner]`
 - Private: `"*" + [addon]`
 - Other: any other value as registered in this repository
 
@@ -30,12 +31,18 @@ A national standards body SHOULD register any identifiers in this repository, bu
 These identifiers MUST only be assigned by companies that have their own RICS or ERA company code.
 A company SHOULD register any identifiers in this repository, but is not required to.
 
+### Compressed company specific
+
+These identifiers are to be construed as equivalent to the company specific identifiers (see above), but the company code is elided.
+The company code is to be read as the relevant issuer, carrier, or product owner for the section of the ticket the extension appears in.
+Compressed company specific identifiers SHALL NOT be registered in this repository, as they are merely a different representation of company specific identifiers.
+Systems using compressed company specific identifiers SHOULD register a company specific identifier in this repository.
+
 ### Private
 
 These identifiers MAY be used by any entity.
 These identifiers SHALL NOT be registered in this repository.
-Users of private identifiers MUST NOT make any assumptions about the uniqueness of any identifier and MUST be prepared
-to accept and handle clashes.
+Users of private identifiers MUST NOT make any assumptions about the uniqueness of any identifier and MUST be prepared to accept and handle clashes.
 
 ### Other
 
