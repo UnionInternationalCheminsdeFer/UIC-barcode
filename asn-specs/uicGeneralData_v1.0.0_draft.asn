@@ -6,6 +6,13 @@ ASN-Module-GeneralData { iso(1) identified-organization(3) dod(6)
 -- #  Generic definitions for common elements shared across many UIC ASN.1 modules.
 -- #  Version 1.0.0
 -- #
+-- #  ISO Country codes are used to code countries.
+-- #    As Kosovo does not have an official ISO Country Code the following codes are used:
+-- #      926 for Kosovo as numeric ISO Country Code
+-- #      XK  for Kosovo as alphanumeric 2-character ISO Country Code
+-- #
+-- #  RICS codes must be used to encode companies where available, else ERA company codes, or other codes MAY be used.
+-- #
 -- #  Encoding and handling of text:
 -- #    Text fields in this specification are OCTET STRINGS.
 -- #    The contents of these fields MUST be encoded according to the Standard Compression Scheme for Unicode (SCSU, https://www.unicode.org/reports/tr6/tr6-4.html).
@@ -30,56 +37,60 @@ ASN-Module-GeneralData { iso(1) identified-organization(3) dod(6)
 -- #      - uk: Ukrainian
 -- #      - mk: Macedonian
 -- #      - sr: Serbian
+-- #
+-- #  Encoding of time:
+-- #    Time is encoded as the number of minutes of the day from 0 = 00:00 to 1439 = 23:59.
+-- #    Time data elements end with "time" in their name.
 -- ##############################################################################################
 
 EXPORTS ALL;
 
 -- Defines the code table used, e.g. to define station code or area code or line code.
-CodeTableType ::= CHOICE {
-    nuts          NULL,               -- European NUTS code.
-    locationUIC   NULL,               -- UIC station code from MERITS.
-                                      -- A 7 digit code (UIC country code + 5 digit local code) equates to an ERA retail station code; not to be confused with an ERA infrastructure station code.
-                                      -- A 9 digit code (2-digit scope code + UIC country code + 5 digit local code) equates to non rail infrastructure.
-    issuer        NULL,               -- Bilaterally agreed code table of the 'issuer' defined in issuingDetail.
-    productOwner  NULL,               -- Bilaterally agreed code table provided by the product owner.
-    carrier       NULL,               -- Bilaterally agreed code table provided by the carrier(s) participating in the related route segment.
-    area          NULL,               -- Bilaterally agreed code table for the area defined by the element 'concernedArea' defined in the container object.
-    national     INTEGER (0..999),    -- National code list of the national authority the country defined by its ISO 3166-1 numeric code.
-    company      CompanyCodeType,     -- Bilaterally agreed code table provided by the company defined according to its CompanyCodeType.
+CodeTable ::= CHOICE {
+    nuts          NULL,             -- European NUTS code.
+    locationUIC   NULL,             -- UIC station code from MERITS.
+                                    -- A 7 digit code (UIC country code + 5 digit local code) equates to an ERA retail station code; not to be confused with an ERA infrastructure station code.
+                                    -- A 9 digit code (2-digit scope code + UIC country code + 5 digit local code) equates to non rail infrastructure.
+    issuer        NULL,             -- Bilaterally agreed code table of the 'issuer' defined in issuingDetail.
+    productOwner  NULL,             -- Bilaterally agreed code table provided by the product owner.
+    carrier       NULL,             -- Bilaterally agreed code table provided by the carrier(s) participating in the related route segment.
+    area          NULL,             -- Bilaterally agreed code table for the area defined by the element 'concernedArea' defined in the container object.
+    national     INTEGER (0..999),  -- National code list of the national authority the country defined by its ISO 3166-1 numeric code.
+    company      CompanyCode,       -- Bilaterally agreed code table provided by the company defined according to its CompanyCodeType.
     ...
 }
 
 -- Identification of any element using a numerical, alphanumerical or binary ID, according to the code list defined in the container object.
-GenericIdType ::= CHOICE {
+GenericId ::= CHOICE {
     idNum   INTEGER,        -- for numerical IDs
     idIA5   VisibleString,  -- for alphanumerical IDs
     idOct   OCTET STRING    -- for binary IDs such as UUIDs
 }
 
 -- Identification of a station.
-StationType ::= SEQUENCE {
+Station ::= SEQUENCE {
     -- Code table in which the station code is defined.
     -- If this code table is not provided the code table of the container object applies.
-    stationCodeTable    CodeTableType   OPTIONAL,
+    stationCodeTable    CodeTable   OPTIONAL,
 
-    station             StationCodeType,
-    stationNameUTF8     UnicodeText     OPTIONAL
+    station             StationCode,
+    stationNameUTF8     UnicodeText OPTIONAL
 }
 
 -- ID of a station, according to the code list defined in the container object.
-StationCodeType ::= CHOICE {
+StationCode ::= CHOICE {
     stationNum        INTEGER (1..999999999),
     stationIA5        VisibleString
 }
 
 -- Identification of a place
-PlaceNumberType ::= CHOICE {
+PlaceNumber ::= CHOICE {
     placeNum      INTEGER (1..999),
     placeIA5      VisibleString
 }
 
 -- Identification of a company.
-CompanyCodeType ::= CHOICE {
+CompanyCode ::= CHOICE {
     -- RICS codes as defined by UIC and registered on https://uic.org/support-activities/it/rics
     rics		INTEGER (1..9999),
 
@@ -110,22 +121,22 @@ UnicodeText ::= SEQUENCE {
 }
 
 -- Generic types for geo coordinates
-GeoCoordinateType ::= SEQUENCE {
-    position                  GeoUnit,
-    coordinateSystem          GeoCoordinateSystemType DEFAULT wgs84,
-    accuracy                  GeoUnitType             OPTIONAL  -- If omitted the accuracy is unknown
+GeoCoordinate ::= SEQUENCE {
+    position            GeoUnit,
+    coordinateSystem    GeoCoordinateSystem   DEFAULT wgs84,
+    accuracy            GeoUnitType           OPTIONAL  -- If omitted the accuracy is unknown
 }
 
-GeoCoordinateSystemType ::= ENUMERATED {
-    wgs84         (0), -- WGS 84 standard system
-    grs80         (1)  -- (outdated) GRS 80 coordinate system
+GeoCoordinateSystem ::= ENUMERATED {
+    wgs84   (0), -- WGS 84 standard system
+    grs80   (1)  -- (outdated) GRS 80 coordinate system
 }
 
 GeoUnitType ::= ENUMERATED {
-    tenthMilliDegree      (0), -- 1 / 10000 degree is approx. 11 meter on earth surface
-    milliDegree           (1), -- approx 110 meter on earth surface
-    centiDegree           (2),
-    deciDegree            (3)
+    tenthMilliDegree    (0), -- 1 / 10000 degree is approx. 11 meter on earth surface
+    milliDegree         (1), -- approx 110 meter on earth surface
+    centiDegree         (2),
+    deciDegree          (3)
 }
 
 GeoUnit ::= CHOICE {
@@ -147,6 +158,15 @@ GeoUnit ::= CHOICE {
   }
 }
 
+-- Generic timestamp, expressed in UTC
+Timestamp ::= SEQUENCE {
+    year INTEGER (2016..2269),
+    -- The number of the day in the year (1st Jan = 1)
+    day INTEGER (1..366),
+    -- The number of the minutes of the day
+    time INTEGER (0..1439)
+}
+
 --  Generic data container.
 --
 --  The value of 'dataFormat' identifies how 'data' is encoded:
@@ -159,7 +179,7 @@ GeoUnit ::= CHOICE {
 --    Any other value only after registration in the extension_data.csv registry
 --    The use of unregistered values (outside of the national, company, and private use ranges) is strictly forbidden.
 --    All values should be registered via the UIC Github repository.
-DataType ::= SEQUENCE {
+Data ::= SEQUENCE {
     dataFormat  VisibleString,
     data        OCTET STRING
 }

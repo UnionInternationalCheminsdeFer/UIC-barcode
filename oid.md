@@ -21,6 +21,8 @@ It may only be marked as deprecated.
     - `2`: Header v2.0:
       - `0`: UIC Barcode Header - version 2.0.0
       - `1`: UIC Barcode Header - version 2.0.1
+    - `3`: Header v3.0:
+      - `0`: Draft version 3.0.0, will be replaced by initial release
   - `2`: Rail Ticket Data
     - `1`: RTDv1.3:
       - `0`: UIC Rail Ticket Data - version 1.3.0
@@ -48,6 +50,8 @@ It may only be marked as deprecated.
         - `3`: FCB Dynamic Content Data - version 1.0.3
         - `4`: FCB Dynamic Content Data - version 1.0.4
         - `5`: FCB Dynamic Content Data - version 1.0.5
+    - `2`: DCDv2.0
+      - `0`: Draft version 2.0.0, will be replaced by initial release
   - `4`: Multi-Modal Ticket Data
     - `1`: MMTDv1:
       - `0`: Draft MMTDv4, will be replaced by initial release
