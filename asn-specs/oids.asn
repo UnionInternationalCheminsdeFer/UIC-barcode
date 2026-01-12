@@ -90,4 +90,7 @@ uicDynamicContentDataV1-0-5 OBJECT IDENTIFIER ::= { uicFcbAsn1Modules dcd(3) v1(
 -- UIC Multi-Modal Ticket Data - version 1.0.0, currently a draft
 uicMultiModalTicketDataV1-0-0 OBJECT IDENTIFIER ::= { uicFcbAsn1Modules mmtd(4) v1(1) 0 }
 
+-- UIC General cross-module data - version 1.0.0, currently a draft
+uicGeneralDataV1-0-0 OBJECT IDENTIFIER ::= { uicFcbAsn1Modules general(5) v1(1) 0 }
+
 END

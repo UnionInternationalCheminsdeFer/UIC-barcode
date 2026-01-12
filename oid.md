@@ -40,8 +40,6 @@ It may only be marked as deprecated.
       - `3`: UIC Rail Ticket Data - version 3.0.3
       - `4`: UIC Rail Ticket Data - version 3.0.4
       - `5`: UIC Rail Ticket Data - version 3.0.5
-    - `4`: RTDv4.0:
-      - `0`: Draft RTDv4, will be replaced by initial release
   - `3`: Dynamic Content Data
     - `1`: DCDv1.0:
         - `0`: FCB Dynamic Content Data - version 1.0.0
@@ -53,5 +51,8 @@ It may only be marked as deprecated.
   - `4`: Multi-Modal Ticket Data
     - `1`: MMTDv1:
       - `0`: Draft MMTDv4, will be replaced by initial release
+  - `5`: General cross-module data
+    - `1`: v1:
+      - `0`: Draft version 1.0.0, will be replaced by initial release
 - `1`: PKI Related OIDs, primarily X.509 extensions
   - Nodes under this tree to be defined

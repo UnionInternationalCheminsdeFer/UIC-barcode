@@ -10,6 +10,8 @@ ASN-Module-RailTicketData { iso(1) identified-organization(3) dod(6)
 -- imports and exports
 -- EXPORTS ALL;
 
+IMPORTS GenericIdType, CompanyCodeType, StationType, StationCodeType, CodeTableType, GeoCoordinateType, GeoUnit, PlaceNumberType, DataType, UnicodeText
+ FROM ASN-Module-GeneralData { iso(1) identified-organization(3) dod(6) internet(1) private(4) enterprise(1) uic(17218) fcb(1) modules(0) general(5) v1(1) 0 };
 
 -- Changes:
 --    New ticket structure merging openTicket, pass, reservation and allowing defining a commercialCard.
@@ -23,7 +25,6 @@ ASN-Module-RailTicketData { iso(1) identified-organization(3) dod(6)
 -- #                       - Value "FCB4" in element dataFormat of UicBarcodeHeader
 -- #
 -- ##############################################################################################
-
 
 -- ##############################################################################################
 -- #
@@ -102,31 +103,6 @@ ASN-Module-RailTicketData { iso(1) identified-organization(3) dod(6)
 -- #
 -- #    It is RECOMMENDED not to use the utcOffset until there is a need to do so.
 -- #
--- #  Encoding and handling of text:
--- #    Text fields in this specification are OCTET STRINGS.
--- #    The contents of these fields MUST be encoded according to the Standard Compression Scheme for Unicode (SCSU, https://www.unicode.org/reports/tr6/tr6-4.html).
--- #    For encoders than only ever output US-ASCII and ISO 8859-1 (Latin-1) between U+0020 and U+00FF, no special handling is required to generate SCSU data,
--- #     the Latin-1 encoding is already valid SCSU.
--- #    All decoders MUST be able to handle the full SCSU specification on reading and parsing data.
--- #    The International Components for Unicode (https://icu.unicode.org/) is the recommended implementation of SCSU,
--- #     if you are unsure which implementation to use, although it is by no means required.
--- #
--- #    Systems dealing with the contained data MUST be complaint to DIN 91379.
--- #    That is, they can handle (store, transfer, recall, and represent) all characters as specified in DIN 91379 without error.
--- #    Additionally, all Unicode text, before being fed into the SCSU compressor, MUST be in Normalisation Form C.
--- #    When comparing names with identity documents, or when a Latinized representation of a name is required,
--- #      the system MUST transliterate according to ICAO 9303 Part 3, specifically sections 4.6 and 6.
--- #    The text stored in the ticket SHOULD be in its original script, with transliteration performed by the reading device.
--- #    The reading device SHOULD show both the original script, and the Latinized form.
--- #
--- #    The "language" field, if present, MUST be used to select to correct Latinization of Cyrillic characters.
--- #    The relevant languages for special considerations in ICAO 9303 Latinization are:
--- #      - be: Belarusian
--- #      - bg: Bulgarian
--- #      - uk: Ukrainian
--- #      - mk: Macedonian
--- #      - sr: Serbian
--- #
 -- #  ASN.1 Extensions:
 -- #    The specification makes use of the ASN.1 extension marker ("...").
 -- #    Extensions might be defined in future versions of the UIC specification.
@@ -134,7 +110,7 @@ ASN-Module-RailTicketData { iso(1) identified-organization(3) dod(6)
 -- #    ASN.1 extensions will be defined by UIC. It is not allowed to define bilateral extensions.
 -- #
 -- #  Bilateral Extensions:
--- #    Bilateral extensions can be included in the data element "ExtensionData".
+-- #    Bilateral extensions can be included in the data element "DataType".
 -- #    They should only be used:
 -- #      - to add elements that are not present in the current ASN.1 file (but not to replace them).
 -- #      - to add elements that are truly specific. If these elements could be useful to others
@@ -190,7 +166,7 @@ UniversalTicketData ::= SEQUENCE {
     controlDetail         ControlData                             OPTIONAL,
 
     -- Proprietary data defined bilaterally.
-    extension             SEQUENCE OF ExtensionData               OPTIONAL,
+    extension             SEQUENCE OF DataType                     OPTIONAL,
     ...
 }
 
@@ -233,7 +209,7 @@ DocumentData ::= CHOICE {
     token                          TokenType,
 
     -- Proprietary data defined bilaterally.
-    extension                      ExtensionData,
+    extension                      DataType,
 
     ...
 }
@@ -272,7 +248,7 @@ DelayConfirmation ::= SEQUENCE {
     infoText            UnicodeText                 OPTIONAL,
 
     -- Proprietary data defined bilaterally.
-    extension           ExtensionData               OPTIONAL,
+    extension           DataType                   OPTIONAL,
 
     ...
 }
@@ -336,7 +312,7 @@ IssuingData ::= SEQUENCE {
     preferredLanguage              VisibleString (SIZE(2) ^ FROM ("a".."z"))  OPTIONAL,
 
     -- Proprietary data defined bilaterally.
-    extension                      ExtensionData                 OPTIONAL,
+    extension                      DataType                      OPTIONAL,
 
     ...
 }
@@ -422,7 +398,7 @@ ControlData ::= SEQUENCE {
     infoText                            UnicodeText                 OPTIONAL,
 
     -- Proprietary data defined bilaterally.
-    extension                           ExtensionData               OPTIONAL,
+    extension                           DataType                   OPTIONAL,
 
     ...
 }
@@ -480,7 +456,7 @@ TransportProductData ::= SEQUENCE {
     specificConditions        SEQUENCE SIZE (1..32) OF ConditionsType          OPTIONAL,
 
     -- Proprietary data defined bilaterally.
-    extension                 ExtensionData                                    OPTIONAL,
+    extension                 DataType                                          OPTIONAL,
 
     ...
 }
@@ -703,7 +679,7 @@ VoucherData ::= SEQUENCE {
     infoText        UnicodeText             OPTIONAL,
 
     -- Proprietary data defined bilaterally.
-    extension       ExtensionData           OPTIONAL,
+    extension       DataType               OPTIONAL,
 
     ...
 }
@@ -947,7 +923,7 @@ RareTimingConditionsType ::= SEQUENCE {
     activatedReturnDay                      SEQUENCE OF INTEGER (0..500)                OPTIONAL,
 
     -- Proprietary data defined bilaterally.
-    extension                               ExtensionData                               OPTIONAL,
+    extension                               DataType                                  OPTIONAL,
 
     ...
 }
@@ -990,7 +966,7 @@ RareDetailsType::= SEQUENCE {
     luggage                 LuggageRestrictionType          OPTIONAL,
 
     -- Proprietary data defined bilaterally.
-    extension               ExtensionData                   OPTIONAL,
+    extension               DataType                       OPTIONAL,
 
     ...
 }
@@ -1027,7 +1003,7 @@ StationPassageData ::= SEQUENCE {
     numberOfDaysValid   INTEGER                     OPTIONAL,
 
     -- Proprietary data defined bilaterally
-    extension           ExtensionData               OPTIONAL,
+    extension           DataType                   OPTIONAL,
 
     ...
 }
@@ -1079,7 +1055,7 @@ CustomerCardData ::= SEQUENCE {
     includedServices        SEQUENCE OF INTEGER                  OPTIONAL,
 
     -- Proprietary data defined bilaterally
-    extension               ExtensionData                        OPTIONAL,
+    extension               DataType                            OPTIONAL,
 
     ...
 }
@@ -1145,7 +1121,7 @@ ParkingType ::= SEQUENCE {
     infoText        UnicodeText     OPTIONAL,
 
     -- Proprietary data defined bilaterally.
-    extension       ExtensionData   OPTIONAL,
+    extension       DataType       OPTIONAL,
 
     ...
 }
@@ -1176,26 +1152,6 @@ ProductType ::= SEQUENCE {
 
     -- Short readable description of the product.
     productDescription  UnicodeText     OPTIONAL
-}
-
-
--- ##############################################################################################
---  Generic extension element.
---
---  The value of 'extensionId' identifies show 'extensionData' is encoded:
---    "+" + [2-letters uppercase ISO 3166 country code] + [addon, chosen by the national standards body of that country]
---    "_" + [RICS or ERA company code] + [addon, chosen by this company]
---    "!I" + [addon, chosen by the issuer] - equivalent to the _RICS format, without repetition of the issuer's code
---    "!C" + [addon, chosen by the carrier] - equivalent to the _RICS format, without repetition of the carriers's code
---    "!P" + [addon, chosen by the product owner] - equivalent to the _RICS format, without repetition of the product owner's code
---    "*" + [addon] - private use, not guaranteed to avoid clashes
---    Any other value only after registration in the extension_data.csv registry
---    The use of unregistered values (outside of the national, company, and private use ranges) is strictly forbidden.
---    All values should be registered via the UIC Github repository.
--- ##############################################################################################
-ExtensionData ::= SEQUENCE {
-    extensionId   VisibleString,
-    extensionData OCTET STRING
 }
 
 -- ##############################################################################################
@@ -1365,7 +1321,7 @@ RareTravelerDetailsType ::= SEQUENCE {
    status                          SEQUENCE OF CustomerStatusType             OPTIONAL,
 
     -- Proprietary data defined bilaterally.
-    extension                      ExtensionData                              OPTIONAL,
+    extension                       DataType                                  OPTIONAL,
 
    ...
 }
@@ -1415,14 +1371,14 @@ CustomerStatusType ::= SEQUENCE {
 --  Specification of the geographical validity for a segment.
 -- ##############################################################################################
 GeoValidityType ::= CHOICE {
-    originDestination  OriginDestinationType, -- Simple journey from an Origin to a Destination, with optional description of intermediate stations.
-    complexRoute       ComplexRouteType,      -- Complex journey allowing multiple origins, multiple destinations, alternative routes, etc.
-    area               AreaType,              -- Validity defined with areas/zones.
-    line               LineType,              -- Set of authorized transport lines.
-    polygone           PolygoneType,          -- Area defined using geocoordinates.
-    parking            ParkingType,           -- Parking right (for a car, a bike...).
-    sharedVehicle      SharedVehicleType,     -- Access to a shared vehicle service. /!\ Type yet to be defined
-    proprietary        ExtensionData,         -- Specific proprietary geographical validity in case the above predefined types do not allow it to be described.
+    originDestination  OriginDestinationType,   -- Simple journey from an Origin to a Destination, with optional description of intermediate stations.
+    complexRoute       ComplexRouteType,        -- Complex journey allowing multiple origins, multiple destinations, alternative routes, etc.
+    area               AreaType,                -- Validity defined with areas/zones.
+    line               LineType,                -- Set of authorized transport lines.
+    polygone           PolygoneType,            -- Area defined using geocoordinates.
+    parking            ParkingType,             -- Parking right (for a car, a bike...).
+    sharedVehicle      SharedVehicleType,       -- Access to a shared vehicle service. /!\ Type yet to be defined
+    proprietary        DataType,                -- Specific proprietary geographical validity in case the above predefined types do not allow it to be described.
     ...
 }
 
@@ -1447,17 +1403,6 @@ OriginDestinationType ::= SEQUENCE {
     ...
 }
 
--- ----------------------------------------------------------------------------------------------
---  Identification of a station.
--- ----------------------------------------------------------------------------------------------
-StationType ::= SEQUENCE {
-    -- Code table in which the station code is defined.
-    -- If this code table is not provided the code table of the container object applies.
-    stationCodeTable    CodeTableType   OPTIONAL,
-
-    station             StationCodeType,
-    stationNameUTF8     UnicodeText     OPTIONAL
-}
 
 -- ##############################################################################################
 --  Geographical validity using a set of lines
@@ -1505,7 +1450,7 @@ AreaType ::= SEQUENCE {
     -- Omitted if there are no restrictions on where the journey must begin.
     restrictedEntry CHOICE {
        station  StationSetType,
-       area     AreaSetType,
+       area     AreaSetType
     } OPTIONAL,
 
     -- Description of the allowed areas/zones.
@@ -1757,58 +1702,6 @@ RegisteredLuggageType ::= SEQUENCE {
     ...
 }
 
--- ##############################################################################################
--- Generic types for geo coordinates
--- ##############################################################################################
-GeoCoordinateType ::= SEQUENCE {
-    position                  GeoUnit,
-    coordinateSystem          GeoCoordinateSystemType DEFAULT wgs84,
-    accuracy                  GeoUnitType             OPTIONAL  -- If omitted the accuracy is unknown
-}
-
-GeoCoordinateSystemType ::= ENUMERATED {
-    wgs84         (0), -- WGS 84 standard system
-    grs80         (1)  -- (outdated) GRS 80 coordinate system
-}
-
-GeoUnitType ::= ENUMERATED {
-    tenthMilliDegree      (0), -- 1 / 10000 degree is approx. 11 meter on earth surface
-    milliDegree           (1), -- approx 110 meter on earth surface
-    centiDegree           (2),
-    deciDegree            (3)
-}
-
-GeoUnit ::= CHOICE {
-  tenthMilliDegree SEQUENCE {
-    longitude INTEGER (-1800000..1800000),
-    latitude  INTEGER (-900000..900000)
-  },
-  milliDegree SEQUENCE {
-    longitude INTEGER (-180000..180000),
-    latitude  INTEGER (-90000..90000)
-  },
-  centiDegree SEQUENCE {
-    longitude INTEGER (-18000..18000),
-    latitude  INTEGER (-9000..9000)
-  },
-  deciDegree SEQUENCE {
-    longitude INTEGER (-1800..1800),
-    latitude  INTEGER (-900..900)
-  }
-}
-
-
--- ##############################################################################################
---  Generic definitions for various data using numeric, alphanumeric and/or binary codings.
--- ##############################################################################################
-
--- Identification of any element using a numerical, alphanumerical or binary ID, according to the code list defined in the container object.
-GenericIdType ::= CHOICE {
-    idNum           INTEGER,      -- for numerical IDs
-    idIA5           VisibleString,    -- for alphanumerical IDs
-    idOct           OCTET STRING  -- for binary IDs such as UUIDs
-}
-
 -- Identification of a product, according to the code list defined in the container object.
 ProductIdType ::= CHOICE {
     productIdNum   INTEGER (0..65535),
@@ -1836,58 +1729,6 @@ AreaSetType ::= SEQUENCE {
         -- Recommended encoding if applicable: bit n (considering that bit 0 = right-most bit) encodes area/zone n+1, bit value 1 = area/zone is allowed, bit value 0 = area/zone is forbidden.
         idBit    BIT STRING                -- e.g. bitmap of allowed areas/zones such as '10101110010'B for areas/zones 2, 5, 6, 7, 9 and 11
     }
-}
-
--- Identification of a company.
-CompanyCodeType ::= CHOICE {
-    -- RICS codes as defined by UIC and registered on https://uic.org/support-activities/it/rics
-    rics		INTEGER (1..9999),
-
-    -- Company codes as defined by the ERA
-    -- A RICS shall never be stored with eraCode but only with rics.
-    eraCode 	VisibleString (SIZE (4) ^ FROM ("A".."Z"|"0".."9")),
-
-	otherCode	SEQUENCE {
-		--  The value of 'codeTable' identifies the company identifier format according to the following:
-		--    "+" + [2-letter uppercase ISO 3166 country code] + [addon, chosen by the national standards body of that country]
-		--    "_" + [RICS or ERA company code] + [addon, chosen by this company]
-		--    "*" + [addon] - private use, not guaranteed to avoid clashes
-		--    Any other value only after registration in the company_code.csv registry.
-		--    The use of unregistered values (outside of the national, company, and private use ranges) is strictly forbidden.
-		--    All values should be registered via the UIC Github repository.
-		codeTable	VisibleString,
-		code		VisibleString
-	}
-}
-
--- Identification of a station, according to the code list defined in the container object.
-StationCodeType ::= CHOICE {
-    stationNum        INTEGER (1..999999999),
-    stationIA5        VisibleString
-}
-
--- Identification of a place
-PlaceNumberType ::= CHOICE {
-    placeNum      INTEGER (1..999),
-    placeIA5      VisibleString
-}
-
--- ##############################################################################################
---  Code table choice.
---  Defines the code table used, e.g. to define station code or area code or line code.
--- ##############################################################################################
-CodeTableType ::= CHOICE {
-    nuts          NULL,               -- European NUTS code.
-    locationUIC   NULL,               -- UIC station code from MERITS.
-                                      -- A 7 digit code (UIC country code + 5 digit local code) equates to an ERA retail station code; not to be confused with an ERA infrastructure station code.
-                                      -- A 9 digit code (2-digit scope code + UIC country code + 5 digit local code) equates to non rail infrastructure.
-    issuer        NULL,               -- Bilaterally agreed code table of the 'issuer' defined in issuingDetail.
-    productOwner  NULL,               -- Bilaterally agreed code table provided by the product owner.
-    carrier       NULL,               -- Bilaterally agreed code table provided by the carrier(s) participating in the related route segment.
-    area          NULL,               -- Bilaterally agreed code table for the area defined by the element 'concernedArea' defined in the container object.
-    national     INTEGER (0..999),    -- National code list of the national authority the country defined by its ISO 3166-1 numeric code.
-    company      CompanyCodeType,     -- Bilaterally agreed code table provided by the company defined according to its CompanyCodeType.
-    ...
 }
 
 -- ##############################################################################################
@@ -2098,13 +1939,6 @@ RetailChannelType ::= ENUMERATED {
     onBoardTerminal      (5), -- On-board sales (e.g. using the driver's point-of-sale terminal)
     ticketVendingMachine (6), -- Automatic sales machine
     ...
-}
-
-UnicodeText ::= SEQUENCE {
-    -- SCSU encoding of the textual data
-    text        OCTET STRING,
-    -- ISO 639-1 coding (lower case) of the text's language
-    language    VisibleString (SIZE(2) ^ FROM ("a".."z"))   OPTIONAL,
 }
 
 END
