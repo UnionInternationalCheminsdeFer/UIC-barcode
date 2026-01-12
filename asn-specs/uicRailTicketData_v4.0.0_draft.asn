@@ -1435,7 +1435,7 @@ GeoValidityType ::= CHOICE {
     line               LineType,              -- Set of authorized transport lines.
     polygone           PolygoneType,          -- Area defined using geocoordinates.
     parking            ParkingType,           -- Parking right (for a car, a bike...).
-    sharedVehicle      SharedVehicleType,     -- Access to a shared vehicle service.
+    sharedVehicle      SharedVehicle,     -- Access to a shared vehicle service.
     proprietary        ExtensionData,         -- Specific proprietary geographical validity in case the above predefined types do not allow it to be described.
     ...
 }
@@ -1443,13 +1443,19 @@ GeoValidityType ::= CHOICE {
 -- ##############################################################################################
 --  Access to a shared vehicle service, e.g. car sharing or bike/e-scooter rental
 -- ##############################################################################################
-SharedVehicleType ::= SEQUENCE {
+SharedVehicle ::= SEQUENCE {
+    -- Shared vehicle providers that this entitlement covers
+    carriers        SEQUENCE OF CompanyCode,
+
+    -- The number of individual vehicles included in this entitlement
+    numberOfVehicles INTEGER (1..16)                DEFAULT 1,
 
     -- Which kinds of shared vehicles are included in this entitlement
-    vehicleTypes                    SEQUENCE OF SharedVehicleVariety    OPTIONAL,
+    -- An empty list means no constraint
+    vehicleTypes    SEQUENCE OF SharedVehicleType,
 
     -- The vehicle must be collected from this station.
-    station                         StationType                         OPTIONAL,
+    station         StationType                     OPTIONAL,
 
     -- Included amount of time allowed to access a shared vehicle, if more restrictive than the validity period.
     -- If present, indicates that the entitlement is valid for a given amount of time within the validity period.
@@ -1458,19 +1464,27 @@ SharedVehicleType ::= SEQUENCE {
     -- Whether an operator allows the traveler to pay additionally for more time once the allotted time is up is
     -- per local operator policy.
     allowedTime CHOICE {
-        days                      INTEGER,
-        minutes                   INTEGER (1..1439)
-    } OPTIONAL,
+        days    INTEGER,
+        minutes INTEGER (1..1439)
+    }                                               OPTIONAL,
 
     -- Additional readable information that cannot be described using the other elements.
-    infoText                      UTF8String                        OPTIONAL,
+    infoText    UTF8String                          OPTIONAL,
 
     -- Proprietary data defined bilaterally.
-    extension                     ExtensionData                     OPTIONAL,
-
+    extension   ExtensionData                       OPTIONAL,
 }
 
--- Values taken from GBFS
+SharedVehicleType ::= SEQUENCE {
+    -- An empty list means any value
+    variety             SEQUENCE OF SharedVehicleVariety SIZE (0..15),
+    -- An empty list means any value
+    propulsion          SEQUENCE OF SharedVehiclePropulsionType SIZE (0..15)
+    -- An empty list means any value
+    returnConstraint    SEQUENCE OF SharedVehicleReturnConstraint SIZE (0..15)
+}
+
+-- Values taken from GBFSv3.0
 SharedVehicleVariety ::= ENUMERATED {
     bicycle (0),
     cargoBicycle (1),
@@ -1480,6 +1494,28 @@ SharedVehicleVariety ::= ENUMERATED {
     scooterSeated (5),
     other (6),
     scooter (7),
+    ...
+}
+
+-- Values taken from GBFSv3.0
+SharedVehiclePropulsionType ::= ENUMERATED {
+    human (0),
+    electricAssist (1),
+    electric (2),
+    combustion (3),
+    combustion_diesel (4),
+    hybrid (5),
+    plug_in_hybrid (6),
+    hydrogen_fuel_cell (7)
+    ...
+}
+
+-- Values taken from GBFSv3.0
+SharedVehicleReturnConstraint ::= ENUMERATED {
+    freeFloating (0),
+    roundtripStation (1),
+    anyStation (2),
+    hybrid (3),
     ...
 }
 
