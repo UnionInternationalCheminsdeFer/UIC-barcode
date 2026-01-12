@@ -184,4 +184,39 @@ Data ::= SEQUENCE {
     data        OCTET STRING
 }
 
+-- Values taken from GBFSv3.0
+SharedVehicleVariety ::= ENUMERATED {
+    bicycle (0),
+    cargoBicycle (1),
+    car (2),
+    moped (3),
+    scooterStanding (4),
+    scooterSeated (5),
+    other (6),
+    scooter (7),
+    ...
+}
+
+-- Values taken from GBFSv3.0
+SharedVehiclePropulsionType ::= ENUMERATED {
+    human (0),
+    electricAssist (1),
+    electric (2),
+    combustion (3),
+    combustionDiesel (4),
+    hybrid (5),
+    plugInHybrid (6),
+    hydrogenFuelCell (7),
+    ...
+}
+
+-- Values taken from GBFSv3.0
+SharedVehicleReturnConstraint ::= ENUMERATED {
+    freeFloating (0),
+    roundtripStation (1),
+    anyStation (2),
+    hybrid (3),
+    ...
+}
+
 END

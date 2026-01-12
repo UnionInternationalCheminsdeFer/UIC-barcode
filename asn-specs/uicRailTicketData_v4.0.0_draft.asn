@@ -10,7 +10,8 @@ ASN-Module-RailTicketData { iso(1) identified-organization(3) dod(6)
 -- imports and exports
 -- EXPORTS ALL;
 
-IMPORTS GenericId, CompanyCode, Station, StationCode, CodeTable, GeoCoordinate, GeoUnit, PlaceNumber, Data, UnicodeText, Timestamp
+IMPORTS GenericId, CompanyCode, Station, StationCode, CodeTable, GeoCoordinate, GeoUnit, PlaceNumber, Data, UnicodeText,
+ Timestamp, SharedVehicleVariety, SharedVehiclePropulsionType, SharedVehicleReturnConstraint
  FROM ASN-Module-GeneralData { iso(1) identified-organization(3) dod(6) internet(1) private(4) enterprise(1) uic(17218) fcb(1) modules(0) general(5) v1(1) 0 };
 
 -- Changes:
@@ -1370,7 +1371,7 @@ SharedVehicle ::= SEQUENCE {
     vehicleTypes    SEQUENCE OF SharedVehicleType,
 
     -- The vehicle must be collected from this station.
-    station         StationType                     OPTIONAL,
+    station         Station                         OPTIONAL,
 
     -- Included amount of time allowed to access a shared vehicle, if more restrictive than the validity period.
     -- If present, indicates that the entitlement is valid for a given amount of time within the validity period.
@@ -1387,50 +1388,18 @@ SharedVehicle ::= SEQUENCE {
     infoText    UTF8String                          OPTIONAL,
 
     -- Proprietary data defined bilaterally.
-    extension   ExtensionData                       OPTIONAL,
+    extension   Data                                OPTIONAL,
+
+    ...
 }
 
 SharedVehicleType ::= SEQUENCE {
     -- An empty list means any value
-    variety             SEQUENCE OF SharedVehicleVariety SIZE (0..15),
+    variety             SEQUENCE OF SharedVehicleVariety (SIZE (0..15)),
     -- An empty list means any value
-    propulsion          SEQUENCE OF SharedVehiclePropulsionType SIZE (0..15)
+    propulsion          SEQUENCE OF SharedVehiclePropulsionType (SIZE (0..15)),
     -- An empty list means any value
-    returnConstraint    SEQUENCE OF SharedVehicleReturnConstraint SIZE (0..15)
-}
-
--- Values taken from GBFSv3.0
-SharedVehicleVariety ::= ENUMERATED {
-    bicycle (0),
-    cargoBicycle (1),
-    car (2),
-    moped (3),
-    scooterStanding (4),
-    scooterSeated (5),
-    other (6),
-    scooter (7),
-    ...
-}
-
--- Values taken from GBFSv3.0
-SharedVehiclePropulsionType ::= ENUMERATED {
-    human (0),
-    electricAssist (1),
-    electric (2),
-    combustion (3),
-    combustion_diesel (4),
-    hybrid (5),
-    plug_in_hybrid (6),
-    hydrogen_fuel_cell (7)
-    ...
-}
-
--- Values taken from GBFSv3.0
-SharedVehicleReturnConstraint ::= ENUMERATED {
-    freeFloating (0),
-    roundtripStation (1),
-    anyStation (2),
-    hybrid (3),
+    returnConstraint    SEQUENCE OF SharedVehicleReturnConstraint (SIZE (0..15)),
     ...
 }
 
