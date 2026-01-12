@@ -1185,6 +1185,9 @@ ProductType ::= SEQUENCE {
 --  The value of 'extensionId' identifies show 'extensionData' is encoded:
 --    "+" + [2-letters uppercase ISO 3166 country code] + [addon, chosen by the national standards body of that country]
 --    "_" + [RICS or ERA company code] + [addon, chosen by this company]
+--    "!I" + [addon, chosen by the issuer] - equivalent to the _RICS format, without repetition of the issuer's code
+--    "!C" + [addon, chosen by the carrier] - equivalent to the _RICS format, without repetition of the carriers's code
+--    "!P" + [addon, chosen by the product owner] - equivalent to the _RICS format, without repetition of the product owner's code
 --    "*" + [addon] - private use, not guaranteed to avoid clashes
 --    Any other value only after registration in the extension_data.csv registry
 --    The use of unregistered values (outside of the national, company, and private use ranges) is strictly forbidden.
