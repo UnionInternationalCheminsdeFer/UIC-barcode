@@ -315,6 +315,7 @@ IssuingData ::= SEQUENCE {
     ticketControlNumber                             GenericIdType,
 
     -- Location of sale (transport number and/or line number) in case of a sale on board of a transport.
+    -- Values per the code table of the issuer.
     issuedOnTransport              TransportNumberType           OPTIONAL,
     issuedOnLine                   TransportNumberType           OPTIONAL,
 
@@ -787,8 +788,8 @@ WeekdaysType ::= SEQUENCE {
     sunday              BOOLEAN
 }
 
+-- The definition of what is a national, state, county, etc. holiday is per the tariff conditions of the product owner.
 SpecialDaysType ::= SEQUENCE {
-
     nationalHolidays    BOOLEAN OPTIONAL, -- National holiday (e.g. Christmas in France, as it is a public holiday throughout the whole country)
     stateHolidays       BOOLEAN OPTIONAL, -- State holiday (e.g. Buss- und Bettag in the German Bundesland of Sachsen)
     countyHolidays      BOOLEAN OPTIONAL, -- County holiday (e.g. Corpus Christi)
@@ -1198,6 +1199,7 @@ TariffType ::= SEQUENCE {
     numberOfPassengers  INTEGER (1..200)                DEFAULT 1,
 
     -- Type indication (youth, adult, senior... but also pet, bicycle).
+    -- The definition of which passenger is which type in this field is per the product owner.
     -- Omitted if the ticket has no restrictions regarding the type of passenger,
     --   or if the restriction is based on the product type and not on this element.
     passengerType       PassengerType                   OPTIONAL,
@@ -1298,6 +1300,8 @@ TravelerType ::= SEQUENCE {
     -- ISO 639-1 coding (lower case) of the names's language
     language        VisibleString (SIZE(2) ^ FROM ("a".."z"))   OPTIONAL,
 
+    -- The definition of which passenger is which type in this field is per the issuer,
+    --  and may be overridden by product owner for a specific segment using TariffType.passengerType.
     passengerType   PassengerType                               OPTIONAL,
 
     ageOrBirth CHOICE {
@@ -1854,7 +1858,7 @@ StationCodeType ::= CHOICE {
 
 -- Identification of a place
 PlaceNumberType ::= CHOICE {
-    placeNum      INTEGER (1..254),
+    placeNum      INTEGER (1..999),
     placeIA5      VisibleString
 }
 
