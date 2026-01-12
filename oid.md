@@ -50,5 +50,8 @@ It may only be marked as deprecated.
         - `3`: FCB Dynamic Content Data - version 1.0.3
         - `4`: FCB Dynamic Content Data - version 1.0.4
         - `5`: FCB Dynamic Content Data - version 1.0.5
+  - `4`: Multi-Modal Ticket Data
+    - `1`: MMTDv1:
+      - `0`: Draft MMTDv4, will be replaced by initial release
 - `1`: PKI Related OIDs, primarily X.509 extensions
   - Nodes under this tree to be defined

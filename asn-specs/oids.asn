@@ -69,9 +69,6 @@ uicRailTicketDataV3-0-4 OBJECT IDENTIFIER ::= { uicFcbAsn1Modules rtd(2) v3(3) 4
 -- UIC Rail Ticket Data - version 3.0.5
 uicRailTicketDataV3-0-5 OBJECT IDENTIFIER ::= { uicFcbAsn1Modules rtd(2) v3(3) 5 }
 
--- UIC Rail Ticket Data - version 4.0.0, currently a draft
-uicRailTicketDataV4-0-0 OBJECT IDENTIFIER ::= { uicFcbAsn1Modules rtd(2) v4(4) 0 }
-
 -- FCB Dynamic Content Data - version 1.0.0
 uicDynamicContentDataV1-0-0 OBJECT IDENTIFIER ::= { uicFcbAsn1Modules dcd(3) v1(1) 0 }
 
@@ -89,5 +86,8 @@ uicDynamicContentDataV1-0-4 OBJECT IDENTIFIER ::= { uicFcbAsn1Modules dcd(3) v1(
 
 -- FCB Dynamic Content Data - version 1.0.5
 uicDynamicContentDataV1-0-5 OBJECT IDENTIFIER ::= { uicFcbAsn1Modules dcd(3) v1(1) 5 }
+
+-- UIC Multi-Modal Ticket Data - version 1.0.0, currently a draft
+uicMultiModalTicketDataV1-0-0 OBJECT IDENTIFIER ::= { uicFcbAsn1Modules mmtd(4) v1(1) 0 }
 
 END

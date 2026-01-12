@@ -4,7 +4,7 @@
 -- Last modification: Fri Oct 27 CEST 18:00:00 CEST 2025
 -- Copyright UIC 2025
 ASN-Module-RailTicketData { iso(1) identified-organization(3) dod(6)
-    internet(1) private(4) enterprise(1) uic(17218) fcb(1) modules(0) rtd(2) v4(4) 0 }
+    internet(1) private(4) enterprise(1) uic(17218) fcb(1) modules(0) mmtd(4) v1(1) 0 }
     DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 
 -- imports and exports
