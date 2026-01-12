@@ -19,7 +19,7 @@ ASN-Module-RailTicketData { iso(1) identified-organization(3) dod(6)
 -- ##############################################################################################
 -- #
 -- #   version 4.0.0       - Value 4 in the UIC bar code version element
--- #                         (see element 2 in U_FLEX record definition in leaflet 918.9)
+-- #                         (see element 2 in U_FLEX record definition in TAP TSI B.12)
 -- #                       - Value "FCB4" in element dataFormat of UicBarcodeHeader
 -- #
 -- ##############################################################################################
@@ -287,7 +287,7 @@ IssuingData ::= SEQUENCE {
     -- Indicates that the ticket is valid for traveling or still needs activation.
     activated                      BOOLEAN                       DEFAULT TRUE,
 
-    -- Currency of the price: ISO 4217 numeric currency code.
+    -- Currency of the price - ISO 4217 numeric currency code.
     currency                       INTEGER (0..999)              DEFAULT 978, -- 978 = Euro
 
     -- Fraction of the prices included.
@@ -476,8 +476,10 @@ CarType ::= SEQUENCE {
     -- The country of registration must not be encoded in the plate.
     vehiclePlate                    UTF8String,
     trailerPlate                    UTF8String                         OPTIONAL,
-    carCategory                     INTEGER (0..9),
-    boatCategory                    INTEGER (0..6)                     OPTIONAL,
+    -- Per TAP TSI Code List B.5.29
+    carCategory                     INTEGER (1..8),
+    -- Per TAP TSI Code List B.5.29
+    boatCategory                    INTEGER (1..8)                     OPTIONAL,
     textileRoof                     BOOLEAN,
     roofRack                        RoofRackType                       DEFAULT  norack,
 
@@ -575,7 +577,7 @@ TransportLinkType ::= SEQUENCE {
     --   (a leg can allow many service brands, but a transport link only specifies one).
     serviceBrand            ServiceBrandType                  OPTIONAL,
 
-    -- Service level code list from IRS 90918-1.
+    -- Per TAP TSI Code List B.5.308
     -- Omitted if the same service level is already specified in the description of the associated leg.
     serviceLevel            VisibleString (SIZE(1..2) ^ FROM ("A".."Z"|"0".."9"))            OPTIONAL,
 
@@ -621,11 +623,11 @@ ReservationSegmentType ::= SEQUENCE {
     --   (a leg can allow many service brands, but a reservation only specifies one).
     serviceBrand            ServiceBrandType                                        OPTIONAL,
 
-    -- Service level code list from IRS 90918-1.
+    -- Per TAP TSI Code List B.5.308
     -- Omitted if the same service level is already specified in the description of the associated leg.
     serviceLevel            VisibleString (SIZE(1..2) ^ FROM ("A".."Z"|"0".."9"))   OPTIONAL,
 
-    -- Service code list from 918.1 (seat, couchette, carCarriage, ...).
+    -- Per TAP TSI B.5
     service                 ServiceType                                             DEFAULT seat,
 
     -- Reserved places
@@ -860,7 +862,7 @@ ConditionsType ::= SEQUENCE {
     -- For transport modes where the concept of class does not exist, must be set to notApplicable
     classCode                       TravelClassType                  DEFAULT second,
 
-    -- Service level code according to leaflet IRS 90918-1 to encode other products (e.g. PREMIUM, ...)
+    -- Per TAP TSI Code List B.5.308
     serviceLevel                    VisibleString (SIZE(1..2) ^ FROM ("A".."Z"|"0".."9"))           OPTIONAL,
 
     -- Tariff data (allowed passengers characteristics, discount cards used...)
@@ -1656,7 +1658,7 @@ TicketLinkType ::= SEQUENCE {
 }
 
 -- ##############################################################################################
---  Place data corresponding to leaflet 918.1.
+--  Place data according to TAP TSI B.5
 --  placeString = place number ranges in case of groups
 -- ##############################################################################################
 CoachPlacesType ::= SEQUENCE {
@@ -1676,7 +1678,7 @@ CoachPlacesType ::= SEQUENCE {
 }
 
 -- ##############################################################################################
---  Sleeper compartment types corresponding to leaflet 918.1
+--  Sleeper compartment according to TAP TSI B.5
 -- ##############################################################################################
 BerthDetailData ::= SEQUENCE {
     berthType              BerthTypeType,
@@ -1686,13 +1688,15 @@ BerthDetailData ::= SEQUENCE {
 }
 
 -- ##############################################################################################
---  Compartment details corresponding to leaflet 918.1
---    918.1 pos 1/2 -> 1..99
---    918.1 pos 3/4 -> 101..199
---    918.1 pos 5/6 -> 201..299
+--  Compartment details according to TAP TSI B.5
 -- ##############################################################################################
 PlaceDetailsType ::= SEQUENCE {
-    coachType          INTEGER (1..999),
+    -- Per TAP TSI Code List B.5.51.1
+    coachType          INTEGER (0..99),
+    -- Per TAP TSI Code List B.5.51.2
+    compartmentType    INTEGER (0..99),
+    -- Per TAP TSI Code List B.5.51.3
+    specialOffers      INTEGER (0..99),
     description        UTF8String            OPTIONAL
 }
 
