@@ -115,12 +115,12 @@ ASN-Module-RailTicketData { iso(1) identified-organization(3) dod(6)
 -- #    That is, they can handle (store, transfer, recall, and represent) all characters as specified in DIN 91379 without error.
 -- #    Additionally, all Unicode text, before being fed into the SCSU compressor, MUST be in Normalisation Form C.
 -- #    When comparing names with identity documents, or when a Latinized representation of a name is required,
--- #      the system MUST transliterate according to IACO 9303 Part 3, specifically sections 4.6 and 6.
+-- #      the system MUST transliterate according to ICAO 9303 Part 3, specifically sections 4.6 and 6.
 -- #    The text stored in the ticket SHOULD be in its original script, with transliteration performed by the reading device.
 -- #    The reading device SHOULD show both the original script, and the Latinized form.
 -- #
 -- #    The "language" field, if present, MUST be used to select to correct Latinization of Cyrillic characters.
--- #    The relevant languages for special considerations in IACO 9303 Latinization are:
+-- #    The relevant languages for special considerations in ICAO 9303 Latinization are:
 -- #      - be: Belarusian
 -- #      - bg: Bulgarian
 -- #      - uk: Ukrainian
