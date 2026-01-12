@@ -99,4 +99,7 @@ uicMultiModalTicketDataV1-0-0 OBJECT IDENTIFIER ::= { uicFcbAsn1Modules mmtd(4) 
 -- UIC General cross-module data - version 1.0.0, currently a draft
 uicGeneralDataV1-0-0 OBJECT IDENTIFIER ::= { uicFcbAsn1Modules general(5) v1(1) 0 }
 
+-- UIC Fixed Point Data - version 1.0.0, currently a draft
+uicFixedPointDataV1-0-0 OBJECT IDENTIFIER ::= { uicFcbAsn1Modules fpd(6) v1(1) 0 }
+
 END
