@@ -10,7 +10,8 @@ ASN-Module-RailTicketData { iso(1) identified-organization(3) dod(6)
 -- imports and exports
 -- EXPORTS ALL;
 
-IMPORTS GenericId, CompanyCode, Station, StationCode, CodeTable, GeoCoordinate, GeoUnit, PlaceNumber, Data, UnicodeText, Timestamp
+IMPORTS GenericId, CompanyCode, Station, StationCode, CodeTable, GeoCoordinate, GeoUnit, PlaceNumber, Data, UnicodeText,
+ Timestamp, TransportNumber
  FROM ASN-Module-GeneralData { iso(1) identified-organization(3) dod(6) internet(1) private(4) enterprise(1) uic(17218) fcb(1) modules(0) general(5) v1(1) 0 };
 
 -- Changes:
@@ -204,7 +205,7 @@ DocumentData ::= CHOICE {
 -- ##############################################################################################
 DelayConfirmation ::= SEQUENCE {
     -- Transport number of the delayed transport.
-    transportNumber TransportNumberType             OPTIONAL,
+    transportNumber TransportNumber                 OPTIONAL,
 
     -- Planned departure date and time of the delayed transport in local time at the station where
     --   delay became relevant (see below).
@@ -274,8 +275,8 @@ IssuingData ::= SEQUENCE {
 
     -- Location of sale (transport number and/or line number) in case of a sale on board of a transport.
     -- Values per the code table of the issuer.
-    issuedOnTransport              TransportNumberType           OPTIONAL,
-    issuedOnLine                   TransportNumberType           OPTIONAL,
+    issuedOnTransport              TransportNumber              OPTIONAL,
+    issuedOnLine                   TransportNumber              OPTIONAL,
 
     -- Point of sale.
     pointOfSale                    GeoCoordinate                OPTIONAL,
@@ -533,7 +534,7 @@ TransportLinkType ::= SEQUENCE {
 
     -- Transport numbers (= service number, train number) allowed for the transport link.
     -- Multiple numbers are allowed (e.g. two trains coupled together, each of them having its own train number).
-    transportNumber         SEQUENCE OF TransportNumberType                         OPTIONAL,
+    transportNumber         SEQUENCE OF TransportNumber                             OPTIONAL,
 
     -- Departure date and time in local time at the departure station of the transport link.
     -- If omitted, departureDateTime is assumed to be equal to validFrom and validFromUTCOffset of the container object.
@@ -579,7 +580,7 @@ ReservationSegmentType ::= SEQUENCE {
     destinationStation      Station                                                 OPTIONAL,
 
     -- Transport number (=service number, train number).
-    transportNumber         TransportNumberType                                     OPTIONAL,
+    transportNumber         TransportNumber                                         OPTIONAL,
 
     -- Departure date and time in local time at the departure station.
     -- If omitted, departureDateTime is assumed to be equal to validFrom and validFromUTCOffset of the container object.
@@ -1097,14 +1098,6 @@ ParkingType ::= SEQUENCE {
     extension       Data            OPTIONAL,
 
     ...
-}
-
--- ##############################################################################################
---  Transport number
--- ##############################################################################################
-TransportNumberType ::= CHOICE {
-    transportNumberNum INTEGER,
-    transportNumberIA5 VisibleString (FROM ("A".."Z"|"0".."9"|" "))
 }
 
 -- ##############################################################################################

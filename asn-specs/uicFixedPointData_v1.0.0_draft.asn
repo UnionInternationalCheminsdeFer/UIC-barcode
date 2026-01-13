@@ -46,19 +46,29 @@ Object ::= CHOICE {
 Station ::= SEQUENCE {
     station                 Station,
     platform                VisibleString   OPTIONAL,
-    subLocationProprietary  GenericId       OPTIONAL -- values defined by the issuer
+    subLocationProprietary  GenericId       OPTIONAL, -- defined by the issuer
+    ...
 }
 
 Vehicle ::= SEQUENCE {
     id                      VehicleIdentifier,
     place                   PlaceNumber             OPTIONAL, -- for identifying at which seat/compartment this barcode is placed, if at a seat
-    subLocationProprietary  GenericId               OPTIONAL, -- when affixed non-seat items or sub-items within a compartment, values defined by the issuer
+    subLocationProprietary  GenericId               OPTIONAL, -- when affixed non-seat items or sub-items within a compartment, defined by the issuer
+    ...
+}
+
+-- Representing a barcode/tag that is updated as the vehicle progresses along its route
+VehicleDynamic ::= SEQUENCE {
+    vehicleId               VehicleIdentifier,
+    currentStop             Station,
+    transportNumber         TransportNumber,
+    terminusStop            Station,
     ...
 }
 
 VehicleIdentifier ::= CHOICE {
     evn             INTEGER (0..999999999999), -- ERA European Vehicle Number, including the check digit
-    proprietary     GenericId,
+    proprietary     GenericId,                 -- defined by the issuer
     ...
 }
 

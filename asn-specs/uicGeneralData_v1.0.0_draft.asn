@@ -67,6 +67,12 @@ GenericId ::= CHOICE {
     idOct   OCTET STRING    -- for binary IDs such as UUIDs
 }
 
+-- Identification of a line or journey
+TransportNumber ::= CHOICE {
+    transportNumberNum INTEGER,
+    transportNumberIA5 VisibleString (FROM ("A".."Z"|"0".."9"|" "))
+}
+
 -- Identification of a station.
 Station ::= SEQUENCE {
     -- Code table in which the station code is defined.
