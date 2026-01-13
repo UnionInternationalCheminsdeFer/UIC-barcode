@@ -76,8 +76,9 @@ VehicleDynamic ::= SEQUENCE {
 }
 
 VehicleIdentifier ::= CHOICE {
-    evn             INTEGER (0..999999999999), -- ERA European Vehicle Number, including the check digit
-    proprietary     GenericId,                 -- defined by the issuer
+    evn             INTEGER (0..999999999999),                              -- ERA European Vehicle Number, including the check digit
+    vin             VisibleString (SIZE(17) ^ FROM ("A".."Z"|"0".."9")),    -- VIN per ISO 3779
+    proprietary     GenericId,                                              -- defined by the issuer
     ...
 }
 
