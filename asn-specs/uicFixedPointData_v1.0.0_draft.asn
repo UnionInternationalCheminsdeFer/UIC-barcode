@@ -48,6 +48,7 @@ Object ::= CHOICE {
     vehicle         Vehicle,        -- e.g. for at-seat ordering, customer reporting of vehicle defects, vehicle based check-in
     sharedVehicle   SharedVehicle,  -- e.g. bike, e-scooter, car sharing
     proprietary     GenericId,      -- defined by the issuer
+    vehicleDynamic  VehicleDynamic,
     ...
 }
 
