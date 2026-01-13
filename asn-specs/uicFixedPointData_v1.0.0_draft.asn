@@ -14,11 +14,19 @@ IMPORTS GenericId, CompanyCode, Station, PlaceNumber, Data
 -- # Optional format for combining a FixedPointData structure with a URL for inclusion in a QR code.
 -- # This is useful, for example, in the case of customer feedback barcodes that should link to the operator's website
 -- # for reporting faults, or for directing users to download an app to access a shared vehicle.
--- #   (1) Encode this structure is the DOSIPAS format in the usual way
+-- #   (1) Encode this structure in the DOSIPAS format in the usual way, optionally signed
 -- #   (2) Base-42 encode the resultant binary data with the following alphabet: "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ$:*+-."
 -- #   (3) Append it to the end of a URL with the prefix "$UIC:"
 -- # Example: "HTTPS://RAIL.EXAMPLE/QRFB/$UIC:A2I9$QRYBF1D0MDK0J5ANAJ**R1NM090.7-DEIU+L2"
 -- # n.b. uppercase should be used in the whole URL, as this is much more efficient to encode in a QR code
+-- #
+-- # Encoding in an NFC tag
+-- #   (1) Encode this structure in the DOSIPAS format in the usual way, optionally signed
+-- #   (2) Place the encoded DOSIPAS in an NDEF record of the format 0x02 (IANA Media Type),
+-- #         with the media type application/vnd.uic.dosipas.v2 or application/vnd.uic.dosipas.v1, as appropriate
+-- #   (3) Write the NDEF record to an NDEF formatted NFC tag
+-- # Other records may exist in the same NDEF message. Readers MUST be prepared to look beyond the
+-- #  first record to find a UIC DOSIPAS record.
 -- ##############################################################################################
 
 FixedPointData ::= SEQUENCE {
