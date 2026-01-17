@@ -2,7 +2,7 @@ ASN-Module-FixedPointData { iso(1) identified-organization(3) dod(6)
     internet(1) private(4) enterprise(1) uic(17218) fcb(1) modules(0) fpd(6) v1(1) 0 }
     DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 
-IMPORTS GenericId, CompanyCode, Station, PlaceNumber, Data
+IMPORTS GenericId, CompanyCode, Station, CoachPlaces, Data
  FROM ASN-Module-GeneralData { iso(1) identified-organization(3) dod(6) internet(1) private(4) enterprise(1) uic(17218) fcb(1) modules(0) general(5) v1(1) 0 };
 
 -- ##############################################################################################
@@ -61,7 +61,7 @@ Station ::= SEQUENCE {
 
 Vehicle ::= SEQUENCE {
     id                      VehicleIdentifier,
-    place                   PlaceNumber             OPTIONAL, -- for identifying at which seat/compartment this barcode is placed, if at a seat
+    place                   CoachPlaces             OPTIONAL, -- for identifying at which carriage and seat/compartment this barcode is placed, if at a seat
     subLocationProprietary  GenericId               OPTIONAL, -- when affixed non-seat items or sub-items within a compartment, defined by the issuer
     ...
 }
