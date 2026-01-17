@@ -10,7 +10,7 @@ ASN-Module-RailTicketData { iso(1) identified-organization(3) dod(6)
 -- imports and exports
 -- EXPORTS ALL;
 
-IMPORTS GenericId, CompanyCode, Station, StationCode, CodeTable, GeoCoordinate, GeoUnit, PlaceNumber, Data, UnicodeText, Timestamp
+IMPORTS GenericId, CompanyCode, Station, StationCode, CodeTable, GeoCoordinate, GeoUnit, CoachPlaces, Data, UnicodeText, Timestamp
  FROM ASN-Module-GeneralData { iso(1) identified-organization(3) dod(6) internet(1) private(4) enterprise(1) uic(17218) fcb(1) modules(0) general(5) v1(1) 0 };
 
 -- Changes:
@@ -606,7 +606,7 @@ ReservationSegmentType ::= SEQUENCE {
     service                 ServiceType                                             DEFAULT seat,
 
     -- Reserved places
-    coachPlaces             SEQUENCE OF CoachPlacesType                             OPTIONAL,
+    coachPlaces             SEQUENCE OF CoachPlaces                                 OPTIONAL,
 
     -- Number of persons on the ticket having a reservation without assigned places
     numberOfOverbooked      INTEGER (0..200)                                        DEFAULT 0,
@@ -1595,25 +1595,6 @@ TicketLinkType ::= SEQUENCE {
 }
 
 -- ##############################################################################################
---  Place data according to TAP TSI B.5
---  placeString = place number ranges in case of groups
--- ##############################################################################################
-CoachPlacesType ::= SEQUENCE {
-    coach               VisibleString               OPTIONAL,
-
-    -- Printable place string  (e.g. "15-18, 21, 22")
-    placeString         VisibleString               OPTIONAL,
-
-    -- Printable place description
-    placeDescription    UnicodeText                 OPTIONAL,
-
-    -- Individual places
-    placeNumber         SEQUENCE OF PlaceNumber     OPTIONAL,
-
-    details             PlaceDetailsType            OPTIONAL
-}
-
--- ##############################################################################################
 --  Sleeper compartment according to TAP TSI B.5
 -- ##############################################################################################
 BerthDetailData ::= SEQUENCE {
@@ -1621,19 +1602,6 @@ BerthDetailData ::= SEQUENCE {
     numberOfBerths         INTEGER (1..999),
     gender                 CompartmentGenderType         DEFAULT mixed,
     ...
-}
-
--- ##############################################################################################
---  Compartment details according to TAP TSI B.5
--- ##############################################################################################
-PlaceDetailsType ::= SEQUENCE {
-    -- Per TAP TSI Code List B.5.51.1
-    coachType       INTEGER (0..99),
-    -- Per TAP TSI Code List B.5.51.2
-    compartmentType INTEGER (0..99),
-    -- Per TAP TSI Code List B.5.51.3
-    specialOffers   INTEGER (0..99),
-    description     UnicodeText     OPTIONAL
 }
 
 -- ##############################################################################################

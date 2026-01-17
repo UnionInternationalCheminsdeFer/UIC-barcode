@@ -83,10 +83,38 @@ StationCode ::= CHOICE {
     stationIA5        VisibleString
 }
 
--- Identification of a place
+-- Place data according to TAP TSI B.5
+-- placeString = place number ranges in case of groups
+CoachPlaces ::= SEQUENCE {
+    coach               VisibleString               OPTIONAL,
+
+    -- Printable place string  (e.g. "15-18, 21, 22")
+    placeString         VisibleString               OPTIONAL,
+
+    -- Printable place description
+    placeDescription    UnicodeText                 OPTIONAL,
+
+    -- Individual places
+    placeNumber         SEQUENCE OF PlaceNumber     OPTIONAL,
+
+    details             PlaceDetails            OPTIONAL
+}
+
+-- Identification of an individual place
 PlaceNumber ::= CHOICE {
     placeNum      INTEGER (1..999),
     placeIA5      VisibleString
+}
+
+-- Compartment details according to TAP TSI B.5
+PlaceDetails ::= SEQUENCE {
+    -- Per TAP TSI Code List B.5.51.1
+    coachType       INTEGER (0..99),
+    -- Per TAP TSI Code List B.5.51.2
+    compartmentType INTEGER (0..99),
+    -- Per TAP TSI Code List B.5.51.3
+    specialOffers   INTEGER (0..99),
+    description     UnicodeText     OPTIONAL
 }
 
 -- Identification of a company.
