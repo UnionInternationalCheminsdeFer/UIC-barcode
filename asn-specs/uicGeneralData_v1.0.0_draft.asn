@@ -45,21 +45,6 @@ ASN-Module-GeneralData { iso(1) identified-organization(3) dod(6)
 
 EXPORTS ALL;
 
--- Defines the code table used, e.g. to define station code or area code or line code.
-CodeTable ::= CHOICE {
-    nuts          NULL,             -- European NUTS code.
-    locationUIC   NULL,             -- UIC station code from MERITS.
-                                    -- A 7 digit code (UIC country code + 5 digit local code) equates to an ERA retail station code; not to be confused with an ERA infrastructure station code.
-                                    -- A 9 digit code (2-digit scope code + UIC country code + 5 digit local code) equates to non rail infrastructure.
-    issuer        NULL,             -- Bilaterally agreed code table of the 'issuer' defined in issuingDetail.
-    productOwner  NULL,             -- Bilaterally agreed code table provided by the product owner.
-    carrier       NULL,             -- Bilaterally agreed code table provided by the carrier(s) participating in the related route segment.
-    area          NULL,             -- Bilaterally agreed code table for the area defined by the element 'concernedArea' defined in the container object.
-    national     INTEGER (0..999),  -- National code list of the national authority the country defined by its ISO 3166-1 numeric code.
-    company      CompanyCode,       -- Bilaterally agreed code table provided by the company defined according to its CompanyCodeType.
-    ...
-}
-
 -- Identification of any element using a numerical, alphanumerical or binary ID, according to the code list defined in the container object.
 GenericId ::= CHOICE {
     idNum   INTEGER,        -- for numerical IDs
@@ -67,20 +52,93 @@ GenericId ::= CHOICE {
     idOct   OCTET STRING    -- for binary IDs such as UUIDs
 }
 
--- Identification of a station.
-Station ::= SEQUENCE {
-    -- Code table in which the station code is defined.
-    -- If this code table is not provided the code table of the container object applies.
-    stationCodeTable    CodeTable   OPTIONAL,
+GenericCode{IdType} ::= SEQUENCE {
+    codeTable CHOICE {
+        issuer          NULL,             -- Bilaterally agreed code table of the 'issuer' defined in issuingDetail.
+        productOwner    NULL,             -- Bilaterally agreed code table provided by the product owner.
+        carrier         NULL,             -- Bilaterally agreed code table provided by the carrier(s) participating in the related route segment.
+        area            NULL,             -- Bilaterally agreed code table for the area defined by the element 'concernedArea' defined in the container object.
+        national        INTEGER (0..999), -- National code list of the national authority the country defined by its ISO 3166-1 numeric code.
+        company         CompanyCode,      -- Bilaterally agreed code table provided by the company defined according to its CompanyCodeType.
+    },
+    codeTableVersion INTEGER (0..255) OPTIONAL,
+    id IdType
+}
 
-    station             StationCode,
+-- All OCTET STRINGs are SCSU encoded
+NeTExId {OCTET STRING:defaultObjectType} ::= CHOICE {
+    generic SEQUENCE {
+    	-- Codespace URL, e.g. http://naptan.org.uk/naptan
+		url OCTET STRING,
+		id  OCTET STRING
+    },
+    epip SEQUENCE {
+        country             INTEGER (0..999),
+        localCode           OCTET STRING (SIZE (1..64)) OPTIONAL,
+        objectType          OCTET STRING (SIZE (1..64)) DEFAULT defaultObjectType,
+        epipType            OCTET STRING (SIZE (1..64)) OPTIONAL,
+        technicalIdentifier OCTET STRING (SIZE (1..64)),
+        sharedIdProvider    OCTET STRING (SIZE (1..64)) OPTIONAL
+    }
+}
+
+NeTExLineId             ::= NeTExId{'4C696E65'H}
+NeTExServiceJourney     ::= NeTExId{'536572766963654A6F75726E6579'H}
+NeTExScheduledStopPoint ::= NeTExId{'5363686564756C656453746F70506F696E74'H}
+
+Station ::= SEQUENCE {
+    station             CHOICE {
+        -- UIC station code from MERITS.
+        --   A 7 digit code (UIC country code + 5 digit local code) equates to an ERA retail station code; not to be confused with an ERA infrastructure station code.
+        --   A 9 digit code (2-digit scope code + UIC country code + 5 digit local code) equates to non-rail infrastructure.
+        uic         INTEGER (1..999999999),
+        netex       NeTExScheduledStopPoint,
+        generic     GenericCode{GenericId},
+    },
     stationNameUTF8     UnicodeText OPTIONAL
 }
 
--- ID of a station, according to the code list defined in the container object.
-StationCode ::= CHOICE {
-    stationNum        INTEGER (1..999999999),
-    stationIA5        VisibleString
+StationSet ::= SEQUENCE {
+    set CHOICE {
+        -- Where a station group is defined a number of stations grouped together with a primary station
+        groupPrimary    Station,
+        -- Explicitly listing all stations in a group
+        list            SEQUENCE OF Station
+    },
+    setNameUTF8 UnicodeText OPTIONAL
+}
+
+-- A grouping of services into a line
+LineId ::= CHOICE {
+    publicIdentifier    VisibleString (FROM ("A".."Z"|"0".."9")) -- e.g. "RE1"
+    netex               NeTExLineId,
+    generic             GenericCode{GenericId},
+}
+
+-- A specific service
+TransportId ::= CHOICE {
+    publicIdentifier    VisibleString (FROM ("A".."Z"|"0".."9")) -- e.g. "ICE107"
+    netex               NeTExServiceJourneyId,
+    generic             GenericCode{GenericId},
+}
+
+AreaSet ::= CHOICE {
+    -- European NUTS code.
+    nuts    SEQUENCE OF SEQUENCE {
+        country (0..999),
+        subdivision VisibleString (FROM ("A".."Z"|"1".."9") OPTIONAL,
+    },
+    -- One of the NeTEx Zone sub-types
+    netex   NeTExId{''H}
+    generic GenericCode{CHOICE {
+        -- Sequence of area/zone identifiers
+        idNum    SEQUENCE OF INTEGER,       -- e.g. sequence of allowed area/zone numbers such as {1,5,23}
+        idIA5    SEQUENCE OF VisibleString, -- e.g. areas/zones described with text such as {"M","1-3"}
+        idOct    SEQUENCE OF OCTET STRING,  -- e.g. sequence of Calypso NetworkIds such as {'250901'H,'250072'H}
+        -- Bit representation of areas/zones.
+        -- Recommended encoding if applicable: bit n (considering that bit 0 = right-most bit) encodes area/zone n+1, bit value 1 = area/zone is allowed, bit value 0 = area/zone is forbidden.
+        idBit    BIT STRING                -- e.g. bitmap of allowed areas/zones such as '10101110010'B for areas/zones 2, 5, 6, 7, 9 and 11
+    }}
 }
 
 -- Place data according to TAP TSI B.5
