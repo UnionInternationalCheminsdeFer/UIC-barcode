@@ -647,9 +647,6 @@ VoucherData ::= SEQUENCE {
     -- Value of the voucher, in the currency and fraction defined in IssuingData.
     value           INTEGER                 DEFAULT 0,
 
-    -- Type of the voucher, code list defined by the product owner.
-    type            INTEGER (1..32000)      OPTIONAL,
-
     -- Additional readable information that cannot be described using the other elements.
     infoText        UnicodeText             OPTIONAL,
 
@@ -1051,9 +1048,9 @@ ParkingGroundData ::= SEQUENCE {
     validFrom                     ValidFromType,
     validUntil                    ValidUntilType,
 
-    ...,
-
     parkingDetails                ParkingType
+
+    ...,
 
 }
 
@@ -1183,11 +1180,8 @@ TariffType ::= SEQUENCE {
 --  Card reference (for any kind of card: customer card, loyalty card, reduction card...)
 -- ##############################################################################################
 CardReferenceType ::= SEQUENCE {
-    -- Issuer of the card.
-    issuer  CompanyCode,
-
-    -- Readable name of the card, e.g. "VISA-CARD", "Carte Avantage Jeune", "Vorteilscard Senior"...
-    name    UnicodeText         OPTIONAL,
+    -- Issuer and type of the card
+   	product ProductType,
 
     -- Type of the card, code list defined by the issuer of the card.
     type    INTEGER             OPTIONAL,
