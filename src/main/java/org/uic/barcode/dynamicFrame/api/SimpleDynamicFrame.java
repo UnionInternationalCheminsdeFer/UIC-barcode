@@ -280,7 +280,7 @@ public class SimpleDynamicFrame implements IDynamicFrame {
 		} else if (signatureAlgorithmOid != null && !signatureAlgorithmOid.isEmpty()) {
 			signingAlgorithmOid = signatureAlgorithmOid;
 		} else if (key instanceof DSAPublicKey) {
-			signingAlgorithmOid = SecurityUtils.getDsaAlgorithm(signature);
+			signingAlgorithmOid = SecurityUtils.getDsaAlgorithm(signature,key);
 		}
 		
 				

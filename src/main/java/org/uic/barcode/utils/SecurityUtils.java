@@ -10,6 +10,7 @@ import java.security.Provider;
 import java.security.Provider.Service;
 import java.security.PublicKey;
 import java.security.Security;
+import java.security.interfaces.DSAPublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
@@ -325,9 +326,10 @@ public class SecurityUtils {
 	 * Gets the dsa algorithm allowed for ssb or static frame.
 	 *
 	 * @param bs the size of the signature
+	 * @param key 
 	 * @return the dsa algorithm OID
 	 */
-	public static String getDsaAlgorithm(byte[] bs) {
+	public static String getDsaAlgorithm(byte[] bs, PublicKey key) {
 		
 		 BigInteger[] bInts = null;
 		 int size = 0;
@@ -339,7 +341,18 @@ public class SecurityUtils {
 		 } catch (Exception e) {
 			return null;
 		 }
-		
+		 
+		 try {
+			 //try to detect the algorithm from the key param sizes
+			 DSAPublicKey dsaKey = (DSAPublicKey)key;
+			 BigInteger q  = dsaKey.getParams().getQ();
+			 int bits = q.bitLength();
+			 if (bits > 220 && bits < 225) {
+				 return Constants.DSA_SHA224; 
+			 }
+		 } catch (Throwable t) {
+			 //
+		 }
 		 if (size > 224) {
 		   return Constants.DSA_SHA256;
 		 } else if (size > 160) {

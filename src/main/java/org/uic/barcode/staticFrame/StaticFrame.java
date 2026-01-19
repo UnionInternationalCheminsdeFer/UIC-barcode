@@ -692,7 +692,7 @@ public class StaticFrame {
 		
 		// guess the signature algorithm based on the signature size
 		if ((signingAlg == null || signingAlg.length() < 1) && this.getSignature() != null) {			
-			signatureAlgorithmOid = SecurityUtils.getDsaAlgorithm(this.getSignature());
+			signatureAlgorithmOid = SecurityUtils.getDsaAlgorithm(this.getSignature(), key);
 		}
 		
 		//find the algorithm name for the signature OID
@@ -733,7 +733,7 @@ public class StaticFrame {
 	public boolean verifyByAlgorithmOid(PublicKey key, String signatureAlgorithmOid, Provider prov) throws InvalidKeyException, NoSuchAlgorithmException, SignatureException, IllegalArgumentException, UnsupportedOperationException, IOException, EncodingFormatException {
 
 		if ((signatureAlgorithmOid == null || signatureAlgorithmOid.length() < 1) && this.getSignature() != null) {			
-			signatureAlgorithmOid = SecurityUtils.getDsaAlgorithm(this.getSignature());
+			signatureAlgorithmOid = SecurityUtils.getDsaAlgorithm(this.getSignature(), key);
 		}
 		
 		//find the algorithm name for the signature OID

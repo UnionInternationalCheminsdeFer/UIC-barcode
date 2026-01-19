@@ -343,7 +343,7 @@ public class SsbFrame {
 		
 		// guess the signature algorithm based on the signature size
 		if ((signingAlg == null || signingAlg.length() < 1) && signature != null) {			
-			signatureAlgorithmOid = SecurityUtils.getDsaAlgorithm(signature);
+			signatureAlgorithmOid = SecurityUtils.getDsaAlgorithm(signature,key);
 		}	
 		
 		if (prov != null) {
