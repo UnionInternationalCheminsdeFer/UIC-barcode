@@ -778,7 +778,7 @@ ConditionsType ::= SEQUENCE {
     --   - An international ticket from Munich to Vienna has the covering areas of "DE" and "AT"
     --   - A ticket valid on buses in the Saarland has a covering area of "DEC"
     --   - A ticket valid on the tram in Kehl and Strasbourg has the covering areas of "DE134" (Ortenaukreis) and "FRF11" (Bas-Rhin)
-    coveringArea                    SEQUENCE OF VisibleString,
+    coveringArea                    SEQUENCE OF NUTSArea,
 
     -- Identification of the product (owner, id, textual description).
     product                         ProductType                     OPTIONAL,
