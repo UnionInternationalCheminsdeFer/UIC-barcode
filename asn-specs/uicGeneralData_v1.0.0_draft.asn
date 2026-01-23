@@ -22,7 +22,7 @@ ASN-Module-GeneralData { iso(1) identified-organization(3) dod(6)
 -- #    The International Components for Unicode (https://icu.unicode.org/) is the recommended implementation of SCSU,
 -- #     if you are unsure which implementation to use, although it is by no means required.
 -- #
--- #    Systems dealing with the contained data MUST be complaint to DIN 91379.
+-- #    Systems dealing with the contained data MUST be compliant to DIN 91379.
 -- #    That is, they can handle (store, transfer, recall, and represent) all characters as specified in DIN 91379 without error.
 -- #    Additionally, all Unicode text, before being fed into the SCSU compressor, MUST be in Normalisation Form C.
 -- #    When comparing names with identity documents, or when a Latinized representation of a name is required,
@@ -180,7 +180,7 @@ CompanyCode ::= CHOICE {
     -- RICS codes as defined by UIC and registered on https://uic.org/support-activities/it/rics
     rics		INTEGER (1..9999),
 
-    -- Company codes as defined by the ERA
+    -- Organisation codes as defined by the ERA and registered on https://teleref.era.europa.eu/
     -- A RICS shall never be stored with eraCode but only with rics.
     eraCode 	VisibleString (SIZE (4) ^ FROM ("A".."Z"|"0".."9")),
 
@@ -268,6 +268,41 @@ Timestamp ::= SEQUENCE {
 Data ::= SEQUENCE {
     dataFormat  VisibleString,
     data        OCTET STRING
+}
+
+-- Values taken from GBFSv3.0
+SharedVehicleVariety ::= ENUMERATED {
+    bicycle (0),
+    cargoBicycle (1),
+    car (2),
+    moped (3),
+    scooterStanding (4),
+    scooterSeated (5),
+    other (6),
+    scooter (7),
+    ...
+}
+
+-- Values taken from GBFSv3.0
+SharedVehiclePropulsionType ::= ENUMERATED {
+    human (0),
+    electricAssist (1),
+    electric (2),
+    combustion (3),
+    combustionDiesel (4),
+    hybrid (5),
+    plugInHybrid (6),
+    hydrogenFuelCell (7),
+    ...
+}
+
+-- Values taken from GBFSv3.0
+SharedVehicleReturnConstraint ::= ENUMERATED {
+    freeFloating (0),
+    roundtripStation (1),
+    anyStation (2),
+    hybrid (3),
+    ...
 }
 
 END
