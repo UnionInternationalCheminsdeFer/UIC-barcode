@@ -768,25 +768,30 @@ ConditionsType ::= SEQUENCE {
 
     -- Detailed type of the transport product (ticket, reservation, commercial card...).
     -- MUST either be present in the generalConditions, or present in all specificConditions.
-    productVariety                   ProductVarietyType              OPTIONAL,
+    productVariety                  ProductVarietyType              OPTIONAL,
 
-    -- Area (city, region, country...) in which the transport document / the leg is valid
-    --   (allows also defining local code tables depending on this area).
-    -- Omitted if the area is implicit or completely defined with the geoValidity elements.
-    concernedArea                    AreaSetType                     OPTIONAL,
+    -- NUTS codes covering the whole area of validity of the ticket.
+    -- This does not mean that the ticket valid everywhere inside such areas, but that it definitely
+    -- is NOT valid outside the covering area.
+    -- Validity to specific services, transport modes, etc., may be further constrained by other conditions.
+    -- Examples:
+    --   - An international ticket from Munich to Vienna has the covering areas of "DE" and "AT"
+    --   - A ticket valid on buses in the Saarland has a covering area of "DEC"
+    --   - A ticket valid on the tram in Kehl and Strasbourg has the covering areas of "DE134" (Ortenaukreis) and "FRF11" (Bas-Rhin)
+    coveringArea                    SEQUENCE OF VisibleString,
 
     -- Code table to be used by default for all the elements in the transport document / in the leg.
-    locationCodeTable                CodeTable                      OPTIONAL,
+    locationCodeTable               CodeTable                      OPTIONAL,
 
     -- Version of the code tables used.
     -- Only relevant if locationCodeTable indicates a bilaterally agreed code table.
-    locationCodeTableVersion         INTEGER (0..255)                OPTIONAL,
+    locationCodeTableVersion        INTEGER (0..255)                OPTIONAL,
 
     -- Identification of the product (owner, id, textual description).
-    product                          ProductType                     OPTIONAL,
+    product                         ProductType                     OPTIONAL,
 
     -- Internal reference to the document (e.g. serial number of the document)
-    reference                        GenericId                      OPTIONAL,
+    reference                       GenericId                      OPTIONAL,
 
     -- The company that defined the above reference, if different from the document issuer.
     referenceCompany				CompanyCode                     OPTIONAL,
@@ -794,9 +799,9 @@ ConditionsType ::= SEQUENCE {
     -- Time validity
     -- Having no validFrom is allowed (e.g. ticket not yet activated, which will be reissued with an explict validFrom upon activation).
     -- Having no validUntil is allowed (e.g. ticket with unlimited validity - which should nevertheless have a security expiry date in the header requiring regular reissue).
-    validFrom                        ValidFromType                   OPTIONAL,
-    validUntil                       ValidUntilType                  OPTIONAL,
-    rareTimingConditions             RareTimingConditionsType        OPTIONAL,
+    validFrom                       ValidFromType                   OPTIONAL,
+    validUntil                      ValidUntilType                  OPTIONAL,
+    rareTimingConditions            RareTimingConditionsType        OPTIONAL,
 
     -- TRUE if the direction of travel must be followed as described:
     -- - in generalConditions: the traveler must pass the sequence of segments in the provided order
@@ -806,19 +811,19 @@ ConditionsType ::= SEQUENCE {
     -- - in generalConditions: the traveler can travel through the described segments in any order.
     -- - in specificConditions: the traveler can take the transport indicated by the segment in any direction (e.g. from O to D or from D to O).
     -- omitted if the concept of direction is not relevant (e.g. for geographical validity as unordered areas).
-    directionIsMandatory             BOOLEAN                         OPTIONAL,
+    directionIsMandatory            BOOLEAN                         OPTIONAL,
 
     -- Link to a specific transport service
     transportService CHOICE {
         -- Link to a specific transport service without reservation
-        transportLink                SEQUENCE OF TransportLinkType,
+        transportLink               SEQUENCE OF TransportLinkType,
 
         -- Link to a specific transport service with reservation
-        reservation                  SEQUENCE OF ReservationSegmentType
+        reservation                 SEQUENCE OF ReservationSegmentType
     } OPTIONAL,
 
     -- Included carriers responsible for the transport
-    includedCarrier                  SEQUENCE OF CompanyCode        OPTIONAL,
+    includedCarrier                 SEQUENCE OF CompanyCode        OPTIONAL,
 
     -- Included transport modes. Code list: EN 1545-1 (transport type code)
     includedTransportType           SEQUENCE OF INTEGER (0..31)      OPTIONAL,
@@ -1339,14 +1344,26 @@ CustomerStatusType ::= SEQUENCE {
 --  Specification of the geographical validity for a segment.
 -- ##############################################################################################
 GeoValidityType ::= CHOICE {
-    originDestination  OriginDestinationType,   -- Simple journey from an Origin to a Destination, with optional description of intermediate stations.
-    complexRoute       ComplexRouteType,        -- Complex journey allowing multiple origins, multiple destinations, alternative routes, etc.
-    area               AreaType,                -- Validity defined with areas/zones.
-    line               LineType,                -- Set of authorized transport lines.
-    polygone           PolygoneType,            -- Area defined using geocoordinates.
-    parking            ParkingType,             -- Parking right (for a car, a bike...).
-    sharedVehicle      SharedVehicle,       -- Access to a shared vehicle service. /!\ Type yet to be defined
-    proprietary        Data,                -- Specific proprietary geographical validity in case the above predefined types do not allow it to be described.
+    -- Simple journey from an Origin to a Destination, with optional description of intermediate stations.
+    originDestination   OriginDestinationType,
+     -- Complex journey allowing multiple origins, multiple destinations, alternative routes, etc.
+    complexRoute        ComplexRouteType,
+    -- Validity defined with areas/zones.
+    area                AreaType,
+    -- Set of authorized transport lines
+    line                LineType,                .
+    -- Area defined using geocoordinates.
+    polygone            PolygoneType,
+    -- Parking right (for a car, a bike...).
+    parking             ParkingType,
+    -- Access to a shared vehicle service.
+    sharedVehicle       SharedVehicle,
+    -- Valid everywhere within the operating area of a carrier, including cross-border services, unless excluded by coveringArea condition.
+    carrierNetwork      SEQUENCE OF CompanyCode (SIZE(1..16),
+    -- No specific geographic validity beyond the coveringArea and other conditions.
+    perConditions       NULL,
+    -- Specific proprietary geographical validity in case the above predefined types do not allow it to be described.
+    proprietary         Data,
     ...
 }
 
