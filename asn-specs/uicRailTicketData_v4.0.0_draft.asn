@@ -1361,17 +1361,19 @@ GeoValidityType ::= CHOICE {
 -- ##############################################################################################
 SharedVehicle ::= SEQUENCE {
     -- Shared vehicle providers that this entitlement covers
-    carriers        SEQUENCE OF CompanyCode,
+    carriers            SEQUENCE OF CompanyCode,
 
     -- The number of individual vehicles included in this entitlement
-    numberOfVehicles INTEGER (1..16)                DEFAULT 1,
+    numberOfVehicles    INTEGER (1..16)             DEFAULT 1,
 
     -- Which kinds of shared vehicles are included in this entitlement
     -- An empty list means no constraint
-    vehicleTypes    SEQUENCE OF SharedVehicleType,
+    vehicleTypes        SEQUENCE OF SharedVehicleType,
 
     -- The vehicle must be collected from this station.
-    station         Station                         OPTIONAL,
+    collectionStation   Station                     OPTIONAL,
+    -- The vehicle must be returned to this station.
+    collectionStation   Station                     OPTIONAL,
 
     -- Included amount of time allowed to access a shared vehicle, if more restrictive than the validity period.
     -- If present, indicates that the entitlement is valid for a given amount of time within the validity period.
@@ -1379,16 +1381,16 @@ SharedVehicle ::= SEQUENCE {
     -- that must be queried to verify whether the traveler still has any remaining time.
     -- Whether an operator allows the traveler to pay additionally for more time once the allotted time is up is
     -- per local operator policy.
-    allowedTime CHOICE {
+    allowedTime         CHOICE {
         days    INTEGER,
         minutes INTEGER (1..1439)
     }                                               OPTIONAL,
 
     -- Additional readable information that cannot be described using the other elements.
-    infoText    UTF8String                          OPTIONAL,
+    infoText            UTF8String                  OPTIONAL,
 
     -- Proprietary data defined bilaterally.
-    extension   Data                                OPTIONAL,
+    extension           Data                        OPTIONAL,
 
     ...
 }
