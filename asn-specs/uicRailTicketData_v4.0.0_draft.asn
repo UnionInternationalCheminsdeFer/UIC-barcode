@@ -10,7 +10,8 @@ ASN-Module-RailTicketData { iso(1) identified-organization(3) dod(6)
 -- imports and exports
 -- EXPORTS ALL;
 
-IMPORTS GenericId, CompanyCode, Station, StationCode, CodeTable, GeoCoordinate, GeoUnit, CoachPlaces, Data, UnicodeText, Timestamp
+IMPORTS GenericId, CompanyCode, Station, StationCode, CodeTable, GeoCoordinate, GeoUnit, CoachPlaces, Data, UnicodeText,
+ Timestamp, SharedVehicleVariety, SharedVehiclePropulsionType, SharedVehicleReturnConstraint
  FROM ASN-Module-GeneralData { iso(1) identified-organization(3) dod(6) internet(1) private(4) enterprise(1) uic(17218) fcb(1) modules(0) general(5) v1(1) 0 };
 
 -- Changes:
@@ -1344,13 +1345,59 @@ GeoValidityType ::= CHOICE {
     line               LineType,                -- Set of authorized transport lines.
     polygone           PolygoneType,            -- Area defined using geocoordinates.
     parking            ParkingType,             -- Parking right (for a car, a bike...).
-    sharedVehicle      SharedVehicleType,       -- Access to a shared vehicle service. /!\ Type yet to be defined
+    sharedVehicle      SharedVehicle,       -- Access to a shared vehicle service. /!\ Type yet to be defined
     proprietary        Data,                -- Specific proprietary geographical validity in case the above predefined types do not allow it to be described.
     ...
 }
 
--- TODO
-SharedVehicleType ::= SEQUENCE {}
+-- ##############################################################################################
+--  Access to a shared vehicle service, e.g. car sharing or bike/e-scooter rental
+-- ##############################################################################################
+SharedVehicle ::= SEQUENCE {
+    -- Shared vehicle providers that this entitlement covers
+    carriers            SEQUENCE OF CompanyCode,
+
+    -- The number of individual vehicles included in this entitlement
+    numberOfVehicles    INTEGER (1..16)             DEFAULT 1,
+
+    -- Which kinds of shared vehicles are included in this entitlement
+    -- An empty list means no constraint
+    vehicleTypes        SEQUENCE OF SharedVehicleType,
+
+    -- The vehicle must be collected from this station.
+    collectionStation   Station                     OPTIONAL,
+    -- The vehicle must be returned to this station.
+    collectionStation   Station                     OPTIONAL,
+
+    -- Included amount of time allowed to access a shared vehicle, if more restrictive than the validity period.
+    -- If present, indicates that the entitlement is valid for a given amount of time within the validity period.
+    -- If present, the count of the remaining number of allowed days or hours is centrally held in a back office,
+    -- that must be queried to verify whether the traveler still has any remaining time.
+    -- Whether an operator allows the traveler to pay additionally for more time once the allotted time is up is
+    -- per local operator policy.
+    allowedTime         CHOICE {
+        days    INTEGER,
+        minutes INTEGER (1..1439)
+    }                                               OPTIONAL,
+
+    -- Additional readable information that cannot be described using the other elements.
+    infoText            UTF8String                  OPTIONAL,
+
+    -- Proprietary data defined bilaterally.
+    extension           Data                        OPTIONAL,
+
+    ...
+}
+
+SharedVehicleType ::= SEQUENCE {
+    -- An empty list means any value
+    variety             SEQUENCE OF SharedVehicleVariety (SIZE (0..15)),
+    -- An empty list means any value
+    propulsion          SEQUENCE OF SharedVehiclePropulsionType (SIZE (0..15)),
+    -- An empty list means any value
+    returnConstraint    SEQUENCE OF SharedVehicleReturnConstraint (SIZE (0..15)),
+    ...
+}
 
 -- ##############################################################################################
 --  Geographical validity from an origin station to a destination station
