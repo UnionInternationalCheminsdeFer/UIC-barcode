@@ -11,7 +11,7 @@ ASN-Module-GeneralData { iso(1) identified-organization(3) dod(6)
 -- #      926 for Kosovo as numeric ISO Country Code
 -- #      XK  for Kosovo as alphanumeric 2-character ISO Country Code
 -- #
--- #  RICS codes must be used to encode companies where available, else ERA company codes, or other codes MAY be used.
+-- #  RICS codes must be used to encode companies where available, else ERA Organisation Codes, or other codes MAY be used.
 -- #
 -- #  Encoding and handling of text:
 -- #    Text fields in this specification are OCTET STRINGS.
@@ -70,7 +70,7 @@ Station ::= SEQUENCE {
     station             CHOICE {
         -- ERA TAP TSI location code
         --   A 7 digit code (UIC country code + 5 digit local code) equates to an ERA retail station code; not to be confused with an ERA infrastructure station code.
-        --   A 9 digit code (2-digit scope code + UIC country code + 5 digit local code) equates to non-rail infrastructure.
+        --   A 9 digit code (2-digit scope code + UIC country code + 5 digit local code) equates to non-rail station codes.
         era         INTEGER (1..999999999),
         generic     GenericCode{GenericId},
     },
@@ -170,7 +170,7 @@ CompanyCode ::= CHOICE {
 	otherCode   SEQUENCE {
 		--  The value of 'codeTable' identifies the company identifier format according to the following:
 		--    "+" + [2-letter uppercase ISO 3166 country code] + [addon, chosen by the national standards body of that country]
-		--    "_" + [RICS or ERA company code] + [addon, chosen by this company]
+		--    "_" + [RICS or ERA Organisation Code] + [addon, chosen by this company]
 		--    "*" + [addon] - private use, not guaranteed to avoid clashes
 		--    Compressed company form (i.e. "!I", "!C", "!P") are not permitted here.
 		--    Any other value only after registration in the company_code.csv registry.
@@ -240,7 +240,7 @@ Timestamp ::= SEQUENCE {
 --
 --  The value of 'dataFormat' identifies how 'data' is encoded:
 --    "+" + [2-letters uppercase ISO 3166 country code] + [addon, chosen by the national standards body of that country]
---    "_" + [RICS or ERA company code] + [addon, chosen by this company]
+--    "_" + [RICS or ERA Organisation Code] + [addon, chosen by this company]
 --    "!I" + [addon, chosen by the issuer] - equivalent to the _RICS format, without repetition of the issuer's code
 --    "!C" + [addon, chosen by the carrier] - equivalent to the _RICS format, without repetition of the carriers's code
 --    "!P" + [addon, chosen by the product owner] - equivalent to the _RICS format, without repetition of the product owner's code

@@ -5,8 +5,8 @@ private, and other extensions to UIC barcoded ticketing standards.
 This serves as a central repository of extension identifiers, and provides
 information on where to find more information on specific identifiers.
 
-The keywords "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", 
-"SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and "OPTIONAL" in this 
+The keywords MUST, MUST NOT, REQUIRED, SHALL, SHALL NOT, SHOULD, 
+SHOULD NOT, RECOMMENDED, NOT RECOMMENDED, MAY, and OPTIONAL in this 
 document are to be interpreted as described in 
 [BCP 14](https://www.rfc-editor.org/info/bcp14) when, and only when, they appear
 in all capitals, as shown here.
@@ -16,7 +16,7 @@ in all capitals, as shown here.
 Extension identifiers can one of 4 possible formats:
 
 - National: `"+" + [2-letter uppercase ISO 3166 country code] + [addon, chosen by the national standards body of that country]`
-- Company specific: `"_" + [RICS or ERA company code] + [addon, chosen by this company]`
+- Company specific: `"_" + [RICS or ERA Organisation Code] + [addon, chosen by this company]`
 - Compressed company specific: `"!I" + [addon, chosen by the issuer]`, `"!C" + [addon, chosen by the carrier]`, and `"!P" + [addon, chosen by the product owner]`
 - Private: `"*" + [addon]`
 - Other: any other value as registered in this repository
@@ -28,12 +28,12 @@ A national standards body SHOULD register any identifiers in this repository, bu
 
 ### Company specific
 
-These identifiers MUST only be assigned by companies that have their own RICS or ERA company code.
+These identifiers MUST only be assigned by companies that have their own RICS or ERA Organisation Code.
 A company SHOULD register any identifiers in this repository, but is not required to.
 
 ### Compressed company specific
 
-These identifiers are to be construed as equivalent to the company specific identifiers (see above), but the company code is elided.
+These identifiers are to be construed as equivalent to the company specific identifiers (see above), but the company identifier is elided.
 The company code is to be read as the relevant issuer, carrier, or product owner for the section of the ticket the extension appears in.
 Compressed company specific identifiers SHALL NOT be registered in this repository, as they are merely a different representation of company specific identifiers.
 Systems using compressed company specific identifiers SHOULD register a company specific identifier in this repository.
