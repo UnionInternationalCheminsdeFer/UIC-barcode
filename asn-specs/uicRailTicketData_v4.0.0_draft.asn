@@ -1215,9 +1215,11 @@ IdentificationDocumentType ::= SEQUENCE {
 --    from the type of travel document.
 --  E.g. it can include the date of birth as this is part of the traveler,
 --    but not the indication "Senior" as this is tariff dependent.
--- All parts of the traveler's name are to be encoded using the SCSU.
 -- ##############################################################################################
 TravelerType ::= SEQUENCE {
+    -- All 3 name parts are encoded with SCSU the SCSU compression (as per UnicodeText).
+    -- The language tag applies to all 3 name parts.
+    -- That is, the name parts are to be construed as 3 UnicodeText SEQUENCEs with the same language tag set.
     firstName       OCTET STRING                                OPTIONAL,
     secondName      OCTET STRING                                OPTIONAL,
     lastName        OCTET STRING                                OPTIONAL,
