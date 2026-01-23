@@ -383,10 +383,10 @@ OnlineValidationStatus ::= ENUMERATED {
     optional    (2), -- the ticket can be fully validated and checked offline, i.e. if the ticket
                      -- contains all the information necessary for validation and inspection and is therefore self-sufficient,
                      -- but some operators, in an interoperability scenario, nevertheless choose to operate this ticket in ABT mode and validate it online.
-    mandatory   (3)  -- online operations must be performed to validate or check this ticket:
+    mandatory   (3)  -- online operations must be performed to validate or check this ticket. E.g.:
                      --   - For a Pay-as-you-go ticket, check during inspection that it has been validated.
                      --   - For a ticket valid for 3 hours from the first validation, check when this first validation took place.
-                     --   - For a fully ABT (Account Based Ticketing) document: check the details of the ticket in the ABT account.
+                     --   - For a fully ABT (Account Based Ticketing) document: check the details of the ticket in the ABT account (whose ID may be specified in 'token').
                      --   - For a ticket authorizing a limited number of trips: check how many trips have already been made.
                      --   - For a ticket that can be refunded until the last moment: check if the ticket has been cancelled and refunded.
 }
@@ -394,7 +394,7 @@ OnlineValidationStatus ::= ENUMERATED {
 OnlineValidationType ::= CHOICE {
     eTCD                        NULL,            -- The ticket may be checked against the UIC's eTCD
     securityProviderProprietary NULL,            -- The ticket may be checked against a proprietary platform of the security provider; e.g. the Deutschlandtarifverbund's security portal.
-    issuerProprietary           NULL,            -- The ticket may be checked against a proprietary platform of the issuer; e.g. bwegt check-in check-out (Baden-Württemburg).
+    issuerProprietary           NULL,            -- The ticket may be checked against a proprietary platform of the issuer; e.g. bwegt check-in check-out (Baden-Württemberg).
     external                    CompanyCode,     -- The ticket may be checked against the platform operated by the specified company; e.g. Entur
     other                       VisibleString,   -- The ticket may be checked against some other external platform, as identified by the string
     ...
@@ -1142,10 +1142,10 @@ TariffType ::= SEQUENCE {
 
     -- Age restrictions of the tariff.
     age CHOICE {
-        specificAge INTEGER (1..128),
+        specificAge INTEGER (0..127),
         ageRange    SEQUENCE {
-            ageBelow    INTEGER (1..128) OPTIONAL,
-            ageAbove    INTEGER (1..128) OPTIONAL
+            ageBelow    INTEGER (1..128) OPTIONAL, -- 'below' is to be understood as 'strictly less than'
+            ageAbove    INTEGER (0..127) OPTIONAL  -- 'above' is to be understood as 'strictly greater than'
         }
     } OPTIONAL,
 
@@ -1889,6 +1889,7 @@ END
 --        - check-in / check-out barcode at check-in check-out point
 -- - other use cases?
 -- ##############################################################################################
+
 
 
 
