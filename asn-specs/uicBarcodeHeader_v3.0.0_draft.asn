@@ -49,7 +49,7 @@ Level1Data ::= SEQUENCE {
     securityProvider    CompanyCode,
     keyId               INTEGER (0..99999)  OPTIONAL,
     -- This field MUST contain at most one well-known UIC data type (e.g. FCBn)
-    data                SEQUENCE OF Data (SIZE(1..16)),
+    data                SEQUENCE SIZE(1..16) OF Data,
 
     -- object identifier of the key algorithms, e.g.:
     --   EC secp256r1   1.2.840.10045.3.1.7
