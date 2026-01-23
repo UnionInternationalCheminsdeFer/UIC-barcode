@@ -101,11 +101,18 @@ TransportId ::= CHOICE {
     generic             GenericCode{GenericId},
 }
 
--- A geographic area defined under the Nomenclature of Territorial Units for Statistics (Regulation EC 1059/2003)
+-- A geographic area defined under the Nomenclature of Territorial Units for Statistics (Regulation EC 1059/2003).
+-- Divisions all the way down to the Local Administrative Unit are permitted.
+-- NUTS codes are only defined for members of the EU, the EFTA, and EU candidate countries.
+-- FAUs are permitted standalone, e.g. DE025F (Freiburg im Breisgau) is coded with the subdivision "025F".
+-- LAUs must be appended to their NUTS3 code, e.g. DE13308316011 for Emmendingen, Stadt.
+-- For those countries outside the NUTS system:
+--   - the UK maintains a compatible system since Brexit called the International Territorial Level;
+--   - otherwise, use the the OECD Territorial Region codes (http://oe.cd/geostats).
 NUTSArea ::= SEQUENCE {
     -- ISO 3166-1 numeric code
-    country (0..999),
-    subdivision VisibleString (FROM ("A".."Z"|"1".."9") OPTIONAL,
+    country         INTEGER (0..999),
+    subdivision     VisibleString (FROM ("A".."Z"|"1".."9")) OPTIONAL,
 }
 
 -- One or more areas of geographic validity
