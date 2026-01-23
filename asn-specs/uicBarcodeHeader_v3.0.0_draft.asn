@@ -26,7 +26,10 @@ IMPORTS CompanyCode, Data, Timestamp
 
 -- The basic entry point of the barcode
 UICBarcodeHeader ::= SEQUENCE {
-    format      OCTET STRING (SIZE(2)), -- always set to "U3",
+    -- This field SHALL be set to the byte string "U3".
+    -- This results in the version 3 header being prefixed with U3 at the start, allowing identification of this
+    --  format of barcode header.
+    format      OCTET STRING (SIZE(2)),
     contents    Contents
 }
 
@@ -77,7 +80,8 @@ SignatureAlgorithm ::= CHOICE {
     dsa224  NULL, -- DSA using SHA-224, not recommended for new deployments
     dsa256  NULL, -- DSA using SHA-512, not recommended for new deployments
     none    NULL, -- only permitted when no security is required
-    other   OBJECT IDENTIFIER
+    other   OBJECT IDENTIFIER,
+    ...
 }
 
 -- Purposefully left blank, format to be decided upon at a later date
