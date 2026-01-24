@@ -109,6 +109,8 @@ TransportId ::= CHOICE {
 -- For those countries outside the NUTS system:
 --   - the UK maintains a compatible system since Brexit called the International Territorial Level;
 --   - otherwise, use the the OECD Territorial Region codes (http://oe.cd/geostats).
+--   - if none of the above applies for a country, a choice of suitable system MUST be defined by UIC,
+--      users MUST NOT define bilateral subdivisions.
 NUTSArea ::= SEQUENCE {
     -- ISO 3166-1 numeric code
     country         INTEGER (0..999),
