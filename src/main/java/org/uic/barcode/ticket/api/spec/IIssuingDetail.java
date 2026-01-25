@@ -13,17 +13,31 @@ public interface IIssuingDetail {
 	
 	/**
 	 * Gets the issuing date.
+	 * 
+	 * The utc date in the barcode is
+	 * provided in the system default time zone.
 	 *
 	 * @return the issuing date
 	 */
 	public Date getIssuingDate();
 	
 	/**
-	 * Sets the issuing date.
+	 * Sets the utc issuing date.
 	 *
 	 * @param date the new issuing date
 	 */
 	public void setIssuingDate(Date date);
+	
+	
+	/**
+	 * Sets the issuing date using local time zone.
+	 * The system default time zone is assumed and the 
+	 * date is converted to UTC in the barcode
+	 *
+	 * @param date the new issuing date
+	 */
+	public void setIssuingLocalDate(Date date);
+	
 	
 	/**
 	 * Gets the issuer.
@@ -192,5 +206,10 @@ public interface IIssuingDetail {
 	public Integer getCurrencyFraction();
 	public void setCurrencyFraction(Integer fraction);
 	
+	/**
+	 * provides the time zone in case a local date was provided
+	 * @return TimeZoneId 
+	 */
+	public String getTimeZoneId();
 
 }

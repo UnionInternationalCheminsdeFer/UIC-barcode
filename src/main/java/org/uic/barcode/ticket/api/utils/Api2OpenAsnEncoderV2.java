@@ -1506,8 +1506,8 @@ public class Api2OpenAsnEncoderV2 implements Api2AsnEncoder {
 					
 		TariffType asnTariff = new TariffType();
 			
-		asnTariff.setAgeAbove(UicEncoderUtils.getRestrictedInt(tariff.getAgeAbove(),2,120));
-		asnTariff.setAgeBelow(UicEncoderUtils.getRestrictedInt(tariff.getAgeBelow(),1,40));
+		asnTariff.setAgeAbove(UicEncoderUtils.getRestrictedInt(tariff.getAgeAbove(),1,128));
+		asnTariff.setAgeBelow(UicEncoderUtils.getRestrictedInt(tariff.getAgeBelow(),1,64));
 
 		asnTariff.setNumberOfPassengers(UicEncoderUtils.getRestrictedIntWithDefault(tariff.getNumberOfPassengers(),1,200,1));
 
@@ -1605,12 +1605,14 @@ public class Api2OpenAsnEncoderV2 implements Api2AsnEncoder {
 		
 		PassData asnData = new PassData();
 		asnDocument.getTicket().setPass(asnData);
-		
-		asnData.setProductOwnerNum(UicEncoderUtils.getNum(document.getProductOwner()));
-		asnData.setProductOwnerIA5(UicEncoderUtils.getIA5NonNum(document.getProductOwner()));
-				
-		asnData.setProductIdNum(UicEncoderUtils.getNum(document.getProductId()));
-		asnData.setProductIdIA5(UicEncoderUtils.getIA5NonNum(document.getProductId()));				
+
+		NumWrapper wn = new NumWrapper(document.getProductOwner(),1,32000);
+		asnData.setProductOwnerNum(wn.getNumber());
+		asnData.setProductOwnerIA5(wn.getString());
+
+		wn = new NumWrapper(document.getProductId(),0,65535);
+		asnData.setProductIdNum(wn.getNumber());
+		asnData.setProductIdIA5(wn.getString());
 		
 		asnData.setReferenceNum(Asn1BigInteger.toAsn1(UicEncoderUtils.getNum(document.getReference())));
 		asnData.setReferenceIA5(UicEncoderUtils.getIA5NonNum(document.getReference()));	
@@ -2141,7 +2143,7 @@ public class Api2OpenAsnEncoderV2 implements Api2AsnEncoder {
 		asnData.setIssuerPNR(UicEncoderUtils.getIA5(data.getIssuerPNR()));
 		
 		
-		asnData.setIssuingDate(data.getIssuingDate());
+		asnData.setIssuingDate(data.getIssuingDate(), data.getTimeZoneId());
 			
 		if (data.isSpecimen()){
 			asnData.setSpecimen(true);

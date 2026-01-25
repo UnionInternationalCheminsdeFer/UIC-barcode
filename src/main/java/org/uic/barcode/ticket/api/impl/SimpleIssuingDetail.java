@@ -4,6 +4,7 @@
 package org.uic.barcode.ticket.api.impl;
 
 import java.util.Date;
+import java.util.TimeZone;
 
 import org.uic.barcode.ticket.api.spec.IExtension;
 import org.uic.barcode.ticket.api.spec.IGeoCoordinate;
@@ -55,6 +56,8 @@ public class SimpleIssuingDetail implements IIssuingDetail{
 	protected String currency;
 	
 	protected Integer currencyFraction;
+	
+	protected String timeZone;
 
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.IIssuingDetail#getIssuer()
@@ -248,6 +251,18 @@ public class SimpleIssuingDetail implements IIssuingDetail{
 	public void setCurrencyFraction(Integer fraction) {
 		this.currencyFraction = fraction;		
 	}
+
+	@Override
+	public void setIssuingLocalDate(Date date) {
+		this.issuingDate = date;
+		this.timeZone = TimeZone.getDefault().getID();
+	}
+
+	@Override
+	public String getTimeZoneId() {
+		return this.timeZone;
+	}
+
 	
 	
 

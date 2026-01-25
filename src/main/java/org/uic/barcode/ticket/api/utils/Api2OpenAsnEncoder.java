@@ -1503,8 +1503,8 @@ public class Api2OpenAsnEncoder implements Api2AsnEncoder {
 					
 		TariffType asnTariff = new TariffType();
 			
-		asnTariff.setAgeAbove(UicEncoderUtils.getRestrictedInt(tariff.getAgeAbove(),2,120));
-		asnTariff.setAgeBelow(UicEncoderUtils.getRestrictedInt(tariff.getAgeBelow(),1,40));
+		asnTariff.setAgeAbove(UicEncoderUtils.getRestrictedInt(tariff.getAgeAbove(),1,128));
+		asnTariff.setAgeBelow(UicEncoderUtils.getRestrictedInt(tariff.getAgeBelow(),1,64));
 
 		asnTariff.setNumberOfPassengers(UicEncoderUtils.getRestrictedIntWithDefault(tariff.getNumberOfPassengers(),1,200,1));
 
@@ -2140,8 +2140,7 @@ public class Api2OpenAsnEncoder implements Api2AsnEncoder {
 		asnData.setIssuerName(data.getIssuerName());
 		asnData.setIssuerPNR(UicEncoderUtils.getIA5(data.getIssuerPNR()));
 		
-		
-		asnData.setIssuingDate(data.getIssuingDate());
+		asnData.setIssuingDate(data.getIssuingDate(), data.getTimeZoneId());
 			
 		if (data.isSpecimen()){
 			asnData.setSpecimen(true);
