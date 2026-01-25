@@ -1,7 +1,9 @@
 -- Creator: ASN.1 Editor (http://asneditor.sourceforge.net)
 -- Author: ClemensGantert
 -- Created: Mon Jun 28 14:14:28 CEST 2021
-ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
+ASN-Module-RailTicketData { iso(1) identified-organization(3) dod(6)
+    internet(1) private(4) enterprise(1) uic(17218) fcb(1) modules(0) rtd(2) v3(3) 0 }
+    DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 
 -- imports and exports
 -- EXPORTS ALL;

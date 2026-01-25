@@ -1,6 +1,8 @@
 -- Author: ClemensGantert
 -- Created: Thu Jun 04 17:19:28 CEST 2020
-ASN-Module-Header DEFINITIONS AUTOMATIC TAGS ::= BEGIN
+ASN-Module { iso(1) identified-organization(3) dod(6)
+    internet(1) private(4) enterprise(1) uic(17218) fcb(1) modules(0) header(1) v1(1) 0 }
+    DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 
 -- imports and exports
 -- EXPORTS ALL;
@@ -8,17 +10,28 @@ ASN-Module-Header DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 	
 -- ##############################################################################################
 -- #	                                                                      
--- #   UIC barcode header - version 2.0.0
+-- #   UIC barcode header - version 1.0.0
 -- #
 -- ##############################################################################################
 
 
 -- ##############################################################################################
 -- #                                                                      
--- #  Naming and encoding conventions        
+-- #  Naming and encoding conventions
+-- #
+-- #  Elements included as String and as Numeric values:
+-- #    Some elements are included in different formats to reduce the data size. 
+-- #    These elements must be included only once.
+-- #    These elements are named with the same name and appendix 
+-- #                     Num  (numeric values)	
+-- #	                 IA5  (String values according to ASN IA5String (7Bit))
+-- #	
+-- #  RICS codes must be used to encode companies (issuer, product owner, ...) where available
+-- #    other codes are possible based on bilateral agreements
+-- #    the format is kept more flexible to cover upcoming extensions of the RICS code by ERA	
+-- #          
 -- # 
--- # -	A bar code which is only static (printed on a paper), and for which the security is in the system, 
--- #      does not need any of these elements.
+-- # -	A bar code which is only static (printed on a paper), and for which the security is in the system, doesn’t need any of these elements.
 -- # -	A bar code which is only static, and includes its own security, needs:
 -- #  	  level1Signature
 -- #      level1KeyAlg if the associated key does not include the complete certificate in keys.xml but only the public key
@@ -26,11 +39,6 @@ ASN-Module-Header DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 -- # -	A dynamic bar code including static and dynamic signatures needs:
 -- #	The same elements as a static bar code above,
 -- #	level2SigningAlg, level2keyAlg, level2PublicKey, and level2Signature.
--- #
--- # Changes to Version 1:
--- #
--- #   - endOfValidity added in Level1Data
--- #   - extension option added on all structures  
 -- #
 -- #########################################################################################	
 	
@@ -46,13 +54,15 @@ ASN-Module-Header DEFINITIONS AUTOMATIC TAGS ::= BEGIN
     UicBarcodeHeader 	::= SEQUENCE 	{ 	
     	-- barcode format type
     	format		            IA5String,	 		
-    	                        -- "U2" = UIC ticket 
+    	                        -- "U1" = UIC ticket 
                 
                    
     	level2SignedData 	    Level2DataType,                
 
     	-- signature is calculated on the PER unaligned encoding of level2 signature data
     	level2Signature         OCTET STRING OPTIONAL
+    	
+    	
    }
    
    Level2DataType	::= SEQUENCE {
@@ -73,7 +83,7 @@ ASN-Module-Header DEFINITIONS AUTOMATIC TAGS ::= BEGIN
     	securityProviderNum INTEGER (1..32000) OPTIONAL,				
     	securityProviderIA5 IA5String          OPTIONAL,	
     	
-    	keyId		        INTEGER(0..99999)  OPTIONAL,
+    	keyId		        INTEGER (0..99999)  OPTIONAL,
     	
     	dataSequence 	    SEQUENCE OF DataType,
 
@@ -92,41 +102,17 @@ ASN-Module-Header DEFINITIONS AUTOMATIC TAGS ::= BEGIN
       	-- algorithm used for signing
       	level1SigningAlg   OBJECT IDENTIFIER OPTIONAL,
       	level2SigningAlg   OBJECT IDENTIFIER OPTIONAL,
-        level2PublicKey    OCTET STRING     OPTIONAL,
-        
-        -- end of the validity of the bar code, after this date and time the bar code needs to be regenerated 
-        -- by the provider of the ticket
-        -- if end of validity is provided year day and time must be provided.
-        -- year, day, time are in UTC
-        -- the provider of the bar code should ensure that the endOfValidity given here does not exceed 
-        --     the validity of the key pair used on level 2.
-   		endOfValidityYear 		INTEGER (2016..2269) OPTIONAL,    	
-   		-- number of the day in the year (1.1. = 1)
-   		endOfValidityDay		INTEGER (1..366) OPTIONAL, 
-   		-- The number of the minutes of the day 
-   		endOfValidityTime		INTEGER (0..1439) OPTIONAL,
-   		
-   		-- validity duration in seconds of the bar code shown with reference to the time stamp  dynamicContentTimeStamp 
-   		--          in the dynamic data included in the level2Data
-   		validityDuration        INTEGER (1..3600) OPTIONAL
+      	
+        level2PublicKey    OCTET STRING     OPTIONAL
+
    }
 
    DataType ::= SEQUENCE {
-    	
-        -- The value of 'dataFormat' describes how 'data' is encoded:
-        -- "FCBn" means that 'data' is the Canonical Unaligned PER encoding 
-        --    of an ASN.1 element of type UicRailTicketData in major version n.
-        -- "FDCn" means that 'data' is the Canonical Unaligned PER encoding 
-        --    of an ASN.1 element of type UicDynamicContentData in major version n.
-        -- "+" + [2-letters ISO 3166 country code] + [addon, chosen by the standardization body of that country]
-        --    means that 'data' is a content defined by the national standardization body,
-        --    identified as 'addon' by this body.
-        -- "_" + [4-digit RICS] + [addon, chosen by this company] means that 'data' is a proprietary
-        --    content of the company identified by the RICS code, identified as 'addon' by this company.
-        -- "*" + [addon] means that 'data' is a content specific to this barcode,
-        --    with no further information on who defined it, identified as 'addon' by its issuer.
-        -- Others values are reserved for future UIC use and shall not be used. 	
-    	  	
+    	-- Content of data format:
+    	-- FCBn (FCB1 = FCB version 1, FCB2 = FCB version 2)
+    	-- FDCn dynamic content
+    	-- or proprietary:
+    	--  _RICS company code + addon       	
        	dataFormat	    IA5String,      	
     	data	    	OCTET STRING
    }

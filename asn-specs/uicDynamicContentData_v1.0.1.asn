@@ -11,21 +11,14 @@
 -- # that, once valued and encoded as PER unaligned [UPER],
 -- # is to be stored in UicBarcodeHeader.level2SignedData.level2Data.data, 
 -- # and identified as "FDC1" in UicBarcodeHeader.level2SignedData.level2Data.dataFormat.
--- #
--- #  ISO Country codes are used to code countries. 
--- #    As Kosovo does not have an official ISO Country Code the following codes are used:
--- #          926 for Kosovo as numeric ISO Country Code 
--- #          XK  for Kosovo as alphanumeric 2-character ISO Country Code
--- #	
--- #  RICS codes must be used to encode companies (issuer, product owner, ...) where available
--- #    other codes are possible based on bilateral agreements
--- #    the format is kept more flexible to cover upcoming extensions of the RICS code by ERA	
 -- # 
 -- ##########################################################################################
 -- Creator: ASN.1 Editor (http://asneditor.sourceforge.net)
 -- Author: ClemensGantert
 -- Created: Mon Jun 28 14:14:28 CEST 2021
-ASN-Module-DynamicContentData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
+ASN-Module-DynamicContentData { iso(1) identified-organization(3) dod(6)
+    internet(1) private(4) enterprise(1) uic(17218) fcb(1) modules(0) dcd(3) v1(1) 1 }
+    DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 
 -- imports and exports
 -- EXPORTS ALL;
@@ -100,8 +93,8 @@ ASN-Module-DynamicContentData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
    GeoCoordinateType ::= SEQUENCE {
      geoUnit             GeoUnitType             DEFAULT milliDegree,
      coordinateSystem    GeoCoordinateSystemType DEFAULT wgs84, 
-     hemisphereLongitude HemisphereLongitudeType DEFAULT north,   -- separate hemisphere flag reduces the data size 
-     hemisphereLatitude  HemisphereLatitudeType  DEFAULT east,  -- separate hemisphere flag reduces the data size   
+     hemisphereLongitude HemisphereLongitudeType DEFAULT north,       -- separate hemisphere flag reduces the data size 
+     hemisphereLatitude  HemisphereLatitudeType  DEFAULT east,        -- separate hemisphere flag reduces the data size   
      longitude           INTEGER,
      latitude            INTEGER,
      accuracy            GeoUnitType             OPTIONAL
@@ -122,12 +115,12 @@ ASN-Module-DynamicContentData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
     				
    HemisphereLongitudeType ::= ENUMERATED { 	
      north (0), 
-     south (1)
+     south (1) 
    }
 
    HemisphereLatitudeType ::= ENUMERATED { 	
      east (0), 
-     west (1)     
+     west (1)  
    }	
 
    
