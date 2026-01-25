@@ -1,11 +1,11 @@
-Copyright 2026 UUnion Internationale des Chemins de fer
+Copyright 2026 Union Internationale des Chemins de fer
 
 Except as otherwise noted, this work is licensed under the European Union Public Licence (Version 1.2, or later)
 or the Apache License (Version 2.0), at your choice.
 You may not use this work except in compliance with the license of your choosing.
 You may obtain a copy of the licenses at:
 
-   https://interoperable-europe.ec.europa.eu/collection/eupl/eupl-text-eupl-12  
+   https://interoperable-europe.ec.europa.eu/collection/eupl/eupl-text-eupl-12
    http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, this work is distributed an "AS IS" BASIS,

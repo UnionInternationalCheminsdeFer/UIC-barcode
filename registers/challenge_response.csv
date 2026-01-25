@@ -1,5 +1,0 @@
-id,name,reference,registrant
-=,Exact data,https://github.com/UnionInternationalCheminsdeFer/UIC-barcode,Union Internationale des Chemins de fer
-UTF,UTF-8 text,https://github.com/UnionInternationalCheminsdeFer/UIC-barcode,Union Internationale des Chemins de fer
-PHC,Hash of phone identifier,https://github.com/UnionInternationalCheminsdeFer/UIC-barcode,Union Internationale des Chemins de fer
-EPC,Hash of electronic passport,https://github.com/UnionInternationalCheminsdeFer/UIC-barcode,Union Internationale des Chemins de fer
