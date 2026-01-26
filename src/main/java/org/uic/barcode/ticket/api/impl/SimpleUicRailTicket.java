@@ -45,8 +45,6 @@ public class SimpleUicRailTicket implements IUicRailTicket {
 	
 	/** The documents. */
 	private Collection<IDocumentData> documents = new LinkedHashSet<IDocumentData>();
-
-	public boolean decoded = false;
 	
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.IUicRailTicket#getIssuerDetails()
@@ -65,7 +63,7 @@ public class SimpleUicRailTicket implements IUicRailTicket {
 	 */
 	public ITravelerDetail getTravelerDetails() {
 		
-		if (decoded == false && travelerDetails == null) {
+		if (travelerDetails == null) {
 			travelerDetails = new SimpleTravelerDetail();
 		}		
 		return travelerDetails;
@@ -85,7 +83,7 @@ public class SimpleUicRailTicket implements IUicRailTicket {
 	 */
 	public IControlDetail getControlDetails() {
 		
-		if (decoded == false && controlDetails == null) {
+		if (controlDetails == null) {
 			controlDetails = new SimpleControlDetail();
 		}			
 		return controlDetails;

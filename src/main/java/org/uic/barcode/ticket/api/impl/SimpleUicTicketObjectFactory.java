@@ -201,12 +201,6 @@ public class SimpleUicTicketObjectFactory implements IUicTicketObjectFactory {
 		return new SimpleUicRailTicket();
 	}
 	
-	public IUicRailTicket createUicRailTicketForDecoding() {
-		SimpleUicRailTicket st = new SimpleUicRailTicket();
-		st.decoded = true;
-		return st;
-	}
-
 	public IValidityDetails createValidityDetails() {
 		return new SimpleValidityDetails();
 	}
