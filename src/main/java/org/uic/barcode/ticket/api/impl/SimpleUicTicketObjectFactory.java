@@ -200,7 +200,7 @@ public class SimpleUicTicketObjectFactory implements IUicTicketObjectFactory {
 	public IUicRailTicket createUicRailTicket() {
 		return new SimpleUicRailTicket();
 	}
-
+	
 	public IValidityDetails createValidityDetails() {
 		return new SimpleValidityDetails();
 	}
