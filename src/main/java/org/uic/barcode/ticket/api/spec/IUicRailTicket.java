@@ -32,18 +32,34 @@ public interface IUicRailTicket {
 	public IIssuingDetail getIssuerDetails();  
 
 	/**
-	 * Gets the traveler details.
+	 * Gets the traveler details, creates default traveler details in case they are missing.
 	 *
 	 * @return the traveler details
 	 */
 	public ITravelerDetail getTravelerDetails();  
+
 	
 	/**
-	 * Gets the traveler details.
+	 * Gets the traveler details in case they are set.
+	 *
+	 * @return the traveler details
+	 */
+	public ITravelerDetail getDecodedTravelerDetails();  
+	
+	/**
+	 * Gets the traveler details and creates empty traveler details in casethey are missing.
 	 *
 	 * @return the traveler details
 	 */
 	public IControlDetail getControlDetails();  	
+
+	/**
+	 * Gets the traveler details.
+	 *
+	 * @return the traveler details or null in case they are missing.
+	 */
+	public IControlDetail getDecodedControlDetails(); 
+	
 	
 	/**
 	 * Gets the extensions.

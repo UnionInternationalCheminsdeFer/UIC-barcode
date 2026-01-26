@@ -192,10 +192,13 @@ public class Api2OpenAsnEncoderV3 implements Api2AsnEncoder {
 			asnTicket.setIssuingDetail(encodeIssuingDetails(uicTicket.getIssuerDetails()));
 		}
 		
-		
-		if (uicTicket.getControlDetails() != null) {			
-			asnTicket.setControlDetail(encodeControlDetails(uicTicket.getControlDetails(), uicTicket.getIssuerDetails().getIssuingDate()));			
-		}
+			
+		if (uicTicket.getControlDetails() != null) {	
+			//fix the issue that SimpleTicket already sets an empty controlDetals element
+			if (controlDetailsHasContent(uicTicket.getControlDetails())) {
+				asnTicket.setControlDetail(encodeControlDetails(uicTicket.getControlDetails(), uicTicket.getIssuerDetails().getIssuingDate()));			
+			}
+		}		
 		
 		
 		if (uicTicket.getExtensions() != null && !uicTicket.getExtensions().isEmpty()){
@@ -216,7 +219,10 @@ public class Api2OpenAsnEncoderV3 implements Api2AsnEncoder {
 		
 		
 		if (uicTicket.getTravelerDetails() != null) {
-			asnTicket.setTravelerDetail(encodeTravelers(uicTicket.getTravelerDetails(),uicTicket.getIssuerDetails().getIssuingDate() ));
+			//fix the issue that SimpleTicket already sets an empty travelerDetails element
+			if (travelerDetailsHasContent(uicTicket.getTravelerDetails())) {
+				asnTicket.setTravelerDetail(encodeTravelers(uicTicket.getTravelerDetails(),uicTicket.getIssuerDetails().getIssuingDate() ));
+			}
 		}
 		
 		if (uicTicket.getDocumentData() != null && !uicTicket.getDocumentData().isEmpty()) {
@@ -288,6 +294,33 @@ public class Api2OpenAsnEncoderV3 implements Api2AsnEncoder {
 		return  asnTicket;
 	}
 	
+	private boolean travelerDetailsHasContent(ITravelerDetail travelerDetails) {
+		if (travelerDetails.getTravelers() != null
+				&& !travelerDetails.getTravelers().isEmpty()) return true;
+		if (travelerDetails.getGroupName() != null) return true;
+		if (travelerDetails.getPreferredLanguage() != null) return true;
+		return false;
+	}
+
+
+
+	private boolean controlDetailsHasContent(IControlDetail controlDetails) {
+		if (controlDetails.isAgeCheckRequired() == true) return true;
+		if (controlDetails.isIdentificationByIdCard() == true) return true;
+		if (controlDetails.isIdentificationByPassportId() == true) return true;		
+		if (controlDetails.isOnlineValidationRequired() == true) return true;
+		if (controlDetails.isPassportValidationRequired() == true) return true;
+		if (controlDetails.isReductionCardCheckRequired() == true) return true;
+		if (controlDetails.getIdentificationByCardReference() != null 
+			&& !controlDetails.getIdentificationByCardReference().isEmpty() ) return true;
+		if (controlDetails.getIdentificationItem() != 0) return true;
+		if (controlDetails.getLinkedTickets() != null
+			&& !controlDetails.getLinkedTickets().isEmpty()) return true;
+		if (controlDetails.getRandomDetailedValidationRequired() != 0) return true;
+		if (controlDetails.getExtension() != null) return true;
+		return false;
+	}
+
 	private DocumentData encodeDelayConfirmation(IDelayConfirmation document, Date issuingDate) throws EncodingFormatException {
 		
 		DocumentData asnDocument = new DocumentData();
