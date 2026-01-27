@@ -72,7 +72,7 @@ public class SimpleUicRailTicket implements IUicRailTicket {
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.IUicRailTicket#getTravelerDetails()
 	 */
-	public ITravelerDetail getDecodedTravelerDetails() {
+	public ITravelerDetail getTravelerDetailsOrNull() {
 		
 		return travelerDetails;
 	}
@@ -92,7 +92,7 @@ public class SimpleUicRailTicket implements IUicRailTicket {
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.IUicRailTicket#getControlDetails()
 	 */
-	public IControlDetail getDecodedControlDetails() {
+	public IControlDetail getControlDetailsOrNull() {
 		
 		return controlDetails;
 	}
