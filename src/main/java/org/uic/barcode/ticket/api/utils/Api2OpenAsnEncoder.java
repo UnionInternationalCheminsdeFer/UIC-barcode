@@ -94,7 +94,6 @@ import org.uic.barcode.ticket.api.asn.omv1.VatDetailType;
 import org.uic.barcode.ticket.api.asn.omv1.ViaStationType;
 import org.uic.barcode.ticket.api.asn.omv1.VoucherData;
 import org.uic.barcode.ticket.api.asn.omv1.ZoneType;
-import org.uic.barcode.ticket.api.impl.SimpleTicketUtils;
 import org.uic.barcode.ticket.api.spec.IBerth;
 import org.uic.barcode.ticket.api.spec.ICarCarriageReservation;
 import org.uic.barcode.ticket.api.spec.ICardReference;
@@ -192,11 +191,8 @@ public class Api2OpenAsnEncoder implements Api2AsnEncoder {
 		}
 		
 		
-		if (uicTicket.getControlDetails() != null) {	
-			//fix the issue that SimpleTicket already sets an empty controlDetals element
-			if (SimpleTicketUtils.controlDetailsHasContent(uicTicket.getControlDetails())) {
-				asnTicket.setControlDetail(encodeControlDetails(uicTicket.getControlDetails(), uicTicket.getIssuerDetails().getIssuingDate()));			
-			}
+		if (uicTicket.getControlDetailsOrNull() != null) {	
+			asnTicket.setControlDetail(encodeControlDetails(uicTicket.getControlDetails(), uicTicket.getIssuerDetails().getIssuingDate()));			
 		}
 		
 		if (uicTicket.getExtensions() != null && !uicTicket.getExtensions().isEmpty()){
@@ -214,11 +210,8 @@ public class Api2OpenAsnEncoder implements Api2AsnEncoder {
 		}
 		
 		
-		if (uicTicket.getTravelerDetails() != null) {
-			//fix the issue that SimpleTicket already sets an empty travelerDetails element
-			if (SimpleTicketUtils.travelerDetailsHasContent(uicTicket.getTravelerDetails())) {
-				asnTicket.setTravelerDetail(encodeTravelers(uicTicket.getTravelerDetails(),uicTicket.getIssuerDetails().getIssuingDate() ));
-			}
+		if (uicTicket.getTravelerDetailsOrNull() != null) {
+			asnTicket.setTravelerDetail(encodeTravelers(uicTicket.getTravelerDetails(),uicTicket.getIssuerDetails().getIssuingDate() ));
 		}
 		
 		if (uicTicket.getDocumentData() != null && !uicTicket.getDocumentData().isEmpty()) {

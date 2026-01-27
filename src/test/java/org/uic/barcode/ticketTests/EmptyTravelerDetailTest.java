@@ -45,8 +45,8 @@ public class EmptyTravelerDetailTest {
 			// Then
 			Assert.assertNotNull("Decoded ticket should not be null.", decoded);
 			Assert.assertNotNull("Issuer details should not be null.", decoded.getIssuerDetails());
-			Assert.assertNull("Control details should be null as it is optional and was not given.", decoded.getDecodedControlDetails());
-			Assert.assertNull("Traveler details should be null as it is optional and was not given.", decoded.getDecodedTravelerDetails());
+			Assert.assertNull("Control details should be null as it is optional and was not given.", decoded.getControlDetailsOrNull());
+			Assert.assertNull("Traveler details should be null as it is optional and was not given.", decoded.getTravelerDetailsOrNull());
 
 		}
 

@@ -44,7 +44,7 @@ public interface IUicRailTicket {
 	 *
 	 * @return the traveler details
 	 */
-	public ITravelerDetail getDecodedTravelerDetails();  
+	public ITravelerDetail getTravelerDetailsOrNull();  
 	
 	/**
 	 * Gets the traveler details and creates empty traveler details in casethey are missing.
@@ -58,7 +58,7 @@ public interface IUicRailTicket {
 	 *
 	 * @return the traveler details or null in case they are missing.
 	 */
-	public IControlDetail getDecodedControlDetails(); 
+	public IControlDetail getControlDetailsOrNull(); 
 	
 	
 	/**
