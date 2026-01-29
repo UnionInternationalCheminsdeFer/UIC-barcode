@@ -11,7 +11,7 @@ ASN-Module-RailTicketData { iso(1) identified-organization(3) dod(6)
 -- EXPORTS ALL;
 
 IMPORTS GenericId, CompanyCode, Station, StationCode, CodeTable, GeoCoordinate, GeoUnit, CoachPlaces, Data, UnicodeText,
- Timestamp, TransportNumber
+ Timestamp, SharedVehicleVariety, SharedVehiclePropulsionType, SharedVehicleReturnConstraint
  FROM ASN-Module-GeneralData { iso(1) identified-organization(3) dod(6) internet(1) private(4) enterprise(1) uic(17218) fcb(1) modules(0) general(5) v1(1) 0 };
 
 -- Changes:
@@ -205,7 +205,7 @@ DocumentData ::= CHOICE {
 -- ##############################################################################################
 DelayConfirmation ::= SEQUENCE {
     -- Transport number of the delayed transport.
-    transportNumber TransportNumber                 OPTIONAL,
+    transportNumber TransportId                     OPTIONAL,
 
     -- Planned departure date and time of the delayed transport in local time at the station where
     --   delay became relevant (see below).
@@ -275,8 +275,8 @@ IssuingData ::= SEQUENCE {
 
     -- Location of sale (transport number and/or line number) in case of a sale on board of a transport.
     -- Values per the code table of the issuer.
-    issuedOnTransport              TransportNumber              OPTIONAL,
-    issuedOnLine                   TransportNumber              OPTIONAL,
+    issuedOnTransport              TransportId                  OPTIONAL,
+    issuedOnLine                   LineId                       OPTIONAL,
 
     -- Point of sale.
     pointOfSale                    GeoCoordinate                OPTIONAL,
@@ -384,10 +384,10 @@ OnlineValidationStatus ::= ENUMERATED {
     optional    (2), -- the ticket can be fully validated and checked offline, i.e. if the ticket
                      -- contains all the information necessary for validation and inspection and is therefore self-sufficient,
                      -- but some operators, in an interoperability scenario, nevertheless choose to operate this ticket in ABT mode and validate it online.
-    mandatory   (3)  -- online operations must be performed to validate or check this ticket:
+    mandatory   (3)  -- online operations must be performed to validate or check this ticket. E.g.:
                      --   - For a Pay-as-you-go ticket, check during inspection that it has been validated.
                      --   - For a ticket valid for 3 hours from the first validation, check when this first validation took place.
-                     --   - For a fully ABT (Account Based Ticketing) document: check the details of the ticket in the ABT account.
+                     --   - For a fully ABT (Account Based Ticketing) document: check the details of the ticket in the ABT account (whose ID may be specified in 'token').
                      --   - For a ticket authorizing a limited number of trips: check how many trips have already been made.
                      --   - For a ticket that can be refunded until the last moment: check if the ticket has been cancelled and refunded.
 }
@@ -395,7 +395,7 @@ OnlineValidationStatus ::= ENUMERATED {
 OnlineValidationType ::= CHOICE {
     eTCD                        NULL,            -- The ticket may be checked against the UIC's eTCD
     securityProviderProprietary NULL,            -- The ticket may be checked against a proprietary platform of the security provider; e.g. the Deutschlandtarifverbund's security portal.
-    issuerProprietary           NULL,            -- The ticket may be checked against a proprietary platform of the issuer; e.g. bwegt check-in check-out (Baden-Württemburg).
+    issuerProprietary           NULL,            -- The ticket may be checked against a proprietary platform of the issuer; e.g. bwegt check-in check-out (Baden-Württemberg).
     external                    CompanyCode,     -- The ticket may be checked against the platform operated by the specified company; e.g. Entur
     other                       VisibleString,   -- The ticket may be checked against some other external platform, as identified by the string
     ...
@@ -534,7 +534,7 @@ TransportLinkType ::= SEQUENCE {
 
     -- Transport numbers (= service number, train number) allowed for the transport link.
     -- Multiple numbers are allowed (e.g. two trains coupled together, each of them having its own train number).
-    transportNumber         SEQUENCE OF TransportNumber                             OPTIONAL,
+    transportNumber         SEQUENCE OF TransportId                                 OPTIONAL,
 
     -- Departure date and time in local time at the departure station of the transport link.
     -- If omitted, departureDateTime is assumed to be equal to validFrom and validFromUTCOffset of the container object.
@@ -580,7 +580,7 @@ ReservationSegmentType ::= SEQUENCE {
     destinationStation      Station                                                 OPTIONAL,
 
     -- Transport number (=service number, train number).
-    transportNumber         TransportNumber                                         OPTIONAL,
+    transportNumber         TransportId                                             OPTIONAL,
 
     -- Departure date and time in local time at the departure station.
     -- If omitted, departureDateTime is assumed to be equal to validFrom and validFromUTCOffset of the container object.
@@ -647,9 +647,6 @@ VoucherData ::= SEQUENCE {
 
     -- Value of the voucher, in the currency and fraction defined in IssuingData.
     value           INTEGER                 DEFAULT 0,
-
-    -- Type of the voucher, code list defined by the product owner.
-    type            INTEGER (1..32000)      OPTIONAL,
 
     -- Additional readable information that cannot be described using the other elements.
     infoText        UnicodeText             OPTIONAL,
@@ -771,25 +768,24 @@ ConditionsType ::= SEQUENCE {
 
     -- Detailed type of the transport product (ticket, reservation, commercial card...).
     -- MUST either be present in the generalConditions, or present in all specificConditions.
-    productVariety                   ProductVarietyType              OPTIONAL,
+    productVariety                  ProductVarietyType              OPTIONAL,
 
-    -- Area (city, region, country...) in which the transport document / the leg is valid
-    --   (allows also defining local code tables depending on this area).
-    -- Omitted if the area is implicit or completely defined with the geoValidity elements.
-    concernedArea                    AreaSetType                     OPTIONAL,
-
-    -- Code table to be used by default for all the elements in the transport document / in the leg.
-    locationCodeTable                CodeTable                      OPTIONAL,
-
-    -- Version of the code tables used.
-    -- Only relevant if locationCodeTable indicates a bilaterally agreed code table.
-    locationCodeTableVersion         INTEGER (0..255)                OPTIONAL,
+    -- NUTS codes covering the whole area of validity of the ticket.
+    -- This does not mean that the ticket valid everywhere inside such areas, but that it definitely
+    -- is NOT valid outside the covering area.
+    -- Validity to specific services, transport modes, etc., may be further constrained by other conditions.
+    -- Examples:
+    --   - An international ticket from Munich to Vienna has the covering areas of "DE" and "AT"
+    --   - A ticket valid on buses in the Saarland has a covering area of "DEC"
+    --   - A ticket valid on the tram in Kehl and Strasbourg has the covering areas of "DE134" (Ortenaukreis) and "FRF11" (Bas-Rhin)
+    --       n.b. a NUTS Local Administrative Units (LAU) could be further appended, e.g. "DE13408317057" for Kehl, Stadt.
+    coveringArea                    SEQUENCE OF NUTSArea,
 
     -- Identification of the product (owner, id, textual description).
-    product                          ProductType                     OPTIONAL,
+    product                         ProductType                     OPTIONAL,
 
     -- Internal reference to the document (e.g. serial number of the document)
-    reference                        GenericId                      OPTIONAL,
+    reference                       GenericId                      OPTIONAL,
 
     -- The company that defined the above reference, if different from the document issuer.
     referenceCompany				CompanyCode                     OPTIONAL,
@@ -797,9 +793,9 @@ ConditionsType ::= SEQUENCE {
     -- Time validity
     -- Having no validFrom is allowed (e.g. ticket not yet activated, which will be reissued with an explict validFrom upon activation).
     -- Having no validUntil is allowed (e.g. ticket with unlimited validity - which should nevertheless have a security expiry date in the header requiring regular reissue).
-    validFrom                        ValidFromType                   OPTIONAL,
-    validUntil                       ValidUntilType                  OPTIONAL,
-    rareTimingConditions             RareTimingConditionsType        OPTIONAL,
+    validFrom                       ValidFromType                   OPTIONAL,
+    validUntil                      ValidUntilType                  OPTIONAL,
+    rareTimingConditions            RareTimingConditionsType        OPTIONAL,
 
     -- TRUE if the direction of travel must be followed as described:
     -- - in generalConditions: the traveler must pass the sequence of segments in the provided order
@@ -809,19 +805,19 @@ ConditionsType ::= SEQUENCE {
     -- - in generalConditions: the traveler can travel through the described segments in any order.
     -- - in specificConditions: the traveler can take the transport indicated by the segment in any direction (e.g. from O to D or from D to O).
     -- omitted if the concept of direction is not relevant (e.g. for geographical validity as unordered areas).
-    directionIsMandatory             BOOLEAN                         OPTIONAL,
+    directionIsMandatory            BOOLEAN                         OPTIONAL,
 
     -- Link to a specific transport service
     transportService CHOICE {
         -- Link to a specific transport service without reservation
-        transportLink                SEQUENCE OF TransportLinkType,
+        transportLink               SEQUENCE OF TransportLinkType,
 
         -- Link to a specific transport service with reservation
-        reservation                  SEQUENCE OF ReservationSegmentType
+        reservation                 SEQUENCE OF ReservationSegmentType
     } OPTIONAL,
 
     -- Included carriers responsible for the transport
-    includedCarrier                  SEQUENCE OF CompanyCode        OPTIONAL,
+    includedCarrier                 SEQUENCE OF CompanyCode        OPTIONAL,
 
     -- Included transport modes. Code list: EN 1545-1 (transport type code)
     includedTransportType           SEQUENCE OF INTEGER (0..31)      OPTIONAL,
@@ -958,7 +954,7 @@ StationPassageData ::= SEQUENCE {
     reference           GenericId                   OPTIONAL,
 
     -- Station(s) concerned.
-    station             StationSetType              OPTIONAL,
+    station             StationSet                  OPTIONAL,
 
     -- List of areas in a station where the access is allowed.
     -- The code table used to identify the areas depends on the station.
@@ -1052,9 +1048,9 @@ ParkingGroundData ::= SEQUENCE {
     validFrom                     ValidFromType,
     validUntil                    ValidUntilType,
 
-    ...,
-
     parkingDetails                ParkingType
+
+    ...,
 
 }
 
@@ -1138,10 +1134,10 @@ TariffType ::= SEQUENCE {
 
     -- Age restrictions of the tariff.
     age CHOICE {
-        specificAge INTEGER (1..128),
+        specificAge INTEGER (0..127),
         ageRange    SEQUENCE {
-            ageBelow    INTEGER (1..128) OPTIONAL,
-            ageAbove    INTEGER (1..128) OPTIONAL
+            ageBelow    INTEGER (1..128) OPTIONAL, -- 'below' is to be understood as 'strictly less than'
+            ageAbove    INTEGER (0..127) OPTIONAL  -- 'above' is to be understood as 'strictly greater than'
         }
     } OPTIONAL,
 
@@ -1176,11 +1172,8 @@ TariffType ::= SEQUENCE {
 --  Card reference (for any kind of card: customer card, loyalty card, reduction card...)
 -- ##############################################################################################
 CardReferenceType ::= SEQUENCE {
-    -- Issuer of the card.
-    issuer  CompanyCode,
-
-    -- Readable name of the card, e.g. "VISA-CARD", "Carte Avantage Jeune", "Vorteilscard Senior"...
-    name    UnicodeText         OPTIONAL,
+    -- Issuer and type of the card
+   	product ProductType,
 
     -- Type of the card, code list defined by the issuer of the card.
     type    INTEGER             OPTIONAL,
@@ -1223,9 +1216,11 @@ IdentificationDocumentType ::= SEQUENCE {
 --    from the type of travel document.
 --  E.g. it can include the date of birth as this is part of the traveler,
 --    but not the indication "Senior" as this is tariff dependent.
--- All parts of the traveler's name are to be encoded using the SCSU.
 -- ##############################################################################################
 TravelerType ::= SEQUENCE {
+    -- All 3 name parts are encoded with SCSU the SCSU compression (as per UnicodeText).
+    -- The language tag applies to all 3 name parts.
+    -- That is, the name parts are to be construed as 3 UnicodeText SEQUENCEs with the same language tag set.
     firstName       OCTET STRING                                OPTIONAL,
     secondName      OCTET STRING                                OPTIONAL,
     lastName        OCTET STRING                                OPTIONAL,
@@ -1337,19 +1332,77 @@ CustomerStatusType ::= SEQUENCE {
 --  Specification of the geographical validity for a segment.
 -- ##############################################################################################
 GeoValidityType ::= CHOICE {
-    originDestination  OriginDestinationType,   -- Simple journey from an Origin to a Destination, with optional description of intermediate stations.
-    complexRoute       ComplexRouteType,        -- Complex journey allowing multiple origins, multiple destinations, alternative routes, etc.
-    area               AreaType,                -- Validity defined with areas/zones.
-    line               LineType,                -- Set of authorized transport lines.
-    polygone           PolygoneType,            -- Area defined using geocoordinates.
-    parking            ParkingType,             -- Parking right (for a car, a bike...).
-    sharedVehicle      SharedVehicleType,       -- Access to a shared vehicle service. /!\ Type yet to be defined
-    proprietary        Data,                -- Specific proprietary geographical validity in case the above predefined types do not allow it to be described.
+    -- Simple journey from an Origin to a Destination, with optional description of intermediate stations.
+    originDestination   OriginDestinationType,
+     -- Complex journey allowing multiple origins, multiple destinations, alternative routes, etc.
+    complexRoute        ComplexRouteType,
+    -- Validity defined with areas/zones.
+    area                AreaType,
+    -- Set of authorized transport lines
+    line                LineType,                .
+    -- Area defined using geocoordinates.
+    polygone            PolygoneType,
+    -- Parking right (for a car, a bike...).
+    parking             ParkingType,
+    -- Access to a shared vehicle service.
+    sharedVehicle       SharedVehicle,
+    -- Valid everywhere within the operating area of a carrier, including cross-border services, unless excluded by coveringArea condition.
+    carrierNetwork      SEQUENCE OF CompanyCode (SIZE(1..16),
+    -- No specific geographic validity beyond the coveringArea and other conditions.
+    perConditions       NULL,
+    -- Specific proprietary geographical validity in case the above predefined types do not allow it to be described.
+    proprietary         Data,
     ...
 }
 
--- TODO
-SharedVehicleType ::= SEQUENCE {}
+-- ##############################################################################################
+--  Access to a shared vehicle service, e.g. car sharing or bike/e-scooter rental
+-- ##############################################################################################
+SharedVehicle ::= SEQUENCE {
+    -- Shared vehicle providers that this entitlement covers
+    carriers            SEQUENCE OF CompanyCode,
+
+    -- The number of individual vehicles included in this entitlement
+    numberOfVehicles    INTEGER (1..16)             DEFAULT 1,
+
+    -- Which kinds of shared vehicles are included in this entitlement
+    -- An empty list means no constraint
+    vehicleTypes        SEQUENCE OF SharedVehicleType,
+
+    -- The vehicle must be collected from this station.
+    collectionStation   Station                     OPTIONAL,
+    -- The vehicle must be returned to this station.
+    collectionStation   Station                     OPTIONAL,
+
+    -- Included amount of time allowed to access a shared vehicle, if more restrictive than the validity period.
+    -- If present, indicates that the entitlement is valid for a given amount of time within the validity period.
+    -- If present, the count of the remaining number of allowed days or hours is centrally held in a back office,
+    -- that must be queried to verify whether the traveler still has any remaining time.
+    -- Whether an operator allows the traveler to pay additionally for more time once the allotted time is up is
+    -- per local operator policy.
+    allowedTime         CHOICE {
+        days    INTEGER,
+        minutes INTEGER (1..1439)
+    }                                               OPTIONAL,
+
+    -- Additional readable information that cannot be described using the other elements.
+    infoText            UTF8String                  OPTIONAL,
+
+    -- Proprietary data defined bilaterally.
+    extension           Data                        OPTIONAL,
+
+    ...
+}
+
+SharedVehicleType ::= SEQUENCE {
+    -- An empty list means any value
+    variety             SEQUENCE OF SharedVehicleVariety (SIZE (0..15)),
+    -- An empty list means any value
+    propulsion          SEQUENCE OF SharedVehiclePropulsionType (SIZE (0..15)),
+    -- An empty list means any value
+    returnConstraint    SEQUENCE OF SharedVehicleReturnConstraint (SIZE (0..15)),
+    ...
+}
 
 -- ##############################################################################################
 --  Geographical validity from an origin station to a destination station
@@ -1380,10 +1433,10 @@ LineType ::= SEQUENCE {
     excludedLineId              SEQUENCE OF LineIdType            OPTIONAL,
 
     -- In case the line must be entered via a specific station
-    entryStation                StationSetType                    OPTIONAL,
+    entryStation                StationSet                    OPTIONAL,
 
     -- In case the line must be left via a specific station
-    terminatingStation          StationSetType                    OPTIONAL,
+    terminatingStation          StationSet                    OPTIONAL,
 
     ...
 }
@@ -1414,8 +1467,8 @@ AreaType ::= SEQUENCE {
     --   - journey starting anywhere in a city described with its NUTS code or its Calypso NetworkId.
     -- Omitted if there are no restrictions on where the journey must begin.
     restrictedEntry CHOICE {
-       station  StationSetType,
-       area     AreaSetType
+       station  StationSet,
+       area     AreaSet
     } OPTIONAL,
 
     -- Description of the allowed areas/zones.
@@ -1428,11 +1481,11 @@ AreaType ::= SEQUENCE {
     --   from restrictedEntry to restrictedExit (the only restrictions that apply are those described by the applicable ConditionsType).
     area CHOICE {
        -- The allowed areas/zones are those explicitly described in the 'included' element.
-       included AreaSetType, -- list of allowed areas/zones
+       included AreaSet, -- list of allowed areas/zones
 
        -- The allowed areas/zones are all the areas/zones of the applicable 'concernedArea' element, except those
        --   described in 'excluded', in 'restrictedEntry' and in 'restrictedExit'.
-       excluded AreaSetType
+       excluded AreaSet
     } OPTIONAL,
 
     -- In case the allowed journey must end in specific stations or specific areas/zones. E.g.:
@@ -1440,8 +1493,8 @@ AreaType ::= SEQUENCE {
     --   - journey ending in a city described with a specific set of areas/zones.
     -- Omitted if there are no restrictions on where the journey must end.
     restrictedExit CHOICE {
-       station  StationSetType,
-       area     AreaSetType
+       station  StationSet,
+       area     AreaSet
     } OPTIONAL,
 
     -- Readable name of the area of validity.
@@ -1489,7 +1542,7 @@ RouteItemType ::= CHOICE {
     station                              Station,
 
     -- The route item is a set of stations that are equivalent (OSDM: FareStationSet).
-    stationSet                           StationSetType,
+    stationSet                           StationSet,
 
     -- The route item is a list of stations along the route
     route                                SEQUENCE OF ComplexRouteType,
@@ -1498,23 +1551,6 @@ RouteItemType ::= CHOICE {
     alternativeRoutes                    SEQUENCE OF ComplexRouteType,
 
     ...
-}
-
--- ----------------------------------------------------------------------------------------------
--- Set of stations.
--- It can be defined through a code, and/or a name, and/or the explicit list of its stations.
--- ----------------------------------------------------------------------------------------------
-StationSetType ::= SEQUENCE {
-    -- Code for the set of stations.
-    -- If the code table is not provided the code table of the container object applies.
-    stationSetCodeTable CodeTable           OPTIONAL,
-    stationSetCode      StationCode         OPTIONAL,
-
-    -- Readable name of the set of stations.
-    stationSetNameUTF8  UnicodeText         OPTIONAL,
-
-    -- Explicit list of the stations of the station set.
-    stationSetStations  SEQUENCE OF Station OPTIONAL
 }
 
 -- ##############################################################################################
@@ -1641,29 +1677,6 @@ RegisteredLuggageType ::= SEQUENCE {
 ProductIdType ::= CHOICE {
     productIdNum   INTEGER (0..65535),
     productIdIA5   VisibleString
-}
-
--- ----------------------------------------------------------------------------------------------
--- Set of areas/zones.
--- It can be defined through a name, and/or the explicit list of the area/zone ids.
--- Quite similar to 'stationSetType' but for areas/zones.
--- ----------------------------------------------------------------------------------------------
-AreaSetType ::= SEQUENCE {
-
-    -- Code for the areas/zones.
-    -- If the code table is not provided the code table of the container object applies.
-    areaSetCodeTable    CodeTable   OPTIONAL,
-
-    areaSet CHOICE {
-        -- Sequence of area/zone identifiers
-        idNum    SEQUENCE OF INTEGER,       -- e.g. sequence of allowed area/zone numbers such as {1,5,23}
-        idIA5    SEQUENCE OF VisibleString, -- e.g. sequence of european NUTS code such as {"FRF11","FRF12","DE1"}, or areas/zones described with text such as {"M","1-3"}
-        idOct    SEQUENCE OF OCTET STRING,  -- e.g. sequence of Calypso NetworkIds such as {'250901'H,'250072'H}
-
-        -- Bit representation of areas/zones.
-        -- Recommended encoding if applicable: bit n (considering that bit 0 = right-most bit) encodes area/zone n+1, bit value 1 = area/zone is allowed, bit value 0 = area/zone is forbidden.
-        idBit    BIT STRING                -- e.g. bitmap of allowed areas/zones such as '10101110010'B for areas/zones 2, 5, 6, 7, 9 and 11
-    }
 }
 
 -- ##############################################################################################
@@ -1878,16 +1891,6 @@ RetailChannelType ::= ENUMERATED {
 
 END
 
--- ##############################################################################################
--- TODO
--- - naming of geo... (areas, regions,..)
--- - use cases for micro mobility
---    - check-in / check-out barcode in app
---    - barcodes on fixed items
---        - barcode on a bike
---        - check-in / check-out barcode at check-in check-out point
--- - other use cases?
--- ##############################################################################################
 
 
 

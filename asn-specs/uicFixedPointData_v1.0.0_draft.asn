@@ -2,7 +2,8 @@ ASN-Module-FixedPointData { iso(1) identified-organization(3) dod(6)
     internet(1) private(4) enterprise(1) uic(17218) fcb(1) modules(0) fpd(6) v1(1) 0 }
     DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 
-IMPORTS GenericId, CompanyCode, Station, CoachPlaces, Data
+IMPORTS GenericId, CompanyCode, Station, CoachPlaces, Data, SharedVehicleVariety, SharedVehiclePropulsionType,
+ SharedVehicleReturnConstraint, TransportId, LineId
  FROM ASN-Module-GeneralData { iso(1) identified-organization(3) dod(6) internet(1) private(4) enterprise(1) uic(17218) fcb(1) modules(0) general(5) v1(1) 0 };
 
 -- ##############################################################################################
@@ -70,7 +71,8 @@ Vehicle ::= SEQUENCE {
 VehicleDynamic ::= SEQUENCE {
     vehicleId               VehicleIdentifier,
     currentStop             Station,
-    transportNumber         TransportNumber,
+    transport               TransportId,        OPTIONAL,
+    line                    LineId              OPTIONAL,
     terminusStop            Station,
     ...
 }
@@ -85,21 +87,10 @@ VehicleIdentifier ::= CHOICE {
 -- Built upon GBFSv3.0
 -- Reference: https://github.com/MobilityData/gbfs-json-schema/blob/master/v3.0/vehicle_types.json
 SharedVehicle ::= SEQUENCE {
-    vehicleType     SharedVehicleType,
-    id              GenericId, -- defined by the issuer
-    ...
-}
-
--- Values taken from GBFS
-SharedVehicleType ::= ENUMERATED {
-    bicycle (0),
-    cargoBicycle (1),
-    car (2),
-    moped (3),
-    scooterStanding (4),
-    scooterSeated (5),
-    other (6),
-    scooter (7),
+    id                  GenericId, -- defined by the issuer
+    variety             SharedVehicleVariety,
+    propulsion          SharedVehiclePropulsionType,
+    returnConstraint    SharedVehicleReturnConstraint
     ...
 }
 

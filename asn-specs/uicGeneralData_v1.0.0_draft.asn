@@ -11,7 +11,7 @@ ASN-Module-GeneralData { iso(1) identified-organization(3) dod(6)
 -- #      926 for Kosovo as numeric ISO Country Code
 -- #      XK  for Kosovo as alphanumeric 2-character ISO Country Code
 -- #
--- #  RICS codes must be used to encode companies where available, else ERA company codes, or other codes MAY be used.
+-- #  RICS codes must be used to encode companies where available, else ERA Organisation Codes, or other codes MAY be used.
 -- #
 -- #  Encoding and handling of text:
 -- #    Text fields in this specification are OCTET STRINGS.
@@ -22,7 +22,7 @@ ASN-Module-GeneralData { iso(1) identified-organization(3) dod(6)
 -- #    The International Components for Unicode (https://icu.unicode.org/) is the recommended implementation of SCSU,
 -- #     if you are unsure which implementation to use, although it is by no means required.
 -- #
--- #    Systems dealing with the contained data MUST be complaint to DIN 91379.
+-- #    Systems dealing with the contained data MUST be compliant to DIN 91379.
 -- #    That is, they can handle (store, transfer, recall, and represent) all characters as specified in DIN 91379 without error.
 -- #    Additionally, all Unicode text, before being fed into the SCSU compressor, MUST be in Normalisation Form C.
 -- #    When comparing names with identity documents, or when a Latinized representation of a name is required,
@@ -45,21 +45,6 @@ ASN-Module-GeneralData { iso(1) identified-organization(3) dod(6)
 
 EXPORTS ALL;
 
--- Defines the code table used, e.g. to define station code or area code or line code.
-CodeTable ::= CHOICE {
-    nuts          NULL,             -- European NUTS code.
-    locationUIC   NULL,             -- UIC station code from MERITS.
-                                    -- A 7 digit code (UIC country code + 5 digit local code) equates to an ERA retail station code; not to be confused with an ERA infrastructure station code.
-                                    -- A 9 digit code (2-digit scope code + UIC country code + 5 digit local code) equates to non rail infrastructure.
-    issuer        NULL,             -- Bilaterally agreed code table of the 'issuer' defined in issuingDetail.
-    productOwner  NULL,             -- Bilaterally agreed code table provided by the product owner.
-    carrier       NULL,             -- Bilaterally agreed code table provided by the carrier(s) participating in the related route segment.
-    area          NULL,             -- Bilaterally agreed code table for the area defined by the element 'concernedArea' defined in the container object.
-    national     INTEGER (0..999),  -- National code list of the national authority the country defined by its ISO 3166-1 numeric code.
-    company      CompanyCode,       -- Bilaterally agreed code table provided by the company defined according to its CompanyCodeType.
-    ...
-}
-
 -- Identification of any element using a numerical, alphanumerical or binary ID, according to the code list defined in the container object.
 GenericId ::= CHOICE {
     idNum   INTEGER,        -- for numerical IDs
@@ -67,26 +52,85 @@ GenericId ::= CHOICE {
     idOct   OCTET STRING    -- for binary IDs such as UUIDs
 }
 
--- Identification of a line or journey
-TransportNumber ::= CHOICE {
-    transportNumberNum INTEGER,
-    transportNumberIA5 VisibleString (FROM ("A".."Z"|"0".."9"|" "))
+GenericCode{IdType} ::= SEQUENCE {
+    codeTable CHOICE {
+        issuer          NULL,             -- Bilaterally agreed code table of the 'issuer' defined in issuingDetail.
+        productOwner    NULL,             -- Bilaterally agreed code table provided by the product owner.
+        carrier         NULL,             -- Bilaterally agreed code table provided by the carrier(s) participating in the related route segment.
+        area            NULL,             -- Bilaterally agreed code table for the area defined by the element 'concernedArea' defined in the container object.
+        national        INTEGER (0..999), -- National code list of the national authority the country defined by its ISO 3166-1 numeric code.
+        company         CompanyCode,      -- Bilaterally agreed code table provided by the company defined according to its CompanyCodeType.
+    },
+    codeTableVersion INTEGER (0..255) OPTIONAL,
+    id IdType
 }
 
--- Identification of a station.
+-- A STOP PLACE in Transmodel (EN 12896-2:2016 § 5.4.3)
 Station ::= SEQUENCE {
-    -- Code table in which the station code is defined.
-    -- If this code table is not provided the code table of the container object applies.
-    stationCodeTable    CodeTable   OPTIONAL,
-
-    station             StationCode,
+    station             CHOICE {
+        -- ERA TAP TSI location code
+        --   A 7 digit code (UIC country code + 5 digit local code) equates to an ERA retail station code; not to be confused with an ERA infrastructure station code.
+        --   A 9 digit code (2-digit scope code + UIC country code + 5 digit local code) equates to non-rail station codes.
+        era         INTEGER (1..999999999),
+        generic     GenericCode{GenericId},
+    },
     stationNameUTF8     UnicodeText OPTIONAL
 }
 
--- ID of a station, according to the code list defined in the container object.
-StationCode ::= CHOICE {
-    stationNum        INTEGER (1..999999999),
-    stationIA5        VisibleString
+StationSet ::= SEQUENCE {
+    set CHOICE {
+        -- Where a station group is defined a number of stations grouped together with a primary station
+        groupPrimary    Station,
+        -- Explicitly listing all stations in a group
+        list            SEQUENCE OF Station
+    },
+    setNameUTF8 UnicodeText OPTIONAL
+}
+
+-- A LINE in Transmodel (EN 12896-2:2016 § 5.3.7.4)
+LineId ::= CHOICE {
+    publicIdentifier    VisibleString (FROM ("A".."Z"|"0".."9")) -- e.g. "RE1"
+    netex               NeTExLineId,
+    generic             GenericCode{GenericId},
+}
+
+-- A SERVICE JOURNEY in Transmodel (EN 12896-3:2016 § 5.3.2)
+TransportId ::= CHOICE {
+    publicIdentifier    VisibleString (FROM ("A".."Z"|"0".."9")) -- e.g. "ICE107"
+    netex               NeTExServiceJourneyId,
+    generic             GenericCode{GenericId},
+}
+
+-- A geographic area defined under the Nomenclature of Territorial Units for Statistics (Regulation EC 1059/2003).
+-- Divisions all the way down to the Local Administrative Unit are permitted.
+-- NUTS codes are only defined for members of the EU, the EFTA, and EU candidate countries.
+-- FAUs are permitted standalone, e.g. DE025F (Freiburg im Breisgau) is coded with the subdivision "025F".
+-- LAUs must be appended to their NUTS3 code, e.g. DE13308316011 for Emmendingen, Stadt.
+-- For those countries outside the NUTS system:
+--   - the UK maintains a compatible system since Brexit called the International Territorial Level;
+--   - otherwise, use the the OECD Territorial Region codes (http://oe.cd/geostats).
+--   - if none of the above applies for a country, a choice of suitable system MUST be defined by UIC,
+--      users MUST NOT define bilateral subdivisions.
+NUTSArea ::= SEQUENCE {
+    -- ISO 3166-1 numeric code
+    country         INTEGER (0..999),
+    subdivision     VisibleString (FROM ("A".."Z"|"1".."9")) OPTIONAL,
+}
+
+-- One or more areas of geographic validity
+AreaSet ::= CHOICE {
+    -- European NUTS code.
+    nuts    SEQUENCE OF NUTSArea,
+    -- One of the NeTEx Zone sub-types
+    generic GenericCode{CHOICE {
+        -- Sequence of area/zone identifiers
+        idNum    SEQUENCE OF INTEGER,       -- e.g. sequence of allowed area/zone numbers such as {1,5,23}
+        idIA5    SEQUENCE OF VisibleString, -- e.g. areas/zones described with text such as {"M","1-3"}
+        idOct    SEQUENCE OF OCTET STRING,  -- e.g. sequence of Calypso NetworkIds such as {'250901'H,'250072'H}
+        -- Bit representation of areas/zones.
+        -- Recommended encoding if applicable: bit n (considering that bit 0 = right-most bit) encodes area/zone n+1, bit value 1 = area/zone is allowed, bit value 0 = area/zone is forbidden.
+        idBit    BIT STRING                -- e.g. bitmap of allowed areas/zones such as '10101110010'B for areas/zones 2, 5, 6, 7, 9 and 11
+    }}
 }
 
 -- Place data according to TAP TSI B.5
@@ -123,19 +167,19 @@ PlaceDetails ::= SEQUENCE {
     description     UnicodeText     OPTIONAL
 }
 
--- Identification of a company.
+-- A TRANSPORT ORGANIZATION in Transmodel (EN 12896-1:2016 § 5.6.8)
 CompanyCode ::= CHOICE {
     -- RICS codes as defined by UIC and registered on https://uic.org/support-activities/it/rics
     rics		INTEGER (1..9999),
 
-    -- Company codes as defined by the ERA
+    -- Organisation codes as defined by the ERA and registered on https://teleref.era.europa.eu/
     -- A RICS shall never be stored with eraCode but only with rics.
     eraCode 	VisibleString (SIZE (4) ^ FROM ("A".."Z"|"0".."9")),
 
 	otherCode   SEQUENCE {
 		--  The value of 'codeTable' identifies the company identifier format according to the following:
 		--    "+" + [2-letter uppercase ISO 3166 country code] + [addon, chosen by the national standards body of that country]
-		--    "_" + [RICS or ERA company code] + [addon, chosen by this company]
+		--    "_" + [RICS or ERA Organisation Code] + [addon, chosen by this company]
 		--    "*" + [addon] - private use, not guaranteed to avoid clashes
 		--    Compressed company form (i.e. "!I", "!C", "!P") are not permitted here.
 		--    Any other value only after registration in the company_code.csv registry.
@@ -205,7 +249,7 @@ Timestamp ::= SEQUENCE {
 --
 --  The value of 'dataFormat' identifies how 'data' is encoded:
 --    "+" + [2-letters uppercase ISO 3166 country code] + [addon, chosen by the national standards body of that country]
---    "_" + [RICS or ERA company code] + [addon, chosen by this company]
+--    "_" + [RICS or ERA Organisation Code] + [addon, chosen by this company]
 --    "!I" + [addon, chosen by the issuer] - equivalent to the _RICS format, without repetition of the issuer's code
 --    "!C" + [addon, chosen by the carrier] - equivalent to the _RICS format, without repetition of the carriers's code
 --    "!P" + [addon, chosen by the product owner] - equivalent to the _RICS format, without repetition of the product owner's code
@@ -216,6 +260,41 @@ Timestamp ::= SEQUENCE {
 Data ::= SEQUENCE {
     dataFormat  VisibleString,
     data        OCTET STRING
+}
+
+-- Values taken from GBFSv3.0
+SharedVehicleVariety ::= ENUMERATED {
+    bicycle (0),
+    cargoBicycle (1),
+    car (2),
+    moped (3),
+    scooterStanding (4),
+    scooterSeated (5),
+    other (6),
+    scooter (7),
+    ...
+}
+
+-- Values taken from GBFSv3.0
+SharedVehiclePropulsionType ::= ENUMERATED {
+    human (0),
+    electricAssist (1),
+    electric (2),
+    combustion (3),
+    combustionDiesel (4),
+    hybrid (5),
+    plugInHybrid (6),
+    hydrogenFuelCell (7),
+    ...
+}
+
+-- Values taken from GBFSv3.0
+SharedVehicleReturnConstraint ::= ENUMERATED {
+    freeFloating (0),
+    roundtripStation (1),
+    anyStation (2),
+    hybrid (3),
+    ...
 }
 
 END

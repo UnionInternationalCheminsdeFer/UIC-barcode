@@ -26,7 +26,10 @@ IMPORTS CompanyCode, Data, Timestamp
 
 -- The basic entry point of the barcode
 UICBarcodeHeader ::= SEQUENCE {
-    format      OCTET STRING (SIZE(2)), -- always set to "U3",
+    -- This field SHALL be set to the byte string "U3".
+    -- This results in the version 3 header being prefixed with U3 at the start, allowing identification of this
+    --  format of barcode header.
+    format      OCTET STRING (SIZE(2)),
     contents    Contents
 }
 
@@ -37,42 +40,66 @@ Contents ::= SEQUENCE {
 }
 
 Level2Data ::= SEQUENCE {
-    level1Data      Level1Data,
-    -- The signature is calculated over the PER unaligned encoding of level1Data
-    level1Signature OCTET STRING        OPTIONAL,
+    level1Data  Level1Data,
     -- Dynamic Content Data goes here
-    level2Data      SEQUENCE OF Data
+    level2Data  SEQUENCE OF Data
 }
 
 Level1Data ::= SEQUENCE {
     -- provider of the level 1 signature
-    securityProvider    CompanyCode,
-    keyId               INTEGER (0..99999)  OPTIONAL,
+    securityProvider        CompanyCode,
+    keyId                   INTEGER (0..99999)              OPTIONAL,
+
+    endEntityCertificate    Signature{EndEntityCertificate} OPTIONAL, -- Must be left unset, format to be decided upon at a later date
+    barcodeData             Signature{BarcodeData}                    -- Must use the standard variety, message recovery format to be decided upon at a later date
+}
+
+Signature{DataType} ::= CHOICE {
+    standard        SEQUENCE {
+        data                DataType,
+        signatureAlgorithm  SignatureAlgorithm,
+        -- The signature is calculated over the PER unaligned encoding of data
+        signature           OCTET STRING        OPTIONAL
+    },
+    messageRecovery MessageRecoverySignature
+}
+
+-- Values taken from the JSON Web Signature and Encryption Algorithm registry
+-- https://www.iana.org/assignments/jose/jose.xhtml#web-signature-encryption-algorithms
+SignatureAlgorithm ::= CHOICE {
+    es256   NULL, -- ECDSA using P-256 and SHA-256
+    es256k  NULL, -- ECDSA using secp256k1 curve and SHA-256
+    es384   NULL, -- ECDSA using P-384 and SHA-384
+    es512   NULL, -- ECDSA using P-521 and SHA-512
+    ed25519 NULL,
+    ed448   NULL,
+    hs256   NULL, -- HMAC using SHA-256, not permitted except by bilateral agreement
+    hs384   NULL, -- HMAC using SHA-384, not permitted except by bilateral agreement
+    hs512   NULL, -- HMAC using SHA-512, not permitted except by bilateral agreement
+    dsa1    NULL, -- DSA using SHA-1, not recommended for new deployments
+    dsa224  NULL, -- DSA using SHA-224, not recommended for new deployments
+    dsa256  NULL, -- DSA using SHA-512, not recommended for new deployments
+    none    NULL, -- only permitted when no security is required
+    other   OBJECT IDENTIFIER,
+    ...
+}
+
+-- Purposefully left blank, format to be decided upon at a later date
+MessageRecoverySignature ::= NULL
+-- Purposefully left blank, format to be decided upon at a later date
+EndEntityCertificate ::= NULL
+
+BarcodeData ::= SEQUENCE {
     -- This field MUST contain at most one well-known UIC data type (e.g. FCBn)
-    data                SEQUENCE OF Data (SIZE(1..16)),
+    data                SEQUENCE SIZE(1..16) OF Data,
 
-    -- object identifier of the key algorithms, e.g.:
-    --   EC secp256r1   1.2.840.10045.3.1.7
-    --   Ed25519        1.3.101.112 - no signing alg identifier required
-    --   Ed448          1.3.101.113 - no signing alg identifier required
-    --   DSA            1.2.840.10040.4.1 - not recommended for new deployments
-    --   HMAC SHA256    1.2.840.113549.2.9 - no signing alg identifier required, not permitted except by bilateral agreement
-    -- Not required to be set if the key ID makes it evident what key type was used.
-    level1KeyAlg        OBJECT IDENTIFIER               OPTIONAL,
-    level2KeyAlg        OBJECT IDENTIFIER               OPTIONAL,
-
-    -- object identifier of the signing algorithm, e.g.:
-    --   ECDSA with SHA256  1.2.840.10045.4.3.2
-    --   DSA with SHA256    2.16.840.1.101.3.4.3.2 - not recommended for new deployments
-    --   DSA with SHA224    2.16.840.1.101.3.4.3.1 - not recommended for new deployments
-    --   DSA with SHA1      1.2.840.10040.4.3 - not recommended for new deployments
-    level1SigningAlg    OBJECT IDENTIFIER               OPTIONAL,
-    level2SigningAlg    OBJECT IDENTIFIER               OPTIONAL,
-
+    -- Must be set to a value other than none if level2PublicKey is set
+    level2SigningAlg    SignatureAlgorithm              DEFAULT none,
     -- This field SHALL be encoded as follows:
     --   For EC keys: the public key in the SEC 1 v2.0 compressed-point format
     --   For Ed25519/Ed448 keys: the raw 32/57-octet public key
     --   For DSA keys: the public key in the SubjectPublicKeyInfo format - not recommended due to size
+    --   HMAC keys are not permitted as level 2 keys
     level2PublicKey     OCTET STRING                    OPTIONAL,
 
     -- End of the validity of the barcode.
