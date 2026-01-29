@@ -1891,17 +1891,6 @@ RetailChannelType ::= ENUMERATED {
 
 END
 
--- ##############################################################################################
--- TODO
--- - naming of geo... (areas, regions,..)
--- - use cases for micro mobility
---    - check-in / check-out barcode in app
---    - barcodes on fixed items
---        - barcode on a bike
---        - check-in / check-out barcode at check-in check-out point
--- - other use cases?
--- ##############################################################################################
-
 
 
 
