@@ -402,7 +402,7 @@ public class Decoder {
 		if (!isStaticHeader(data)) {
 			return dynamicFrame.getLevel2Data().getLevel1Signature();
 		} else if (staticFrame != null) {
-			return staticFrame.buildDataForSignature();
+			return staticFrame.getSignature();
 		} else if (ssbFrame != null) {
 			return SecurityUtils.encodeSignatureIntegerSequence(new BigInteger(ssbFrame.getSignaturePart1()), new BigInteger(ssbFrame.getSignaturePart2()));
 		} else {
