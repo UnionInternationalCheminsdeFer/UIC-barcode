@@ -1,7 +1,9 @@
 -- Creator: ASN.1 Editor (http://asneditor.sourceforge.net)
 -- Author: ClemensGantert
 -- Created: Mon Jun 28 14:14:28 CEST 2021
-ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
+ASN-Module-RailTicketData { iso(1) identified-organization(3) dod(6)
+    internet(1) private(4) enterprise(1) uic(17218) fcb(1) modules(0) rtd(2) v3(3) 5 }
+    DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 
 -- imports and exports
 -- EXPORTS ALL;
@@ -14,7 +16,7 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 	
 -- ##############################################################################################
 -- #	                                                                      
--- #   version 3.0.3       - value 3 in the UIC bar code version element 
+-- #   version 3.0.5       - value 3 in the UIC bar code version element
 -- #                         (see element 2 in U_FLEX record definition in leaflet 918.9)
 -- #                       - country code for Kosovo
 -- #
@@ -219,6 +221,9 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
          stationPassage         StationPassageData, 
          
          -- proprietary data defined bilaterally
+         -- In the specific case of a pure Account Based Ticketing barcode, in which no ticket must be present,
+         -- as it is impossible with the existing definition to completely remove the ticket from the DocumentData,
+         -- a specific "minimal" extension with extensionId = "_3011+0" and extensionData = ''H is used. 
          extension       		ExtensionData,   
          
          -- delay confirmation
@@ -716,9 +721,9 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
      				              					        		
 	   -- to support other ticket content (e.g. VDV, UTPF, V�V, CALYPSO)
 	   --   issuer code using the default code table of the product owner  
-	   extIssuerId		     INTEGER  	OPTIONAL,    
+	   extIssuerId              INTEGER  	OPTIONAL,
 	   --   authorization id provided to the issuer by the product owner      		
-	   issuerAutorizationId	 INTEGER  	OPTIONAL,    		        
+	   issuerAuthorizationId    INTEGER  	OPTIONAL,
      				           		
 	   -- ticket includes the return trip -  should be set to false if it is not relevant (e.g. zones) 		  
 	   returnIncluded	BOOLEAN,    	 			    					        		
@@ -1401,6 +1406,7 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
    -- #    content of the company identified by the RICS code, identified as 'addon' by this company.
    -- # "*" + [addon] means that 'extensionData' is a content specific to this barcode,
    -- #    identified as 'addon', with no further information on who defined it.
+   -- # "_3011+0" (3011 being the RICS code of UIC) identifies empty extensionData. 
    -- # Others values are reserved for future UIC use and shall not be used.
    -- ###########################################################################################
    ExtensionData	::= SEQUENCE 	{	
@@ -1431,9 +1437,9 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
   	productIdIA5		IA5String  	      			OPTIONAL,    
 	        
   	-- issuer code using the default code table of the product owner (today used e.g. by VDV)      
-  	externalIssuerId		INTEGER  	OPTIONAL,     
+  	externalIssuerId		INTEGER  	OPTIONAL,
   	-- authorization id provided to the issuer by the poroduct owner (today used e.g. by VDV)    					        		  				
-  	issuerAutorizationId	INTEGER  	OPTIONAL,    	
+  	issuerAuthorizationId	INTEGER  	OPTIONAL,
      					        		
   	-- regional validity data        		     					        		   										
   	stationCodeTable	CodeTableType DEFAULT stationUIC,                    
@@ -2090,9 +2096,9 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
   -- #####################################################################################    
      LuggageRestrictionType ::= SEQUENCE {
     	 -- allowed hand luggage pieces on this ticket (3 = default in current NRT tariff)
-    	 maxHandLuggagePieces		INTEGER (0..99) 	DEFAULT 3,			
+    	 maxHandLuggagePieces		INTEGER(0..99) 	DEFAULT 3,			
     	 -- allowed hand luggage pieces on this ticket (3 = default in current NRT tariff)    	 
-    	 maxNonHandLuggagePieces	INTEGER (0..99) 	DEFAULT 1,			
+    	 maxNonHandLuggagePieces	INTEGER(0..99) 	DEFAULT 1,			
     	 registeredLuggage			SEQUENCE OF RegisteredLuggageType OPTIONAL
     	 ,...
     	 
@@ -2116,9 +2122,9 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
     	geoUnit   				GeoUnitType 			DEFAULT milliDegree,
     	coordinateSystem	 	GeoCoordinateSystemType DEFAULT wgs84,  	
     	-- separate hemishpere flag reduces the data size
-    	hemisphereLongitude 	HemisphereLongitudeType DEFAULT north,  
+    	hemisphereLongitude 	HemisphereLongitudeType DEFAULT east,  
     	-- separate hemishpere flag reduces the data size
-    	hemisphereLatitude 		HemisphereLatitudeType	DEFAULT east,   
+    	hemisphereLatitude 		HemisphereLatitudeType	DEFAULT north,   
     	longitude 				INTEGER,
     	latitude  				INTEGER,
     	accuracy                GeoUnitType 			OPTIONAL
@@ -2144,15 +2150,15 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
     	deciDegree    		(4)
     }
     				
-	HemisphereLongitudeType ::=		ENUMERATED { 	
-		north 				(0), 
-		south 				(1) 
-	}
+   HemisphereLongitudeType ::= ENUMERATED { 	
+     east (0), 
+     west (1)  
+   }
 
-	HemisphereLatitudeType	::=		ENUMERATED { 	
-		east 				(0), 
-		west 				(1)  
-	}	
+   HemisphereLatitudeType ::= ENUMERATED { 	
+     north (0), 
+     south (1)    
+   }
 
 	LoadingDeckType		::=			ENUMERATED { 	
 		unspecified 		(0),

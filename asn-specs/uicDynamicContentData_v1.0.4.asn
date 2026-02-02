@@ -25,7 +25,9 @@
 -- Creator: ASN.1 Editor (http://asneditor.sourceforge.net)
 -- Author: ClemensGantert
 -- Created: Mon Jun 28 14:14:28 CEST 2021
-ASN-Module-DynamicContentData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
+ASN-Module-DynamicContentData { iso(1) identified-organization(3) dod(6)
+    internet(1) private(4) enterprise(1) uic(17218) fcb(1) modules(0) dcd(3) v1(1) 4 }
+    DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 
 -- imports and exports
 -- EXPORTS ALL;
@@ -100,8 +102,8 @@ ASN-Module-DynamicContentData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
    GeoCoordinateType ::= SEQUENCE {
      geoUnit             GeoUnitType             DEFAULT milliDegree,
      coordinateSystem    GeoCoordinateSystemType DEFAULT wgs84, 
-     hemisphereLongitude HemisphereLongitudeType DEFAULT east,   -- separate hemisphere flag reduces the data size 
-     hemisphereLatitude  HemisphereLatitudeType  DEFAULT north,  -- separate hemisphere flag reduces the data size   
+     hemisphereLongitude HemisphereLongitudeType DEFAULT north,   -- separate hemisphere flag reduces the data size 
+     hemisphereLatitude  HemisphereLatitudeType  DEFAULT east,  -- separate hemisphere flag reduces the data size   
      longitude           INTEGER,
      latitude            INTEGER,
      accuracy            GeoUnitType             OPTIONAL
@@ -121,13 +123,13 @@ ASN-Module-DynamicContentData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
    }
     				
    HemisphereLongitudeType ::= ENUMERATED { 	
-     east (0), 
-     west (1)  
+     north (0), 
+     south (1)
    }
 
    HemisphereLatitudeType ::= ENUMERATED { 	
-     north (0), 
-     south (1)    
+     east (0), 
+     west (1)     
    }	
 
    
@@ -141,7 +143,6 @@ ASN-Module-DynamicContentData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
    -- # "_" + [4-digit RICS] + [addon, chosen by this company] means that 'extensionData' is a proprietary
    -- #    content of the company identified by the RICS code, identified as 'addon' by this company.
    -- # "*" + [addon] means that 'extensionData' is a content specific to this barcode,
-   -- # "_3011+0" (3011 being the RICS code of UIC) identifies empty extensionData.  
    -- #    identified as 'addon', with no further information on who defined it.
    -- # Others values are reserved for future UIC use and shall not be used.
    -- ###########################################################################################

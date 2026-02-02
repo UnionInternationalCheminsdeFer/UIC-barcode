@@ -1,26 +1,23 @@
-# UIC-barcode
-Implementation of FCB barcode for rail tickets as specified in the IRS 90918-9.
+# UIC Barcode
 
-The implementation provides a java API for the ticket an encoding / decoding functions to convert 
-the ticket to and from the ASN.1/UPER encoded byte array specified in IRS 90918-9 for the FCB (flexible content barcode).
+Implementation of UIC Barcode Railway Tickets as specified in the IRS 90918-9.
 
-Covered barcode types:
+This repository contains three things:
 
-  - Static barcode (Fixed length structure, Version 1 and Version 2)
-     - TLB (Ticket Layout Barcode content)
-     - FCB (Flexible Content Barcode) version 1
-     - FCB (Flexible Content Barcode) version 2 (not used by railways)
-     - FCB (Flexible Content Barcode) version 3
-  - Dynamic barcode (DOSIPAS)
-     - FCB (Flexible Content Barcode) version 1
-     - FCB (Flexible Content Barcode) version 2 (not used by railways)
-     - FCB (Flexible Content Barcode) version 3
-  - SSB (Small Structured Barcode)
-    
+- The ASN.1 modules defining the format of data used in UIC Ticket Barcodes,    
+    in the folder `asn-specs`.
+- A Java library implementing Ticket Layout Barcodes, Flexible Content Barcode,
+    Small Structured Barcode, and DOSIPAS.
+- Registers for national or company specific extensions to this standard, 
+    in the folder `registers`.
 
-Documentation is available in the wiki: https://github.com/UnionInternationalCheminsdeFer/UIC-barcode/wiki
+The Maven repository for the Java library is available at https://github.com/orgs/UnionInternationalCheminsdeFer/packages?repo_name=UIC-barcode
 
-The maven repo is available at: https://github.com/orgs/UnionInternationalCheminsdeFer/packages?repo_name=UIC-barcode
+OIDs for the ASN.1 modules are documented in `oid.md`, and defined in ASN.1 form
+in `asn-specs/oids.asn`.
 
--------------------------------------------------
-Upcoming UIC barcode [specifications.](https://unioninternationalcheminsdefer.github.io/UIC-barcode/)
+## Draft Multi Modal Ticket Data v1 (MMTDv1)
+
+The `mmtdv1-draft` branch contains a draft version of the future Multi Modal 
+Ticket Data v1 ASN.1 modules. These ASN.1 modules are *not* to be used in 
+production yet, they are provided to facilitate experimentation and public comment.

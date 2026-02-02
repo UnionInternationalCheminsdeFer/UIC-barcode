@@ -1,7 +1,9 @@
 -- Creator: ASN.1 Editor (http://asneditor.sourceforge.net)
 -- Author: ClemensGantert
 -- Created: Mon Jun 28 14:14:28 CEST 2021
-ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
+ASN-Module-RailTicketData { iso(1) identified-organization(3) dod(6)
+    internet(1) private(4) enterprise(1) uic(17218) fcb(1) modules(0) rtd(2) v3(3) 2 }
+    DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 
 -- imports and exports
 -- EXPORTS ALL;
@@ -14,8 +16,9 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 	
 -- ##############################################################################################
 -- #	                                                                      
--- #   version 3.0.0       - value 3 in the UIC bar code version element 
+-- #   version 3.0.2       - value 3 in the UIC bar code version element 
 -- #                         (see element 2 in U_FLEX record definition in leaflet 918.9)
+-- #                       - country code for Kosovo
 -- #
 -- ##############################################################################################
 
@@ -34,7 +37,11 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 -- #                     trainNum - in case of a numeric train number
 -- #                     trainIA5 - in case of a alphanumeric train Id	
 -- #
--- #	
+-- #  ISO Country codes are used to code countries. 
+-- #    As Kosovo does not have an official ISO Country Code the following codes are used:
+-- #          926 for Kosovo as numeric ISO Country Code 
+-- #          XK  for Kosovo as alphanumeric 2-character ISO Country Code
+-- # 
 -- #  RICS codes must be used to encode companies (issuer, product owner, ...) where available
 -- #    other codes are possible based on bilateral agreements
 -- #    the format is kept more flexible to cover upcoming extensions of the RICS code by ERA	
@@ -445,7 +452,7 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
     						
     -- departure date in local time at the departure station
     -- number of the days calculated from the issuing date 
-    departureDate  		 INTEGER 	(-1..370)           DEFAULT 0, 
+    departureDate  		 INTEGER 	(-1..500)           DEFAULT 0, 
      		        															
     -- reservation reference according ton 918.1 in case ade via Hermes    			      	     		        															
     referenceIA5   		IA5String 	 			OPTIONAL,
@@ -597,7 +604,7 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 	
 	-- loading of the car in local date and time at the loading station	
 	-- number of the days calculated from the issuing date 
-    beginLoadingDate  	INTEGER (-1..370)   		DEFAULT 0,    
+    beginLoadingDate  	INTEGER (-1..500)   		DEFAULT 0,    
     beginLoadingTime	INTEGER (0..1439)  			OPTIONAL,
     endLoadingTime		INTEGER (0..1439)  			OPTIONAL,
     -- offset in units of 15 minutes from local time to UTC 
@@ -756,7 +763,7 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
                                                                       
 	   -- date/time validity in local time of the location where the journey ends                                                                  
 	   --  number of days from valid-from date, 0 = valid until day is equal to the first day of validity
-	   validUntilDay	INTEGER (-1..370)  		   DEFAULT 0,     	
+	   validUntilDay	INTEGER (-1..500)  		   DEFAULT 0,     	
 	   validUntilTime	INTEGER (0..1439) 		   OPTIONAL,       		
 	   -- offset in units of 15 minutes from local time to UTC 
        -- (UTC = local + offset * 15 Minutes)	
@@ -772,9 +779,8 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
        -- travel days of a ticket might be subject to a separate activation to be valid for traveling
 	   -- list of activated days in case the entire ticket is not activated
        -- the day is given by the number of days from the first day of validity
-       -- change in V2 1 -> 0..370
        -- 0 = first day of validity   		   
-	   activatedDay        	SEQUENCE OF INTEGER (0..370) 	OPTIONAL,  
+	   activatedDay        	SEQUENCE OF INTEGER (0..500) 	OPTIONAL,  
 						
 	   classCode		TravelClassType 		DEFAULT second,
 	   
@@ -872,7 +878,7 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 	   
 	   -- end of validity  (local time)
 	   -- number of days from valid from day, 0 = valid on valid-from-date
-	   validUntilDay		INTEGER (-1..370)   	DEFAULT 0,     	
+	   validUntilDay		INTEGER (-1..500)   	DEFAULT 0,     	
 	   -- in case the valid until time is not provided the valid until time is 23.59 (local time)
 	   validUntilTime	 	INTEGER (0..1439)  		OPTIONAL,     
        -- in case UTC offset is provided (NOT RECOMMENDED) the local date time in the time zone of validity region. The region where the ticket is valid must not cover more than one time zone
@@ -888,7 +894,7 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
                             
 	   -- max number of days of validity in case the valid from day is open		
 	   				
-	   numberOfValidityDays  	INTEGER (0..370) 		OPTIONAL, 
+	   numberOfValidityDays  	INTEGER (0..500) 		OPTIONAL, 
 	   
 	   trainValidity            TrainValidityType       OPTIONAL,
 	   
@@ -902,9 +908,8 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
        -- travel days of a ticket might be subject to a separate activation to be valid for traveling
 	   -- list of activated days in case the entire ticket is not activated
        -- the day is given by the number of days from the first day of validity
-       -- change in V2 1 -> 0..370
        -- 0 = first day of validity         
-	   activatedDay        		SEQUENCE OF INTEGER (0..370) 	OPTIONAL,  
+	   activatedDay        		SEQUENCE OF INTEGER (0..500) 	OPTIONAL,  
    							                                                        
 	   -- included countries, code table according to UIC leaflet 918.9
 	   countries			    SEQUENCE OF INTEGER (1..250)	OPTIONAL, 		
@@ -952,7 +957,7 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 	   
 	   -- end of time range  (local time)
 	   -- number of days from valid from day, 0 = valid on valid-from-date
-	   validUntilDay		INTEGER (-1..370)   	DEFAULT 0,     	
+	   validUntilDay		INTEGER (-1..500)   	DEFAULT 0,     	
 	   -- in case the valid until time is not provided the valid until time is 23.59 (local time)
 	   validUntilTime	 	INTEGER (0..1439)  		OPTIONAL,     
        -- in case UTC offset is provided (NOT RECOMMENDED) the local date time in the time zone of validity region. The region where the ticket is valid must not cover more than one time zone
@@ -998,7 +1003,7 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
        validFromUTCOffset       INTEGER (-60..60)       OPTIONAL,   
                                                                    
 	   -- number of days from valid from day, 0 = valid on valid from date
-	   validUntilDay			INTEGER (-1..370)   	DEFAULT 0,     	
+	   validUntilDay			INTEGER (-1..500)   	DEFAULT 0,     	
 	   validUntilTime			INTEGER (0..1439)  		OPTIONAL,
 	   -- in case UTC offset is provided (NOT RECOMMENDED) the local date time in the time zone of validity region. The region where the ticket is valid must not cover more than one time zone
        -- in case no UTC offset is provided (RECOMMENDED) the local date time in the time zone of the current location of the traveler	   
@@ -1040,12 +1045,12 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
      	-- number of year 		
      	validFromYear 	    INTEGER	(2016..2269),    		
      	--   number of the day in the year (1.1. = 1)
-     	validFromDay	    INTEGER	(0..370),    
+     	validFromDay	    INTEGER	(0..500),    
      	-- end of validity
      	-- number of year 	
      	validUntilYear 	    INTEGER	(2016..2269),    	
      	--   number of the day in the year (1.1. = 1)   	
-     	validUntilDay 	    INTEGER	(0..370),    	
+     	validUntilDay 	    INTEGER	(0..500),    	
    							
      	value           	INTEGER 				DEFAULT 0,   	
      	
@@ -1082,12 +1087,12 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
    	   validFromDay		INTEGER (-367..700)          DEFAULT 0,   		        	 
    	   -- last day of validity
    	   --    number of days from valid from day, 0 = first day of validity  			
-   	   validUntilDay	INTEGER (-1..370)            DEFAULT 0,   							
+   	   validUntilDay	INTEGER (-1..500)            DEFAULT 0,   							
    							
    	   -- activated days: list of days for which the ticket is valid in local date wherever the traveler is located
        --   the day is given by the number of days from the first day of validity
        --   0 = first day of validity   							
-   	   activatedDay        	SEQUENCE OF INTEGER (0..370) OPTIONAL,  
+   	   activatedDay        	SEQUENCE OF INTEGER (0..500) OPTIONAL,  
 
    	   -- included carriers 	 
        carrierNum			SEQUENCE OF INTEGER (1..32000) 	OPTIONAL,	 
@@ -1153,7 +1158,7 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
                                                                	   
 	   -- end of validity
 	   -- number of days from valid from day, 0 = first day of validity
-	   validUntilDay		INTEGER (-1..370)  			DEFAULT 0,    
+	   validUntilDay		INTEGER (-1..500)  			DEFAULT 0,    
 	   validUntilTime		INTEGER (0..1439) 			OPTIONAL,
 	   -- offset in units of 15 minutes from local time to UTC 
        -- (UTC = local + offset * 15 Minutes)	
@@ -1191,13 +1196,13 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 	   -- number of year
 	   validFromYear 	INTEGER	(2016..2269), 	  		
 	   ---	 number of the day in the year (1.1. = 1)
-	   validFromDay		INTEGER	(0..370)		OPTIONAL,
+	   validFromDay		INTEGER	(0..500)		OPTIONAL,
 	   
 	   -- number of year from valid from year onwards 
 	   -- end of validity time is 23:59
 	   validUntilYear 	INTEGER	(0..250)		DEFAULT 0,    
 	   --- number of the day in the year (1.1. = 1)
-	   validUntilDay 	INTEGER	(0..370)		OPTIONAL,     
+	   validUntilDay 	INTEGER	(0..500)		OPTIONAL,     
 	   
 	   classCode		TravelClassType 		OPTIONAL,
 	   
@@ -1248,7 +1253,7 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 	   -- number of days from the issuing date
 	   fromParkingDate  INTEGER 		 	(-367..370),          
 	   -- number of days from the from parking date in case it is different from that date
-	   untilParkingDate INTEGER 		 	(0..370) DEFAULT 0, 
+	   untilParkingDate INTEGER 		 	(0..500) DEFAULT 0, 
 
 	   -- organization responsible for the product definition 
        -- (RICS Code / proprietary code in case no RICS code is defined, proprietary codes must ensure to be unique)        
@@ -1352,7 +1357,7 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
                                                                       
 	   -- date/time validity in local time of the location where the journey ends                                                                  
 	   --  number of days from valid-from date, 0 = valid until day is equal to the first day of validity
-	   validUntilDay	INTEGER (-1..370)  		   DEFAULT 0,     	
+	   validUntilDay	INTEGER (-1..500)  		   DEFAULT 0,     	
 	   validUntilTime	INTEGER (0..1439) 		   OPTIONAL,       		
 	   -- offset in units of 15 minutes from local time to UTC 
        -- (UTC = local + offset * 15 Minutes)	
@@ -1451,7 +1456,7 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
                                                                       
 	   -- date/time validity in local time of the location where the journey ends                                                                  
 	   --  number of days from valid-from date, 0 = valid until day is equal to the first day of validity
-	   validUntilDay	INTEGER (-1..370)  		   DEFAULT 0,     	
+	   validUntilDay	INTEGER (-1..500)  		   DEFAULT 0,     	
 	   validUntilTime	INTEGER (0..1439) 		   OPTIONAL,       		
 	   -- offset in units of 15 minutes from local time to UTC 
        -- (UTC = local + offset * 15 Minutes)	
@@ -1717,7 +1722,7 @@ ASN-Module-RailTicketData DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 	   
 	   -- local date at the station where the train link starts (fromStation)
 	   -- days from the issuing date onwards
-	   travelDate  		INTEGER 	(-1..370),   
+	   travelDate  		INTEGER 	(-1..500),   
 	   -- time in minutes, local time at the station where the train link starts	 
 	   departureTime 	INTEGER 	(0..1439),   
 	   -- offset in units of 15 minutes from local time to UTC 

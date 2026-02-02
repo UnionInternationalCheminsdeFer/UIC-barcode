@@ -1,6 +1,8 @@
 -- Author: ClemensGantert
 -- Created: Thu Jun 04 17:19:28 CEST 2020
-ASN-Module-Header DEFINITIONS AUTOMATIC TAGS ::= BEGIN
+ASN-Module-Header { iso(1) identified-organization(3) dod(6)
+    internet(1) private(4) enterprise(1) uic(17218) fcb(1) modules(0) header(1) v2(2) 1 }
+    DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 
 -- imports and exports
 -- EXPORTS ALL;
