@@ -1175,9 +1175,6 @@ CardReferenceType ::= SEQUENCE {
     -- Issuer and type of the card
    	product ProductType,
 
-    -- Type of the card, code list defined by the issuer of the card.
-    type    INTEGER             OPTIONAL,
-
     -- Card ID
     -- According to cardIdFormat, the ID is full, limited to the leading part, or limited to the trailing part.
     id      GenericId           OPTIONAL,
