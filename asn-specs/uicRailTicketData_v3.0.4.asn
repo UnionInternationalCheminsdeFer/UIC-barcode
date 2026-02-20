@@ -1,22 +1,24 @@
 -- Creator: ASN.1 Editor (http://asneditor.sourceforge.net)
 -- Author: ClemensGantert
--- Created: Tue Aug 11 11:40:28 CEST 2015
-ASN-Module DEFINITIONS AUTOMATIC TAGS ::= BEGIN
+-- Created: Mon Jun 28 14:14:28 CEST 2021
+ASN-Module-RailTicketData { iso(1) identified-organization(3) dod(6)
+    internet(1) private(4) enterprise(1) uic(17218) fcb(1) modules(0) rtd(2) v3(3) 4 }
+    DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 
 -- imports and exports
 -- EXPORTS ALL;
 
 
 -- changes:
---    product id 1 bit more 65535
---    open ticket transport mode EN 1545-1
---    allowing -1 in differences of days between dates (validity of tickets crossing time zones)
+--    extended range in valid from dates
+--    service brand restrictions in viaStation
+--    new train validity in pass data
 	
 -- ##############################################################################################
 -- #	                                                                      
--- #   version 2.0         - value 2 in the UIC bar code version element 
+-- #   version 3.0.3       - value 3 in the UIC bar code version element 
 -- #                         (see element 2 in U_FLEX record definition in leaflet 918.9)
--- #           2.0.2       - improved description on times and time zones to be used
+-- #                       - country code for Kosovo
 -- #
 -- ##############################################################################################
 
@@ -35,7 +37,11 @@ ASN-Module DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 -- #                     trainNum - in case of a numeric train number
 -- #                     trainIA5 - in case of a alphanumeric train Id	
 -- #
--- #	
+-- #  ISO Country codes are used to code countries. 
+-- #    As Kosovo does not have an official ISO Country Code the following codes are used:
+-- #          926 for Kosovo as numeric ISO Country Code 
+-- #          XK  for Kosovo as alphanumeric 2-character ISO Country Code
+-- # 
 -- #  RICS codes must be used to encode companies (issuer, product owner, ...) where available
 -- #    other codes are possible based on bilateral agreements
 -- #    the format is kept more flexible to cover upcoming extensions of the RICS code by ERA	
@@ -215,6 +221,9 @@ ASN-Module DEFINITIONS AUTOMATIC TAGS ::= BEGIN
          stationPassage         StationPassageData, 
          
          -- proprietary data defined bilaterally
+         -- In the specific case of a pure Account Based Ticketing barcode, in which no ticket must be present,
+         -- as it is impossible with the existing definition to completely remove the ticket from the DocumentData,
+         -- a specific "minimal" extension with extensionId = "_3011+0" and extensionData = ''H is used. 
          extension       		ExtensionData,   
          
          -- delay confirmation
@@ -313,12 +322,12 @@ ASN-Module DEFINITIONS AUTOMATIC TAGS ::= BEGIN
    		--   booking data to the control devices (e.g. at SBB)   
    		-- The time can be compared with the last synchronization time of 
    		--   the control device
-   		issuingTime			INTEGER (0..1439)  		OPTIONAL,  
+   		issuingTime			INTEGER (0..1439),  
    		
    		-- name of the issuer (E.g. short name mentioned in RICS code table)   		
         issuerName			UTF8String 				OPTIONAL,              
              	    
-        -- specimen indicates a test specimen not valid for travelling        
+        -- specimen indicates a test specimen not valid for traveling        
         specimen			BOOLEAN,         
 
         -- secure paper indicates that this barcode is issued with a secure paper ticket 
@@ -446,7 +455,7 @@ ASN-Module DEFINITIONS AUTOMATIC TAGS ::= BEGIN
     						
     -- departure date in local time at the departure station
     -- number of the days calculated from the issuing date 
-    departureDate  		 INTEGER 	(-1..370)           DEFAULT 0, 
+    departureDate  		 INTEGER 	(-1..500)           DEFAULT 0, 
      		        															
     -- reservation reference according ton 918.1 in case ade via Hermes    			      	     		        															
     referenceIA5   		IA5String 	 			OPTIONAL,
@@ -498,7 +507,6 @@ ASN-Module DEFINITIONS AUTOMATIC TAGS ::= BEGIN
     
     -- arrival date and time in local time at the arrival station
     -- number of days counted from the departure date 
-    -- !!! proposal for change:    arrivalDate			INTEGER (-1..20)		DEFAULT 0,
     arrivalDate		   INTEGER (-1..20)		            DEFAULT 0,  			
     arrivalTime		   INTEGER (0..1439) 	            OPTIONAL,  
     -- offset in units of 15 minutes from local time to UTC 
@@ -599,7 +607,7 @@ ASN-Module DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 	
 	-- loading of the car in local date and time at the loading station	
 	-- number of the days calculated from the issuing date 
-    beginLoadingDate  	INTEGER (-1..370)   		DEFAULT 0,    
+    beginLoadingDate  	INTEGER (-1..500)   		DEFAULT 0,    
     beginLoadingTime	INTEGER (0..1439)  			OPTIONAL,
     endLoadingTime		INTEGER (0..1439)  			OPTIONAL,
     -- offset in units of 15 minutes from local time to UTC 
@@ -744,7 +752,10 @@ ASN-Module DEFINITIONS AUTOMATIC TAGS ::= BEGIN
      					    
 	   -- date/time validity in local time of the location where the journey starts
 	   -- number of days from issuing date 
-	   validFromDay		INTEGER (-1..700)    		DEFAULT 0, 
+	   validFromDay		INTEGER (-367..700)    		DEFAULT 0, 
+	   -- in case the valid from time is not provided the valid from time is 00.00 (local time)
+	   -- in case UTC offset is provided (NOT RECOMMENDED) the local date time in the time zone of validity region. The region where the ticket is valid must not cover more than one time zone
+       -- in case no UTC offset is provided (RECOMMENDED) the local date time in the time zone of the current location of the traveler	   	   
 	   validFromTime	INTEGER (0..1439) 		    OPTIONAL,    
 	   -- offset in units of 15 minutes from local time to UTC 
        -- (UTC = local + offset * 15 Minutes)	
@@ -755,7 +766,7 @@ ASN-Module DEFINITIONS AUTOMATIC TAGS ::= BEGIN
                                                                       
 	   -- date/time validity in local time of the location where the journey ends                                                                  
 	   --  number of days from valid-from date, 0 = valid until day is equal to the first day of validity
-	   validUntilDay	INTEGER (-1..370)  		   DEFAULT 0,     	
+	   validUntilDay	INTEGER (-1..500)  		   DEFAULT 0,     	
 	   validUntilTime	INTEGER (0..1439) 		   OPTIONAL,       		
 	   -- offset in units of 15 minutes from local time to UTC 
        -- (UTC = local + offset * 15 Minutes)	
@@ -771,9 +782,8 @@ ASN-Module DEFINITIONS AUTOMATIC TAGS ::= BEGIN
        -- travel days of a ticket might be subject to a separate activation to be valid for traveling
 	   -- list of activated days in case the entire ticket is not activated
        -- the day is given by the number of days from the first day of validity
-       -- change in V2 1 -> 0..370
        -- 0 = first day of validity   		   
-	   activatedDay        	SEQUENCE OF INTEGER (0..370) 	OPTIONAL,  
+	   activatedDay        	SEQUENCE OF INTEGER (0..500) 	OPTIONAL,  
 						
 	   classCode		TravelClassType 		DEFAULT second,
 	   
@@ -842,16 +852,18 @@ ASN-Module DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 	   productOwnerNum			INTEGER (1..32000) 		OPTIONAL,    
 	   productOwnerIA5			IA5String 		 		OPTIONAL,    
 	   
-	   -- product id to identify the issued product codelist defined by the product owner   
-       -- !!! productIdNum extended
+	   -- product id to identify the issued product code list defined by the product owner   
        productIdNum		 INTEGER 	(0..65535) 	OPTIONAL,    
 	   productIdIA5				IA5String  	      		OPTIONAL,    
                              
 	   -- type of the pass, code list provided by the product owner
 			-- in case of Eurail:
- 				-- 1 = Interrail
-  				-- 2 = Eurail
-       			-- 3 = Eurail Global (all countries)   
+               -- 1 = Eurail Global Pass
+               -- 2 = Interrail Global Pass
+               -- 3 = Interrail One Country Pass
+               -- 4 = Eurail One Country Pass
+               -- 5 = Eurail/Interrail Global Pass Emergency ticket
+
 	   passType            		INTEGER (1..250)  		OPTIONAL,    
 	        
 	   -- literal name of the pass    
@@ -861,18 +873,18 @@ ASN-Module DEFINITIONS AUTOMATIC TAGS ::= BEGIN
                             
 	   -- begin of validity (local time)
 	   -- number of days from issuing date 
-	   validFromDay			INTEGER (-1..700)   	DEFAULT 0,   	   
+	   validFromDay			INTEGER (-367..700)   	DEFAULT 0,   	   
 	   -- in case the valid from time is not provided the valid from time is 00.00 (local time)
-	   validFromTime		INTEGER (0..1439)  		OPTIONAL,
-       -- in case UTC offset is provided (NOT RECOMMENDED) the local date time in the time zone of validity region. The region where the ticket is valid must not cover more than one time zone
+	   -- in case UTC offset is provided (NOT RECOMMENDED) the local date time in the time zone of validity region. The region where the ticket is valid must not cover more than one time zone
        -- in case no UTC offset is provided (RECOMMENDED) the local date time in the time zone of the current location of the traveler	   
-	   -- offset in units of 15 minutes from local time to UTC 
+	   validFromTime		INTEGER (0..1439)  		OPTIONAL,
+       -- offset in units of 15 minutes from local time to UTC   
        -- (UTC = local + offset * 15 Minutes)
        validFromUTCOffset   INTEGER (-60..60)       OPTIONAL,   	   
 	   
 	   -- end of validity  (local time)
 	   -- number of days from valid from day, 0 = valid on valid-from-date
-	   validUntilDay		INTEGER (-1..370)   	DEFAULT 0,     	
+	   validUntilDay		INTEGER (-1..500)   	DEFAULT 0,     	
 	   -- in case the valid until time is not provided the valid until time is 23.59 (local time)
 	   validUntilTime	 	INTEGER (0..1439)  		OPTIONAL,     
        -- in case UTC offset is provided (NOT RECOMMENDED) the local date time in the time zone of validity region. The region where the ticket is valid must not cover more than one time zone
@@ -888,33 +900,33 @@ ASN-Module DEFINITIONS AUTOMATIC TAGS ::= BEGIN
                             
 	   -- max number of days of validity in case the valid from day is open		
 	   				
-	   numberOfValidityDays  	INTEGER (0..370) 		OPTIONAL, 
+	   numberOfValidityDays  	INTEGER (0..500) 		OPTIONAL, 
+	   
+	   trainValidity            TrainValidityType       OPTIONAL,
 	   
 	   -- max number of possible trips to be activated
 	   numberOfPossibleTrips 	INTEGER (1..250)  		OPTIONAL,      	
 	   numberOfDaysOfTravel  	INTEGER (1..250)  		OPTIONAL, 
-  
-       
+         
        -- here it is possible to list the activated days of the ticket:                                                                    
        -- day the ticket is activated. The activation is valid from 00:00 to 23:59 in the time zone of the current location of the traveler	
        -- thereby the activation might include more or less that 24 hours in case time zone borders are crossed
        -- travel days of a ticket might be subject to a separate activation to be valid for traveling
 	   -- list of activated days in case the entire ticket is not activated
        -- the day is given by the number of days from the first day of validity
-       -- change in V2 1 -> 0..370
        -- 0 = first day of validity         
-	   activatedDay        		SEQUENCE OF INTEGER (0..370) 	OPTIONAL,  
+	   activatedDay        		SEQUENCE OF INTEGER (0..500) 	OPTIONAL,  
    							                                                        
 	   -- included countries, code table according to UIC leaflet 918.9
 	   countries			    SEQUENCE OF INTEGER (1..250)	OPTIONAL, 		
 	   
 	   -- included carriers (RICS codes)
        includedCarrierNum		SEQUENCE OF INTEGER (1..32000)	OPTIONAL,	 
-       includedCarrierIA5		SEQUENCE OF IA5String		OPTIONAL,		   
+       includedCarrierIA5		SEQUENCE OF IA5String		    OPTIONAL,		   
 
 	   -- excluded carriers (RICS codes)
        excludedCarrierNum		SEQUENCE OF INTEGER (1..32000)	OPTIONAL,	 
-       excludedCarrierIA5		SEQUENCE OF IA5String		OPTIONAL,	       
+       excludedCarrierIA5		SEQUENCE OF IA5String		    OPTIONAL,	       
        
            -- service brand: code list https://uic.org/service-brand-code-list
 	   includedServiceBrands 	SEQUENCE OF INTEGER (1..32000) 	OPTIONAL, 
@@ -934,6 +946,50 @@ ASN-Module DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 	   ,...
    }	
    
+   
+   TrainValidityType ::= SEQUENCE {
+       -- validity for travel depending on the boarding or arrival time to be within the given time range
+      
+	   -- begin of time range (local time)
+	   -- number of days from issuing date 
+	   validFromDay			INTEGER (-367..700)   	DEFAULT 0,   	   
+	   -- in case the valid from time is not provided the valid from time is 00.00 (local time)
+	   -- in case UTC offset is provided (NOT RECOMMENDED) the local date time in the time zone of validity region. The region where the ticket is valid must not cover more than one time zone
+       -- in case no UTC offset is provided (RECOMMENDED) the local date time in the time zone of the current location of the traveler	   
+	   validFromTime		INTEGER (0..1439)  		OPTIONAL,
+       -- offset in units of 15 minutes from local time to UTC   
+       -- (UTC = local + offset * 15 Minutes)
+       validFromUTCOffset   INTEGER (-60..60)       OPTIONAL,   	   
+	   
+	   -- end of time range  (local time)
+	   -- number of days from valid from day, 0 = valid on valid-from-date
+	   validUntilDay		INTEGER (-1..500)   	DEFAULT 0,     	
+	   -- in case the valid until time is not provided the valid until time is 23.59 (local time)
+	   validUntilTime	 	INTEGER (0..1439)  		OPTIONAL,     
+       -- in case UTC offset is provided (NOT RECOMMENDED) the local date time in the time zone of validity region. The region where the ticket is valid must not cover more than one time zone
+       -- in case no UTC offset is provided (RECOMMENDED) the local date time in the time zone of the current location of the traveler	   
+	   -- offset in units of 15 minutes from local time to UTC 
+       -- (UTC = local + offset * 15 Minutes)	
+       -- should be omitted in case it is the same as for departure
+       validUntilUTCOffset  INTEGER (-60..60)       OPTIONAL,   
+
+	   -- included carriers (RICS codes)
+       includedCarrierNum		SEQUENCE OF INTEGER (1..32000)	OPTIONAL,	 
+       includedCarrierIA5		SEQUENCE OF IA5String		    OPTIONAL,		   
+
+	   -- excluded carriers (RICS codes)
+       excludedCarrierNum		SEQUENCE OF INTEGER (1..32000)	OPTIONAL,	 
+       excludedCarrierIA5		SEQUENCE OF IA5String		    OPTIONAL,	       
+       
+       -- service brand: code list https://uic.org/service-brand-code-list
+	   includedServiceBrands 	SEQUENCE OF INTEGER (1..32000) 	OPTIONAL, 
+	   excludedServiceBrands 	SEQUENCE OF INTEGER (1..32000) 	OPTIONAL, 					
+
+	   boardingOrArrival        BoardingOrArrivalRestrictionType DEFAULT boarding,
+	   ...
+   
+   }
+   
    ValidityPeriodDetailType ::= SEQUENCE {
 	   validityPeriod 		    SEQUENCE OF ValidityPeriodType 	OPTIONAL,
 	   excludedTimeRange 		SEQUENCE OF TimeRangeType      	OPTIONAL
@@ -942,17 +998,18 @@ ASN-Module DEFINITIONS AUTOMATIC TAGS ::= BEGIN
    ValidityPeriodType ::= SEQUENCE {
    
 	   -- number of days from issuing date  (local date)
-	   validFromDay				INTEGER (-1..700)   	DEFAULT 0,   	
+	   validFromDay				INTEGER (-367..700)   	DEFAULT 0,   	
 	   -- local time 
-	   validFromTime			INTEGER (0..1439)  	    OPTIONAL,  
-       -- in case UTC offset is provided (NOT RECOMMENDED) the local date time in the time zone of validity region. The region where the ticket is valid must not cover more than one time zone
+	   -- in case the valid from time is not provided the valid from time is 00.00 (local time)
+	   -- in case UTC offset is provided (NOT RECOMMENDED) the local date time in the time zone of validity region. The region where the ticket is valid must not cover more than one time zone
        -- in case no UTC offset is provided (RECOMMENDED) the local date time in the time zone of the current location of the traveler	      
+	   validFromTime			INTEGER (0..1439)  	    OPTIONAL,  
 	   -- offset in units of 15 minutes from local time to UTC 
        -- (UTC = local + offset * 15 Minutes)	
        validFromUTCOffset       INTEGER (-60..60)       OPTIONAL,   
                                                                    
 	   -- number of days from valid from day, 0 = valid on valid from date
-	   validUntilDay			INTEGER (-1..370)   	DEFAULT 0,     	
+	   validUntilDay			INTEGER (-1..500)   	DEFAULT 0,     	
 	   validUntilTime			INTEGER (0..1439)  		OPTIONAL,
 	   -- in case UTC offset is provided (NOT RECOMMENDED) the local date time in the time zone of validity region. The region where the ticket is valid must not cover more than one time zone
        -- in case no UTC offset is provided (RECOMMENDED) the local date time in the time zone of the current location of the traveler	   
@@ -985,22 +1042,21 @@ ASN-Module DEFINITIONS AUTOMATIC TAGS ::= BEGIN
      	productOwnerNum		INTEGER (1..32000) 		OPTIONAL,         
      	productOwnerIA5		IA5String 		 		OPTIONAL,    
  
-     	-- product id to identify the issued product codelist defined by the product owner   
-        -- !!! productIdNum extended
+     	-- product id to identify the issued product code list defined by the product owner   
         productIdNum		 INTEGER 	(0..65535) 	OPTIONAL,  
      	productIdIA5		IA5String  	      		OPTIONAL,    
      				   		
-     	-- begin / end of validity in local date time wherever the traveler is located
+     	-- begin / end of validity in local date wherever the traveler is located
      	-- valid from 00:00 to 23:59 
      	-- number of year 		
      	validFromYear 	    INTEGER	(2016..2269),    		
      	--   number of the day in the year (1.1. = 1)
-     	validFromDay	    INTEGER	(0..370),    
+     	validFromDay	    INTEGER	(0..500),    
      	-- end of validity
      	-- number of year 	
      	validUntilYear 	    INTEGER	(2016..2269),    	
      	--   number of the day in the year (1.1. = 1)   	
-     	validUntilDay 	    INTEGER	(0..370),    	
+     	validUntilDay 	    INTEGER	(0..500),    	
    							
      	value           	INTEGER 				DEFAULT 0,   	
      	
@@ -1034,15 +1090,15 @@ ASN-Module DEFINITIONS AUTOMATIC TAGS ::= BEGIN
        -- begin / end of validity in local date time wherever the traveler is located
        -- valid from 00:00 to 23:59 
        ---   number of days from issuing date  
-   	   validFromDay		INTEGER (-1..700)            DEFAULT 0,   		        	 
+   	   validFromDay		INTEGER (-367..700)          DEFAULT 0,   		        	 
    	   -- last day of validity
    	   --    number of days from valid from day, 0 = first day of validity  			
-   	   validUntilDay	INTEGER (-1..370)            DEFAULT 0,   							
+   	   validUntilDay	INTEGER (-1..500)            DEFAULT 0,   							
    							
-   	   -- activated days: list of days for which the ticket is valid in local date time wherever the traveler is located
+   	   -- activated days: list of days for which the ticket is valid in local date wherever the traveler is located
        --   the day is given by the number of days from the first day of validity
        --   0 = first day of validity   							
-   	   activatedDay        	SEQUENCE OF INTEGER (0..370) OPTIONAL,  
+   	   activatedDay        	SEQUENCE OF INTEGER (0..500) OPTIONAL,  
 
    	   -- included carriers 	 
        carrierNum			SEQUENCE OF INTEGER (1..32000) 	OPTIONAL,	 
@@ -1060,7 +1116,7 @@ ASN-Module DEFINITIONS AUTOMATIC TAGS ::= BEGIN
                                		
    --  #####################################################################################
    -- data station passage and access 
-   --   ticket used to enter, exit or pass a station without travel ing by train.
+   --   ticket used to enter, exit or pass a station without traveling by train.
    --          E.g. for staff working in a station.
    --  ##################################################################################### 
    StationPassageData 	::= SEQUENCE 	{
@@ -1097,7 +1153,10 @@ ASN-Module DEFINITIONS AUTOMATIC TAGS ::= BEGIN
    	     		
 	   -- begin of validity in local date and time of the station
 	   -- number of days from issuing date 
-	   validFromDay			INTEGER (-1..700),   			 
+	   validFromDay			INTEGER (-367..700),   	
+	   -- in case the valid from time is not provided the valid from time is 00.00 (local time)
+	   -- in case UTC offset is provided (NOT RECOMMENDED) the local date time in the time zone of validity region. The region where the ticket is valid must not cover more than one time zone
+       -- in case no UTC offset is provided (RECOMMENDED) the local date time in the time zone of the current location of the traveler	   
 	   validFromTime		INTEGER (0..1439) 			OPTIONAL,   
        -- offset in units of 15 minutes from local time to UTC 
        -- (UTC = local + offset * 15 Minutes)	      
@@ -1105,7 +1164,7 @@ ASN-Module DEFINITIONS AUTOMATIC TAGS ::= BEGIN
                                                                	   
 	   -- end of validity
 	   -- number of days from valid from day, 0 = first day of validity
-	   validUntilDay		INTEGER (-1..370)  			DEFAULT 0,    
+	   validUntilDay		INTEGER (-1..500)  			DEFAULT 0,    
 	   validUntilTime		INTEGER (0..1439) 			OPTIONAL,
 	   -- offset in units of 15 minutes from local time to UTC 
        -- (UTC = local + offset * 15 Minutes)	
@@ -1138,18 +1197,18 @@ ASN-Module DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 	   cardIdIA5		IA5String 				OPTIONAL,	 
 	   cardIdNum 		INTEGER					OPTIONAL,
    					
-       -- begin / end of validity in local date time wherever the traveler is located
+       -- begin / end of validity in local date wherever the traveler is located
        -- begin of validity time is 00:00
 	   -- number of year
 	   validFromYear 	INTEGER	(2016..2269), 	  		
 	   ---	 number of the day in the year (1.1. = 1)
-	   validFromDay		INTEGER	(0..370)		OPTIONAL,
+	   validFromDay		INTEGER	(0..500)		OPTIONAL,
 	   
 	   -- number of year from valid from year onwards 
 	   -- end of validity time is 23:59
 	   validUntilYear 	INTEGER	(0..250)		DEFAULT 0,    
 	   --- number of the day in the year (1.1. = 1)
-	   validUntilDay 	INTEGER	(0..370)		OPTIONAL,     
+	   validUntilDay 	INTEGER	(0..500)		OPTIONAL,     
 	   
 	   classCode		TravelClassType 		OPTIONAL,
 	   
@@ -1195,12 +1254,12 @@ ASN-Module DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 	   
 	   parkingGroundId 	IA5String, 
    					
-	   -- parking date in local date time of the time zone of the parking
+	   -- parking date in time zone of the parking
 	   -- validity is the whole day depending on opening hours of the parking facility
 	   -- number of days from the issuing date
-	   fromParkingDate  INTEGER 		 	(-1..370),          
+	   fromParkingDate  INTEGER 		 	(-367..370),          
 	   -- number of days from the from parking date in case it is different from that date
-	   untilParkingDate INTEGER 		 	(0..370) DEFAULT 0, 
+	   untilParkingDate INTEGER 		 	(0..500) DEFAULT 0, 
 
 	   -- organization responsible for the product definition 
        -- (RICS Code / proprietary code in case no RICS code is defined, proprietary codes must ensure to be unique)        
@@ -1208,7 +1267,6 @@ ASN-Module DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 	   productOwnerIA5	IA5String 		 	OPTIONAL,   
 
 	   -- product id to identify the issued product code list defined by the product owner  
-       -- !!! productIdNum extended
        productIdNum		 INTEGER 	(0..65535) 	OPTIONAL,   
 	   productIdIA5		IA5String  	      	OPTIONAL,    
 			  
@@ -1251,7 +1309,6 @@ ASN-Module DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 	   productOwnerIA5		IA5String 		 			OPTIONAL,    
      				   		
 	   -- product id to identify the issued product codelist defined by the product owner   
-       -- !!! productIdNum extended
        productIdNum		 INTEGER 	(0..65535) 	OPTIONAL,    
 	   productIdIA5		IA5String  	      				OPTIONAL,     		    				   		
      				   		
@@ -1292,7 +1349,10 @@ ASN-Module DEFINITIONS AUTOMATIC TAGS ::= BEGIN
    
    	   -- date/time validity in local time of the location where the journey starts
 	   -- number of days from issuing date 
-	   validFromDay		INTEGER (-1..700)    		DEFAULT 0, 
+	   validFromDay		INTEGER (-367..700)    		DEFAULT 0, 
+	   -- in case the valid from time is not provided the valid from time is 00.00 (local time)
+	   -- in case UTC offset is provided (NOT RECOMMENDED) the local date time in the time zone of validity region. The region where the ticket is valid must not cover more than one time zone
+       -- in case no UTC offset is provided (RECOMMENDED) the local date time in the time zone of the current location of the traveler	      
 	   validFromTime	INTEGER (0..1439) 		    OPTIONAL,    
 	   -- offset in units of 15 minutes from local time to UTC 
        -- (UTC = local + offset * 15 Minutes)	
@@ -1303,7 +1363,7 @@ ASN-Module DEFINITIONS AUTOMATIC TAGS ::= BEGIN
                                                                       
 	   -- date/time validity in local time of the location where the journey ends                                                                  
 	   --  number of days from valid-from date, 0 = valid until day is equal to the first day of validity
-	   validUntilDay	INTEGER (-1..370)  		   DEFAULT 0,     	
+	   validUntilDay	INTEGER (-1..500)  		   DEFAULT 0,     	
 	   validUntilTime	INTEGER (0..1439) 		   OPTIONAL,       		
 	   -- offset in units of 15 minutes from local time to UTC 
        -- (UTC = local + offset * 15 Minutes)	
@@ -1335,18 +1395,20 @@ ASN-Module DEFINITIONS AUTOMATIC TAGS ::= BEGIN
    }	
    
 						
-   --  ###########################################################################################
-   -- generic non standard extension element
-   --    the generic non - standard element contains:
-   --            - an extension id to distinguish different extensions
-   --            - the extension data as binary data
-   -- proprietary extensions are by definition proprietary. This standard provides
-   --           the means to identify these extensions 
-   --           within the data and to skip these data.
-   --           the evaluation of these data and the unique identification of the extensions 
-   --           via the extension id is in the 
-   --           responsibility of the railways which use these extensions.			
-   --  ########################################################################################### 
+   -- ########################################################################################### 
+   -- # Generic extension element.
+   -- #
+   -- # The value of 'extensionId' describes how 'extensionData' is encoded:
+   -- # "+" + [2-letters ISO 3166 country code] + [addon, chosen by the standardization body of that country]
+   -- #    means that 'extensionData' is a content defined by this national standardization body,
+   -- #    identified as 'addon' by this body.
+   -- # "_" + [4-digit RICS] + [addon, chosen by this company] means that 'extensionData' is a proprietary
+   -- #    content of the company identified by the RICS code, identified as 'addon' by this company.
+   -- # "*" + [addon] means that 'extensionData' is a content specific to this barcode,
+   -- #    identified as 'addon', with no further information on who defined it.
+   -- # "_3011+0" (3011 being the RICS code of UIC) identifies empty extensionData. 
+   -- # Others values are reserved for future UIC use and shall not be used.
+   -- ###########################################################################################
    ExtensionData	::= SEQUENCE 	{	
 	   extensionId   IA5String, 
 	   extensionData OCTET STRING
@@ -1387,7 +1449,10 @@ ASN-Module DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 
 	   -- date/time validity in local time of the location where the journey starts
 	   -- number of days from issuing date 
-	   validFromDay		INTEGER (-1..700)    		DEFAULT 0, 
+	   validFromDay		INTEGER (-367..700)    		DEFAULT 0, 
+	   -- in case the valid from time is not provided the valid from time is 00.00 (local time)
+	   -- in case UTC offset is provided (NOT RECOMMENDED) the local date time in the time zone of validity region. The region where the ticket is valid must not cover more than one time zone
+       -- in case no UTC offset is provided (RECOMMENDED) the local date time in the time zone of the current location of the traveler	      
 	   validFromTime	INTEGER (0..1439) 		    OPTIONAL,    
 	   -- offset in units of 15 minutes from local time to UTC 
        -- (UTC = local + offset * 15 Minutes)	
@@ -1398,7 +1463,7 @@ ASN-Module DEFINITIONS AUTOMATIC TAGS ::= BEGIN
                                                                       
 	   -- date/time validity in local time of the location where the journey ends                                                                  
 	   --  number of days from valid-from date, 0 = valid until day is equal to the first day of validity
-	   validUntilDay	INTEGER (-1..370)  		   DEFAULT 0,     	
+	   validUntilDay	INTEGER (-1..500)  		   DEFAULT 0,     	
 	   validUntilTime	INTEGER (0..1439) 		   OPTIONAL,       		
 	   -- offset in units of 15 minutes from local time to UTC 
        -- (UTC = local + offset * 15 Minutes)	
@@ -1664,7 +1729,7 @@ ASN-Module DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 	   
 	   -- local date at the station where the train link starts (fromStation)
 	   -- days from the issuing date onwards
-	   travelDate  		INTEGER 	(-1..370),   
+	   travelDate  		INTEGER 	(-1..500),   
 	   -- time in minutes, local time at the station where the train link starts	 
 	   departureTime 	INTEGER 	(0..1439),   
 	   -- offset in units of 15 minutes from local time to UTC 
@@ -1770,7 +1835,7 @@ ASN-Module DEFINITIONS AUTOMATIC TAGS ::= BEGIN
   --               visible route description: "*(station1/station2)*"      
   --         there can also be alternative routes:  
   --              "*(station1*station2/station3*station4)*" although the 
-  --                definition in 108.2 is not very precice on this option    
+  --                definition in 108.2 is not very precise on this option    
   -- ################################################################################### 
    ViaStationType ::= SEQUENCE {    
 	   
@@ -1796,7 +1861,17 @@ ASN-Module DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 	   seriesId 			INTEGER 			           	OPTIONAL,  	
 	   
 	   -- route id of the route code list defined by the carrier on that route   	
-	   routeId             	INTEGER 				       	OPTIONAL   	
+	   routeId             	INTEGER 				       	OPTIONAL,
+	   
+	   -- service brands valid for the route 
+       -- in case this list is provided the ticket is invalid on all other service brands
+       -- service brand: code list https://uic.org/service-brand-code-list
+	   includedServiceBrands SEQUENCE OF INTEGER (1..32000) OPTIONAL, 
+	   
+	   -- service brands valid for the route 
+	   -- in case this list is provided the ticket is valid on all other service brands	   
+	   excludedServiceBrands SEQUENCE OF INTEGER (1..32000) OPTIONAL    
+	 
 	   ,...
    }		
    
@@ -2047,9 +2122,9 @@ ASN-Module DEFINITIONS AUTOMATIC TAGS ::= BEGIN
     	geoUnit   				GeoUnitType 			DEFAULT milliDegree,
     	coordinateSystem	 	GeoCoordinateSystemType DEFAULT wgs84,  	
     	-- separate hemishpere flag reduces the data size
-    	hemisphereLongitude 	HemisphereLongitudeType DEFAULT north,  
+    	hemisphereLongitude 	HemisphereLongitudeType DEFAULT east,  
     	-- separate hemishpere flag reduces the data size
-    	hemisphereLatitude 		HemisphereLatitudeType	DEFAULT east,   
+    	hemisphereLatitude 		HemisphereLatitudeType	DEFAULT north,   
     	longitude 				INTEGER,
     	latitude  				INTEGER,
     	accuracy                GeoUnitType 			OPTIONAL
@@ -2075,15 +2150,15 @@ ASN-Module DEFINITIONS AUTOMATIC TAGS ::= BEGIN
     	deciDegree    		(4)
     }
     				
-	HemisphereLongitudeType ::=		ENUMERATED { 	
-		north 				(0), 
-		south 				(1) 
-	}
+   HemisphereLongitudeType ::= ENUMERATED { 	
+     east (0), 
+     west (1)  
+   }
 
-	HemisphereLatitudeType	::=		ENUMERATED { 	
-		east 				(0), 
-		west 				(1)  
-	}	
+   HemisphereLatitudeType ::= ENUMERATED { 	
+     north (0), 
+     south (1)    
+   }
 
 	LoadingDeckType		::=			ENUMERATED { 	
 		unspecified 		(0),
@@ -2109,5 +2184,10 @@ ASN-Module DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 		otherRack 			(8)
 		,...
 	}	
-
+	
+	BoardingOrArrivalRestrictionType ::= ENUMERATED {
+	   boarding  (0),
+	   arrival   (1),
+	   ...
+	}
 END
