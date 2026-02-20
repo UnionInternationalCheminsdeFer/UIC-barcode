@@ -2,8 +2,8 @@
 -- Author: ClemensGantert
 -- Created: Mon Jun 28 14:14:28 CEST 2021
 -- Last modification: Fri Oct 27 CEST 18:00:00 CEST 2025
--- Copyright UIC 2025
-ASN-Module-RailTicketData { iso(1) identified-organization(3) dod(6)
+-- Copyright UIC 2026
+ASN-Module-MultiModalTicketData { iso(1) identified-organization(3) dod(6)
     internet(1) private(4) enterprise(1) uic(17218) fcb(1) modules(0) mmtd(4) v1(1) 0 }
     DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 
@@ -14,16 +14,9 @@ IMPORTS GenericId, CompanyCode, Station, StationCode, CodeTable, GeoCoordinate, 
  Timestamp, SharedVehicleVariety, SharedVehiclePropulsionType, SharedVehicleReturnConstraint
  FROM ASN-Module-GeneralData { iso(1) identified-organization(3) dod(6) internet(1) private(4) enterprise(1) uic(17218) fcb(1) modules(0) general(5) v1(1) 0 };
 
--- Changes:
---    New ticket structure merging openTicket, pass, reservation and allowing defining a commercialCard.
---    Improvements in IssuingData and ControlData.
---    Renaming of some elements to address transport modes other than rail
-
 -- ##############################################################################################
 -- #
--- #   version 4.0.0       - Value 4 in the UIC bar code version element
--- #                         (see element 2 in U_FLEX record definition in TAP TSI B.12)
--- #                       - Value "FCB4" in element dataFormat of UicBarcodeHeader
+-- #   version 1.0.0       - Value "MMT1" in element dataFormat of the UICBarcodeHeader
 -- #
 -- ##############################################################################################
 
@@ -91,9 +84,9 @@ IMPORTS GenericId, CompanyCode, Station, StationCode, CodeTable, GeoCoordinate, 
 -- #
 -- #  ASN.1 Extensions:
 -- #    The specification makes use of the ASN.1 extension marker ("...").
--- #    Extensions might be defined in future versions of the UIC specification.
+-- #    Extensions might be defined in future versions of this specification.
 -- #    Implementations must support this extension feature of ASN.1, at least they must be able to ignore extensions while decoding the data.
--- #    ASN.1 extensions will be defined by UIC. It is not allowed to define bilateral extensions.
+-- #    ASN.1 extensions will be defined by standards action. It is not allowed to define bilateral extensions.
 -- #
 -- #  Bilateral Extensions:
 -- #    Bilateral extensions can be included in the data element "Data".
