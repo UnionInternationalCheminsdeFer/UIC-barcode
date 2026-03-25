@@ -58,5 +58,8 @@ It may only be marked as deprecated.
   - `5`: General cross-module data
     - `1`: v1:
       - `0`: Draft version 1.0.0, will be replaced by initial release
+  - `6`: Fixed Point Data
+    - `1`: v1
+      - `0`: Draft version 1.0.0, will be replaced by initial release
 - `1`: PKI Related OIDs, primarily X.509 extensions
   - Nodes under this tree to be defined
