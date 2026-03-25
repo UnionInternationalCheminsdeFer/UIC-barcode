@@ -8,6 +8,12 @@ ASN-Module-DynamicContentData { iso(1) identified-organization(3) dod(6)
 IMPORTS Timestamp, GeoCoordinate, Data
  FROM ASN-Module-GeneralData { iso(1) identified-organization(3) dod(6) internet(1) private(4) enterprise(1) uic(17218) fcb(1) modules(0) general(5) v1(1) 0 };
 
+-- ############################################################################
+-- #                                                                          #
+-- #  Version 2.0.0 - Value "FDC4" in element dataFormat of UicBarcodeHeader  #
+-- #                                                                          #
+-- ############################################################################
+
 UICDynamicContentData ::= SEQUENCE {
     -- Identification of the mobile application that generated the barcode and filled in the dynamic part.
     -- Values as defined by the security provider.
@@ -28,9 +34,6 @@ UICDynamicContentData ::= SEQUENCE {
 	--    The use of unregistered values (outside of the national, company, and private use ranges) is strictly forbidden.
 	--    All values should be registered via the UIC Github repository.
     dynamicContentResponseToChallenge   SEQUENCE OF Data,
-
-    -- Proprietary data defined bilaterally
-    dynamicContentExtension             Data                OPTIONAL,
 
     ...
 }
