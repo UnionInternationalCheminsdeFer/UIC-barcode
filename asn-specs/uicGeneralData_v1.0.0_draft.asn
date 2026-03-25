@@ -257,33 +257,39 @@ Data ::= SEQUENCE {
     data        OCTET STRING
 }
 
--- Values taken from GBFSv3.0
+-- Per NeTEx PersonalVehicleCategory (CEN/TS 16614-5:2022 § 10.1.4.3.4.2)
 SharedVehicleVariety ::= ENUMERATED {
-    bicycle (0),
-    cargoBicycle (1),
-    car (2),
-    moped (3),
-    scooterStanding (4),
-    scooterSeated (5),
-    other (6),
-    scooter (7),
+    scooter (0),        -- Scooter - small wheeled low mobile platform
+    bicycle (1),        -- Bicycle.
+    tricycle (2),       -- Tricycle.
+    tandem (3),         -- Tandem bicycle.
+    moped (4),          -- Moped (Small motorbike).
+    motorcycle (5),     -- Motorcycle.
+    quadbike (6),       -- Motorcycle.
+    car (7),            -- Car of any size.
+    microCar (8),       -- Extremely small vehicle.
+    miniCar (9),        -- Very small vehicle.
+    smallCar (10),      -- Small vehicle.
+    mediumCar (11),     -- Compact vehicle.
+    largeCar (12),      -- Large vehicle.
+    minivan (13),       -- Minivan.
+    transporter (14),   -- Large people transporter / minibus.
+    snowmobile (15),    -- Snowmobile.
+    other (16),         -- Other category.
     ...
 }
 
--- Values taken from GBFSv3.0
+-- Per NeTEx PropulsionType (CEN/TS 16614-5:2022 § 10.1.4.3.2.2)
 SharedVehiclePropulsionType ::= ENUMERATED {
-    human (0),
-    electricAssist (1),
-    electric (2),
-    combustion (3),
-    combustionDiesel (4),
-    hybrid (5),
-    plugInHybrid (6),
-    hydrogenFuelCell (7),
+    combustion (0),     -- Combustion of any sort
+    hybrid (1),         -- Electric/Combustion Hybrid
+    human (2),          -- Human powered (pedal, scoot etc)
+    electricAssist (3), -- Human power with electric assistance.
+    other (4),          -- Other power
     ...
 }
 
--- Values taken from GBFSv3.0
+-- As per GBFSv3.0, to be replaced by a NeTEx mapping once standardised
 SharedVehicleReturnConstraint ::= ENUMERATED {
     freeFloating (0),
     roundtripStation (1),
