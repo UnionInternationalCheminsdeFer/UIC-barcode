@@ -191,10 +191,9 @@ public class Api2OpenAsnEncoder implements Api2AsnEncoder {
 		}
 		
 		
-		if (uicTicket.getControlDetails() != null) {			
+		if (uicTicket.getControlDetailsOrNull() != null) {	
 			asnTicket.setControlDetail(encodeControlDetails(uicTicket.getControlDetails(), uicTicket.getIssuerDetails().getIssuingDate()));			
 		}
-		
 		
 		if (uicTicket.getExtensions() != null && !uicTicket.getExtensions().isEmpty()){
 			
@@ -208,12 +207,10 @@ public class Api2OpenAsnEncoder implements Api2AsnEncoder {
 			if (!asnList.isEmpty()){
 				asnTicket.setExtension(asnList);
 			}
-			
-			
 		}
 		
 		
-		if (uicTicket.getTravelerDetails() != null) {
+		if (uicTicket.getTravelerDetailsOrNull() != null) {
 			asnTicket.setTravelerDetail(encodeTravelers(uicTicket.getTravelerDetails(),uicTicket.getIssuerDetails().getIssuingDate() ));
 		}
 		
@@ -287,7 +284,7 @@ public class Api2OpenAsnEncoder implements Api2AsnEncoder {
 	}
 	
 
-	
+
 	private DocumentData encodeDelayConfirmation(IDelayConfirmation document, Date issuingDate) throws EncodingFormatException {
 		
 		DocumentData asnDocument = new DocumentData();
