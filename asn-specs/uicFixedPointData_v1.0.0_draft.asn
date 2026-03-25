@@ -16,7 +16,7 @@ IMPORTS GenericId, CompanyCode, Station, CoachPlaces, Data, SharedVehicleVariety
 -- # This is useful, for example, in the case of customer feedback barcodes that should link to the operator's website
 -- # for reporting faults, or for directing users to download an app to access a shared vehicle.
 -- #   (1) Encode this structure in the DOSIPAS format in the usual way, optionally signed
--- #   (2) Base-41 encode the resultant binary data; see here: https://doi.org/10.1002/eng2.12606
+-- #   (2) Base-41 encode the resultant binary data, with the alphabet "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ$*-.:"; see here: https://github.com/sveljko/base41
 -- #   (3) Append it to the end of a URL with the prefix "$UIC:"
 -- # Example: "HTTPS://RAIL.EXAMPLE/QRFB/$UIC:A2I9..."
 -- # n.b. uppercase should be used in the whole URL, as this is much more efficient to encode in a QR code
