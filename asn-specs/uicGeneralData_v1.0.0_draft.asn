@@ -11,8 +11,6 @@ ASN-Module-GeneralData { iso(1) identified-organization(3) dod(6)
 -- #      926 for Kosovo as numeric ISO Country Code
 -- #      XK  for Kosovo as alphanumeric 2-character ISO Country Code
 -- #
--- #  RICS codes must be used to encode companies where available, else ERA Organisation Codes, or other codes MAY be used.
--- #
 -- #  Encoding and handling of text:
 -- #    Text fields in this specification are OCTET STRINGS.
 -- #    The contents of these fields MUST be encoded according to the Standard Compression Scheme for Unicode (SCSU, https://www.unicode.org/reports/tr6/tr6-4.html).
@@ -68,9 +66,9 @@ GenericCode{IdType} ::= SEQUENCE {
 -- A STOP PLACE in Transmodel (EN 12896-2:2016 § 5.4.3)
 Station ::= SEQUENCE {
     station             CHOICE {
-        -- ERA TAP TSI location code
-        --   A 7 digit code (UIC country code + 5 digit local code) equates to an ERA retail station code; not to be confused with an ERA infrastructure station code.
-        --   A 9 digit code (2-digit scope code + UIC country code + 5 digit local code) equates to non-rail station codes.
+        -- ERA TEL TSI Primary Location Code, as per https://teleref.era.europa.eu
+        --   A 7 digit code (country code + 5 digit local code) rail station codes.
+        --   A 9 digit code (2-digit scope code + country code + 5 digit local code) equates to non-rail station codes.
         era         INTEGER (1..999999999),
         generic     GenericCode{GenericId},
     },
@@ -130,7 +128,7 @@ AreaSet ::= CHOICE {
     }}
 }
 
--- Place data according to TAP TSI B.5
+-- Place data according to TEL TSI B.5
 -- placeString = place number ranges in case of groups
 CoachPlaces ::= SEQUENCE {
     coach               VisibleString               OPTIONAL,
@@ -153,25 +151,25 @@ PlaceNumber ::= CHOICE {
     placeIA5      VisibleString
 }
 
--- Compartment details according to TAP TSI B.5
+-- Compartment details according to TEL TSI B.5
 PlaceDetails ::= SEQUENCE {
-    -- Per TAP TSI Code List B.5.51.1
+    -- Per TEL TSI Code List B.5.51.1
     coachType       INTEGER (0..99),
-    -- Per TAP TSI Code List B.5.51.2
+    -- Per TEL TSI Code List B.5.51.2
     compartmentType INTEGER (0..99),
-    -- Per TAP TSI Code List B.5.51.3
+    -- Per TEL TSI Code List B.5.51.3
     specialOffers   INTEGER (0..99),
     description     UnicodeText     OPTIONAL
 }
 
 -- A TRANSPORT ORGANIZATION in Transmodel (EN 12896-1:2016 § 5.6.8)
 CompanyCode ::= CHOICE {
-    -- RICS codes as defined by UIC and registered on https://uic.org/support-activities/it/rics
-    rics		INTEGER (1..9999),
-
-    -- Organisation codes as defined by the ERA and registered on https://teleref.era.europa.eu/
-    -- A RICS shall never be stored with eraCode but only with rics.
-    eraCode 	VisibleString (SIZE (4) ^ FROM ("A".."Z"|"0".."9")),
+    -- For companies within the EU this field SHALL be their ERA assigned Organisation Code.
+    -- For others this field SHALL be their UIC assed RICS Code.
+    -- If a company has no such code, otherCode MAY be used.
+    -- ERA Organisation Codes are available from https://teleref.era.europa.eu/
+    -- UIC RICS Codes are available from https://uic.org/support-activities/it/rics
+    orgCode     VisibleString (SIZE (4) ^ FROM ("A".."Z"|"0".."9")),
 
 	otherCode   SEQUENCE {
 		--  The value of 'codeTable' identifies the company identifier format according to the following:
@@ -182,8 +180,8 @@ CompanyCode ::= CHOICE {
 		--    Any other value only after registration in the company_code.csv registry.
 		--    The use of unregistered values (outside of the national, company, and private use ranges) is strictly forbidden.
 		--    All values should be registered via the UIC Github repository.
-		codeTable	VisibleString,
-		code		VisibleString
+		codeTable   VisibleString,
+		code        VisibleString
 	}
 }
 

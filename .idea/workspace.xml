@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="f7db672d-9acf-49fe-9654-a57eb8f04ef8" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/asn-specs/uicDynamicContentData_v2.0.0_draft.asn" beforeDir="false" afterPath="$PROJECT_DIR$/asn-specs/uicDynamicContentData_v2.0.0_draft.asn" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/asn-specs/uicGeneralData_v1.0.0_draft.asn" beforeDir="false" afterPath="$PROJECT_DIR$/asn-specs/uicGeneralData_v1.0.0_draft.asn" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/asn-specs/uicRailTicketData_v4.0.0_draft.asn" beforeDir="false" afterPath="$PROJECT_DIR$/asn-specs/uicRailTicketData_v4.0.0_draft.asn" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="EditorConfigPreviewManager">
+    <editorConfig file="$PROJECT_DIR$/.editorconfig" previewFile="$PROJECT_DIR$/asn-specs/proprietary_extensions.asn" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 0
+}</component>
+  <component name="ProjectId" id="356ryjkTkAigbAfDBUOkgdsSKgZ" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "database.data.extractors.current.export.id": "Comma-separated (CSV)_id",
+    "database.data.extractors.current.id": "Comma-separated (CSV)_id",
+    "git-widget-placeholder": "main",
+    "last_opened_file_path": "/Users/q/Documents/RTD-4/cen-asn",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/cen-asn" />
+      <recent name="$PROJECT_DIR$/registers" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
+    </key>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-js-predefined-d6986cc7102b-e03c56caf84a-JavaScript-PY-252.23892.515" />
+        <option value="bundled-python-sdk-7e47963ff851-f0eec537fc84-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-252.23892.515" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="f7db672d-9acf-49fe-9654-a57eb8f04ef8" name="Changes" comment="" />
+      <created>1762441619170</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1762441619170</updated>
+      <workItem from="1762441621785" duration="283000" />
+      <workItem from="1762441947815" duration="5259000" />
+      <workItem from="1762505020643" duration="1326000" />
+      <workItem from="1762597078306" duration="2000" />
+      <workItem from="1762687048084" duration="831000" />
+      <workItem from="1762940104567" duration="14745000" />
+      <workItem from="1763038459662" duration="10879000" />
+      <workItem from="1764079713926" duration="13173000" />
+      <workItem from="1764151448249" duration="23204000" />
+      <workItem from="1764366998462" duration="6694000" />
+      <workItem from="1765287560579" duration="921000" />
+      <workItem from="1766067777684" duration="11058000" />
+      <workItem from="1768222179814" duration="20222000" />
+      <workItem from="1768339138423" duration="4378000" />
+      <workItem from="1768693218908" duration="1127000" />
+      <workItem from="1768817217404" duration="1554000" />
+      <workItem from="1768825634909" duration="14503000" />
+      <workItem from="1769173550690" duration="11139000" />
+      <workItem from="1769194680062" duration="8298000" />
+      <workItem from="1769688600801" duration="3204000" />
+      <workItem from="1769696654264" duration="1915000" />
+      <workItem from="1771593115796" duration="2082000" />
+      <workItem from="1772029853467" duration="1552000" />
+      <workItem from="1773313979997" duration="13431000" />
+      <workItem from="1774427291437" duration="10689000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+</project>
