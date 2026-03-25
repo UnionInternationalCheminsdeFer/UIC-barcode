@@ -35,7 +35,7 @@ UICBarcodeHeader ::= SEQUENCE {
 
 Contents ::= SEQUENCE {
     level2Data      Level2Data,
-    -- The signature is calculated over the PER unaligned encoding of level2Data
+    -- The signature is calculated over the canonical unaligned PER (CUPER) encoding of level2Data
     level2Signature OCTET STRING OPTIONAL
 }
 
@@ -58,7 +58,7 @@ Signature{DataType} ::= CHOICE {
     standard        SEQUENCE {
         data                DataType,
         signatureAlgorithm  SignatureAlgorithm,
-        -- The signature is calculated over the PER unaligned encoding of data
+        -- The signature is calculated over the canonical unaligned PER (CUPER) encoding of data
         signature           OCTET STRING        OPTIONAL
     },
     messageRecovery MessageRecoverySignature
