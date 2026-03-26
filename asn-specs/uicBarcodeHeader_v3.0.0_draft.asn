@@ -56,8 +56,6 @@ Level1Data ::= SEQUENCE {
     barcodeData             SignedData{BarcodeData}                       -- Must use the standard variety, message recovery format to be decided upon at a later date
 }
 
-BD ::= SignedData{BarcodeData}
-
 SignedData{DataType} ::= CHOICE {
     standard        SEQUENCE {
         data                DataType,
