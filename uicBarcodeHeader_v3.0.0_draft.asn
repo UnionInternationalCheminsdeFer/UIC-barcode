@@ -36,52 +36,79 @@ UICBarcodeHeader ::= SEQUENCE {
 Contents ::= SEQUENCE {
     level2Data      Level2Data,
     -- The signature is calculated over the canonical unaligned PER (CUPER) encoding of level2Data
-    level2Signature OCTET STRING OPTIONAL
+    level2Signature Signature   OPTIONAL
 }
 
 Level2Data ::= SEQUENCE {
     level1Data  Level1Data,
     -- Dynamic Content Data goes here
-    level2Data  SEQUENCE OF Data
+    level2Data  SEQUENCE SIZE(0..7) OF Data
 }
 
 Level1Data ::= SEQUENCE {
     -- provider of the level 1 signature
-    securityProvider        CompanyCode,
-    keyId                   INTEGER (0..99999)              OPTIONAL,
+    key                     SEQUENCE {
+        securityProvider    CompanyCode,
+        keyId               INTEGER (0..99999)
+    } OPTIONAL,
 
-    endEntityCertificate    Signature{EndEntityCertificate} OPTIONAL, -- Must be left unset, format to be decided upon at a later date
-    barcodeData             Signature{BarcodeData}                    -- Must use the standard variety, message recovery format to be decided upon at a later date
+    endEntityCertificate    SignedData{EndEntityCertificate}    OPTIONAL, -- Must be left unset, format to be decided upon at a later date
+    barcodeData             SignedData{BarcodeData}                       -- Must use the standard variety, message recovery format to be decided upon at a later date
 }
 
-Signature{DataType} ::= CHOICE {
+BD ::= SignedData{BarcodeData}
+
+SignedData{DataType} ::= CHOICE {
     standard        SEQUENCE {
         data                DataType,
-        signatureAlgorithm  SignatureAlgorithm,
         -- The signature is calculated over the canonical unaligned PER (CUPER) encoding of data
-        signature           OCTET STRING        OPTIONAL
+        signature           Signature
     },
     messageRecovery MessageRecoverySignature
 }
 
 -- Values taken from the JSON Web Signature and Encryption Algorithm registry
 -- https://www.iana.org/assignments/jose/jose.xhtml#web-signature-encryption-algorithms
-SignatureAlgorithm ::= CHOICE {
-    es256   NULL, -- ECDSA using P-256 and SHA-256
-    es256k  NULL, -- ECDSA using secp256k1 curve and SHA-256
-    es384   NULL, -- ECDSA using P-384 and SHA-384
-    es512   NULL, -- ECDSA using P-521 and SHA-512
-    ed25519 NULL,
-    ed448   NULL,
-    hs256   NULL, -- HMAC using SHA-256, not permitted except by bilateral agreement
-    hs384   NULL, -- HMAC using SHA-384, not permitted except by bilateral agreement
-    hs512   NULL, -- HMAC using SHA-512, not permitted except by bilateral agreement
-    dsa1    NULL, -- DSA using SHA-1, not recommended for new deployments
-    dsa224  NULL, -- DSA using SHA-224, not recommended for new deployments
-    dsa256  NULL, -- DSA using SHA-512, not recommended for new deployments
+Signature ::= CHOICE {
+    es256   DSSSignature{32}, -- ECDSA using P-256 and SHA-256
+    es256k  DSSSignature{32}, -- ECDSA using secp256k1 curve and SHA-256
+    es384   DSSSignature{48}, -- ECDSA using P-384 and SHA-384
+    es512   DSSSignature{66}, -- ECDSA using P-521 and SHA-512
+    ed25519 OCTET STRING (SIZE (64)),
+    ed448   OCTET STRING (SIZE (114)),
+    hs256   OCTET STRING (SIZE (32)), -- HMAC using SHA-256, not permitted except by bilateral agreement
+    hs384   OCTET STRING (SIZE (48)), -- HMAC using SHA-384, not permitted except by bilateral agreement
+    hs512   OCTET STRING (SIZE (64)), -- HMAC using SHA-512, not permitted except by bilateral agreement
+    dsa1    DSSSignature{20}, -- DSA-160 using SHA-1, not recommended for new deployments
+    dsa224  DSSSignature{28}, -- DSA-224 using SHA-224, not recommended for new deployments
+    dsa256  DSSSignature{32}, -- DSA-256 using SHA-256, not recommended for new deployments
     none    NULL, -- only permitted when no security is required
-    other   OBJECT IDENTIFIER,
+    other   SEQUENCE {
+        algId       OBJECT IDENTIFIER,
+        signature   OCTET STRING
+    },
     ...
+}
+
+DSSSignature{INTEGER: len} ::= SEQUENCE {
+    r OCTET STRING (SIZE(len)),
+    s OCTET STRING (SIZE(len))
+}
+
+PublicKey ::= CHOICE {
+    nistP256    ECPublicKey{32},
+    secp256K1   ECPublicKey{32},
+    nistP384    ECPublicKey{48},
+    nistP521    ECPublicKey{66},
+    ed25519     OCTET STRING (SIZE (32)),
+    ed448       OCTET STRING (SIZE (57)),
+    other       OCTET STRING, -- DER encoded SubjectPublicKeyInfo
+    ...
+}
+
+ECPublicKey{INTEGER: len} ::= SEQUENCE {
+    x OCTET STRING (SIZE(len)),
+    yIsOdd BOOLEAN
 }
 
 -- Purposefully left blank, format to be decided upon at a later date
@@ -93,14 +120,7 @@ BarcodeData ::= SEQUENCE {
     -- This field MUST contain at most one well-known UIC data type (e.g. FCBn)
     data                SEQUENCE SIZE(1..16) OF Data,
 
-    -- Must be set to a value other than none if level2PublicKey is set
-    level2SigningAlg    SignatureAlgorithm              DEFAULT none,
-    -- This field SHALL be encoded as follows:
-    --   For EC keys: the public key in the SEC 1 v2.0 compressed-point format
-    --   For Ed25519/Ed448 keys: the raw 32/57-octet public key
-    --   For DSA keys: the public key in the SubjectPublicKeyInfo format - not recommended due to size
-    --   HMAC keys are not permitted as level 2 keys
-    level2PublicKey     OCTET STRING                    OPTIONAL,
+    level2PublicKey     PublicKey                       OPTIONAL,
 
     -- End of the validity of the barcode.
     -- After this date and time the bar code needs to be regenerated by the provider of the ticket.
