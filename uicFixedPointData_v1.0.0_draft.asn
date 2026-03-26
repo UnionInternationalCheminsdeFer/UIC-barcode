@@ -3,7 +3,7 @@ ASN-Module-FixedPointData { iso(1) identified-organization(3) dod(6)
     DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 
 IMPORTS GenericId, CompanyCode, Station, CoachPlaces, Data, SharedVehicleVariety, SharedVehiclePropulsionType,
- SharedVehicleReturnConstraint, TransportId, LineId
+ SharedVehicleReturnConstraint, TransportId, LineId, UnicodeText
  FROM ASN-Module-GeneralData { iso(1) identified-organization(3) dod(6) internet(1) private(4) enterprise(1) uic(17218) fcb(1) modules(0) general(5) v1(1) 0 };
 
 -- ##############################################################################################
@@ -39,7 +39,7 @@ FixedPointData ::= SEQUENCE {
     specimen    BOOLEAN,
     affixedTo   Object              OPTIONAL,
     -- Additional important information about this fixed point
-    infoText    UTF8String          OPTIONAL,
+    infoText    UnicodeText         OPTIONAL,
     extension   SEQUENCE OF Data    OPTIONAL,
     ...
 }
