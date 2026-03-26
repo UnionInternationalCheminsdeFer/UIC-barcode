@@ -180,7 +180,7 @@ CompanyCode ::= CHOICE {
 		--    Any other value only after registration in the company_code.csv registry.
 		--    The use of unregistered values (outside of the national, company, and private use ranges) is strictly forbidden.
 		--    All values should be registered via the UIC Github repository.
-		codeTable   VisibleString,
+		codeTable   VisibleString (SIZE(1..16)),
 		code        VisibleString
 	}
 }
@@ -253,7 +253,7 @@ Timestamp ::= SEQUENCE {
 --    The use of unregistered values (outside of the national, company, and private use ranges) is strictly forbidden.
 --    All values should be registered via the UIC Github repository.
 Data ::= SEQUENCE {
-    dataFormat  VisibleString,
+    dataFormat  VisibleString (SIZE(1..16)),
     data        OCTET STRING
 }
 
