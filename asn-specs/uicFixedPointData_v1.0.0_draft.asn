@@ -71,7 +71,7 @@ Vehicle ::= SEQUENCE {
 VehicleDynamic ::= SEQUENCE {
     vehicleId               VehicleIdentifier,
     currentStop             Station,
-    transport               TransportId,        OPTIONAL,
+    transport               TransportId         OPTIONAL,
     line                    LineId              OPTIONAL,
     terminusStop            Station,
     ...
@@ -90,7 +90,7 @@ SharedVehicle ::= SEQUENCE {
     id                  GenericId, -- defined by the issuer
     variety             SharedVehicleVariety,
     propulsion          SharedVehiclePropulsionType,
-    returnConstraint    SharedVehicleReturnConstraint
+    returnConstraint    SharedVehicleReturnConstraint,
     ...
 }
 
