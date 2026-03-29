@@ -45,15 +45,20 @@ CompanyKeyReference ::= SEQUENCE {
     keyId               INTEGER (0..99999)
 }
 
-Level1Data ::= SEQUENCE {
-    -- Must be left unset, format to be decided upon at a later date
-    endEntityCertificate    SignedData{EndEntityCertificate, NULL}    OPTIONAL,
+Level1Data ::= CHOICE {
     -- Must use the standard variety, message recovery format to be decided upon at a later date
     -- Standard variety signature calculated over BarcodeTBSData
-    barcodeData             SignedData{BarcodeData, CompanyKeyReference}
+    directlyIssued  SignedData{BarcodeData, CompanyKeyReference},
+    -- Must not be used, format to be decided upon at a later date
+    subIssued       SEQUENCE {
+        -- Standard variety signature calculated over EndEntityCertificateTBSData
+        endEntityCertificate    SignedData{EndEntityCertificate, CompanyKeyReference},
+        barcodeData             SignedData{BarcodeData, NULL}
+    }
 }
 
 BarcodeTBSData ::= StandardTBSData{BarcodeData, CompanyKeyReference}
+EndEntityCertificateTBSData ::= StandardTBSData{EndEntityCertificate, CompanyKeyReference}
 
 SignedData{DataType, KeyReference} ::= CHOICE {
     standard        StandardSignedData{DataType, KeyReference},
