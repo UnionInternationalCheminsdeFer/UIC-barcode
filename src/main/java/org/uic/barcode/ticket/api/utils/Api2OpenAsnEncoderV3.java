@@ -192,10 +192,10 @@ public class Api2OpenAsnEncoderV3 implements Api2AsnEncoder {
 			asnTicket.setIssuingDetail(encodeIssuingDetails(uicTicket.getIssuerDetails()));
 		}
 		
-		
-		if (uicTicket.getControlDetails() != null) {			
+			
+		if (uicTicket.getControlDetailsOrNull() != null) {	
 			asnTicket.setControlDetail(encodeControlDetails(uicTicket.getControlDetails(), uicTicket.getIssuerDetails().getIssuingDate()));			
-		}
+		}		
 		
 		
 		if (uicTicket.getExtensions() != null && !uicTicket.getExtensions().isEmpty()){
@@ -215,7 +215,7 @@ public class Api2OpenAsnEncoderV3 implements Api2AsnEncoder {
 		}
 		
 		
-		if (uicTicket.getTravelerDetails() != null) {
+		if (uicTicket.getTravelerDetailsOrNull() != null) {
 			asnTicket.setTravelerDetail(encodeTravelers(uicTicket.getTravelerDetails(),uicTicket.getIssuerDetails().getIssuingDate() ));
 		}
 		
