@@ -373,10 +373,9 @@ public class Encoder {
 	
 	
 	public IUicDynamicContent getDynamicContent() {
-		if (dynamicFrame != null && dynamicFrame.getLevel2Data() != null) {
-			return dynamicFrame.getDynamicContent();
-		}
-		return null;
+        if (dynamicFrame == null)
+            return null;
+        return dynamicFrame.getDynamicContent();
 	}
 	
 
