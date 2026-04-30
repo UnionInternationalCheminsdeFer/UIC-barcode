@@ -35,7 +35,7 @@ import org.uic.barcode.ticket.api.spec.IUicRailTicket;
 
 public class DynamicFrameV2SignatureInsertTest {
 	
-	public String signatureAlgorithmOID = null;
+	public String signatureAlgorithmName = null;
 	public String elipticCurve = null;
 	public String keyPairAlgorithmOID = null;
 	
@@ -55,7 +55,7 @@ public class DynamicFrameV2SignatureInsertTest {
 		
 		LoggerFactory.setActivateConsoleLog(true);
 		
-		signatureAlgorithmOID = Constants.ECDSA_SHA256;
+		signatureAlgorithmName = "SHA256withECDSA";
 		keyPairAlgorithmOID = Constants.KG_EC_256;
 		elipticCurve = "secp256r1";
 		
@@ -93,15 +93,15 @@ public class DynamicFrameV2SignatureInsertTest {
 		assert(enc != null);
 		
 		//complete level 1 data 
-		enc.setLevel1Algs(signatureAlgorithmOID, keyPairAlgorithmOID);
-		enc.setLevel2Algs(signatureAlgorithmOID, keyPairAlgorithmOID,keyPairLevel2.getPublic());
+		enc.setLevel1Algs(signatureAlgorithmName, keyPairAlgorithmOID);
+		enc.setLevel2Algs(signatureAlgorithmName, keyPairAlgorithmOID,keyPairLevel2.getPublic());
 		enc.getDynamicFrame().getLevel2Data().getLevel1Data().setEndOfBarcodeValidity(getUtcDate("2021.03.04-12:30"));
 		enc.getDynamicFrame().getLevel2Data().getLevel1Data().setValidityDuration(100L);
 		
 		
 		//sign level 1 data
 		try {
-			enc.signLevel1("1080", keyPairLevel1.getPrivate(), signatureAlgorithmOID, "1",provider);
+			enc.signLevel1("1080", keyPairLevel1.getPrivate(), signatureAlgorithmName, "1",provider);
 		} catch (Exception e) {
 			assert(false);
 		}

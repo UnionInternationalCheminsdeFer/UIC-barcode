@@ -30,7 +30,7 @@ import org.uic.barcode.utils.AlgorithmNameResolver;
 
 public class DynamicFrameDoubleSignatureProviderSelectionTest {
 	
-	public String signatureAlgorithmOID = null;
+	public String signatureAlgorithmName = null;
 	public String elipticCurve = null;
 	public String keyPairAlgorithmOID = null;
 	
@@ -45,7 +45,7 @@ public class DynamicFrameDoubleSignatureProviderSelectionTest {
 		
 		LoggerFactory.setActivateConsoleLog(true);
 		
-		signatureAlgorithmOID = Constants.ECDSA_SHA256;
+		signatureAlgorithmName = "SHA256withECDSA";
 		keyPairAlgorithmOID = Constants.KG_EC_256;
 		elipticCurve = "secp256r1";
 		
@@ -85,9 +85,9 @@ public class DynamicFrameDoubleSignatureProviderSelectionTest {
 		assert(enc != null);
 		
 		try {
-			enc.setLevel1Algs(signatureAlgorithmOID, keyPairAlgorithmOID);
-			enc.setLevel2Algs(signatureAlgorithmOID, keyPairAlgorithmOID,keyPairLevel2.getPublic());
-			enc.signLevel1("1080", keyPairLevel1.getPrivate(), signatureAlgorithmOID, "1",prov);
+			enc.setLevel1Algs(signatureAlgorithmName, keyPairAlgorithmOID);
+			enc.setLevel2Algs(signatureAlgorithmName, keyPairAlgorithmOID,keyPairLevel2.getPublic());
+			enc.signLevel1("1080", keyPairLevel1.getPrivate(), signatureAlgorithmName, "1",prov);
 		} catch (Exception e) {
 			assert(false);
 		}

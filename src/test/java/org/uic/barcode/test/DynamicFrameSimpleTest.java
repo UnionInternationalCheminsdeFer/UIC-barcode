@@ -28,7 +28,7 @@ import org.uic.barcode.ticket.api.spec.IUicRailTicket;
 
 public class DynamicFrameSimpleTest {
 	
-	public String signatureAlgorithmOID = null;
+	public String signatureAlgorithmName = null;
 	public String elipticCurve = null;
 	public String keyPairAlgorithmOID = null;
 	
@@ -43,7 +43,7 @@ public class DynamicFrameSimpleTest {
 		
 		LoggerFactory.setActivateConsoleLog(true);
 		
-		signatureAlgorithmOID = Constants.ECDSA_SHA256;
+		signatureAlgorithmName = "SHA256withECDSA";
 		keyPairAlgorithmOID = Constants.KG_EC_256;
 		elipticCurve = "secp256r1";
 		
@@ -79,7 +79,7 @@ public class DynamicFrameSimpleTest {
 		assert(enc != null);
 		
 		try {
-			enc.signLevel1("1080", keyPair.getPrivate(), signatureAlgorithmOID, "1",provider);
+			enc.signLevel1("1080", keyPair.getPrivate(), signatureAlgorithmName, "1",provider);
 		} catch (Exception e) {
 			assert(false);
 		}
@@ -113,7 +113,7 @@ public class DynamicFrameSimpleTest {
 		assert(enc != null);
 		
 		try {
-			enc.signLevel1("1080", keyPair.getPrivate(), signatureAlgorithmOID, "1",provider);
+			enc.signLevel1("1080", keyPair.getPrivate(), signatureAlgorithmName, "1",provider);
 		} catch (Exception e) {
 			assert(false);
 		}

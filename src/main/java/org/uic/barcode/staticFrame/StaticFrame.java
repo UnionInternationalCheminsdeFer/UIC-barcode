@@ -670,76 +670,47 @@ public class StaticFrame {
 
 	/**
 	 * Verify the signature
-	 * 
+	 * <p>
 	 * Note:  an appropriate security provider (e.g. BC) must be registered before 
 	 *
-	 * @param key the key
-	 * @param singningAlg the Object ID of the signing algorithm
+	 * @param key the public key
+     * @param signatureAlgorithmName the standard name of the algorithm requested. See the Signature section in the <a href="https://docs.oracle.com/javase/8/docs/technotes/guides/security/StandardNames.html#Signature">Java Cryptography Architecture Standard Algorithm Name Documentation</a> for information about standard algorithm names.
 	 * @return true, if successful
 	 * @throws InvalidKeyException the invalid key exception
 	 * @throws NoSuchAlgorithmException the no such algorithm exception
 	 * @throws SignatureException the signature exception
 	 * @throws IllegalArgumentException the illegal argument exception
 	 * @throws UnsupportedOperationException the unsupported operating exception
-	 * @throws EncodingFormatException 
-	 * @throws IOException 
 	 * @deprecated
 	 */
-	public boolean verifyByAlgorithmOid(PublicKey key, String signingAlg) throws InvalidKeyException, NoSuchAlgorithmException, SignatureException, IllegalArgumentException, UnsupportedOperationException, IOException, EncodingFormatException {
-		
-		String signatureAlgorithmOid = signingAlg;
-		
-		
-		// guess the signature algorithm based on the signature size
-		if ((signingAlg == null || signingAlg.length() < 1) && this.getSignature() != null) {			
-			signatureAlgorithmOid = SecurityUtils.getDsaAlgorithm(this.getSignature());
-		}
-		
-		//find the algorithm name for the signature OID
-		String algo = null;
-		Provider[] provs = Security.getProviders();
-		for (Provider prov : provs) {
-	       Service service = prov.getService("Signature",signatureAlgorithmOid);
-	       if (service != null) {
-	    	   algo = service.getAlgorithm();
-	       }
-		}
-		if (algo == null) {
-			throw new NoSuchAlgorithmException("No service for algorithm found: " + signingAlg);
-		}
-		Signature sig = Signature.getInstance(algo);
-		sig.initVerify(key);
-		sig.update(getDataForSignature());
-		return sig.verify(this.getSignature());
+	public boolean verifyByAlgorithmName(PublicKey key, String signatureAlgorithmName) throws InvalidKeyException, NoSuchAlgorithmException, SignatureException, IllegalArgumentException, UnsupportedOperationException, IOException, EncodingFormatException {
+		return verifyByAlgorithmName(key, signatureAlgorithmName, null);
 	}
 
 	/**
 	 * Verify the signature
-	 * 
+	 * <p>
 	 * Note:  an appropriate security provider (e.g. BC) must be registered before 
 	 *
-	 * @param key the key
-	 * @param singningAlg the Object ID of the signing algorithm
-	 * @param a dedicated security provider to validate the signature
+	 * @param key the public key
+	 * @param signatureAlgorithmName the standard name of the algorithm requested. See the Signature section in the <a href="https://docs.oracle.com/javase/8/docs/technotes/guides/security/StandardNames.html#Signature">Java Cryptography Architecture Standard Algorithm Name Documentation</a> for information about standard algorithm names.
+	 * @param prov a dedicated security provider to validate the signature
 	 * @return true, if successful
 	 * @throws InvalidKeyException the invalid key exception
 	 * @throws NoSuchAlgorithmException the no such algorithm exception
 	 * @throws SignatureException the signature exception
 	 * @throws IllegalArgumentException the illegal argument exception
 	 * @throws UnsupportedOperationException the unsupported operating exception
-	 * @throws EncodingFormatException 
-	 * @throws IOException 
-	 */
-	public boolean verifyByAlgorithmOid(PublicKey key, String signatureAlgorithmOid, Provider prov) throws InvalidKeyException, NoSuchAlgorithmException, SignatureException, IllegalArgumentException, UnsupportedOperationException, IOException, EncodingFormatException {
-
-		if ((signatureAlgorithmOid == null || signatureAlgorithmOid.length() < 1) && this.getSignature() != null) {			
-			signatureAlgorithmOid = SecurityUtils.getDsaAlgorithm(this.getSignature());
+     */
+	public boolean verifyByAlgorithmName(PublicKey key, String signatureAlgorithmName, Provider prov) throws InvalidKeyException, NoSuchAlgorithmException, SignatureException, IllegalArgumentException, UnsupportedOperationException, IOException, EncodingFormatException {
+		if ((signatureAlgorithmName == null || signatureAlgorithmName.isEmpty()) && this.getSignature() != null) {
+			signatureAlgorithmName = SecurityUtils.getDsaAlgorithm(this.getSignature());
 		}
 		
 		//find the algorithm name for the signature OID
 		String algo = null;
 		if (prov != null) {
-			Service service = prov.getService("Signature",signatureAlgorithmOid);
+			Service service = prov.getService("Signature", signatureAlgorithmName);
 			if (service != null) {
 				algo = service.getAlgorithm();
 			}
@@ -747,7 +718,7 @@ public class StaticFrame {
 			Provider[] provs = Security.getProviders();
 			for (Provider p : provs) {
 			   if (algo == null) {
-				   Service service = p.getService("Signature",signatureAlgorithmOid);
+				   Service service = p.getService("Signature", signatureAlgorithmName);
 				   if (service != null) {
 					   algo = service.getAlgorithm();
 				   }
@@ -755,10 +726,10 @@ public class StaticFrame {
 			}
 		}
 		if (algo == null) {
-			throw new NoSuchAlgorithmException("No service for algorithm found: " + signatureAlgorithmOid);
+			throw new NoSuchAlgorithmException("No service for algorithm found: " + signatureAlgorithmName);
 		}
 		
-		Signature sig = null;
+		Signature sig;
 		if (prov != null) {
 			sig = Signature.getInstance(algo,prov);
 		} else {
@@ -772,66 +743,35 @@ public class StaticFrame {
 	
 	/**
 	 * Sign the contained data block.
-	 * 
+	 * <p>
 	 * Note:  an appropriate security provider (e.g. BC) must be registered before 
 	 *
-	 * @param key the key
-	 * @param singningAlg the Object ID of the signing algorithm
-	 * @return 
+	 * @param key the private key
+     * @param signatureAlgorithmName the standard name of the algorithm requested. See the Signature section in the <a href="https://docs.oracle.com/javase/8/docs/technotes/guides/security/StandardNames.html#Signature">Java Cryptography Architecture Standard Algorithm Name Documentation</a> for information about standard algorithm names.
 	 * @throws NoSuchAlgorithmException the no such algorithm exception
 	 * @throws InvalidKeyException the invalid key exception
 	 * @throws SignatureException the signature exception
-	 * @throws EncodingFormatException 
-	 * @throws IOException 
 	 * @deprecated
 	 */
-	public void signByAlgorithmOID(PrivateKey key,String signatureAlgorithmOid) throws NoSuchAlgorithmException, InvalidKeyException, SignatureException, IOException, EncodingFormatException {
-		//find the algorithm name for the signature OID
-		//find the algorithm name for the signature OID
-		String algo = null;
-		Provider[] provs = Security.getProviders();
-		for (Provider p : provs) {
-			   if (algo == null) {
-				   Service service = p.getService("Signature",signatureAlgorithmOid);
-				   if (service != null) {
-					   algo = service.getAlgorithm();
-				   }
-			   }
-		}
-		if (algo == null) {
-			throw new NoSuchAlgorithmException("No service for algorithm found: " + signatureAlgorithmOid);
-		}
-		Signature sig = Signature.getInstance(algo);
-		sig.initSign(key);
-		signedData = buildDataForSignature();
-		sig.update(signedData);
-		signature = sig.sign();
+	public void signByAlgorithmName(PrivateKey key, String signatureAlgorithmName) throws NoSuchAlgorithmException, InvalidKeyException, SignatureException, IOException, EncodingFormatException {
+		signByAlgorithmName(key, signatureAlgorithmName, null);
 	}
-	
-
-
-
 
 	/**
 	 * Sign the contained data block.
-	 * 
+	 * <p>
 	 * Note:  an appropriate security provider (e.g. BC) must be registered before 
 	 *
-	 * @param key the key
-	 * @param singningAlg the Object ID of the signing algorithm
-	 * @return 
+	 * @param key the private key
+     * @param signatureAlgorithmName the standard name of the algorithm requested. See the Signature section in the <a href="https://docs.oracle.com/javase/8/docs/technotes/guides/security/StandardNames.html#Signature">Java Cryptography Architecture Standard Algorithm Name Documentation</a> for information about standard algorithm names.
 	 * @throws NoSuchAlgorithmException the no such algorithm exception
 	 * @throws InvalidKeyException the invalid key exception
 	 * @throws SignatureException the signature exception
-	 * @throws EncodingFormatException 
-	 * @throws IOException 
-	 */
-	public void signByAlgorithmOID(PrivateKey key,String signatureAlgorithmOid, Provider prov) throws NoSuchAlgorithmException, InvalidKeyException, SignatureException, IOException, EncodingFormatException {
-		
-		//find the algorithm name for the signature OID
+     */
+	public void signByAlgorithmName(PrivateKey key, String signatureAlgorithmName, Provider prov) throws NoSuchAlgorithmException, InvalidKeyException, SignatureException, IOException, EncodingFormatException {
 		String algo = null;
 		if (prov != null) {
-			Service service = prov.getService("Signature",signatureAlgorithmOid);
+			Service service = prov.getService("Signature", signatureAlgorithmName);
 			if (service != null) {
 				algo = service.getAlgorithm();
 			}
@@ -839,7 +779,7 @@ public class StaticFrame {
 			Provider[] provs = Security.getProviders();
 			for (Provider p : provs) {
 			   if (algo == null) {
-				   Service service = p.getService("Signature",signatureAlgorithmOid);
+				   Service service = p.getService("Signature", signatureAlgorithmName);
 				   if (service != null) {
 					   algo = service.getAlgorithm();
 				   }
@@ -847,10 +787,10 @@ public class StaticFrame {
 			}
 		}
 		if (algo == null) {
-			throw new NoSuchAlgorithmException("No service for algorithm found: " + signatureAlgorithmOid);
+			throw new NoSuchAlgorithmException("No service for algorithm found: " + signatureAlgorithmName);
 		}
 		
-		Signature sig = null;
+		Signature sig;
 		if (prov == null) {
 			sig = Signature.getInstance(algo);
 		} else {
@@ -862,30 +802,6 @@ public class StaticFrame {
 		sig.update(signedData);
 		signature = sig.sign();
 	}
-	
-	
-	/**
-	 * Sign the contained data block.
-	 * 
-	 * Note:  an appropriate security provider (e.g. BC) must be registered before 
-	 *
-	 * @param key the key
-	 * @param algo the name of the signing algorithm
-	 * @return 
-	 * @throws NoSuchAlgorithmException the no such algorithm exception
-	 * @throws InvalidKeyException the invalid key exception
-	 * @throws SignatureException the signature exception
-	 * @throws EncodingFormatException 
-	 * @throws IOException 
-	 * @deprecated
-	 */
-	public void signUsingAlgorithmName(PrivateKey key,String algo) throws NoSuchAlgorithmException, InvalidKeyException, SignatureException, IOException, EncodingFormatException {
-		Signature sig = Signature.getInstance(algo);
-		sig.initSign(key);
-		sig.update(buildDataForSignature());
-		signature = sig.sign();
-	}
-
 
 
 	public UFLEXDataRecord getuFlex() {

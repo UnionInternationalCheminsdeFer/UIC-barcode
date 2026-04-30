@@ -86,13 +86,41 @@ public class Decoder {
 		
 		decode(data);
 	}
+
+    /**
+     * Convert a signature name from the PKMW to a Java Standard Algorithm name.
+     * See the Signature section in the <a href="https://docs.oracle.com/javase/8/docs/technotes/guides/security/StandardNames.html#Signature">Java Cryptography Architecture Standard Algorithm Name Documentation</a> for information about standard algorithm names.
+     *
+     * @param pkmwName The value of the `signatureAlgorithm` field in the PKMW
+     * @return The Java Standard signature algorithm name, or null when the PKMW value isn't recognised
+     */
+    public String pkmwNameToSignatureAlgorithmName(String pkmwName) {
+        switch (pkmwName) {
+            case "SHA1withDSA":
+            case "SHA1withDSA(1024,160)":
+            case "DSA_SHA1 (1024)":
+            case "SHA1-DSA (1024)":
+            case "SHA1-DSA (1024,160)":
+            case "DSA1024":
+                return "SHA1withDSA";
+            case "SHA224withDSA":
+            case "SHA224withDSA(2048,224)":
+                return "SHA224withDSA";
+            case "SHA256withDSA":
+            case "SHA256withDSA(2048,256)":
+                return "SHA256withDSA";
+            case "SHA256withECDSA":
+                return "SHA256withECDSA";
+            default:
+                return null;
+        }
+    }
 	
 	/**
-	 * Validate level 1.
+	 * Validate level 1 signature.
 	 *
 	 * @param key the public key
-	 * @param signingAlg the signing algorithm OID
-	 * @return the return code indicating errors
+	 * @return the return code indicating errors, or OK
 	 * @throws InvalidKeyException the invalid key exception
 	 * @throws NoSuchAlgorithmException the no such algorithm exception
 	 * @throws SignatureException the signature exception
@@ -107,11 +135,13 @@ public class Decoder {
 	}
 	
 	/**
-	 * Validate level 1.
+	 * Validate level 1 signature.
 	 *
 	 * @param key the public key
-	 * @param signingAlg the signing algorithm OID
-	 * @return the return code indicating errors
+     * @param signatureAlgorithmName the standard name of the algorithm requested.
+     *                               See the Signature section in the <a href="https://docs.oracle.com/javase/8/docs/technotes/guides/security/StandardNames.html#Signature">Java Cryptography Architecture Standard Algorithm Name Documentation</a> for information about standard algorithm names.
+     *                               Can be set to null to guess signature algorithm from signature length.
+     * @return the return code indicating errors, or OK
 	 * @throws InvalidKeyException the invalid key exception
 	 * @throws NoSuchAlgorithmException the no such algorithm exception
 	 * @throws SignatureException the signature exception
@@ -121,17 +151,19 @@ public class Decoder {
 	 * @throws EncodingFormatException the encoding format exception
 	 * @deprecated
 	 */
-	public int validateLevel1(PublicKey key, String signingAlg) throws InvalidKeyException, NoSuchAlgorithmException, SignatureException, IllegalArgumentException, UnsupportedOperationException, IOException, EncodingFormatException {
-		return validateLevel1(key, signingAlg, defaultProvider);
+	public int validateLevel1(PublicKey key, String signatureAlgorithmName) throws InvalidKeyException, NoSuchAlgorithmException, SignatureException, IllegalArgumentException, UnsupportedOperationException, IOException, EncodingFormatException {
+		return validateLevel1(key, signatureAlgorithmName, defaultProvider);
 	}
 	
 	/**
-	 * Validate level 1.
+	 * Validate level 1 signature.
 	 *
 	 * @param key the public key
-	 * @param signingAlg the signing algorithm OID
-	 * @param security provider in case a dedicated provider must be used (otherwise null)
-	 * @return the return code indicating errors
+     * @param signatureAlgorithmName the standard name of the algorithm requested.
+     *                               See the Signature section in the <a href="https://docs.oracle.com/javase/8/docs/technotes/guides/security/StandardNames.html#Signature">Java Cryptography Architecture Standard Algorithm Name Documentation</a> for information about standard algorithm names.
+     *                               Can be set to null to guess signature algorithm from signature length.
+	 * @param provider security provider in case a dedicated provider must be used (otherwise null)
+	 * @return the return code indicating errors, or OK
 	 * @throws InvalidKeyException the invalid key exception
 	 * @throws NoSuchAlgorithmException the no such algorithm exception
 	 * @throws SignatureException the signature exception
@@ -140,21 +172,17 @@ public class Decoder {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 * @throws EncodingFormatException the encoding format exception
 	 */
-	public int validateLevel1(PublicKey key, String signingAlg, Provider provider) throws InvalidKeyException, NoSuchAlgorithmException, SignatureException, IllegalArgumentException, UnsupportedOperationException, IOException, EncodingFormatException {
+	public int validateLevel1(PublicKey key, String signatureAlgorithmName, Provider provider) throws InvalidKeyException, NoSuchAlgorithmException, SignatureException, IllegalArgumentException, UnsupportedOperationException, IOException, EncodingFormatException {
 		if (!isStaticHeader(data) && dynamicFrame != null) {
-			return dynamicFrame.validateLevel1(key, provider, signingAlg) ;
+			return dynamicFrame.validateLevel1(key, provider, signatureAlgorithmName) ;
 		} else if (isSsbFrame(data) && ssbFrame != null) {
-			
-			if (ssbFrame.verifyByAlgorithmOid(key,signingAlg, provider)) {
+			if (ssbFrame.verifyByAlgorithmName(key, signatureAlgorithmName, provider)) {
 				return Constants.LEVEL1_VALIDATION_OK;
 			} else {
 				return Constants.LEVEL1_VALIDATION_FRAUD;
 			}
-		
 		} else if (staticFrame != null) {
-			
-			// guess the signature algorithm based on the signature size
-			if (staticFrame.verifyByAlgorithmOid(key,signingAlg, provider)) {
+			if (staticFrame.verifyByAlgorithmName(key, signatureAlgorithmName, provider)) {
 				return Constants.LEVEL1_VALIDATION_OK;
 			} else {
 				return Constants.LEVEL1_VALIDATION_FRAUD;
@@ -167,14 +195,13 @@ public class Decoder {
 	 * Validate level 2.
 	 *
 	 * @return the return code indicating errors
-	 * @throws EncodingFormatException 
 	 * @deprecated
 	 */
 	public int validateLevel2() throws EncodingFormatException {
 		return validateLevel2(defaultProvider);
 	}
 
-	/*
+	/**
 	 * Validate level 2.
 	 * @param prov - provider of the java security implementation in case a dedicated provider must be used
 	 * @return the return code indicating errors
