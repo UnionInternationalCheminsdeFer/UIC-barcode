@@ -134,110 +134,87 @@ public class SimpleDynamicFrame implements IDynamicFrame {
 	 * <p>
 	 * Note: an appropriate security provider (e.g. BC) must be registered before
 	 *
-	 * @param prov the registered security provider
-	 * @return the return error code
-	 * @throws EncodingFormatException 
-	 */	
+	 * @param provider the registered security provider
+	 * @return the return error code, or OK
+     */
 	@Override
-	public int validateLevel2(Provider prov) throws EncodingFormatException {
-		
-		Provider provider = prov;
-		
-		if (getLevel2Data() == null
-				|| getLevel2Data().getLevel1Data() == null 
-				|| getLevel2Data().getLevel1Data().getLevel2KeyAlg() == null
-				|| getLevel2Data().getLevel1Data().getLevel2KeyAlg().isEmpty()) {
-			return Constants.LEVEL2_VALIDATION_NO_KEY;
-		}
-		
-		String level2KeyAlg = getLevel2Data().getLevel1Data().getLevel2KeyAlg();
-		String level2SigAlg = this.getLevel2Data().getLevel1Data().getLevel2SigningAlg();
+	public int validateLevel2(Provider provider) throws EncodingFormatException {
+        // Check there is a level 2 public key present in the level 1 data
+        if (getLevel2Data() == null)
+            return Constants.LEVEL2_VALIDATION_NO_SIGNATURE;
+        if (getLevel2Data().getLevel1Data() == null)
+            return Constants.LEVEL2_VALIDATION_NO_SIGNATURE;
+        if (getLevel2Data().getLevel1Data().getLevel2publicKey() == null)
+            return Constants.LEVEL2_VALIDATION_NO_SIGNATURE;
 
-	 
-		if (level2KeyAlg == null || level2KeyAlg.isEmpty()) {
-			return Constants.LEVEL2_VALIDATION_NO_KEY;
-		}
-		
-		if (level2Signature == null || level2Signature.length == 0) {
-			return Constants.LEVEL2_VALIDATION_NO_SIGNATURE;
-		}
-					
-		String keyAlgName = null;
-		try {
-			keyAlgName = AlgorithmNameResolver.getName(AlgorithmNameResolver.TYPE_KEY_GENERATOR_ALG, level2KeyAlg,provider);
-		} catch (Exception e1) {
-			return Constants.LEVEL2_VALIDATION_KEY_ALG_NOT_IMPLEMENTED;	
-		}
-		if (keyAlgName == null || keyAlgName.isEmpty()) {
-			return Constants.LEVEL2_VALIDATION_KEY_ALG_NOT_IMPLEMENTED;	
-		}
-		
-		PublicKey key = null;
-		try {
-			byte[] keyBytes = this.getLevel2Data().getLevel1Data().getLevel2publicKey();
-			
-			if (provider == null) {
-				provider = SecurityUtils.findPublicKeyProvider(level2KeyAlg,keyBytes);
-			} 
-			KeyFactory keyFactory = KeyFactory.getInstance(keyAlgName,provider);
-			if (keyFactory != null) {
-				key = ECKeyEncoder.fromEncoded(keyBytes,level2KeyAlg, provider);
-			} else {
-				return Constants.LEVEL2_VALIDATION_KEY_ALG_NOT_IMPLEMENTED;	
-			}
-			
-		} catch (Exception e1) {
-			return Constants.LEVEL2_VALIDATION_KEY_ALG_NOT_IMPLEMENTED;	
-		}
-		
+        byte[] keyBytes = this.getLevel2Data().getLevel1Data().getLevel2publicKey();
+        String level2KeyAlg = getLevel2Data().getLevel1Data().getLevel2KeyAlg();
+        String level2SigAlg = this.getLevel2Data().getLevel1Data().getLevel2SigningAlg();
 
-		//find the algorithm name for the signature OID
-		String sigAlgName = null;
+        // Check the issuer actually told us what kind of signature we're supposed to be validating
+        if (level2KeyAlg == null || level2SigAlg == null)
+            return Constants.LEVEL2_VALIDATION_ENCODING_ERROR;
+
+        // Check that there actually is a level 2 signature present
+        if (level2Signature == null || level2Signature.length == 0)
+            return Constants.LEVEL2_VALIDATION_FRAUD;
+
+        // Decode the level 2 public key
+        PublicKey key;
+        if (level2KeyAlg.equals(Constants.KG_EC_256))
+            try {
+                key = ECKeyEncoder.fromEncoded(keyBytes, Constants.KG_EC_256, provider);
+            } catch (IllegalArgumentException e) {
+                return Constants.LEVEL2_VALIDATION_ENCODING_ERROR;
+            }
+        else
+            return Constants.LEVEL2_VALIDATION_KEY_ALG_NOT_IMPLEMENTED;
+
+		// Get the signature algorithm name per the OID
+		String sigAlgName;
 		try {
-			sigAlgName = AlgorithmNameResolver.getSignatureAlgorithmName(level2SigAlg,provider);
+			sigAlgName = AlgorithmNameResolver.getSignatureAlgorithmName(level2SigAlg, provider);
+            if (sigAlgName == null)
+                return Constants.LEVEL2_VALIDATION_SIG_ALG_NOT_IMPLEMENTED;
 		} catch (Exception e1) {
 			return Constants.LEVEL2_VALIDATION_SIG_ALG_NOT_IMPLEMENTED;
 		}
-		if (sigAlgName == null) {
-			return Constants.LEVEL2_VALIDATION_SIG_ALG_NOT_IMPLEMENTED;
-		}
-		
-		Signature sig = null;
+
+        // Init the signature instance, per the algorithm name
+		Signature sig;
 		try {
-			if (provider == null) {
+			if (provider == null)
 				sig = Signature.getInstance(sigAlgName);
-			} else {
-				sig = Signature.getInstance(sigAlgName,provider);
-			}
+			else
+				sig = Signature.getInstance(sigAlgName, provider);
 		} catch (NoSuchAlgorithmException e) {
 			return Constants.LEVEL2_VALIDATION_SIG_ALG_NOT_IMPLEMENTED;
 		}
+
+        // Load the public key into the signature verifier
 		try {
 			sig.initVerify(key);
 		} catch (InvalidKeyException e) {
-			return Constants.LEVEL2_VALIDATION_SIG_ALG_NOT_IMPLEMENTED;
+			return Constants.LEVEL2_VALIDATION_ENCODING_ERROR;
 		}
-		
+
+        // Construct the to-be-validated data
 		try {
 			byte[] signedData2 = getLevel2DataBin();
 			sig.update(signedData2);
-		} catch (SignatureException e) {
-			return Constants.LEVEL2_VALIDATION_SIG_ALG_NOT_IMPLEMENTED;
-		} catch (IllegalArgumentException e) {
-			return Constants.LEVEL2_VALIDATION_ENCODING_ERROR;
-		} catch (UnsupportedOperationException e) {
+		} catch (SignatureException | IllegalArgumentException | UnsupportedOperationException e) {
 			return Constants.LEVEL2_VALIDATION_ENCODING_ERROR;
 		}
-		
-		byte[] signature = level2Signature;
+
+        // Verify the data
 		try {
-			if (sig.verify(signature)){
+			if (sig.verify(level2Signature)){
 				return Constants.LEVEL2_VALIDATION_OK;
 			} else {
 				return Constants.LEVEL2_VALIDATION_FRAUD;
 			}
 		} catch (SignatureException e) {
-			return Constants.LEVEL2_VALIDATION_SIG_ALG_NOT_IMPLEMENTED;
+			return Constants.LEVEL2_VALIDATION_FRAUD;
 		}
   	}
 	
