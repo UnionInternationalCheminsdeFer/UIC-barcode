@@ -223,13 +223,11 @@ public class SimpleDynamicFrame implements IDynamicFrame {
 			sig.update(signedData2);
 		} catch (SignatureException e) {
 			return Constants.LEVEL2_VALIDATION_SIG_ALG_NOT_IMPLEMENTED;
-		} catch (IllegalArgumentException e) {
-			return Constants.LEVEL2_VALIDATION_ENCODING_ERROR;
-		} catch (UnsupportedOperationException e) {
+		} catch (IllegalArgumentException | UnsupportedOperationException e) {
 			return Constants.LEVEL2_VALIDATION_ENCODING_ERROR;
 		}
-		
-		byte[] signature = level2Signature;
+
+        byte[] signature = level2Signature;
 		try {
 			if (sig.verify(signature)){
 				return Constants.LEVEL2_VALIDATION_OK;
@@ -330,13 +328,11 @@ public class SimpleDynamicFrame implements IDynamicFrame {
 			
 		} catch (SignatureException e) {
 			return Constants.LEVEL1_VALIDATION_SIG_ALG_NOT_IMPLEMENTED;
-		} catch (IllegalArgumentException e) {
-			return Constants.LEVEL1_VALIDATION_ENCODING_ERROR;
-		} catch (UnsupportedOperationException e) {
+		} catch (IllegalArgumentException | UnsupportedOperationException e) {
 			return Constants.LEVEL1_VALIDATION_ENCODING_ERROR;
 		}
-		
-		try {
+
+        try {
 			if (sig.verify(signature)){
 				return Constants.LEVEL1_VALIDATION_OK;
 			} else {
