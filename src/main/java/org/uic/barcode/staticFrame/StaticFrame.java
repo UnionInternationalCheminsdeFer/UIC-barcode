@@ -572,27 +572,7 @@ public class StaticFrame {
 			}
 			offset = offset + length;
 			remainingBytes = remainingBytes - length;						
-		}	
-		
-		if (this.headerRecord != null) {
-			this.securityProvider = headerRecord.getIssuer();
 		}
-		if (this.uFlex != null 
-			&& this.uFlex.getTicket() != null
-			&& this.uFlex.getTicket().getIssuerDetails() != null 
-			&& this.uFlex.getTicket().getIssuerDetails().getIssuer() != null 
-			&& this.uFlex.getTicket().getIssuerDetails().getIssuer().length() > 0		
-			) {
-			this.securityProvider = uFlex.getTicket().getIssuerDetails().getIssuer();
-		}
-		if (this.uFlex != null 
-			&& this.uFlex.getTicket() != null
-			&& this.uFlex.getTicket().getIssuerDetails() != null 
-			&& this.uFlex.getTicket().getIssuerDetails().getSecurityProvider() != null 
-			&& this.uFlex.getTicket().getIssuerDetails().getSecurityProvider().length() > 0		
-			) {
-			this.securityProvider = uFlex.getTicket().getIssuerDetails().getSecurityProvider();
-		}		
 	}
 
 	
