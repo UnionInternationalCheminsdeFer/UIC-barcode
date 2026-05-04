@@ -16,7 +16,7 @@ ASN-Module-RailTicketData { iso(1) identified-organization(3) dod(6)
 	
 -- ##############################################################################################
 -- #	                                                                      
--- #   version 3.0.5       - value 3 in the UIC bar code version element
+-- #   version 3.0.6       - value 3 in the UIC bar code version element
 -- #                         (see element 2 in U_FLEX record definition in leaflet 918.9)
 -- #                       - country code for Kosovo
 -- #
