@@ -207,11 +207,10 @@ public class Decoder {
 	 * @return the return code indicating errors
 	 */
 	public int validateLevel2(Provider prov) throws EncodingFormatException {
-		if (!isStaticHeader(data) && dynamicFrame != null) {
-			return dynamicFrame.validateLevel2(prov) ;
-		} else {
-			return Constants.LEVEL2_VALIDATION_NO_SIGNATURE;
-		}
+		if (dynamicFrame != null)
+            return dynamicFrame.validateLevel2(prov);
+        else
+            return Constants.LEVEL2_VALIDATION_NO_SIGNATURE;
 	}
 
 	

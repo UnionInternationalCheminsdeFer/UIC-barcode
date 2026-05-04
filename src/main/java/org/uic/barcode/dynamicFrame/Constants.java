@@ -22,13 +22,19 @@ public class Constants {
 
 	public static String DYNAMIC_BARCODE_FORMAT_DEFAULT = "U1";
 
-	public static int LEVEL2_VALIDATION_OK = 0;	
-	public static int LEVEL2_VALIDATION_NO_KEY = 1;
-	public static int LEVEL2_VALIDATION_NO_SIGNATURE = 2;	
+    /** There is a level 2 signature present, and it is valid */
+	public static int LEVEL2_VALIDATION_OK = 0;
+    // 1 - RESERVED due to past use
+    /** The barcode is not a level 2 barcode */
+	public static int LEVEL2_VALIDATION_NO_SIGNATURE = 2;
+    /** The level 2 signature is broken in a way that indicates manipulation */
 	public static int LEVEL2_VALIDATION_FRAUD = 3;
-	public static int LEVEL2_VALIDATION_SIG_ALG_NOT_IMPLEMENTED = 4;	
-	public static int LEVEL2_VALIDATION_KEY_ALG_NOT_IMPLEMENTED = 5;		
-	public static int LEVEL2_VALIDATION_ENCODING_ERROR = 6;		
+    /** The level 2 signature couldn't be checked because the crypto provider doesn't support the required signature algorithm */
+	public static int LEVEL2_VALIDATION_SIG_ALG_NOT_IMPLEMENTED = 4;
+    /** The level 2 signature couldn't be checked because the crypto provider doesn't support the required public key algorithm */
+	public static int LEVEL2_VALIDATION_KEY_ALG_NOT_IMPLEMENTED = 5;
+    /** The level 2 signature couldn't be checked because the barcode is malformed */
+    public static int LEVEL2_VALIDATION_ENCODING_ERROR = 6;
 	
 	public static int LEVEL1_VALIDATION_OK = 0;	
 	public static int LEVEL1_VALIDATION_NO_KEY = 1;
