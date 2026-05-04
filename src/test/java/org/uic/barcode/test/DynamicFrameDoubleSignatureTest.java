@@ -29,7 +29,7 @@ import org.uic.barcode.utils.SecurityUtils;
 
 public class DynamicFrameDoubleSignatureTest {
 	
-	public String signatureAlgorithmOID = null;
+	public String signatureAlgorithmName = null;
 	public String elipticCurve = null;
 	public String keyPairAlgorithmOID = null;
 	
@@ -45,7 +45,7 @@ public class DynamicFrameDoubleSignatureTest {
 		
 		LoggerFactory.setActivateConsoleLog(true);
 		
-		signatureAlgorithmOID = Constants.ECDSA_SHA256;
+		signatureAlgorithmName = "SHA256withECDSA";
 		keyPairAlgorithmOID = Constants.KG_EC_256;
 		elipticCurve = "secp256k1";
 		
@@ -84,9 +84,9 @@ public class DynamicFrameDoubleSignatureTest {
 		assert(enc != null);
 		
 		try {
-			enc.setLevel1Algs(signatureAlgorithmOID, keyPairAlgorithmOID);
-			enc.setLevel2Algs(signatureAlgorithmOID, keyPairAlgorithmOID,keyPairLevel2.getPublic());
-			enc.signLevel1("1080", keyPairLevel1.getPrivate(), signatureAlgorithmOID, "1",provider);
+			enc.setLevel1Algs(signatureAlgorithmName, keyPairAlgorithmOID);
+			enc.setLevel2Algs(signatureAlgorithmName, keyPairAlgorithmOID,keyPairLevel2.getPublic());
+			enc.signLevel1("1080", keyPairLevel1.getPrivate(), signatureAlgorithmName, "1",provider);
 		} catch (Exception e) {
 			assert(false);
 		}

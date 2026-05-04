@@ -51,7 +51,7 @@ public class PassProductIdTest {
 			IUicRailTicket ticket = getIUicRailTicket();
 			KeyPair keyPair = generateDSAKeys(1024);
 			Encoder enc = new Encoder(ticket, null, "UIC_DOSIPAS", 1, fcbVersion);
-			enc.signLevel1("9902", keyPair.getPrivate(), "1.2.840.10040.4.3", "00003", new BouncyCastleProvider());
+			enc.signLevel1("9902", keyPair.getPrivate(), "SHA1withDSA", "00003", new BouncyCastleProvider());
 			content = enc.encode();
 
 		} catch (Exception e) {

@@ -176,7 +176,7 @@ public interface IDynamicFrame{
 	
 	/**
 	 * Sign the contained data block.
-	 * 
+	 * <p>
 	 * Note:  an appropriate security provider (e.g. BC) must be registered before 
 	 *
 	 * @param key the private key
@@ -187,15 +187,14 @@ public interface IDynamicFrame{
 	
 	/**
 	 * Sign the contained data block.
-	 * 
+	 * <p>
 	 * Note:  an appropriate security provider (e.g. BC) must be registered before 
 	 *
 	 * @param key the private key
-	 * @param prov the security provider providing the signature implementation
-	 * @return the byte[]
+	 * @param provider the security provider providing the signature implementation
 	 * @throws Exception the exception
 	 */
-	public void signLevel1(PrivateKey key, Provider prov) throws Exception;
+	public void signLevel1(PrivateKey key, Provider provider) throws Exception;
 
 
 	/**

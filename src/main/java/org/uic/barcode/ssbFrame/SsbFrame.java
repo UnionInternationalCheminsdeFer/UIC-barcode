@@ -315,39 +315,32 @@ public class SsbFrame {
 
 	/**
 	 * Verify the signature
-	 * 
+	 * <p>
 	 * Note:  an appropriate security provider (e.g. BC) must be registered before 
 	 *
 	 * @param key the key
-	 * @param singningAlg the Object ID of the signing algorithm
-	 * @param a dedicated security provider to validate the signature
+     * @param signatureAlgorithmName the standard name of the algorithm requested. See the Signature section in the <a href="https://docs.oracle.com/javase/8/docs/technotes/guides/security/StandardNames.html#Signature">Java Cryptography Architecture Standard Algorithm Name Documentation</a> for information about standard algorithm names.
+	 * @param provider a dedicated security provider to validate the signature
 	 * @return true, if successful
 	 * @throws InvalidKeyException the invalid key exception
 	 * @throws NoSuchAlgorithmException the no such algorithm exception
 	 * @throws SignatureException the signature exception
 	 * @throws IllegalArgumentException the illegal argument exception
 	 * @throws UnsupportedOperationException the unsupported operating exception
-	 * @throws EncodingFormatException 
-	 * @throws IOException 
-	 */
-	public boolean verifyByAlgorithmOid(PublicKey key, String signingAlg, Provider prov) throws InvalidKeyException, NoSuchAlgorithmException, SignatureException, IllegalArgumentException, UnsupportedOperationException, IOException, EncodingFormatException {
-		//find the algorithm name for the signature OID
+     */
+	public boolean verifyByAlgorithmName(PublicKey key, String signatureAlgorithmName, Provider provider) throws InvalidKeyException, NoSuchAlgorithmException, SignatureException, IllegalArgumentException, UnsupportedOperationException, IOException, EncodingFormatException {
 		String algo = null;
-		
-		
 		BigInteger r = new BigInteger(1,signaturePart1);
 		BigInteger s = new BigInteger(1,signaturePart2);
 		byte[] signature = SecurityUtils.encodeSignatureIntegerSequence(r,s);
 		
-		String signatureAlgorithmOid = signingAlg;
-		
 		// guess the signature algorithm based on the signature size
-		if ((signingAlg == null || signingAlg.length() < 1) && signature != null) {			
-			signatureAlgorithmOid = SecurityUtils.getDsaAlgorithm(signature);
+		if (signatureAlgorithmName == null || signatureAlgorithmName.isEmpty()) {
+			signatureAlgorithmName = SecurityUtils.getDsaAlgorithm(signature);
 		}	
 		
-		if (prov != null) {
-			Service service = prov.getService("Signature",signatureAlgorithmOid);
+		if (provider != null) {
+			Service service = provider.getService("Signature", signatureAlgorithmName);
 			if (service != null) {
 				algo = service.getAlgorithm();
 			}
@@ -355,7 +348,7 @@ public class SsbFrame {
 			Provider[] provs = Security.getProviders();
 			for (Provider p : provs) {
 			   if (algo == null) {
-				   Service service = p.getService("Signature",signatureAlgorithmOid);
+				   Service service = p.getService("Signature", signatureAlgorithmName);
 				   if (service != null) {
 					   algo = service.getAlgorithm();
 				   }
@@ -364,12 +357,12 @@ public class SsbFrame {
 		}
 		
 		if (algo == null) {
-			throw new NoSuchAlgorithmException("No service for algorithm found: " + signingAlg);
+			throw new NoSuchAlgorithmException("No service for algorithm found: " + signatureAlgorithmName);
 		}
 		
-		Signature sig = null;
-		if (prov != null) {
-			sig = Signature.getInstance(algo,prov);
+		Signature sig;
+		if (provider != null) {
+			sig = Signature.getInstance(algo, provider);
 		} else {
 			sig = Signature.getInstance(algo);
 		}

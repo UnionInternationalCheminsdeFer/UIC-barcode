@@ -430,7 +430,6 @@ public class SimpleDynamicFrame implements IDynamicFrame {
 	 * Note: an appropriate security provider (e.g. BC) must be registered before
 	 *
 	 * @param key the key
-	 * @throws Exception 
 	 */
 	@Override
 	public void signLevel1(PrivateKey key) throws Exception {
@@ -445,11 +444,10 @@ public class SimpleDynamicFrame implements IDynamicFrame {
 	 * Note: an appropriate security provider (e.g. BC) must be registered before
 	 *
 	 * @param key the key
-	 * @param prov provider - security provider that must be sued to create the signature
-	 * @throws Exception 
+	 * @param provider security provider that must be sued to create the signature
 	 */
 	@Override
-	public void signLevel1(PrivateKey key, Provider prov) throws Exception {
+	public void signLevel1(PrivateKey key, Provider provider) throws Exception {
 		
 		if (level2Data == null) return;
 		
@@ -457,17 +455,17 @@ public class SimpleDynamicFrame implements IDynamicFrame {
 		
 		if (level1Data == null) return;
 
-		if (prov == null) {
+		if (provider == null) {
 			//check for a provider supporting the key
-			prov = SecurityUtils.findPrivateKeyProvider(key);
+			provider = SecurityUtils.findPrivateKeyProvider(key);
 		}
 		
 		//find the algorithm name for the signature OID
-		String algo = AlgorithmNameResolver.getSignatureAlgorithmName(level1Data.getLevel1SigningAlg(), prov);
+		String algo = AlgorithmNameResolver.getSignatureAlgorithmName(level1Data.getLevel1SigningAlg(), provider);
 		Signature sig = null;
 
-		if (prov != null) {
-			sig = Signature.getInstance(algo, prov);
+		if (provider != null) {
+			sig = Signature.getInstance(algo, provider);
 		} else {
 			sig = Signature.getInstance(algo);
 		}

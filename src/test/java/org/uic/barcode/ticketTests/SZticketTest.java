@@ -1,11 +1,9 @@
 package org.uic.barcode.ticketTests;
 
 import java.security.KeyFactory;
-import java.security.NoSuchAlgorithmException;
 import java.security.Provider;
 import java.security.PublicKey;
 import java.security.Security;
-import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
 import java.util.TimeZone;
@@ -16,7 +14,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.uic.barcode.Decoder;
-import org.uic.barcode.dynamicFrame.Constants;
 import org.uic.barcode.logger.LoggerFactory;
 import org.uic.barcode.ssbFrame.SsbClass;
 import org.uic.barcode.ssbFrame.SsbFrame;
@@ -53,7 +50,7 @@ public class SZticketTest {
             + "wXbIxiV/JQEW55eWnz3oSClRLOFNL3zqEydGrr4RSh0AS4wE8EjNIY=";
 
             
-    String algorithmOID = Constants.DSA_SHA224;
+    String algorithmName = "SHA224withDSA";
     
     int keySize = 1024;
 
@@ -108,7 +105,7 @@ public class SZticketTest {
         Assert.assertNotNull(frame.getSignaturePart1());
         Assert.assertNotNull(frame.getSignaturePart2());        
 
-        Assert.assertTrue(frame.verifyByAlgorithmOid(publicKey, algorithmOID, provider));
+        Assert.assertTrue(frame.verifyByAlgorithmName(publicKey, algorithmName, provider));
 
         Assert.assertEquals(frame.getHeader().getVersion(), 3);
         Assert.assertEquals(frame.getHeader().getIssuer(), 1179);
@@ -151,33 +148,33 @@ public class SZticketTest {
          Assert.assertNotNull(frame.getSignaturePart1());
          Assert.assertNotNull(frame.getSignaturePart2());        
  
-         Assert.assertTrue(frame.verifyByAlgorithmOid(publicKey, algorithmOID, provider));
+         Assert.assertTrue(frame.verifyByAlgorithmName(publicKey, algorithmName, provider));
  
-         Assert.assertEquals(frame.getHeader().getVersion(), 3);
-         Assert.assertEquals(frame.getHeader().getIssuer(), 1179);
-         Assert.assertEquals(frame.getHeader().getKeyId(), 1);
-         Assert.assertEquals(frame.getHeader().getTicketType(), SsbTicketType.UIC_3_GRP);
+         Assert.assertEquals(3, frame.getHeader().getVersion());
+         Assert.assertEquals(1179, frame.getHeader().getIssuer());
+         Assert.assertEquals(1, frame.getHeader().getKeyId());
+         Assert.assertEquals(SsbTicketType.UIC_3_GRP, frame.getHeader().getTicketType());
          
-         Assert.assertEquals(frame.getGroupData().getNumberOfAdults(), 10);
-         Assert.assertEquals(frame.getGroupData().getNumberOfChildren(), 2);
+         Assert.assertEquals(10, frame.getGroupData().getNumberOfAdults());
+         Assert.assertEquals(2, frame.getGroupData().getNumberOfChildren());
          Assert.assertFalse(frame.getGroupData().isSpecimen());
-         Assert.assertEquals(frame.getGroupData().getClassCode(), SsbClass.Second);
-         Assert.assertEquals(frame.getGroupData().getTicketNumber(), "5030020964");
-         Assert.assertEquals(frame.getGroupData().getYear(), 4);
-         Assert.assertEquals(frame.getGroupData().getDay(), 96);
+         Assert.assertEquals(SsbClass.Second, frame.getGroupData().getClassCode());
+         Assert.assertEquals("5030020964", frame.getGroupData().getTicketNumber());
+         Assert.assertEquals(4, frame.getGroupData().getYear());
+         Assert.assertEquals(96, frame.getGroupData().getDay());
          Assert.assertFalse(frame.getGroupData().isReturnJourney());
-         Assert.assertEquals(frame.getGroupData().getFirstDayOfValidity(), 16);
-         Assert.assertEquals(frame.getGroupData().getLastDayOfValidity(), 30);
+         Assert.assertEquals(16, frame.getGroupData().getFirstDayOfValidity());
+         Assert.assertEquals(30, frame.getGroupData().getLastDayOfValidity());
  
          Assert.assertFalse(frame.getGroupData().getStations().isAlphaNumeric());
-         Assert.assertEquals(frame.getGroupData().getStations().getCodeTable(), SsbStationCodeTable.NRT);
-         Assert.assertEquals(frame.getGroupData().getStations().getDepartureStationCode(), "7872480");
-         Assert.assertEquals(frame.getGroupData().getStations().getArrivalStationCode(), "7942300");
+         Assert.assertEquals(SsbStationCodeTable.NRT, frame.getGroupData().getStations().getCodeTable());
+         Assert.assertEquals("7872480", frame.getGroupData().getStations().getDepartureStationCode());
+         Assert.assertEquals("7942300", frame.getGroupData().getStations().getArrivalStationCode());
 
-         Assert.assertEquals(frame.getGroupData().getGroupName(), "");
-         Assert.assertEquals(frame.getGroupData().getCounterMarkNumber(), 0);
-         Assert.assertEquals(frame.getGroupData().getInfoCode(), 0);
-         Assert.assertEquals(frame.getGroupData().getText(), "");
+         Assert.assertEquals("", frame.getGroupData().getGroupName());
+         Assert.assertEquals(0, frame.getGroupData().getCounterMarkNumber());
+         Assert.assertEquals(0, frame.getGroupData().getInfoCode());
+         Assert.assertEquals("", frame.getGroupData().getText());
       }
     
 }
