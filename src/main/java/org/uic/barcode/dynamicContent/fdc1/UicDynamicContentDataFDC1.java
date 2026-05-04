@@ -11,6 +11,7 @@ import org.uic.barcode.asn1.datatypes.HasExtensionMarker;
 import org.uic.barcode.asn1.datatypes.RestrictedString;
 import org.uic.barcode.asn1.datatypes.Sequence;
 import org.uic.barcode.asn1.uper.UperEncoder;
+import org.uic.barcode.dynamicFrame.Constants;
 import org.uic.barcode.dynamicFrame.api.IData;
 import org.uic.barcode.dynamicFrame.api.SimpleData;
 import org.uic.barcode.dynamicFrame.v1.DataType;
@@ -93,7 +94,7 @@ public class UicDynamicContentDataFDC1  {
 	}
 	
 	public static String getFormat() {
-		return "FDC1";
+		return Constants.DATA_TYPE_FDC_VERSION_1;
 	}
 	
 	public IData getApiDataType() {

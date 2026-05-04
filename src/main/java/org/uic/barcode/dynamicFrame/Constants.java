@@ -16,8 +16,10 @@ public class Constants {
 	
 	public static String DATA_TYPE_FCB_VERSION_1 = "FCB1";
 	public static String DATA_TYPE_FCB_VERSION_2 = "FCB2";	
-	public static String DATA_TYPE_FCB_VERSION_3 = "FCB3";	
-	
+	public static String DATA_TYPE_FCB_VERSION_3 = "FCB3";
+
+	public static String DATA_TYPE_FDC_VERSION_1 = "FDC1";
+
 	public static String DYNAMIC_BARCODE_FORMAT_DEFAULT = "U1";
 
 	public static int LEVEL2_VALIDATION_OK = 0;	

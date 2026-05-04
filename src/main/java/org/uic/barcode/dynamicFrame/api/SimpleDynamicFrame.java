@@ -387,13 +387,9 @@ public class SimpleDynamicFrame implements IDynamicFrame {
 	 */
 	@Override
 	public void addDynamicContent(IUicDynamicContent content) throws EncodingFormatException {
-				
 		level2Data.setLevel2Data(new SimpleData());
-		
-		level2Data.getLevel2Data().setFormat(DynamicContentCoder.dynamicContentDataFDC1);
-			
-		level2Data.getLevel2Data().setData(DynamicContentCoder.encode(content, DynamicContentCoder.dynamicContentDataFDC1));
-		
+		level2Data.getLevel2Data().setFormat(Constants.DATA_TYPE_FDC_VERSION_1);
+		level2Data.getLevel2Data().setData(DynamicContentCoder.encode(content, Constants.DATA_TYPE_FDC_VERSION_1));
 	}
 	
 	/**
@@ -413,14 +409,13 @@ public class SimpleDynamicFrame implements IDynamicFrame {
 	 */
 	@Override
 	public IUicDynamicContent getDynamicContent() {
-		
-		if (this.getLevel2Data() == null || 
-				this.getLevel2Data().getLevel2Data() == null){
-				return null;
-		}
-		
+        if (this.getLevel2Data() == null)
+            return null;
+        if (this.getLevel2Data().getLevel2Data() == null)
+            return null;
+        if (!this.getLevel2Data().getLevel2Data().getFormat().equals(Constants.DATA_TYPE_FDC_VERSION_1))
+            return null;
 		return DynamicContentCoder.decode(level2Data.getLevel2Data().getData());
-			
 	}
 	
 

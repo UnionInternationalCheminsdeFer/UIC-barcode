@@ -7,6 +7,7 @@ import org.uic.barcode.dynamicContent.fdc1.GeoCoordinateType;
 import org.uic.barcode.dynamicContent.fdc1.SequenceOfExtension;
 import org.uic.barcode.dynamicContent.fdc1.TimeStamp;
 import org.uic.barcode.dynamicContent.fdc1.UicDynamicContentDataFDC1;
+import org.uic.barcode.dynamicFrame.Constants;
 import org.uic.barcode.ticket.EncodingFormatException;
 import org.uic.barcode.asn1.uper.UperEncoder;
 import org.uic.barcode.dynamicContent.fdc1.ExtensionData;
@@ -25,12 +26,8 @@ import org.uic.barcode.ticket.api.spec.IHemisphereLongitudeType;
 import org.uic.barcode.ticket.api.utils.UicEncoderUtils;
 
 public class DynamicContentCoder {
-	
-	public static String dynamicContentDataFDC1 = "FDC1";
-	
 	public static byte[] encode(IUicDynamicContent content, String format) throws EncodingFormatException {
-		
-		if (format != null && !format.equals(dynamicContentDataFDC1)) {
+		if (format != null && !format.equals(Constants.DATA_TYPE_FDC_VERSION_1)) {
 			throw new EncodingFormatException("Format of dynamic content not supported!");
 		}
 				
@@ -38,7 +35,7 @@ public class DynamicContentCoder {
 		
 		asn.setAppId(content.getAppId());
 		
-		if (content.getChallengeString() != null && content.getChallengeString().length() > 0) {
+		if (content.getChallengeString() != null && !content.getChallengeString().isEmpty()) {
 			asn.setChallengeString(content.getChallengeString());
 		}
 

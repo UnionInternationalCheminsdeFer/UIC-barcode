@@ -10,6 +10,7 @@ import org.uic.barcode.asn1.uper.UperEncoder;
 import org.uic.barcode.dynamicContent.api.DynamicContentCoder;
 import org.uic.barcode.dynamicContent.api.IUicDynamicContent;
 import org.uic.barcode.dynamicContent.fdc1.UicDynamicContentDataFDC1;
+import org.uic.barcode.dynamicFrame.Constants;
 import org.uic.barcode.ticket.EncodingFormatException;
 
 
@@ -19,7 +20,7 @@ import org.uic.barcode.ticket.EncodingFormatException;
  * Implementation of the Draft under discussion, not final.
  */
 @Sequence
-public class DynamicFrame extends Object{
+public class DynamicFrame {
 	
 	/**
 	 * Instantiates a new dynamic frame.
@@ -126,14 +127,9 @@ public class DynamicFrame extends Object{
 	 * @throws EncodingFormatException the encoding format exception
 	 */
 	public void addDynamicContent(IUicDynamicContent content) throws EncodingFormatException {
-		
-		
 		level2SignedData.setLevel2Data(new DataType());
-		
-		level2SignedData.getLevel2Data().setFormat(DynamicContentCoder.dynamicContentDataFDC1);
-			
-		level2SignedData.getLevel2Data().setByteData(DynamicContentCoder.encode(content, DynamicContentCoder.dynamicContentDataFDC1));
-		
+		level2SignedData.getLevel2Data().setFormat(Constants.DATA_TYPE_FDC_VERSION_1);
+		level2SignedData.getLevel2Data().setByteData(DynamicContentCoder.encode(content, Constants.DATA_TYPE_FDC_VERSION_1));
 	}
 	
 	/**
@@ -154,14 +150,13 @@ public class DynamicFrame extends Object{
 	 * @return the dynamic content
 	 */
 	public IUicDynamicContent getDynamicContent() {
-		
-		if (level2SignedData == null || 
-		    level2SignedData.getLevel2Data() == null){
-				return null;
-		}
-		
-		return DynamicContentCoder.decode(this.getLevel2SignedData().getLevel2Data().getByteData());
-			
+        if (level2SignedData == null)
+            return null;
+        if (level2SignedData.getLevel2Data() == null)
+            return null;
+        if (!level2SignedData.getLevel2Data().getFormat().equals(Constants.DATA_TYPE_FDC_VERSION_1))
+            return null;
+        return DynamicContentCoder.decode(level2SignedData.getLevel2Data().getByteData());
 	}
 	
 	/**
