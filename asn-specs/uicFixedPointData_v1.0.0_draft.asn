@@ -45,7 +45,7 @@ FixedPointData ::= SEQUENCE {
 }
 
 Object ::= CHOICE {
-    station         Station,        -- for check-in/check-out by scanning
+    station         StationPoint,   -- for check-in/check-out by scanning
     vehicle         Vehicle,        -- e.g. for at-seat ordering, customer reporting of vehicle defects, vehicle based check-in
     sharedVehicle   SharedVehicle,  -- e.g. bike, e-scooter, car sharing
     proprietary     GenericId,      -- defined by the issuer

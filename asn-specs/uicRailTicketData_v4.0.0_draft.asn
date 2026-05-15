@@ -2,28 +2,22 @@
 -- Author: ClemensGantert
 -- Created: Mon Jun 28 14:14:28 CEST 2021
 -- Last modification: Fri Oct 27 CEST 18:00:00 CEST 2025
--- Copyright UIC 2025
-ASN-Module-RailTicketData { iso(1) identified-organization(3) dod(6)
+-- Copyright UIC 2026
+ASN-Module-MultiModalTicketData { iso(1) identified-organization(3) dod(6)
     internet(1) private(4) enterprise(1) uic(17218) fcb(1) modules(0) mmtd(4) v1(1) 0 }
     DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 
 -- imports and exports
 -- EXPORTS ALL;
 
-IMPORTS GenericId, CompanyCode, Station, StationCode, CodeTable, GeoCoordinate, GeoUnit, CoachPlaces, Data, UnicodeText,
- Timestamp, SharedVehicleVariety, SharedVehiclePropulsionType, SharedVehicleReturnConstraint
+IMPORTS GenericId, GenericCode, CompanyCode, Station, StationSet, AreaSet, NUTSArea, LineId, TransportId,
+ GeoCoordinate, GeoUnit, CoachPlaces, Data, UnicodeText, Timestamp, SharedVehicleVariety, SharedVehiclePropulsionType,
+ SharedVehicleReturnConstraint
  FROM ASN-Module-GeneralData { iso(1) identified-organization(3) dod(6) internet(1) private(4) enterprise(1) uic(17218) fcb(1) modules(0) general(5) v1(1) 0 };
-
--- Changes:
---    New ticket structure merging openTicket, pass, reservation and allowing defining a commercialCard.
---    Improvements in IssuingData and ControlData.
---    Renaming of some elements to address transport modes other than rail
 
 -- ##############################################################################################
 -- #
--- #   version 4.0.0       - Value 4 in the UIC bar code version element
--- #                         (see element 2 in U_FLEX record definition in TEL TSI B.12)
--- #                       - Value "FCB4" in element dataFormat of UicBarcodeHeader
+-- #   version 1.0.0       - Value "MMT1" in element dataFormat of the UICBarcodeHeader
 -- #
 -- ##############################################################################################
 
@@ -91,9 +85,9 @@ IMPORTS GenericId, CompanyCode, Station, StationCode, CodeTable, GeoCoordinate, 
 -- #
 -- #  ASN.1 Extensions:
 -- #    The specification makes use of the ASN.1 extension marker ("...").
--- #    Extensions might be defined in future versions of the UIC specification.
+-- #    Extensions might be defined in future versions of this specification.
 -- #    Implementations must support this extension feature of ASN.1, at least they must be able to ignore extensions while decoding the data.
--- #    ASN.1 extensions will be defined by UIC. It is not allowed to define bilateral extensions.
+-- #    ASN.1 extensions will be defined by standards action. It is not allowed to define bilateral extensions.
 -- #
 -- #  Bilateral Extensions:
 -- #    Bilateral extensions can be included in the data element "Data".
@@ -275,7 +269,7 @@ IssuingData ::= SEQUENCE {
         -- Identifier of a specific journey, e.g. the running number of an individual train service
         transport   TransportId OPTIONAL,
         -- Identifier of the general route, e.g. a train running as an RE1 service
-        line        LineId      OPTIONAL,
+        line        LineId      OPTIONAL
     } OPTIONAL,
 
     -- Retail information.
@@ -1058,7 +1052,7 @@ ParkingGroundData ::= SEQUENCE {
     validFrom                     ValidFromType,
     validUntil                    ValidUntilType,
 
-    parkingDetails                ParkingType
+    parkingDetails                ParkingType,
 
     ...,
 
@@ -1262,7 +1256,7 @@ DateType ::= SEQUENCE {
 RareTravelerDetailsType ::= SEQUENCE {
 
     -- Details of the document (ID card, passport...) identifying the traveler
-    identificationDocument           SEQUENCE OF IdentificationDocumentType (SIZE(0..15)),
+    identificationDocument           SEQUENCE SIZE(0..15) OF IdentificationDocumentType,
 
     -- Cards (reduction, discount, loyalty...) held by the traveler.
     -- Only present if they serve a purpose (e.g. access to a lounge in a station).
@@ -1347,7 +1341,7 @@ GeoValidity ::= CHOICE {
     -- Access to a shared vehicle service.
     sharedVehicle       SharedVehicle,
     -- Valid everywhere within the operating area of a carrier, including cross-border services, unless excluded by coveringArea condition.
-    carrierNetwork      SEQUENCE OF CompanyCode (SIZE(1..16),
+    carrierNetwork      SEQUENCE SIZE(1..16) OF CompanyCode,
     -- No specific geographic validity beyond the coveringArea and other conditions.
     perConditions       NULL,
     -- Specific proprietary geographical validity in case the above predefined types do not allow it to be described.
@@ -1372,7 +1366,7 @@ SharedVehicle ::= SEQUENCE {
     -- The vehicle must be collected from this station.
     collectionStation   Station                     OPTIONAL,
     -- The vehicle must be returned to this station.
-    collectionStation   Station                     OPTIONAL,
+    returnStation       Station                     OPTIONAL,
 
     -- Included amount of time allowed to access a shared vehicle, if more restrictive than the validity period.
     -- If present, indicates that the entitlement is valid for a given amount of time within the validity period.
@@ -1396,11 +1390,11 @@ SharedVehicle ::= SEQUENCE {
 
 SharedVehicleType ::= SEQUENCE {
     -- An empty list means any value
-    variety             SEQUENCE OF SharedVehicleVariety (SIZE (0..15)),
+    variety             SEQUENCE SIZE (0..15) OF SharedVehicleVariety,
     -- An empty list means any value
-    propulsion          SEQUENCE OF SharedVehiclePropulsionType (SIZE (0..15)),
+    propulsion          SEQUENCE SIZE (0..15) OF SharedVehiclePropulsionType,
     -- An empty list means any value
-    returnConstraint    SEQUENCE OF SharedVehicleReturnConstraint (SIZE (0..15)),
+    returnConstraint    SEQUENCE SIZE (0..15) OF SharedVehicleReturnConstraint,
     ...
 }
 
