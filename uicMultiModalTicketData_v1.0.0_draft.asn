@@ -199,23 +199,47 @@ DocumentData ::= CHOICE {
 -- ##############################################################################################
 DelayConfirmation ::= SEQUENCE {
     -- Transport number of the delayed transport.
-    transportNumber TransportId                     OPTIONAL,
+    transportNumber TransportId,
+    -- Line which the transport was operating as (e.g. S5)
+    lineNumber      LineId OPTIONAL,
 
-    -- Planned departure date and time of the delayed transport in local time at the station where
-    --   delay became relevant (see below).
-    departure       ValidFromType                   OPTIONAL,
-
-    -- Station where the delay became relevant.
-    station         Station                         OPTIONAL,
+    -- Station where the delay became relevant, i.e. where passenger gets off the delayed transport, or the station
+    --  where they missed boarding when a transport left earlier than scheduled.
+    station         Station,
+    -- Planned arrival date and time at the station where delay became relevant.
+    -- Date referenced from issuing date.
+    arrival         ArrivalDateTime,
 
     -- Indication if the transport has been delayed (and how long) or canceled
-   delayOrCancellation CHOICE {
-        -- Indication that the transport was delayed, and delay in minutes at the mentioned station.
+    delayType CHOICE {
+        -- The transport was delayed, and delay in minutes at the mentioned station.
         -- The delay is negative if the transport left earlier than scheduled.
         delay               INTEGER (-1439..1439),
 
-        -- Indication that the transport was cancelled.
-        transportCancelled  NULL
+        -- The transport was cancelled.
+        transportCancelled  NULL,
+
+        -- The transport was cancelled, and replaced with a different transport.
+        replacedWith        SEQUENCE {
+            -- Transport number of the replacement transport.
+            transportNumber     TransportId,
+            -- Line which the replacement transport is operating as (e.g. S5)
+            lineNumber          LineId          OPTIONAL,
+            -- The replacement transport is not calling at the original station, but is calling at a replacement station.
+            replacementStation  Station         OPTIONAL,
+            -- Planned arrival date and time at the original (or replacement) station of the replacement transport.
+            -- Date referenced from issuing date.
+            arrival             ArrivalDateTime
+        },
+
+        -- The transport skipped a station, and optionally called at a replacement station
+        stationSkipped         SEQUENCE {
+            -- The alternative station called at
+            replacementStation  Station,
+            -- Planned arrival date and time at the replacement station of the replacement transport.
+            -- Date referenced from issuing date.
+            arrival             ArrivalDateTime
+        } OPTIONAL
     },
 
     -- Type of confirmation provided.
@@ -223,6 +247,20 @@ DelayConfirmation ::= SEQUENCE {
 
     -- Affected original ticket(s).
     affectedTickets     SEQUENCE OF TicketLinkType  OPTIONAL,
+
+    -- The validity of the original ticket is extended in some way.
+    -- If this field is unset, no statement is made about possibly validity extensions.
+    -- If it is set, but has no fields set within it, then the validity is explicitly not extended.
+    validityExtension   SEQUENCE {
+        -- Transport links have been waived
+        transportLinkRemoved    BOOLEAN,
+        -- Additional transport links have been permitted
+        additionalTransportLink SEQUENCE OF TransportLinkType,
+        -- Additional carriers the passenger is permitted to travel with
+        additionalCarrier       SEQUENCE OF CompanyCode,
+        -- Additional service brands the passenger is permitted to travel in
+        additionalServiceBrand  SEQUENCE OF ServiceBrandType
+    } OPTIONAL,
 
     -- Additional readable information that cannot be described using the other elements.
     infoText            UnicodeText                 OPTIONAL,
@@ -475,7 +513,7 @@ CarType ::= SEQUENCE {
 -- ----------------------------------------------------------------------------------------------
 --  Type definitions used in TransportLinkType and ReservationSegmentType
 -- ----------------------------------------------------------------------------------------------
-DepartureDateTimeType ::= SEQUENCE {
+DepartureDateTime ::= SEQUENCE {
     -- Departure date and time in local time at the departure station.
     -- Number of days counted from the issuing date.
     departureDate      INTEGER (-1..500)                DEFAULT 0,
@@ -488,7 +526,7 @@ DepartureDateTimeType ::= SEQUENCE {
     departureUTCOffset INTEGER (-60..60)                OPTIONAL
 }
 
-ArrivalDateTimeType ::= SEQUENCE {
+ArrivalDateTime ::= SEQUENCE {
     -- Arrival date and time in local time at the arrival station.
     -- Number of days counted from the departure date.
     arrivalDate        INTEGER (-1..30)                 DEFAULT 0,
@@ -523,10 +561,11 @@ TransportLinkType ::= SEQUENCE {
 
     -- Departure date and time in local time at the departure station of the transport link.
     -- If omitted, departureDateTime is assumed to be equal to validFrom and validFromUTCOffset of the container object.
-    departureDateTime       DepartureDateTimeType                                   OPTIONAL,
+    departureDateTime       DepartureDateTime                                       OPTIONAL,
 
     -- Arrival date time in local time at the arrival station of the transport link.
-    arrivalDateTime         ArrivalDateTimeType                                     OPTIONAL,
+    -- If omitted, arrivalDateTime is assumed to be equal to validUntil and validUntilUTCOffset of the container object.
+    arrivalDateTime         ArrivalDateTime                                         OPTIONAL,
 
     -- Travel class.
     -- For transport modes where the concept of class does not exist, must be set to notApplicable.
@@ -569,10 +608,11 @@ ReservationSegmentType ::= SEQUENCE {
 
     -- Departure date and time in local time at the departure station.
     -- If omitted, departureDateTime is assumed to be equal to validFrom and validFromUTCOffset of the container object.
-    departureDateTime       DepartureDateTimeType                                   OPTIONAL,
+    departureDateTime       DepartureDateTime                                       OPTIONAL,
 
     -- Arrival date time in local time at the arrival station.
-    arrivalDateTime         ArrivalDateTimeType                                     OPTIONAL,
+    -- If omitted, arrivalDateTime is assumed to be equal to validUntil and validUntilUTCOffset of the container object.
+    arrivalDateTime         ArrivalDateTime                                         OPTIONAL,
 
     -- Travel class.
     -- For transport modes where the concept of class does not exist, must be set to notApplicable.
