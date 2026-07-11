@@ -7,7 +7,7 @@ import org.uic.barcode.ticket.EncodingFormatException;
 public abstract class SsbCommonTicketPart extends SsbTicketPart {
 	
 	/*
-	Number of adult passengers	Num (<100)	7,000
+	Number of normal passengers	Num (<100)	7,000
 	Number of child passengers	Num (<100)	7,000
 	"specimen" code	Bit Flag	1,000
 	Class of travel	Lookup of 64 options	6,000
@@ -16,7 +16,7 @@ public abstract class SsbCommonTicketPart extends SsbTicketPart {
 	Issuing day, from first of January	Num (<512)	9,000
 	 */
 	
-	protected int numberOfAdults = 0;
+	protected int numberOfPersons = 0;
 	protected int numberOfChildren = 0;
 	protected boolean specimen = true;
 	protected SsbClass classCode = null;
@@ -29,7 +29,7 @@ public abstract class SsbCommonTicketPart extends SsbTicketPart {
 		BitBuffer bits = new ByteBitBuffer(bytes);
 		
 		int offset = 27; // header offset
-		numberOfAdults = bits.getInteger(offset, 7); 
+		numberOfPersons = bits.getInteger(offset, 7);
 		offset += 7;
 		numberOfChildren = bits.getInteger(offset, 7); 
 		offset += 7;
@@ -51,10 +51,10 @@ public abstract class SsbCommonTicketPart extends SsbTicketPart {
 		
 		BitBuffer bits = new ByteBitBuffer(bytes);
 		
-		if (numberOfAdults < 0 || numberOfAdults > 99) {
-			throw new EncodingFormatException("SSB number of adults too big");
+		if (numberOfPersons < 0 || numberOfPersons > 99) {
+			throw new EncodingFormatException("SSB number of persons too big");
 		}
-		bits.putInteger(offset,7, numberOfAdults);
+		bits.putInteger(offset,7, numberOfPersons);
 		offset += 7;
 		
 		if (numberOfChildren < 0 || numberOfChildren > 99) {
@@ -90,12 +90,12 @@ public abstract class SsbCommonTicketPart extends SsbTicketPart {
 		
 	}
 
-	public int getNumberOfAdults() {
-		return numberOfAdults;
+	public int getNumberOfPersons() {
+		return numberOfPersons;
 	}
 
-	public void setNumberOfAdults(int numberOfAdults) {
-		this.numberOfAdults = numberOfAdults;
+	public void setNumberOfPersons(int numberOfPersons) {
+		this.numberOfPersons = numberOfPersons;
 	}
 
 	public int getNumberOfChildren() {

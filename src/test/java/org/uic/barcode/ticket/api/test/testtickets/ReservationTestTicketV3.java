@@ -108,7 +108,7 @@ import org.uic.barcode.ticket.api.asn.omv3.UicRailTicketData;
 	    	TariffType tariff = new TariffType();
 	    	tariff.setNumberOfPassengers(1L);
 	    	tariff.setRestrictedToCountryOfResidence(false);
-	    	tariff.setPassengerType(PassengerType.adult);
+	    	tariff.setPassengerType(PassengerType.person);
 	    	tariff.setTariffIdNum(72L);
 	    	tariff.setTariffDesc("Full Fare Adult");
 	    	tariffs.add(tariff);

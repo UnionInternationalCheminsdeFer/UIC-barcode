@@ -42,6 +42,9 @@ It may only be marked as deprecated.
       - `3`: UIC Rail Ticket Data - version 3.0.3
       - `4`: UIC Rail Ticket Data - version 3.0.4
       - `5`: UIC Rail Ticket Data - version 3.0.5
+      - `6`: UIC Rail Ticket Data - version 3.0.6
+      - `7`: UIC Rail Ticket Data - version 3.0.7
+      - `8`: UIC Rail Ticket Data - version 3.0.8
   - `3`: Dynamic Content Data
     - `1`: DCDv1.0:
         - `0`: FCB Dynamic Content Data - version 1.0.0

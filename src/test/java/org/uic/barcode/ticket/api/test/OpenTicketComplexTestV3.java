@@ -96,7 +96,7 @@ public class OpenTicketComplexTestV3 {
 		assert(inc.getValidRegion().get(0).getZones().getZoneId().get(0) == 100L);
 		assert(inc.getTariffs().size() == 1);
 		assert(inc.getTariffs().get(0).getNumberOfPassengers() == 2L);
-		assert(inc.getTariffs().get(0).getPassengerType().equals(PassengerType.adult));
+		assert(inc.getTariffs().get(0).getPassengerType().equals(PassengerType.person));
 		assert(inc.getTariffs().get(0).getRestrictedToCountryOfResidence() == false);
 		assert(inc.getTariffs().get(0).getRestrictedToRouteSection().getFromStationNum() == 8000001L);
 		assert(inc.getTariffs().get(0).getRestrictedToRouteSection().getToStationNum() == 8010000L);	

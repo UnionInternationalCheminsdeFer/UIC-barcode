@@ -501,7 +501,7 @@ value UicRailTicketData ::= {
 		private static TariffType getTariff() {
 			TariffType t = new TariffType();
 			t.setNumberOfPassengers(2L);
-			t.setPassengerType(PassengerType.adult);
+			t.setPassengerType(PassengerType.person);
 			t.setRestrictedToRouteSection(getRouteSection());
 			t.setRestrictedToCountryOfResidence(false);
 			return t;

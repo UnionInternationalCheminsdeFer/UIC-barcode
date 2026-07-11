@@ -34,7 +34,7 @@ public class SsbTicketFactory {
 		ssbPass.getPassData().setHasSecondPage(false);
 		ssbPass.getPassData().setInfoCode(12);
 		ssbPass.getPassData().setMaximumValidityDuration(2);
-		ssbPass.getPassData().setNumberOfAdults(2);
+		ssbPass.getPassData().setNumberOfPersons(2);
 		ssbPass.getPassData().setNumberOfChildren(3);
 		ssbPass.getPassData().setNumberOfTravels(3);
 		ssbPass.getPassData().setPassSubType(1);
@@ -65,7 +65,7 @@ public class SsbTicketFactory {
 		ssb.getGroupData().setGroupName("GroupName");
 		ssb.getGroupData().setInfoCode(12);
 		ssb.getGroupData().setLastDayOfValidity(3);
-		ssb.getGroupData().setNumberOfAdults(2);
+		ssb.getGroupData().setNumberOfPersons(2);
 		ssb.getGroupData().setNumberOfChildren(3);
 		ssb.getGroupData().setReturnJourney(false);
 		ssb.getGroupData().setSpecimen(true);
@@ -98,7 +98,7 @@ public class SsbTicketFactory {
 		ssb.getNonReservationData().setFirstDayOfValidity(120);
 		ssb.getNonReservationData().setInfoCode(12);
 		ssb.getNonReservationData().setLastDayOfValidity(3);
-		ssb.getNonReservationData().setNumberOfAdults(2);
+		ssb.getNonReservationData().setNumberOfPersons(2);
 		ssb.getNonReservationData().setNumberOfChildren(3);
 		ssb.getNonReservationData().setReturnJourney(false);
 		ssb.getNonReservationData().setSpecimen(true);
@@ -131,7 +131,7 @@ public class SsbTicketFactory {
 		ssb.getReservationData().setDepartureDate(120);
 		ssb.getReservationData().setDepartureTime(500);
 		ssb.getReservationData().setOverbooking(false);
-		ssb.getReservationData().setNumberOfAdults(2);
+		ssb.getReservationData().setNumberOfPersons(2);
 		ssb.getReservationData().setNumberOfChildren(3);
 		ssb.getReservationData().setPlace("05B");
 		ssb.getReservationData().setTicketSubType(2);
@@ -183,7 +183,7 @@ public class SsbTicketFactory {
 
         assert(part.isSpecimen() == part2.isSpecimen());
         assert(part.getDay() == part2.getDay());
-        assert(part.getNumberOfAdults() == part2.getNumberOfAdults());
+        assert(part.getNumberOfPersons() == part2.getNumberOfPersons());
         assert(part.getNumberOfChildren() == part2.getNumberOfChildren());
         assert(part.getTicketNumber().equals(part2.getTicketNumber()));
         assert(part.getYear() == part2.getYear());

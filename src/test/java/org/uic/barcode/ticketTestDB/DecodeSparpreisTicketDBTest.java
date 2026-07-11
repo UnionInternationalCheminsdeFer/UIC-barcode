@@ -90,7 +90,7 @@ public class DecodeSparpreisTicketDBTest {
         assert(openTicket.getTariffs().size() == 1);
         ITariff tariff = openTicket.getTariffs().iterator().next();
         assert(tariff.getNumberOfPassengers() == 1);
-        assert(tariff.getPassengerType().equals(IPassengerType.adult));
+        assert(tariff.getPassengerType().equals(IPassengerType.person));
         assert(tariff.getTariffDescription().equals("Super Sparpreis"));
         
         

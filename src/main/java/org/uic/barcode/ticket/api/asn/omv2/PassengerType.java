@@ -23,7 +23,7 @@ import org.uic.barcode.asn1.datatypes.HasExtensionMarker;
 
 @HasExtensionMarker
 public enum PassengerType {
-		adult("adult"),
+		person("person"),
 		senior("senior"),
 		child("child"),
 		youth("youth"),

@@ -112,7 +112,7 @@ public class SZticketTest {
         Assert.assertEquals(frame.getHeader().getKeyId(), 1);
         Assert.assertEquals(frame.getHeader().getTicketType(), SsbTicketType.UIC_2_NRT);
         
-        Assert.assertEquals(frame.getNonReservationData().getNumberOfAdults(), 1);
+        Assert.assertEquals(frame.getNonReservationData().getNumberOfPersons(), 1);
         Assert.assertEquals(frame.getNonReservationData().getNumberOfChildren(), 0);
         Assert.assertFalse(frame.getNonReservationData().isSpecimen());
         Assert.assertEquals(frame.getNonReservationData().getClassCode(), SsbClass.Second);
@@ -155,7 +155,7 @@ public class SZticketTest {
          Assert.assertEquals(1, frame.getHeader().getKeyId());
          Assert.assertEquals(SsbTicketType.UIC_3_GRP, frame.getHeader().getTicketType());
          
-         Assert.assertEquals(10, frame.getGroupData().getNumberOfAdults());
+         Assert.assertEquals(10, frame.getGroupData().getNumberOfPersons());
          Assert.assertEquals(2, frame.getGroupData().getNumberOfChildren());
          Assert.assertFalse(frame.getGroupData().isSpecimen());
          Assert.assertEquals(SsbClass.Second, frame.getGroupData().getClassCode());

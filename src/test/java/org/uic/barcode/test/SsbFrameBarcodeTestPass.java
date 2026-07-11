@@ -194,7 +194,7 @@ public class SsbFrameBarcodeTestPass {
         assert(dec.getSsbFrame().getPassData().getFirstDayOfValidity() == ref.getPassData().getFirstDayOfValidity());
         assert(dec.getSsbFrame().getPassData().getInfoCode() == ref.getPassData().getInfoCode());
         assert(dec.getSsbFrame().getPassData().getMaximumValidityDuration() == ref.getPassData().getMaximumValidityDuration());
-        assert(dec.getSsbFrame().getPassData().getNumberOfAdults() == ref.getPassData().getNumberOfAdults());
+        assert(dec.getSsbFrame().getPassData().getNumberOfPersons() == ref.getPassData().getNumberOfPersons());
         assert(dec.getSsbFrame().getPassData().getNumberOfChildren() == ref.getPassData().getNumberOfChildren());
         assert(dec.getSsbFrame().getPassData().getNumberOfTravels() == ref.getPassData().getNumberOfTravels());
         assert(dec.getSsbFrame().getPassData().getText().equalsIgnoreCase(ref.getPassData().getText()));
