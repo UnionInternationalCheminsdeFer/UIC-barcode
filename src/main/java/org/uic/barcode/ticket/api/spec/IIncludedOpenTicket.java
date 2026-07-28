@@ -50,21 +50,28 @@ public interface IIncludedOpenTicket {
 	 *
 	 * @return the product id
 	 */
-	public String getProductId() ;
+	public CharSequence getProductId() ;
 
 	/**
 	 * Sets the product id.
 	 *
 	 * @param productId the new product id
 	 */
-	public void setProductId(String productId) ;
+	public void setProductId(String productId);
+
+	/**
+	 * Sets the product id, without conversion to an integer type in encoding.
+	 *
+	 * @param productId the new product id
+	 */
+	public void setProductIdMustString(String productId);
 
 	/**
 	 * Gets the product owner.
 	 *
 	 * @return the product owner
 	 */
-	public String getProductOwner();
+	public CharSequence getProductOwner();
 
 	/**
 	 * Sets the product owner.
@@ -72,6 +79,13 @@ public interface IIncludedOpenTicket {
 	 * @param productOwner the new product owner
 	 */
 	public void setProductOwner(String productOwner);
+
+	/**
+	 * Sets the product owner, without conversion to an integer type in encoding.
+	 *
+	 * @param productOwner the new product owner
+	 */
+	public void setProductOwnerMustString(String productOwner);
 
 	/**
 	 * Gets the external issuer.
@@ -134,7 +148,7 @@ public interface IIncludedOpenTicket {
 	 *
 	 * @return the from station code
 	 */
-	public String getFromStation();
+	public CharSequence getFromStation();
 
 	/**
 	 * Sets the from station code.
@@ -144,11 +158,18 @@ public interface IIncludedOpenTicket {
 	public void setFromStation(String fromStation);
 
 	/**
+	 * Sets the from station code, without conversion to an integer type in encoding.
+	 *
+	 * @param fromStation the new from station code
+	 */
+	public void setFromStationMustString(String fromStation);
+
+	/**
 	 * Gets the to station code.
 	 *
 	 * @return the to station code
 	 */
-	public String getToStation();
+	public CharSequence getToStation();
 
 	/**
 	 * Sets the to station code.
@@ -156,6 +177,13 @@ public interface IIncludedOpenTicket {
 	 * @param toStation the new to station code
 	 */
 	public void setToStation(String toStation);
+
+	/**
+	 * Sets the to station code.
+	 *
+	 * @param toStation the new to station code
+	 */
+	public void setToStationMustString(String toStation);
 
 	/**
 	 * Gets the from station name.
@@ -260,7 +288,7 @@ public interface IIncludedOpenTicket {
 	 *
 	 * @return the included carriers
 	 */
-	public Collection<String> getIncludedCarriers();
+	public Collection<CharSequence> getIncludedCarriers();
 
 	/**
 	 * Adds the included carrier.
@@ -268,6 +296,13 @@ public interface IIncludedOpenTicket {
 	 * @param includedCarrier the included carrier
 	 */
 	public void addIncludedCarrier(String includedCarrier);
+
+	/**
+	 * Adds the included carrier, without conversion to an integer type in encoding.
+	 *
+	 * @param includedCarrier the included carrier
+	 */
+	public void addIncludedCarrierMustString(String includedCarrier);
 
 	/**
 	 * Gets the included service brands on which the ticket is valid

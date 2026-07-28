@@ -20,7 +20,7 @@ public interface IStationPassage  extends IDocumentData {
 	 *
 	 * @return the reference
 	 */
-	public String getReference();
+	public CharSequence getReference();
 	
 	/**
 	 * Sets the reference.
@@ -30,11 +30,18 @@ public interface IStationPassage  extends IDocumentData {
 	public void setReference(String reference);
 
 	/**
+	 * Sets the reference, without conversion to an integer type in encoding.
+	 *
+	 * @param reference the new reference
+	 */
+	public void setReferenceMustString(String reference);
+
+	/**
 	 * Gets the product type.
 	 *
 	 * @return the product type
 	 */
-	public String getProductId();
+	public CharSequence getProductId();
 	
 	/**
 	 * Sets the product type.
@@ -44,11 +51,18 @@ public interface IStationPassage  extends IDocumentData {
 	public void setProductId(String type);
 
 	/**
+	 * Sets the product type, without conversion to an integer type in encoding.
+	 *
+	 * @param type the new product id
+	 */
+	public void setProductIdMustString(String type);
+
+	/**
 	 * Gets the product owner.
 	 *
 	 * @return the product owner
 	 */
-	public String getProductOwner();
+	public CharSequence getProductOwner();
 	
 	/**
 	 * Sets the product owner.
@@ -56,6 +70,13 @@ public interface IStationPassage  extends IDocumentData {
 	 * @param productOwner the new product owner
 	 */
 	public void setProductOwner(String productOwner);
+
+	/**
+	 * Sets the product owner, without conversion to an integer type in encoding.
+	 *
+	 * @param productOwner the new product owner
+	 */
+	public void setProductOwnerMustString(String productOwner);
 
 	/**
 	 * Gets the valid from date and time.
@@ -104,7 +125,7 @@ public interface IStationPassage  extends IDocumentData {
 	 *
 	 * @return the stations list
 	 */
-	public Collection<String> getStations();
+	public Collection<CharSequence> getStations();
 
 	/**
 	 * Adds a station where the passage is allowed.
@@ -112,6 +133,13 @@ public interface IStationPassage  extends IDocumentData {
 	 * @param station the station code
 	 */
 	public void addStation(String station);
+
+	/**
+	 * Adds a station where the passage is allowed, without conversion to an integer type in encoding.
+	 *
+	 * @param station the station code
+	 */
+	public void addStationMustString(String station);
 
 	/**
 	 * Adds a station name of a station where the passage is allowed.
@@ -177,7 +205,7 @@ public interface IStationPassage  extends IDocumentData {
 	 *
 	 * @return the area codes of areas in a station where the access is allowed
 	 */
-	public Collection<String> getAreaCodes();
+	public Collection<CharSequence> getAreaCodes();
 	
 	/**
 	 * Gets the area names of areas in a station where the access is allowed.
@@ -192,6 +220,13 @@ public interface IStationPassage  extends IDocumentData {
 	 * @param code the area code of an area in a station where the access is allowed.
 	 */
 	public void addAreaCode(String code);
+
+	/**
+	 * Adds an area code of an area in a station where the access is allowed, without conversion to an integer type in encoding.
+	 *
+	 * @param code the area code of an area in a station where the access is allowed.
+	 */
+	public void addAreaCodeMustString(String code);
 	
 	/**
 	 * Adds an area name of an area in a station where the access is allowed.

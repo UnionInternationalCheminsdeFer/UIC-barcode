@@ -6,6 +6,7 @@ package org.uic.barcode.ticket.api.impl;
 import java.util.Date;
 
 import org.uic.barcode.ticket.api.spec.ITrainLink;
+import org.uic.barcode.ticket.api.utils.MustString;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -15,7 +16,7 @@ public class SimpleTrainLink implements ITrainLink{
 	
 		
 	/** The train. */
-	protected String train;
+	protected CharSequence train;
 	
 	/** The departure date time. */
 	protected Date departureDateTime;
@@ -24,10 +25,10 @@ public class SimpleTrainLink implements ITrainLink{
 	protected Long departureUTCoffset;
 	
 	/** The from station. */
-	protected String fromStation;
+	protected CharSequence fromStation;
 	
 	/** The to station. */
-	protected String toStation;        
+	protected CharSequence toStation;
 				                 
 	/** The from station name. */
 	protected String fromStationName;
@@ -38,7 +39,7 @@ public class SimpleTrainLink implements ITrainLink{
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.ITrainLink#getTrain()
 	 */
-	public String getTrain() {
+	public CharSequence getTrain() {
 		return train;
 	}
 	
@@ -47,6 +48,13 @@ public class SimpleTrainLink implements ITrainLink{
 	 */
 	public void setTrain(String train) {
 		this.train = train.trim();
+	}
+
+	/* (nicht-Javadoc)
+	 * @see org.uic.ticket.api.spec.ITrainLink#setTrainMustString(java.lang.String)
+	 */
+	public void setTrainMustString(String train) {
+		this.train = new MustString(train.trim());
 	}
 	
 	/* (nicht-Javadoc)
@@ -66,7 +74,7 @@ public class SimpleTrainLink implements ITrainLink{
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.ITrainLink#getFromStation()
 	 */
-	public String getFromStation() {
+	public CharSequence getFromStation() {
 		return fromStation;
 	}
 	
@@ -76,11 +84,18 @@ public class SimpleTrainLink implements ITrainLink{
 	public void setFromStation(String fromStation) {
 		this.fromStation = fromStation;
 	}
+
+	/* (nicht-Javadoc)
+	 * @see org.uic.ticket.api.spec.ITrainLink#setFromStationMustString(java.lang.String)
+	 */
+	public void setFromStationMustString(String fromStation) {
+		this.fromStation = new MustString(fromStation);
+	}
 	
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.ITrainLink#getToStation()
 	 */
-	public String getToStation() {
+	public CharSequence getToStation() {
 		return toStation;
 	}
 	
@@ -93,8 +108,13 @@ public class SimpleTrainLink implements ITrainLink{
 		} else {
 			this.toStation = null;
 		}
-		
-		
+	}
+
+	/* (nicht-Javadoc)
+	 * @see org.uic.ticket.api.spec.ITrainLink#setToStation(java.lang.String)
+	 */
+	public void setToStationMustString(String toStation) {
+		this.toStation = new MustString(toStation.trim());
 	}
 	
 	/* (nicht-Javadoc)

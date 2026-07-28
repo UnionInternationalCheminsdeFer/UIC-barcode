@@ -18,7 +18,7 @@ public interface ICardReference {
 	 *
 	 * @return the card issuer
 	 */
-	public String getCardIssuer();
+	public CharSequence getCardIssuer();
 	
 	/**
 	 * Sets the card issuer.
@@ -28,6 +28,15 @@ public interface ICardReference {
 	 * @param cardIssuer the new card issuer
 	 */
 	public void setCardIssuer(String cardIssuer);
+
+	/**
+	 * Sets the card issuer, without conversion to an integer type in encoding.
+	 *
+	 * For rail cards the RICS code has to be used.
+	 *
+	 * @param cardIssuer the new card issuer
+	 */
+	public void setCardIssuerMustString(String cardIssuer);
 	
 	/**
 	 * Gets the card id.
@@ -36,7 +45,7 @@ public interface ICardReference {
 	 *
 	 * @return the card id
 	 */
-	public String getCardId();
+	public CharSequence getCardId();
 	
 	/**
 	 * Sets the card id.
@@ -44,6 +53,13 @@ public interface ICardReference {
 	 * @param cardId the new card id
 	 */
 	public void setCardId(String cardId);
+
+	/**
+	 * Sets the card id, without conversion to an integer type in encoding.
+	 *
+	 * @param cardId the new card id
+	 */
+	public void setCardIdMustString(String cardId);
 	
 	/**
 	 * Gets the card name.
@@ -81,7 +97,7 @@ public interface ICardReference {
 	 *
 	 * @return the leading card id
 	 */
-	public String getLeadingCardId();
+	public CharSequence getLeadingCardId();
 	
 	/**
 	 * Sets the leading card id in case the entire cardId must not be provided.
@@ -89,13 +105,20 @@ public interface ICardReference {
 	 * @param leadingCardId the new leading card id
 	 */
 	public void setLeadingCardId(String leadingCardId);
+
+	/**
+	 * Sets the leading card id in case the entire cardId must not be provided, without conversion to an integer type in encoding.
+	 *
+	 * @param leadingCardId the new leading card id
+	 */
+	public void setLeadingCardIdMustString(String leadingCardId);
 	
 	/**
 	 * Gets the trailing card id in case the entire cardId must not be provided.
 	 *
 	 * @return the trailing card id
 	 */
-	public String getTrailingCardId();
+	public CharSequence getTrailingCardId();
 	
 	/**
 	 * Sets the trailing card id in case the entire cardId must not be provided.
@@ -103,5 +126,12 @@ public interface ICardReference {
 	 * @param trailingCardId the new trailing card id
 	 */
 	public void setTrailingCardId(String trailingCardId);
+
+	/**
+	 * Sets the trailing card id in case the entire cardId must not be provided, without conversion to an integer type in encoding.
+	 *
+	 * @param trailingCardId the new trailing card id
+	 */
+	public void setTrailingCardIdMustString(String trailingCardId);
 
 }

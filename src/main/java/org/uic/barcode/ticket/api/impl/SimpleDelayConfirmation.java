@@ -8,6 +8,7 @@ import org.uic.barcode.ticket.api.spec.IDelayConfirmation;
 import org.uic.barcode.ticket.api.spec.IExtension;
 import org.uic.barcode.ticket.api.spec.IStationCodeTable;
 import org.uic.barcode.ticket.api.spec.ITicketLink;
+import org.uic.barcode.ticket.api.utils.MustString;
 
 /**
  * The Class SimpleDelayConfirmation.
@@ -15,16 +16,16 @@ import org.uic.barcode.ticket.api.spec.ITicketLink;
 public class SimpleDelayConfirmation extends SimpleDocumentData  implements IDelayConfirmation {
 	
 	/** The train. */
-	protected String train;  						
+	protected CharSequence train;
 	
 	/** The reference. */
-	protected String    reference;
+	protected CharSequence    reference;
 	
     /** The station code table. */
     protected IStationCodeTable stationCodeTable = IStationCodeTable.stationUICReservation;
     
     /** The station. */
-    protected String station;	
+    protected CharSequence station;
     
     /** The station name. */
     protected String stationName;    
@@ -61,7 +62,7 @@ public class SimpleDelayConfirmation extends SimpleDocumentData  implements IDel
 	 * @see org.uic.ticket.api.spec.IDelayConfirmation#getReference()
 	 */
 	@Override
-	public String getReference() {
+	public CharSequence getReference() {
 		return reference;
 	}
 
@@ -74,10 +75,18 @@ public class SimpleDelayConfirmation extends SimpleDocumentData  implements IDel
 	}
 
 	/* (nicht-Javadoc)
+	 * @see org.uic.ticket.api.spec.IDelayConfirmation#setReferenceMustString(java.lang.String)
+	 */
+	@Override
+	public void setReferenceMustString(String reference) {
+		this.reference = new MustString(reference);
+	}
+
+	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.IDelayConfirmation#getTrain()
 	 */
 	@Override
-	public String getTrain() {
+	public CharSequence getTrain() {
 		return train;
 	}
 
@@ -87,6 +96,14 @@ public class SimpleDelayConfirmation extends SimpleDocumentData  implements IDel
 	@Override
 	public void setTrain(String train) {
 		this.train = train;
+	}
+
+	/* (nicht-Javadoc)
+	 * @see org.uic.ticket.api.spec.IDelayConfirmation#setTrainMustString(java.lang.String)
+	 */
+	@Override
+	public void setTrainMustString(String train) {
+		this.train = new MustString(train);
 	}
 
 	/* (nicht-Javadoc)
@@ -109,7 +126,7 @@ public class SimpleDelayConfirmation extends SimpleDocumentData  implements IDel
 	 * @see org.uic.ticket.api.spec.IDelayConfirmation#getStation()
 	 */
 	@Override
-	public String getStation() {
+	public CharSequence getStation() {
 		return station;
 	}
 
@@ -119,6 +136,14 @@ public class SimpleDelayConfirmation extends SimpleDocumentData  implements IDel
 	@Override
 	public void setStation(String station) {
 		this.station = station;
+	}
+
+	/* (nicht-Javadoc)
+	 * @see org.uic.ticket.api.spec.IDelayConfirmation#setStationMustString(java.lang.String)
+	 */
+	@Override
+	public void setStationMustString(String station) {
+		this.station = new MustString(station);
 	}
 
 	/* (nicht-Javadoc)

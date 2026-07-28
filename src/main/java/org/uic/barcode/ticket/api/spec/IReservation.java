@@ -19,7 +19,7 @@ public interface IReservation extends IDocumentData {
 	 *
 	 * @return the train
 	 */
-	public String getTrain();
+	public CharSequence getTrain();
 	
 	/**
 	 * Sets the train.
@@ -27,6 +27,13 @@ public interface IReservation extends IDocumentData {
 	 * @param train the new train
 	 */
 	public void setTrain(String train);
+
+	/**
+	 * Sets the train, without conversion to an integer type in encoding.
+	 *
+	 * @param train the new train
+	 */
+	public void setTrainMustString(String train);
 
 	/**
 	 * Gets the departure date and time.
@@ -64,7 +71,7 @@ public interface IReservation extends IDocumentData {
 	 *
 	 * @return the booking reference
 	 */
-	public String getReference();
+	public CharSequence getReference();
 	
 	/**
 	 * Sets the reference.
@@ -77,11 +84,21 @@ public interface IReservation extends IDocumentData {
 	public void setReference(String reference);
 
 	/**
+	 * Sets the reference, without conversion to an integer type in encoding.
+	 *
+	 * The booking reference must contain the booking reference exchanged via
+	 * booking interface according to UIC leaflet 918.1 in case this interface was used.
+	 *
+	 * @param reference the new reference
+	 */
+	public void setReferenceMustString(String reference);
+
+	/**
 	 * Gets the product id.
 	 *
 	 * @return the product id
 	 */
-	public String getProductId();
+	public CharSequence getProductId();
 	
 	/**
 	 * Sets the product id.
@@ -91,13 +108,20 @@ public interface IReservation extends IDocumentData {
 	public void setProductId(String productId);
 
 	/**
+	 * Sets the product id, without conversion to an integer type in encoding.
+	 *
+	 * @param productId the new product id
+	 */
+	public void setProductIdMustString(String productId);
+
+	/**
 	 * Gets the product owner.
 	 * 
 	 * The company that defined the product. This is the allocating railway in case of car carriage reservations.
 	 *
 	 * @return the product owner
 	 */
-	public String getProductOwner() ;
+	public CharSequence getProductOwner();
 	
 	/**
 	 * Sets the product owner.
@@ -106,7 +130,16 @@ public interface IReservation extends IDocumentData {
 	 * 
 	 * @param productOwner the new product owner
 	 */
-	public void setProductOwner(String productOwner);		
+	public void setProductOwner(String productOwner);
+
+	/**
+	 * Sets the product owner, without conversion to an integer type in encoding.
+	 *
+	 * The company that defined the product. This is the allocating railway in case of car carriage reservations.
+	 *
+	 * @param productOwner the new product owner
+	 */
+	public void setProductOwnerMustString(String productOwner);
 	
 	/**
 	 * Gets the service brand of the train.
@@ -165,7 +198,7 @@ public interface IReservation extends IDocumentData {
 	 *
 	 * @return the from station code
 	 */
-	public String getFromStation();
+	public CharSequence getFromStation();
 
 	/**
 	 * Sets the from station code.
@@ -175,11 +208,18 @@ public interface IReservation extends IDocumentData {
 	public void setFromStation(String fromStation);
 
 	/**
+	 * Sets the from station code, without conversion to an integer type in encoding.
+	 *
+	 * @param fromStation the new from station code
+	 */
+	public void setFromStationMustString(String fromStation);
+
+	/**
 	 * Gets the to station code.
 	 *
 	 * @return the to station code
 	 */
-	public String getToStation();
+	public CharSequence getToStation();
 
 	/**
 	 * Sets the to station code.
@@ -187,6 +227,13 @@ public interface IReservation extends IDocumentData {
 	 * @param toStation the new to station code
 	 */
 	public void setToStation(String toStation);
+
+	/**
+	 * Sets the to station code, without conversion to an integer type in encoding.
+	 *
+	 * @param toStation the new to station code
+	 */
+	public void setToStationMustString(String toStation);
 
 	/**
 	 * Gets the from station name.
@@ -221,7 +268,7 @@ public interface IReservation extends IDocumentData {
 	 *
 	 * @return the carriers
 	 */
-	public Collection<String> getCarriers();
+	public Collection<CharSequence> getCarriers();
 
 	/**
 	 * Adds a carrier responsible for the transport.
@@ -229,6 +276,13 @@ public interface IReservation extends IDocumentData {
 	 * @param carrier the carrier
 	 */
 	public void addCarrier(String carrier);
+
+	/**
+	 * Adds a carrier responsible for the transport, without conversion to an integer type in encoding.
+	 *
+	 * @param carrier the carrier
+	 */
+	public void addCarrierMustString(String carrier);
 
 	/**
 	 * Gets the travel class code.

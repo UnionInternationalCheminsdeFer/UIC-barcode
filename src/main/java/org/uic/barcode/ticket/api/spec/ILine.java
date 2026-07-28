@@ -17,7 +17,7 @@ public interface ILine extends IRegionalValidity{
 	 *
 	 * @return the carrier
 	 */
-	public String getCarrier();
+	public CharSequence getCarrier();
 	
 	/**
 	 * Sets the carrier.
@@ -25,6 +25,13 @@ public interface ILine extends IRegionalValidity{
 	 * @param carrier the new carrier
 	 */
 	public void setCarrier(String carrier);
+
+	/**
+	 * Sets the carrier, without conversion to an integer type in encoding.
+	 *
+	 * @param carrier the new carrier
+	 */
+	public void setCarrierMustString(String carrier);
 
 	/**
 	 * Gets the line ids.
@@ -59,7 +66,7 @@ public interface ILine extends IRegionalValidity{
 	 *
 	 * @return the entry station
 	 */
-	public String getEntryStation() ;
+	public CharSequence getEntryStation();
 	
 	/**
 	 * Sets the entry station.
@@ -69,11 +76,18 @@ public interface ILine extends IRegionalValidity{
 	public void setEntryStation(String entryStation);
 
 	/**
+	 * Sets the entry station, without conversion to an integer type in encoding.
+	 *
+	 * @param entryStation the new entry station
+	 */
+	public void setEntryStationMustString(String entryStation);
+
+	/**
 	 * Gets the terminating station.
 	 *
 	 * @return the terminating station
 	 */
-	public String getTerminatingStation();
+	public CharSequence getTerminatingStation();
 	
 	/**
 	 * Sets the terminating station.
@@ -81,6 +95,13 @@ public interface ILine extends IRegionalValidity{
 	 * @param terminatingStation the new terminating station
 	 */
 	public void setTerminatingStation(String terminatingStation);
+
+	/**
+	 * Sets the terminating station, without conversion to an integer type in encoding.
+	 *
+	 * @param terminatingStation the new terminating station
+	 */
+	public void setTerminatingStationMustString(String terminatingStation);
 
 	/**
 	 * Gets the city.

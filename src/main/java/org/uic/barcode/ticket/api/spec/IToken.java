@@ -13,7 +13,7 @@ public interface IToken {
 	 *
 	 * @return the token provider
 	 */
-	public String getTokenProvider();
+	public CharSequence getTokenProvider();
 	
 	/**
 	 * Gets the token specification.
@@ -35,6 +35,13 @@ public interface IToken {
 	 * @param provider the new token provider
 	 */
 	public void setTokenProvider(String provider);
+
+	/**
+	 * Sets the token provider, without conversion to an integer type in encoding.
+	 *
+	 * @param provider the new token provider
+	 */
+	public void setTokenProviderMustString(String provider);
 	
 	/**
 	 * Sets the token specification.

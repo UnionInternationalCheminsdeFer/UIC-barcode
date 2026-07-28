@@ -246,7 +246,7 @@ public class SimpleUICTestTicket {
 	
 	public static void compare(IUicRailTicket ticket1, IUicRailTicket ticket2) {
 		
-		assert(ticket1.getIssuerDetails().getIssuer().equals(ticket2.getIssuerDetails().getIssuer()));
+		assert(ticket1.getIssuerDetails().getIssuer().toString().equals(ticket2.getIssuerDetails().getIssuer().toString()));
 		
 	}
 

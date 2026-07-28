@@ -9,22 +9,23 @@ import java.util.TimeZone;
 import org.uic.barcode.ticket.api.spec.IExtension;
 import org.uic.barcode.ticket.api.spec.IGeoCoordinate;
 import org.uic.barcode.ticket.api.spec.IIssuingDetail;
+import org.uic.barcode.ticket.api.utils.MustString;
 
 
 /**
  * The Class SimpleIssuerDetails.
  */
-public class SimpleIssuingDetail implements IIssuingDetail{
+public class SimpleIssuingDetail implements IIssuingDetail {
 
 
 	/** The issuer. */
-	protected String issuer;
+	protected CharSequence issuer;
 	
 	/** The issuing date. */
 	protected Date issuingDate;
 	
     /** The security provider. */
-    protected String		securityProvider;
+    protected CharSequence		securityProvider;
     
     /** The issuer name. */
     protected String 		issuerName;
@@ -42,7 +43,7 @@ public class SimpleIssuingDetail implements IIssuingDetail{
     protected IExtension 	extension;
 	
 	/** The issued on train. */
-	protected String	 	issuedOnTrain;
+	protected CharSequence	 	issuedOnTrain;
     
 	/** The line number in case the ticket was issuer on a local transport line. */
 	Integer issuedOnLine = 0;
@@ -62,7 +63,7 @@ public class SimpleIssuingDetail implements IIssuingDetail{
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.IIssuingDetail#getIssuer()
 	 */
-	public String getIssuer() {
+	public CharSequence getIssuer() {
 		if (issuer == null || issuer.length() == 0){
 			return this.securityProvider;
 		}
@@ -74,6 +75,13 @@ public class SimpleIssuingDetail implements IIssuingDetail{
 	 */
 	public void setIssuer(String issuer) {
 		this.issuer = issuer;
+	}
+
+	/* (nicht-Javadoc)
+	 * @see org.uic.ticket.api.IIssuingDetail#setIssuerMustString(java.lang.String)
+	 */
+	public void setIssuerMustString(String issuer) {
+		this.issuer = new MustString(issuer);
 	}
 
 	/* (nicht-Javadoc)
@@ -93,7 +101,7 @@ public class SimpleIssuingDetail implements IIssuingDetail{
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.IIssuingDetail#getSecurityProvider()
 	 */
-	public String getSecurityProvider() {
+	public CharSequence getSecurityProvider() {
 		return securityProvider;
 	}
 
@@ -102,6 +110,13 @@ public class SimpleIssuingDetail implements IIssuingDetail{
 	 */
 	public void setSecurityProvider(String securityProvider) {
 		this.securityProvider = securityProvider;
+	}
+
+	/* (nicht-Javadoc)
+	 * @see org.uic.ticket.api.spec.IIssuingDetail#setSecurityProviderMustString(int)
+	 */
+	public void setSecurityProviderMustString(String securityProvider) {
+		this.securityProvider = new MustString(securityProvider);
 	}
 
 	/* (nicht-Javadoc)
@@ -177,7 +192,7 @@ public class SimpleIssuingDetail implements IIssuingDetail{
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.IIssuingDetail#getIssuedOnTrain()
 	 */
-	public String getIssuedOnTrain() {
+	public CharSequence getIssuedOnTrain() {
 		return issuedOnTrain;
 	}
 
@@ -186,6 +201,13 @@ public class SimpleIssuingDetail implements IIssuingDetail{
 	 */
 	public void setIssuedOnTrain(String issuedOnTrain) {
 		this.issuedOnTrain = issuedOnTrain;
+	}
+
+	/* (nicht-Javadoc)
+	 * @see org.uic.ticket.api.spec.IIssuingDetail#setIssuedOnTrainMustString(java.lang.String)
+	 */
+	public void setIssuedOnTrainMustString(String issuedOnTrain) {
+		this.issuedOnTrain = new MustString(issuedOnTrain);
 	}
 
 	/* (nicht-Javadoc)

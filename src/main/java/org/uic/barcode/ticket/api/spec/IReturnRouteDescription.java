@@ -18,7 +18,7 @@ public interface IReturnRouteDescription {
 	 *
 	 * @return the from station code
 	 */
-	public String getFromStation() ;
+	public CharSequence getFromStation();
 
 	/**
 	 * Sets the from station code.
@@ -28,18 +28,32 @@ public interface IReturnRouteDescription {
 	public void setFromStation(String fromStation);
 
 	/**
+	 * Sets the from station code, without conversion to an integer type in encoding.
+	 *
+	 * @param fromStation the new from station code
+	 */
+	public void setFromStationMustString(String fromStation);
+
+	/**
 	 * Gets the to station code.
 	 *
 	 * @return the to station code
 	 */
-	public String getToStation();
+	public CharSequence getToStation();
 
 	/**
 	 * Sets the to station code.
 	 *
 	 * @param toStation the new to station code
 	 */
-	public void setToStation(String toStation) ;
+	public void setToStation(String toStation);
+
+	/**
+	 * Sets the to station code, without conversion to an integer type in encoding.
+	 *
+	 * @param toStation the new to station code
+	 */
+	public void setToStationMustString(String toStation);
 	
 	/**
 	 * Gets the from station name.

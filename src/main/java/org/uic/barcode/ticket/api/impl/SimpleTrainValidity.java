@@ -6,6 +6,7 @@ import java.util.LinkedHashSet;
 
 import org.uic.barcode.ticket.api.spec.IBoardingOrArrivalType;
 import org.uic.barcode.ticket.api.spec.ITrainValidity;
+import org.uic.barcode.ticket.api.utils.MustString;
 
 /**
  * The Class SimpleTrainValidity.
@@ -20,16 +21,16 @@ public class SimpleTrainValidity implements ITrainValidity {
 	protected Date  validUntil;	  
 
    	/** The included carriers. */
-    protected Collection<String>includedCarriers = new LinkedHashSet<String>();	  
+    protected Collection<CharSequence> includedCarriers = new LinkedHashSet<>();
 
    	/** The excluded carriers. */
-    protected Collection<String>excludedCarriers = new LinkedHashSet<String>();	 	    
+    protected Collection<CharSequence> excludedCarriers = new LinkedHashSet<>();
 	    
     /** The included service brands. */
-    protected Collection<Integer>includedServiceBrands = new LinkedHashSet<Integer>();	
+    protected Collection<Integer> includedServiceBrands = new LinkedHashSet<>();
     	
     /** The excluded service brands. */
-    protected Collection<Integer>excludedServiceBrands = new LinkedHashSet<Integer>();	 
+    protected Collection<Integer> excludedServiceBrands = new LinkedHashSet<>();
     
 	/** The class code. */
 	protected IBoardingOrArrivalType boardingOrArrival = IBoardingOrArrivalType.boarding;      
@@ -46,7 +47,7 @@ public class SimpleTrainValidity implements ITrainValidity {
 	 *
 	 * @return the included carriers
 	 */
-	public Collection<String> getIncludedCarriers() {
+	public Collection<CharSequence> getIncludedCarriers() {
 		return includedCarriers;
 	}
 
@@ -60,12 +61,22 @@ public class SimpleTrainValidity implements ITrainValidity {
 		this.includedCarriers.add(carrier);
 	}
 
+
+	/**
+	 * Adds the included carrier.
+	 *
+	 * @param carrier the carrier
+	 */
+	public void addIncludedCarrierMustString(String carrier) {
+		this.includedCarriers.add(new MustString(carrier));
+	}
+
 	/**
 	 * Gets the excluded carriers.
 	 *
 	 * @return the excluded carriers
 	 */
-	public Collection<String> getExcludedCarriers() {
+	public Collection<CharSequence> getExcludedCarriers() {
 		return excludedCarriers;
 	}
 
@@ -76,7 +87,16 @@ public class SimpleTrainValidity implements ITrainValidity {
 	 */
 	public void addExcludedCarrier(String carrier) {
 		this.excludedCarriers.add(carrier);
-	}		
+	}
+
+	/**
+	 * Adds the excluded carrier.
+	 *
+	 * @param carrier the carrier
+	 */
+	public void addExcludedCarrierMustString(String carrier) {
+		this.excludedCarriers.add(new MustString(carrier));
+	}
 	
 	/**
 	 * Gets the included service brands.

@@ -118,7 +118,7 @@ public interface ITraveler {
 	 *
 	 * @return the customer id
 	 */
-	public String getCustomerId();
+	public CharSequence getCustomerId();
 	
 	/**
 	 * Sets the customer id.
@@ -126,6 +126,13 @@ public interface ITraveler {
 	 * @param customerId the new customer id
 	 */
 	public void setCustomerId(String customerId);
+
+	/**
+	 * Sets the customer id, without conversion to an integer type in encoding.
+	 *
+	 * @param customerId the new customer id
+	 */
+	public void setCustomerIdMustString(String customerId);
 	
 	/**
 	 * Gets the date of birth.

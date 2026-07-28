@@ -26,7 +26,7 @@ public interface ICounterMark  extends IDocumentData {
 	 *
 	 * @return the reference
 	 */
-	public String getReference();
+	public CharSequence getReference();
 
 	/**
 	 * Sets the reference.
@@ -34,6 +34,13 @@ public interface ICounterMark  extends IDocumentData {
 	 * @param reference the new reference
 	 */
 	public void setReference(String reference);
+
+	/**
+	 * Sets the reference, without conversion to an integer type in encoding.
+	 *
+	 * @param reference the new reference
+	 */
+	public void setReferenceMustString(String reference);
 
 	/**
 	 * Gets the product owner.
@@ -44,7 +51,7 @@ public interface ICounterMark  extends IDocumentData {
 	 *
 	 * @return the product owner
 	 */
-	public String getProductOwner();
+	public CharSequence getProductOwner();
 
 	/**
 	 * Sets the product owner.
@@ -56,13 +63,24 @@ public interface ICounterMark  extends IDocumentData {
 	 * @param productOwner the new product owner
 	 */
 	public void setProductOwner(String productOwner);
+
+	/**
+	 * Sets the product owner, without conversion to an integer type in encoding.
+	 *
+	 * The product owner is the railways responsible for assembling this ticket. As there is currently no
+	 * standard interface for open tickets between an product owner and an issuer this is usually
+	 * identical to the issuer of a counter mark.
+	 *
+	 * @param productOwner the new product owner
+	 */
+	public void setProductOwnerMustString(String productOwner);
 	
 	/**
 	 * Gets the product id.
 	 *
 	 * @return the product id
 	 */
-	public String getProductId();
+	public CharSequence getProductId();
 
 	/**
 	 * Sets the product id.
@@ -70,6 +88,13 @@ public interface ICounterMark  extends IDocumentData {
 	 * @param productId the new product id
 	 */
 	public void setProductId(String productId);
+
+	/**
+	 * Sets the product id, without conversion to an integer type in encoding.
+	 *
+	 * @param productId the new product id
+	 */
+	public void setProductIdMustString(String productId);
 	
 	
 	/**
@@ -113,7 +138,7 @@ public interface ICounterMark  extends IDocumentData {
 	 *
 	 * @return the from station
 	 */
-	public String getFromStation();
+	public CharSequence getFromStation();
 
 	/**
 	 * Sets the from station.
@@ -123,11 +148,18 @@ public interface ICounterMark  extends IDocumentData {
 	public void setFromStation(String fromStation);
 
 	/**
+	 * Sets the from station, without conversion to an integer type in encoding.
+	 *
+	 * @param fromStation the new from station
+	 */
+	public void setFromStationMustString(String fromStation);
+
+	/**
 	 * Gets the to station.
 	 *
 	 * @return the to station
 	 */
-	public String getToStation();
+	public CharSequence getToStation();
 
 	/**
 	 * Sets the to station.
@@ -135,6 +167,13 @@ public interface ICounterMark  extends IDocumentData {
 	 * @param toStation the new to station
 	 */
 	public void setToStation(String toStation);
+
+	/**
+	 * Sets the to station, without conversion to an integer type in encoding.
+	 *
+	 * @param toStation the new to station
+	 */
+	public void setToStationMustString(String toStation);
 
 	/**
 	 * Gets the from station name.
@@ -253,7 +292,7 @@ public interface ICounterMark  extends IDocumentData {
 	 *
 	 * @return the included carriers
 	 */
-	public Collection<String> getIncludedCarriers();
+	public Collection<CharSequence> getIncludedCarriers();
 
 	/**
 	 * Adds the included carrier.
@@ -261,6 +300,13 @@ public interface ICounterMark  extends IDocumentData {
 	 * @param includedCarrier the included carrier
 	 */
 	public void addIncludedCarrier(String includedCarrier);
+
+	/**
+	 * Adds the included carrier, without conversion to an integer type in encoding.
+	 *
+	 * @param includedCarrier the included carrier
+	 */
+	public void addIncludedCarrierMustString(String includedCarrier);
 
 	/**
 	 * Gets the included service brands.
@@ -362,7 +408,8 @@ public interface ICounterMark  extends IDocumentData {
 	
 
 	public void setTicketReference(String ticketReference);
-	public String getTicketReference();
+	public void setTicketReferenceMustString(String ticketReference);
+	public CharSequence getTicketReference();
 	
 	/**
 	 * Gets the validFrom date time offset to UTC in units of 15 minutes.

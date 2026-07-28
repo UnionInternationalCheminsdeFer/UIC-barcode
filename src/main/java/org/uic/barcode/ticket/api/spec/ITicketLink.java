@@ -16,7 +16,7 @@ public interface ITicketLink {
 	 *
 	 * @return the reference
 	 */
-	public String getReference() ;
+	public CharSequence getReference();
 
 	/**
 	 * Sets the reference.
@@ -26,25 +26,39 @@ public interface ITicketLink {
 	public void setReference(String reference);
 
 	/**
+	 * Sets the reference, without conversion to an integer type in encoding.
+	 *
+	 * @param reference the new reference
+	 */
+	public void setReferenceMustString(String reference);
+
+	/**
 	 * Gets the issuer.
 	 *
 	 * @return the issuer
 	 */
-	public String getIssuer();
+	public CharSequence getIssuer();
 
 	/**
 	 * Sets the issuer.
 	 *
 	 * @param issuer the new issuer
 	 */
-	public void setIssuer(String issuer) ;
+	public void setIssuer(String issuer);
+
+	/**
+	 * Sets the issuer, without conversion to an integer type in encoding.
+	 *
+	 * @param issuer the new issuer
+	 */
+	public void setIssuerMustString(String issuer);
 	
 	/**
 	 * Gets the product owner.
 	 *
 	 * @return the product owner
 	 */
-	public String getProductOwner();
+	public CharSequence getProductOwner();
 
 	/**
 	 * Sets the product owner.
@@ -52,6 +66,13 @@ public interface ITicketLink {
 	 * @param productOwner the new product owner
 	 */
 	public void setProductOwner(String productOwner);
+
+	/**
+	 * Sets the product owner, without conversion to an integer type in encoding.
+	 *
+	 * @param productOwner the new product owner
+	 */
+	public void setProductOwnerMustString(String productOwner);
 	
 	/**
 	 * Gets the ticket type.

@@ -6,6 +6,7 @@ package org.uic.barcode.ticket.api.impl;
 
 import org.uic.barcode.ticket.api.spec.IRouteSection;
 import org.uic.barcode.ticket.api.spec.IStationCodeTable;
+import org.uic.barcode.ticket.api.utils.MustString;
 
 
 /**
@@ -18,10 +19,10 @@ public class SimpleRouteSection implements IRouteSection {
 	protected IStationCodeTable stationCodeTable = IStationCodeTable.stationUIC;
 	
 	/** The from station. */
-	protected String fromStation;
+	protected CharSequence fromStation;
 	
 	/** The to station. */
-	protected String toStation;        
+	protected CharSequence toStation;
 				                 
 	/** The from station name. */
 	protected String fromStationName;
@@ -46,7 +47,7 @@ public class SimpleRouteSection implements IRouteSection {
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.IRouteSection#getFromStation()
 	 */
-	public String getFromStation() {
+	public CharSequence getFromStation() {
 		return fromStation;
 	}
 	
@@ -56,11 +57,18 @@ public class SimpleRouteSection implements IRouteSection {
 	public void setFromStation(String fromStation) {
 		this.fromStation = fromStation;
 	}
+
+	/* (nicht-Javadoc)
+	 * @see org.uic.ticket.api.spec.IRouteSection#setFromStationMustString(java.lang.String)
+	 */
+	public void setFromStationMustString(String fromStation) {
+		this.fromStation = new MustString(fromStation);
+	}
 	
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.IRouteSection#getToStation()
 	 */
-	public String getToStation() {
+	public CharSequence getToStation() {
 		return toStation;
 	}
 	
@@ -69,6 +77,13 @@ public class SimpleRouteSection implements IRouteSection {
 	 */
 	public void setToStation(String toStation) {
 		this.toStation = toStation;
+	}
+
+	/* (nicht-Javadoc)
+	 * @see org.uic.ticket.api.spec.IRouteSection#setToStationMustString(java.lang.String)
+	 */
+	public void setToStationMustString(String toStation) {
+		this.toStation = new MustString(toStation);
 	}
 	
 	/* (nicht-Javadoc)

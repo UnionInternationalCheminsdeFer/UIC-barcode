@@ -130,7 +130,7 @@ class IntCoder implements Encoder, Decoder {
         				throw new Asn1EncodingException("constrained BigInteger is too big for constrained int" + type.getSimpleName());
         			}
         		} else if (obj instanceof Long) {
-        			value = ((Long) obj).longValue();        			
+        			value = (Long) obj;
         		} else if (obj instanceof Integer) {
         			value = ((Integer) obj).longValue();       
         		} else if (obj instanceof Short) {
@@ -160,7 +160,7 @@ class IntCoder implements Encoder, Decoder {
     		} else if (obj instanceof Asn1Integer) {
     			bint = BigInteger.valueOf(((Asn1Integer) obj).value());
     		} else if (obj instanceof Long) {
-    			bint = BigInteger.valueOf(((Long) obj).longValue());    			
+    			bint = BigInteger.valueOf((Long) obj);
     		} else if (obj instanceof Integer) {
     			bint = BigInteger.valueOf(((Integer) obj).longValue());       
     		} else if (obj instanceof Short) {

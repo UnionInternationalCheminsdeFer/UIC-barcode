@@ -44,7 +44,7 @@ public interface IIssuingDetail {
 	 *
 	 * @return the issuer
 	 */
-	public String getIssuer();
+	public CharSequence getIssuer();
 	
 	/**
 	 * Sets the issuer.
@@ -52,13 +52,20 @@ public interface IIssuingDetail {
 	 * @param issuer the new issuer
 	 */
 	public void setIssuer(String issuer);
+
+	/**
+	 * Sets the issuer, without conversion to an integer type in encoding.
+	 *
+	 * @param issuer the new issuer
+	 */
+	public void setIssuerMustString(String issuer);
 	
 	/**
 	 * Gets the security provider.
 	 *
 	 * @return the security provider
 	 */
-	public String getSecurityProvider();
+	public CharSequence getSecurityProvider();
 	
 
 	/**
@@ -67,6 +74,14 @@ public interface IIssuingDetail {
 	 * @param securityProvider the new security provider
 	 */
 	public void setSecurityProvider(String securityProvider);
+
+
+	/**
+	 * Sets the security provider, without conversion to an integer type in encoding.
+	 *
+	 * @param securityProvider the new security provider
+	 */
+	public void setSecurityProviderMustString(String securityProvider);
 	
 
 	/**
@@ -154,7 +169,7 @@ public interface IIssuingDetail {
 	 *
 	 * @return the issued on train
 	 */
-	public String getIssuedOnTrain();
+	public CharSequence getIssuedOnTrain();
 	
 
 	/**
@@ -163,6 +178,14 @@ public interface IIssuingDetail {
 	 * @param issuedOnTrain the new issued on train
 	 */
 	public void setIssuedOnTrain(String issuedOnTrain);
+
+
+	/**
+	 * Sets the issued on train, without conversion to an integer type in encoding.
+	 *
+	 * @param issuedOnTrain the new issued on train
+	 */
+	public void setIssuedOnTrainMustString(String issuedOnTrain);
 	
 
 	/**

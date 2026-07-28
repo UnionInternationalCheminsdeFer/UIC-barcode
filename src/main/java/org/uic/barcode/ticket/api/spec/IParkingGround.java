@@ -20,7 +20,7 @@ public interface IParkingGround  extends IDocumentData {
 	 *
 	 * @return the parking ground id
 	 */
-	public String getParkingGroundId();
+	public CharSequence getParkingGroundId();
 
 	/**
 	 * Sets the id of the parking ground
@@ -28,6 +28,13 @@ public interface IParkingGround  extends IDocumentData {
 	 * @param parkingGroundId the new parking ground id
 	 */
 	public void setParkingGroundId(String parkingGroundId);
+
+	/**
+	 * Sets the id of the parking ground, without conversion to an integer type in encoding.
+	 *
+	 * @param parkingGroundId the new parking ground id
+	 */
+	public void setParkingGroundIdMustString(String parkingGroundId);
 
 	/**
 	 * Gets the from parking date.
@@ -62,7 +69,7 @@ public interface IParkingGround  extends IDocumentData {
 	 *
 	 * @return the reference
 	 */
-	public String getReference();
+	public CharSequence getReference();
 
 	/**
 	 * Sets the reference.
@@ -70,6 +77,13 @@ public interface IParkingGround  extends IDocumentData {
 	 * @param reference the new reference
 	 */
 	public void setReference(String reference);
+
+	/**
+	 * Sets the reference, without conversion to an integer type in encoding.
+	 *
+	 * @param reference the new reference
+	 */
+	public void setReferenceMustString(String reference);
 
 	/**
 	 * Gets the access code to enter the parking ground.
@@ -104,7 +118,7 @@ public interface IParkingGround  extends IDocumentData {
 	 *
 	 * @return the station code in case the parking ground is associated with a station 
 	 */
-	public String getStation();
+	public CharSequence getStation();
 
 	/**
 	 * Sets the station code in case the parking ground is associated with a station 
@@ -112,6 +126,13 @@ public interface IParkingGround  extends IDocumentData {
 	 * @param station the new station code in case the parking ground is associated with a station 
 	 */
 	public void setStation(String station);
+
+	/**
+	 * Sets the station code in case the parking ground is associated with a station, without conversion to an integer type in encoding.
+	 *
+	 * @param station the new station code in case the parking ground is associated with a station
+	 */
+	public void setStationMustString(String station);
 
 	/**
 	 * Gets the special information.
@@ -188,7 +209,7 @@ public interface IParkingGround  extends IDocumentData {
 	 *
 	 * @return the product owner
 	 */
-	public String getProductOwner();
+	public CharSequence getProductOwner();
 	
 	/**
 	 * Sets the product owner.
@@ -196,6 +217,13 @@ public interface IParkingGround  extends IDocumentData {
 	 * @param productOwner the new product owner
 	 */
 	public void setProductOwner(String productOwner);
+
+	/**
+	 * Sets the product owner, without conversion to an integer type in encoding.
+	 *
+	 * @param productOwner the new product owner
+	 */
+	public void setProductOwnerMustString(String productOwner);
 	
 
 	/**
@@ -203,14 +231,21 @@ public interface IParkingGround  extends IDocumentData {
 	 *
 	 * @return the product type
 	 */
-	public String getProductId();
+	public CharSequence getProductId();
 	
 	/**
 	 * Sets the product type.
 	 *
 	 * @param id the new product id
 	 */
-	public void setProductId(String type);	
+	public void setProductId(String id);
+
+	/**
+	 * Sets the product type, without conversion to an integer type in encoding.
+	 *
+	 * @param id the new product id
+	 */
+	public void setProductIdMustString(String id);
 	
 	/**
 	 * Sets the price. 

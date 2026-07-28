@@ -61,7 +61,7 @@ public interface IViaStation extends IRegionalValidity {
 	 *
 	 * @return the station code
 	 */
-	public String getStation();
+	public CharSequence getStation();
 	
 	/**
 	 * Sets the station code.
@@ -69,6 +69,13 @@ public interface IViaStation extends IRegionalValidity {
 	 * @param station the new station code
 	 */
 	public void setStation(String station);
+
+	/**
+	 * Sets the station code, without conversion to an integer type in encoding.
+	 *
+	 * @param station the new station code
+	 */
+	public void setStationMustString(String station);
 	
 	
 	/**
@@ -121,7 +128,7 @@ public interface IViaStation extends IRegionalValidity {
 	 *
 	 * @return the carriers
 	 */
-	public Collection<String> getCarriers();
+	public Collection<CharSequence> getCarriers();
 	
 	/**
 	 * Adds the carrier.
@@ -132,6 +139,16 @@ public interface IViaStation extends IRegionalValidity {
 	 * @param carrier the carrier
 	 */
 	public void addCarrier(String carrier);
+
+	/**
+	 * Adds the carrier, without conversion to an integer type in encoding.
+	 *
+	 * The carriers along the route should preferably be indicated as a list within
+	 * the ticket, and not in the via stations.
+	 * 	 *
+	 * @param carrier the carrier
+	 */
+	public void addCarrierMustString(String carrier);
 	
 	/**
 	 * Gets the route id.

@@ -4,6 +4,7 @@
 package org.uic.barcode.ticket.api.impl;
 
 import org.uic.barcode.ticket.api.spec.ICustomerStatusDescription;
+import org.uic.barcode.ticket.api.utils.MustString;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -13,7 +14,7 @@ public class SimpleCustomerStatusDescription implements ICustomerStatusDescripti
 	
 	
 	/** The status provider. */
-	protected String statusProvider;
+	protected CharSequence statusProvider;
 	
 	/** The description. */
 	protected String description;
@@ -24,7 +25,7 @@ public class SimpleCustomerStatusDescription implements ICustomerStatusDescripti
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.ICustomerStatusDescription#getStatusProvider()
 	 */
-	public String getStatusProvider() {
+	public CharSequence getStatusProvider() {
 		return statusProvider;
 	}
 
@@ -33,6 +34,13 @@ public class SimpleCustomerStatusDescription implements ICustomerStatusDescripti
 	 */
 	public void setStatusProvider(String statusProvider) {
 		this.statusProvider = statusProvider;
+	}
+
+	/* (nicht-Javadoc)
+	 * @see org.uic.ticket.api.spec.ICustomerStatusDescription#setStatusProviderMustString(java.lang.String)
+	 */
+	public void setStatusProviderMustString(String statusProvider) {
+		this.statusProvider = new MustString(statusProvider);
 	}
 
 	/* (nicht-Javadoc)

@@ -160,7 +160,7 @@ public interface ITariff {
 	 *
 	 * @return the tariff code
 	 */
-	public String getTariffId() ;
+	public CharSequence getTariffId();
 
 
 	/**
@@ -169,6 +169,14 @@ public interface ITariff {
 	 * @param tariffId the new tariff code
 	 */
 	public void setTariffId(String tariffId);
+
+
+	/**
+	 * Sets the tariff code, without conversion to an integer type in encoding.
+	 *
+	 * @param tariffId the new tariff code
+	 */
+	public void setTariffIdMustString(String tariffId);
 
 
 	/**

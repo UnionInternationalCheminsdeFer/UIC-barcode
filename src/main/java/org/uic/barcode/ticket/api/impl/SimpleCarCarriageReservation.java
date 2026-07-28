@@ -17,6 +17,7 @@ import org.uic.barcode.ticket.api.spec.IServiceBrand;
 import org.uic.barcode.ticket.api.spec.IStationCodeTable;
 import org.uic.barcode.ticket.api.spec.ITariff;
 import org.uic.barcode.ticket.api.spec.IVatDetail;
+import org.uic.barcode.ticket.api.utils.MustString;
 
 /**
  * The Class SimpleCarCarriageReservation.
@@ -24,17 +25,17 @@ import org.uic.barcode.ticket.api.spec.IVatDetail;
 public class SimpleCarCarriageReservation extends SimpleDocumentData implements ICarCarriageReservation {
 	
 	/** The train. */
-	protected String train;  						
+	protected CharSequence train;
 	
 
 	/** The reference. */
-	protected String    reference;
+	protected CharSequence    reference;
 		
 	/** The product id. */
-	protected String productId;
+	protected CharSequence productId;
 	
 	/** The product owner. */
-	protected String productOwner;
+	protected CharSequence productOwner;
   	
     /** The service brand. */
     protected IServiceBrand serviceBrand;
@@ -44,10 +45,10 @@ public class SimpleCarCarriageReservation extends SimpleDocumentData implements 
     protected IStationCodeTable stationCodeTable = IStationCodeTable.stationUICReservation;
     
     /** The from station. */
-    protected String fromStation;
+    protected CharSequence fromStation;
     
     /** The to station. */
-    protected String toStation;        
+    protected CharSequence toStation;
 					                 
     /** The from station name. */
     protected String fromStationName;
@@ -62,9 +63,8 @@ public class SimpleCarCarriageReservation extends SimpleDocumentData implements 
     protected String place;     
     
     /** The carriers. */
-    protected Collection<String>carriers = new LinkedHashSet<String>();
-    
-	
+    protected Collection<CharSequence> carriers = new LinkedHashSet<>();
+
     /** The tariff. */
     protected ITariff tariff;	        
 	    
@@ -103,7 +103,6 @@ public class SimpleCarCarriageReservation extends SimpleDocumentData implements 
 	
 	/** The attached surfboards. */
 	protected int attachedSurfboards;
-
   									
 	/** The begin loading. */
 	protected Date beginLoading;
@@ -121,11 +120,10 @@ public class SimpleCarCarriageReservation extends SimpleDocumentData implements 
     protected IPriceTypeType priceType = IPriceTypeType.travelPrice;
     
     /** The VAT details. */
-    protected Collection<IVatDetail>vatDetails = new LinkedHashSet<IVatDetail>();
+    protected Collection<IVatDetail> vatDetails = new LinkedHashSet<>();
     
     /** The price. */
     protected Long price;
-         					                
 		                    
  	/** The info text. */
 	 protected String infoText;
@@ -140,7 +138,7 @@ public class SimpleCarCarriageReservation extends SimpleDocumentData implements 
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.ICarCarriageReservation#getTrain()
 	 */
-	public String getTrain() {
+	public CharSequence getTrain() {
 		return train;
 	}
 
@@ -151,11 +149,18 @@ public class SimpleCarCarriageReservation extends SimpleDocumentData implements 
 		this.train = train.trim();
 	}
 
+	/* (nicht-Javadoc)
+	 * @see org.uic.ticket.api.spec.ICarCarriageReservation#setTrainMustString(java.lang.String)
+	 */
+	public void setTrainMustString(String train) {
+		this.train = new MustString(train.trim());
+	}
+
 
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.ICarCarriageReservation#getReference()
 	 */
-	public String getReference() {
+	public CharSequence getReference() {
 		return reference;
 	}
 
@@ -167,9 +172,16 @@ public class SimpleCarCarriageReservation extends SimpleDocumentData implements 
 	}
 
 	/* (nicht-Javadoc)
+	 * @see org.uic.ticket.api.spec.ICarCarriageReservation#setReferenceMustString(java.lang.String)
+	 */
+	public void setReferenceMustString(String reference) {
+		this.reference = new MustString(reference);
+	}
+
+	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.ICarCarriageReservation#getProductId()
 	 */
-	public String getProductId() {
+	public CharSequence getProductId() {
 		return productId;
 	}
 
@@ -178,6 +190,13 @@ public class SimpleCarCarriageReservation extends SimpleDocumentData implements 
 	 */
 	public void setProductId(String productId) {
 		this.productId = productId;
+	}
+
+	/* (nicht-Javadoc)
+	 * @see org.uic.ticket.api.spec.ICarCarriageReservation#setProductIdMustString(java.lang.String)
+	 */
+	public void setProductIdMustString(String productId) {
+		this.productId = new MustString(productId);
 	}
 
 	/* (nicht-Javadoc)
@@ -211,7 +230,7 @@ public class SimpleCarCarriageReservation extends SimpleDocumentData implements 
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.ICarCarriageReservation#getFromStation()
 	 */
-	public String getFromStation() {
+	public CharSequence getFromStation() {
 		return fromStation;
 	}
 
@@ -223,9 +242,16 @@ public class SimpleCarCarriageReservation extends SimpleDocumentData implements 
 	}
 
 	/* (nicht-Javadoc)
+	 * @see org.uic.ticket.api.spec.ICarCarriageReservation#setFromStationMustString(java.lang.String)
+	 */
+	public void setFromStationMustString(String fromStation) {
+		this.fromStation = new MustString(fromStation);
+	}
+
+	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.ICarCarriageReservation#getToStation()
 	 */
-	public String getToStation() {
+	public CharSequence getToStation() {
 		return toStation;
 	}
 
@@ -234,6 +260,13 @@ public class SimpleCarCarriageReservation extends SimpleDocumentData implements 
 	 */
 	public void setToStation(String toStation) {
 		this.toStation = toStation;
+	}
+
+	/* (nicht-Javadoc)
+	 * @see org.uic.ticket.api.spec.ICarCarriageReservation#setToStationMustString(java.lang.String)
+	 */
+	public void setToStationMustString(String toStation) {
+		this.toStation = new MustString(toStation);
 	}
 
 	/* (nicht-Javadoc)
@@ -267,7 +300,7 @@ public class SimpleCarCarriageReservation extends SimpleDocumentData implements 
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.ICarCarriageReservation#getCarriers()
 	 */
-	public Collection<String> getCarriers() {
+	public Collection<CharSequence> getCarriers() {
 		return carriers;
 	}
 
@@ -276,6 +309,13 @@ public class SimpleCarCarriageReservation extends SimpleDocumentData implements 
 	 */
 	public void addCarrier(String carrier) {
 		this.carriers.add(carrier);
+	}
+
+	/* (nicht-Javadoc)
+	 * @see org.uic.ticket.api.spec.ICarCarriageReservation#addCarrierMustString(java.lang.Integer)
+	 */
+	public void addCarrierMustString(String carrier) {
+		this.carriers.add(new MustString(carrier));
 	}
 
 
@@ -593,7 +633,7 @@ public class SimpleCarCarriageReservation extends SimpleDocumentData implements 
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.ICarCarriageReservation#getProductOwner()
 	 */
-	public String getProductOwner() {
+	public CharSequence getProductOwner() {
 		return productOwner;
 	}
 
@@ -602,6 +642,13 @@ public class SimpleCarCarriageReservation extends SimpleDocumentData implements 
 	 */
 	public void setProductOwner(String productOwner) {
 		this.productOwner = productOwner;
+	}
+
+	/* (nicht-Javadoc)
+	 * @see org.uic.ticket.api.spec.ICarCarriageReservation#setProductOwnerMustString(java.lang.String)
+	 */
+	public void setProductOwnerMustString(String productOwner) {
+		this.productOwner = new MustString(productOwner);
 	}
 
 	/* (nicht-Javadoc)

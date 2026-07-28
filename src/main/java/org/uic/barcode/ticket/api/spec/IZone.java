@@ -19,7 +19,7 @@ public interface IZone extends IRegionalValidity{
 	 * 
 	 * @return the carrier
 	 */
-	public String getCarrier();
+	public CharSequence getCarrier();
 	
 	/**
 	 * Sets the carrier.
@@ -27,6 +27,13 @@ public interface IZone extends IRegionalValidity{
 	 * @param carrier the new carrier
 	 */
 	public void setCarrier(String carrier);
+
+	/**
+	 * Sets the carrier, without conversion to an integer type in encoding.
+	 *
+	 * @param carrier the new carrier
+	 */
+	public void setCarrierMustString(String carrier);
 	
 	/**
 	 * Gets the station code table.
@@ -48,7 +55,7 @@ public interface IZone extends IRegionalValidity{
 	 *
 	 * @return the entry station
 	 */
-	public String getEntryStation() ;
+	public CharSequence getEntryStation() ;
 
 	/**
 	 * Sets the entry station in case the journey in the zone has to start at a specific station in the zone 
@@ -59,12 +66,20 @@ public interface IZone extends IRegionalValidity{
 	public void setEntryStation(String entryStation);
 
 	/**
+	 * Sets the entry station in case the journey in the zone has to start at a specific station in the zone, without conversion to an integer type in encoding.
+	 * E.g. city traffic at the end of a train journey starting at the final train station.
+	 *
+	 * @param entryStation the new entry station
+	 */
+	public void setEntryStationMustString(String entryStation);
+
+	/**
 	 * Gets the terminating station in case the journey in the zone has to end at a specific station in the zone 
 	 * E.g. city traffic at the begin of a train journey starting at the first train station.
 	 *
 	 * @return the terminating station
 	 */
-	public String getTerminatingStation();
+	public CharSequence getTerminatingStation();
 
 	/**
 	 * Sets the terminating station in case the journey in the zone has to end at a specific station in the zone 
@@ -73,6 +88,14 @@ public interface IZone extends IRegionalValidity{
 	 * @param terminatingStation the new terminating station
 	 */
 	public void setTerminatingStation(String terminatingStation);
+
+	/**
+	 * Sets the terminating station in case the journey in the zone has to end at a specific station in the zone, without conversion to an integer type in encoding.
+	 * E.g. city traffic at the begin of a train journey starting at the first train station.
+	 *
+	 * @param terminatingStation the new terminating station
+	 */
+	public void setTerminatingStationMustString(String terminatingStation);
 	
 	/**
 	 * Gets the city code of the local city in case the zone is part of regional 

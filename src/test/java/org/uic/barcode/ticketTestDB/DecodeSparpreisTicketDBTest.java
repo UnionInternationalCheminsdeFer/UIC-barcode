@@ -60,11 +60,11 @@ public class DecodeSparpreisTicketDBTest {
         Assert.assertNotNull(ticket.getIssuerDetails());        
         Assert.assertNotNull(ticket.getTravelerDetails());
 
-        assert(ticket.getIssuerDetails().getIssuer().equals("1080"));
+        assert(ticket.getIssuerDetails().getIssuer().toString().equals("1080"));
         assert(ticket.getIssuerDetails().getIssuerPNR().equals("D260V48G"));
         String issuingDate = ticket.getIssuerDetails().getIssuingDate().toString();
         assert(issuingDate.equals("Fri Oct 30 11:50:00 CET 2020"));
-        assert(ticket.getIssuerDetails().getSecurityProvider().equals("1080"));
+        assert(ticket.getIssuerDetails().getSecurityProvider().toString().equals("1080"));
         assert(ticket.getIssuerDetails().isSecurePaperTicket() == false);
         assert(ticket.getIssuerDetails().isActivated() == true);
         assert(ticket.getIssuerDetails().isSpecimen() == false);

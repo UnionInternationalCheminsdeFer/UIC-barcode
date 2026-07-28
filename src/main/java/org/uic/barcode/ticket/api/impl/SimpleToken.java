@@ -1,6 +1,7 @@
 package org.uic.barcode.ticket.api.impl;
 
 import org.uic.barcode.ticket.api.spec.IToken;
+import org.uic.barcode.ticket.api.utils.MustString;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -9,7 +10,7 @@ import org.uic.barcode.ticket.api.spec.IToken;
 public class SimpleToken implements IToken {
 	
 	/** The provider. */
-	protected String provider;
+	protected CharSequence provider;
 	
 	/** The specification. */
 	protected String specification;
@@ -21,7 +22,7 @@ public class SimpleToken implements IToken {
 	 * @see org.uic.ticket.api.spec.IToken#getTokenProvider()
 	 */
 	@Override
-	public String getTokenProvider() {
+	public CharSequence getTokenProvider() {
 		return provider;
 	}
 
@@ -47,6 +48,14 @@ public class SimpleToken implements IToken {
 	@Override
 	public void setTokenProvider(String provider) {
 		this.provider = provider;
+	}
+
+	/* (nicht-Javadoc)
+	 * @see org.uic.ticket.api.spec.IToken#setTokenProviderMustString(java.lang.String)
+	 */
+	@Override
+	public void setTokenProviderMustString(String provider) {
+		this.provider = new MustString(provider);
 	}
 
 	/* (nicht-Javadoc)

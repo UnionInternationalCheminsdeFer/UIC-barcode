@@ -18,7 +18,7 @@ public interface IVoucher  extends IDocumentData {
 	 *
 	 * @return the reference
 	 */
-	public String getReference() ;
+	public CharSequence getReference() ;
 
 	/**
 	 * Sets the reference.
@@ -28,11 +28,18 @@ public interface IVoucher  extends IDocumentData {
 	public void setReference(String reference);
 
 	/**
+	 * Sets the reference, without conversion to an integer type in encoding.
+	 *
+	 * @param reference the new reference
+	 */
+	public void setReferenceMustString(String reference);
+
+	/**
 	 * Gets the product owner.
 	 *
 	 * @return the product owner
 	 */
-	public String getProductOwner();
+	public CharSequence getProductOwner();
 
 	/**
 	 * Sets the product owner.
@@ -41,20 +48,34 @@ public interface IVoucher  extends IDocumentData {
 	 */
 	public void setProductOwner(String productOwner);
 
+	/**
+	 * Sets the product owner, without conversion to an integer type in encoding.
+	 *
+	 * @param productOwner the new product owner
+	 */
+	public void setProductOwnerMustString(String productOwner);
+
 
 	/**
 	 * Gets the product type.
 	 *
 	 * @return the product type
 	 */
-	public String getProductId();
+	public CharSequence getProductId();
 	
 	/**
 	 * Sets the product type.
 	 *
 	 * @param id the new product id
 	 */
-	public void setProductId(String type);	
+	public void setProductId(String id);
+
+	/**
+	 * Sets the product type, without conversion to an integer type in encoding.
+	 *
+	 * @param id the new product id
+	 */
+	public void setProductIdMustString(String id);
 	
 
 	/**

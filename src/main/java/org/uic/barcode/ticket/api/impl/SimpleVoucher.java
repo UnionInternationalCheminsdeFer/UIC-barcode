@@ -7,8 +7,7 @@ import java.util.Date;
 
 import org.uic.barcode.ticket.api.spec.IExtension;
 import org.uic.barcode.ticket.api.spec.IVoucher;
-
-
+import org.uic.barcode.ticket.api.utils.MustString;
 
 
 // TODO: Auto-generated Javadoc
@@ -18,13 +17,13 @@ import org.uic.barcode.ticket.api.spec.IVoucher;
 public class SimpleVoucher extends SimpleDocumentData implements IVoucher {
 	
 	/** The reference. */
-	protected String reference;
+	protected CharSequence reference;
 	
 	/** The product id. */
-	protected String productId;
+	protected CharSequence productId;
 
 	/** The product owner. */
-	protected String productOwner;
+	protected CharSequence productOwner;
 	
 	/** The valid from. */
 	protected Date validFrom;
@@ -75,7 +74,7 @@ public class SimpleVoucher extends SimpleDocumentData implements IVoucher {
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.IVoucher#getReference()
 	 */
-	public String getReference() {
+	public CharSequence getReference() {
 		return reference;
 	}
 
@@ -87,9 +86,16 @@ public class SimpleVoucher extends SimpleDocumentData implements IVoucher {
 	}
 
 	/* (nicht-Javadoc)
+	 * @see org.uic.ticket.api.spec.IVoucher#setReferenceMustString(java.lang.String)
+	 */
+	public void setReferenceMustString(String reference) {
+		this.reference = new MustString(reference);
+	}
+
+	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.IVoucher#getProductId()
 	 */
-	public String getProductId() {
+	public CharSequence getProductId() {
 		return productId;
 	}
 
@@ -101,9 +107,16 @@ public class SimpleVoucher extends SimpleDocumentData implements IVoucher {
 	}
 
 	/* (nicht-Javadoc)
+	 * @see org.uic.ticket.api.spec.IVoucher#setProductIdMustString(java.lang.String)
+	 */
+	public void setProductIdMustString(String productId) {
+		this.productId = new MustString(productId);
+	}
+
+	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.IVoucher#getProductOwner()
 	 */
-	public String getProductOwner() {
+	public CharSequence getProductOwner() {
 		return productOwner;
 	}
 
@@ -112,6 +125,13 @@ public class SimpleVoucher extends SimpleDocumentData implements IVoucher {
 	 */
 	public void setProductOwner(String productOwner) {
 		this.productOwner = productOwner;
+	}
+
+	/* (nicht-Javadoc)
+	 * @see org.uic.ticket.api.spec.IVoucher#setProductOwner(java.lang.String)
+	 */
+	public void setProductOwnerMustString(String productOwner) {
+		this.productOwner = new MustString(productOwner);
 	}
 
 	/* (nicht-Javadoc)

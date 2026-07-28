@@ -67,7 +67,7 @@ public interface IPlaces {
 	 *
 	 * @return the places
 	 */
-	public Collection<String> getPlaces();
+	public Collection<CharSequence> getPlaces();
 
 	/**
 	 * Adds the place.
@@ -75,6 +75,13 @@ public interface IPlaces {
 	 * @param place the place
 	 */
 	public void addPlace(String place);
+
+	/**
+	 * Adds the place, without conversion to an integer type in encoding.
+	 *
+	 * @param place the place
+	 */
+	public void addPlaceMustString(String place);
 	
 
 }

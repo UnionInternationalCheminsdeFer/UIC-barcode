@@ -20,7 +20,7 @@ public interface IPass  extends IDocumentData {
 	 *
 	 * @return the reference
 	 */
-	public String getReference();
+	public CharSequence getReference();
 
 	/**
 	 * Sets the reference.
@@ -30,11 +30,18 @@ public interface IPass  extends IDocumentData {
 	public void setReference(String reference);
 
 	/**
+	 * Sets the reference, without conversion to an integer type in encoding.
+	 *
+	 * @param reference the new reference
+	 */
+	public void setReferenceMustString(String reference);
+
+	/**
 	 * Gets the product id.
 	 *
 	 * @return the product id
 	 */
-	public String getProductId();
+	public CharSequence getProductId();
 
 	/**
 	 * Sets the product id.
@@ -44,6 +51,13 @@ public interface IPass  extends IDocumentData {
 	public void setProductId(String productId);
 
 	/**
+	 * Sets the product id, without conversion to an integer type in encoding.
+	 *
+	 * @param productId the new product id
+	 */
+	public void setProductIdMustString(String productId);
+
+	/**
 	 * Gets the product owner.
 	 *
 	 * Company that provides the product. 
@@ -51,7 +65,7 @@ public interface IPass  extends IDocumentData {
 	 *
 	 * @return the product owner
 	 */
-	public String getProductOwner();
+	public CharSequence getProductOwner();
 
 	/**
 	 * Sets the product owner.
@@ -62,6 +76,16 @@ public interface IPass  extends IDocumentData {
 	 * @param productOwner the new product owner
 	 */
 	public void setProductOwner(String productOwner);
+
+	/**
+	 * Sets the product owner, without conversion to an integer type in encoding.
+	 *
+	 * Company that provides the product.
+	 * E.g. The RICS code of Eurail G.E.I. for Eurail passes.
+	 *
+	 * @param productOwner the new product owner
+	 */
+	public void setProductOwnerMustString(String productOwner);
 
 	/**
 	 * Gets the pass type.
@@ -214,7 +238,7 @@ public interface IPass  extends IDocumentData {
 	 *
 	 * @return the included carriers
 	 */
-	public Collection<String> getIncludedCarriers();
+	public Collection<CharSequence> getIncludedCarriers();
 
 	/**
 	 * Adds the included carrier.
@@ -224,18 +248,32 @@ public interface IPass  extends IDocumentData {
 	public void addIncludedCarrier(String carrier);
 
 	/**
+	 * Adds the included carrier, without conversion to an integer type in encoding.
+	 *
+	 * @param carrier the carrier
+	 */
+	public void addIncludedCarrierMustString(String carrier);
+
+	/**
 	 * Gets the excluded carriers.
 	 *
 	 * @return the excluded carriers
 	 */
-	public Collection<String> getExcludedCarriers();
+	public Collection<CharSequence> getExcludedCarriers();
 
 	/**
 	 * Adds the excluded carrier.
 	 *
 	 * @param carrier the carrier
 	 */
-	public void addExcludedCarrier(String carrier);	
+	public void addExcludedCarrier(String carrier);
+
+	/**
+	 * Adds the excluded carrier, without conversion to an integer type in encoding.
+	 *
+	 * @param carrier the carrier
+	 */
+	public void addExcludedCarrierMustString(String carrier);
 	
 	/**
 	 * Gets the included service brands.

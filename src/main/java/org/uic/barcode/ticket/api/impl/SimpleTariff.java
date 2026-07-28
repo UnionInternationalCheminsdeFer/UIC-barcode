@@ -11,6 +11,7 @@ import org.uic.barcode.ticket.api.spec.IPassengerType;
 import org.uic.barcode.ticket.api.spec.IRouteSection;
 import org.uic.barcode.ticket.api.spec.ISeriesDataDetails;
 import org.uic.barcode.ticket.api.spec.ITariff;
+import org.uic.barcode.ticket.api.utils.MustString;
 
 
 /**
@@ -48,7 +49,7 @@ public class SimpleTariff implements ITariff {
                     
                             
     /** The tariff id. */
-    protected String tariffId;
+    protected CharSequence tariffId;
     
     /** The tariff description. */
     protected String tariffDescription; 
@@ -177,7 +178,7 @@ public class SimpleTariff implements ITariff {
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.ITariff#getTariffId()
 	 */
-	public String getTariffId() {
+	public CharSequence getTariffId() {
 		return tariffId;
 	}
 
@@ -187,6 +188,14 @@ public class SimpleTariff implements ITariff {
 	 */
 	public void setTariffId(String tariffId) {
 		this.tariffId = tariffId;
+	}
+
+
+	/* (nicht-Javadoc)
+	 * @see org.uic.ticket.api.spec.ITariff#setTariffIdMustString(java.lang.String)
+	 */
+	public void setTariffIdMustString(String tariffId) {
+		this.tariffId = new MustString(tariffId);
 	}
 
 

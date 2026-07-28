@@ -75,7 +75,7 @@ public interface ITrainValidity {
 	 *
 	 * @return the included carriers
 	 */
-	public Collection<String> getIncludedCarriers();
+	public Collection<CharSequence> getIncludedCarriers();
 
 	/**
 	 * Adds the included carrier.
@@ -85,18 +85,32 @@ public interface ITrainValidity {
 	public void addIncludedCarrier(String carrier);
 
 	/**
+	 * Adds the included carrier, without conversion to an integer type in encoding.
+	 *
+	 * @param carrier the carrier
+	 */
+	public void addIncludedCarrierMustString(String carrier);
+
+	/**
 	 * Gets the excluded carriers.
 	 *
 	 * @return the excluded carriers
 	 */
-	public Collection<String> getExcludedCarriers();
+	public Collection<CharSequence> getExcludedCarriers();
 
 	/**
 	 * Adds the excluded carrier.
 	 *
 	 * @param carrier the carrier
 	 */
-	public void addExcludedCarrier(String carrier);	
+	public void addExcludedCarrier(String carrier);
+
+	/**
+	 * Adds the excluded carrier, without conversion to an integer type in encoding.
+	 *
+	 * @param carrier the carrier
+	 */
+	public void addExcludedCarrierMustString(String carrier);
 	
 	/**
 	 * Gets the included service brands.

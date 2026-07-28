@@ -20,7 +20,7 @@ public interface IDelayConfirmation  extends IDocumentData {
 	 *
 	 * @return the reference
 	 */
-	public String getReference();
+	public CharSequence getReference();
 
 	/**
 	 * Sets the reference.
@@ -30,11 +30,18 @@ public interface IDelayConfirmation  extends IDocumentData {
 	public void setReference(String reference);
 
 	/**
+	 * Sets the reference, without conversion to an integer type in encoding.
+	 *
+	 * @param reference the new reference
+	 */
+	public void setReferenceMustString(String reference);
+
+	/**
 	 * Gets the train.
 	 *
 	 * @return the train
 	 */
-	public String getTrain();
+	public CharSequence getTrain();
 	
 	/**
 	 * Sets the train.
@@ -42,6 +49,13 @@ public interface IDelayConfirmation  extends IDocumentData {
 	 * @param train the new train
 	 */
 	public void setTrain(String train);
+
+	/**
+	 * Sets the train, without conversion to an integer type in encoding.
+	 *
+	 * @param train the new train
+	 */
+	public void setTrainMustString(String train);
 
 	/**
 	 * Gets the station code table.
@@ -70,7 +84,7 @@ public interface IDelayConfirmation  extends IDocumentData {
 	 *
 	 * @return the from station code
 	 */
-	public String getStation();
+	public CharSequence getStation();
 
 	/**
 	 * Sets the from station code where the delay was final (usually the station where the traveler left the train).
@@ -78,6 +92,13 @@ public interface IDelayConfirmation  extends IDocumentData {
 	 * @param station the new station
 	 */
 	public void setStation(String station);
+
+	/**
+	 * Sets the from station code where the delay was final (usually the station where the traveler left the train), without conversion to an integer type in encoding.
+	 *
+	 * @param station the new station
+	 */
+	public void setStationMustString(String station);
 
 
 	/**

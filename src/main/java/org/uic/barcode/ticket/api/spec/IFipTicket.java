@@ -20,7 +20,7 @@ public interface IFipTicket  extends IDocumentData {
 	 *
 	 * @return the reference
 	 */
-	public String getReference();
+	public CharSequence getReference();
 
 	/**
 	 * Sets the reference.
@@ -30,11 +30,18 @@ public interface IFipTicket  extends IDocumentData {
 	public void setReference(String reference);
 
 	/**
+	 * Sets the reference, without conversion to an integer type in encoding.
+	 *
+	 * @param reference the new reference
+	 */
+	public void setReferenceMustString(String reference);
+
+	/**
 	 * Gets the product id.
 	 *
 	 * @return the product id
 	 */
-	public String getProductId() ;
+	public CharSequence getProductId();
 
 	/**
 	 * Sets the product id.
@@ -44,11 +51,18 @@ public interface IFipTicket  extends IDocumentData {
 	public void setProductId(String productId);
 
 	/**
+	 * Sets the product id, without conversion to an integer type in encoding.
+	 *
+	 * @param productId the new product id
+	 */
+	public void setProductIdMustString(String productId);
+
+	/**
 	 * Gets the product owner.
 	 *
 	 * @return the product owner
 	 */
-	public String getProductOwner();
+	public CharSequence getProductOwner();
 
 	/**
 	 * Sets the product owner.
@@ -56,6 +70,13 @@ public interface IFipTicket  extends IDocumentData {
 	 * @param productOwner the new product owner
 	 */
 	public void setProductOwner(String productOwner);
+
+	/**
+	 * Sets the product owner, without conversion to an integer type in encoding.
+	 *
+	 * @param productOwner the new product owner
+	 */
+	public void setProductOwnerMustString(String productOwner);
 
 
 	
@@ -134,7 +155,7 @@ public interface IFipTicket  extends IDocumentData {
 	 *
 	 * @return the carriers valid for traveling
 	 */
-	public Collection<String> getCarriers();
+	public Collection<CharSequence> getCarriers();
 
 	/**
 	 * Adds a carrier.
@@ -142,6 +163,13 @@ public interface IFipTicket  extends IDocumentData {
 	 * @param carrier the carrier
 	 */
 	public void addCarrier(String carrier);
+
+	/**
+	 * Adds a carrier, without conversion to an integer type in encoding.
+	 *
+	 * @param carrier the carrier
+	 */
+	public void addCarrierMustString(String carrier);
 	
 	/**
 	 * Gets the extension.

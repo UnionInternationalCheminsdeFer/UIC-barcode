@@ -7,6 +7,7 @@ package org.uic.barcode.ticket.api.impl;
 import org.uic.barcode.ticket.api.spec.ILinkMode;
 import org.uic.barcode.ticket.api.spec.ITicketLink;
 import org.uic.barcode.ticket.api.spec.ITicketType;
+import org.uic.barcode.ticket.api.utils.MustString;
 
 
 /**
@@ -15,16 +16,16 @@ import org.uic.barcode.ticket.api.spec.ITicketType;
 public class SimpleTicketLink implements ITicketLink {
 
 	/** The reference. */
-	protected String reference;
+	protected CharSequence reference;
 	
 	/** The issuer. */
-	protected String issuer;
+	protected CharSequence issuer;
 	
 	/** The issuer PNR. */
 	protected String issuerPNR;
 		
 	/** The product owner. */
-	protected String productOwner;
+	protected CharSequence productOwner;
 	
 	/** The ticket type. */
 	protected ITicketType ticketType = ITicketType.openTicket;
@@ -35,7 +36,7 @@ public class SimpleTicketLink implements ITicketLink {
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.ITicketLink#getReference()
 	 */
-	public String getReference() {
+	public CharSequence getReference() {
 		return reference;
 	}
 
@@ -47,9 +48,16 @@ public class SimpleTicketLink implements ITicketLink {
 	}
 
 	/* (nicht-Javadoc)
+	 * @see org.uic.ticket.api.spec.ITicketLink#setReferenceMustString(java.lang.String)
+	 */
+	public void setReferenceMustString(String reference) {
+		this.reference = new MustString(reference);
+	}
+
+	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.ITicketLink#getIssuer()
 	 */
-	public String getIssuer() {
+	public CharSequence getIssuer() {
 		return issuer;
 	}
 
@@ -61,9 +69,16 @@ public class SimpleTicketLink implements ITicketLink {
 	}
 
 	/* (nicht-Javadoc)
+	 * @see org.uic.ticket.api.spec.ITicketLink#setIssuerMustString(java.lang.String)
+	 */
+	public void setIssuerMustString(String issuer) {
+		this.issuer = new MustString(issuer);
+	}
+
+	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.ITicketLink#getProductOwner()
 	 */
-	public String getProductOwner() {
+	public CharSequence getProductOwner() {
 		return productOwner;
 	}
 
@@ -72,6 +87,13 @@ public class SimpleTicketLink implements ITicketLink {
 	 */
 	public void setProductOwner(String productOwner) {
 		this.productOwner = productOwner;
+	}
+
+	/* (nicht-Javadoc)
+	 * @see org.uic.ticket.api.spec.ITicketLink#setProductOwnerMustString(java.lang.String)
+	 */
+	public void setProductOwnerMustString(String productOwner) {
+		this.productOwner = new MustString(productOwner);
 	}
 
 	/* (nicht-Javadoc)

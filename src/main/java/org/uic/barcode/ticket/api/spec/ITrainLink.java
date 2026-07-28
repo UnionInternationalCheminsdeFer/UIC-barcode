@@ -17,7 +17,7 @@ public interface ITrainLink extends IRegionalValidity {
 	 *
 	 * @return the train
 	 */
-	public String getTrain() ;
+	public CharSequence getTrain();
 	
 	/**
 	 * Sets the train.
@@ -25,6 +25,13 @@ public interface ITrainLink extends IRegionalValidity {
 	 * @param train the new train
 	 */
 	public void setTrain(String train);
+
+	/**
+	 * Sets the train, without conversion to an integer type in encoding.
+	 *
+	 * @param train the new train
+	 */
+	public void setTrainMustString(String train);
 	
 	/**
 	 * Gets the departure date time.
@@ -63,7 +70,7 @@ public interface ITrainLink extends IRegionalValidity {
 	 *
 	 * @return the from station code
 	 */
-	public String getFromStation();
+	public CharSequence getFromStation();
 	
 	/**
 	 * Sets the from station code.
@@ -71,13 +78,20 @@ public interface ITrainLink extends IRegionalValidity {
 	 * @param fromStation the new from station code
 	 */
 	public void setFromStation(String fromStation);
+
+	/**
+	 * Sets the from station code, without conversion to an integer type in encoding.
+	 *
+	 * @param fromStation the new from station code
+	 */
+	public void setFromStationMustString(String fromStation);
 	
 	/**
 	 * Gets the to station code.
 	 *
 	 * @return the to station code
 	 */
-	public String getToStation();
+	public CharSequence getToStation();
 	
 	/**
 	 * Sets the to station code.
@@ -85,6 +99,13 @@ public interface ITrainLink extends IRegionalValidity {
 	 * @param toStation the new to station code
 	 */
 	public void setToStation(String toStation);
+
+	/**
+	 * Sets the to station code, without conversion to an integer type in encoding.
+	 *
+	 * @param toStation the new to station code
+	 */
+	public void setToStationMustString(String toStation);
 	
 	/**
 	 * Gets the from station name.

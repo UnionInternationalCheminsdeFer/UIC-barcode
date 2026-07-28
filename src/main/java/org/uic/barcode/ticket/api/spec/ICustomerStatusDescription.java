@@ -19,7 +19,7 @@ public interface ICustomerStatusDescription {
 	 *
 	 * @return the status provider
 	 */
-	public String getStatusProvider();
+	public CharSequence getStatusProvider();
 	
 	/**
 	 * Sets the status provider.
@@ -29,6 +29,15 @@ public interface ICustomerStatusDescription {
 	 * @param statusProvider the new status provider
 	 */
 	public void setStatusProvider(String statusProvider);
+
+	/**
+	 * Sets the status provider, without conversion to an integer type in encoding.
+	 *
+	 * RICS codes should be used in case the status is provided by a railway.
+	 *
+	 * @param statusProvider the new status provider
+	 */
+	public void setStatusProviderMustString(String statusProvider);
 	
 	/**
 	 * Gets the human readable status description.

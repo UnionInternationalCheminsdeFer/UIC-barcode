@@ -105,8 +105,8 @@ public class CarCarriageTestV3 {
 		assert(c.getCarCategory() == 3L);
 		assert(c.getCoach().equals("21"));
 		assert(c.getPlace().equals("41"));
-		assert(c.getFromStation().equals("8100001"));
-		assert(c.getToStation().equals("800001"));
+		assert(c.getFromStation().toString().equals("8100001"));
+		assert(c.getToStation().toString().equals("800001"));
 		assert(c.getInfoText().equals("car carriage"));
 		assert(c.getLoadingDeck().equals(ILoadingDeckType.upper));
 		assert(c.getLoadingListEntry() == 421L);

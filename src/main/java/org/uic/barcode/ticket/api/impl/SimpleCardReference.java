@@ -4,19 +4,18 @@
 package org.uic.barcode.ticket.api.impl;
 
 import org.uic.barcode.ticket.api.spec.ICardReference;
+import org.uic.barcode.ticket.api.utils.MustString;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class SimpleCardReference.
  */
 public class SimpleCardReference implements ICardReference {
-
-	
 	/** The card issuer. */
-	protected String cardIssuer;
+	protected CharSequence cardIssuer;
 
 	/** The card id. */
-	protected String cardId;
+	protected CharSequence cardId;
 	
 	/** The card name. */
 	protected String cardName;
@@ -25,15 +24,15 @@ public class SimpleCardReference implements ICardReference {
 	protected int cardType;
 	
 	/** The leading card id. */
-	protected String leadingCardId;
+	protected CharSequence leadingCardId;
 	
 	/** The trailing card id. */
-	protected String trailingCardId;
+	protected CharSequence trailingCardId;
 
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.ICardReference#getCardIssuer()
 	 */
-	public String getCardIssuer() {
+	public CharSequence getCardIssuer() {
 		return cardIssuer;
 	}
 
@@ -45,9 +44,16 @@ public class SimpleCardReference implements ICardReference {
 	}
 
 	/* (nicht-Javadoc)
+	 * @see org.uic.ticket.api.spec.ICardReference#setCardIssuerMustString(java.lang.String)
+	 */
+	public void setCardIssuerMustString(String cardIssuer) {
+		this.cardIssuer = new MustString(cardIssuer);
+	}
+
+	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.ICardReference#getCardId()
 	 */
-	public String getCardId() {
+	public CharSequence getCardId() {
 		return cardId;
 	}
 
@@ -55,8 +61,19 @@ public class SimpleCardReference implements ICardReference {
 	 * @see org.uic.ticket.api.spec.ICardReference#setCardId(java.lang.String)
 	 */
 	public void setCardId(String cardId) {
-		if (cardId != null && cardId.trim().length() > 0) {
+		if (cardId != null && !cardId.trim().isEmpty()) {
 			this.cardId = cardId.trim();
+		} else {
+			this.cardId = null;
+		}
+	}
+
+	/* (nicht-Javadoc)
+	 * @see org.uic.ticket.api.spec.ICardReference#setCardIdMustString(java.lang.String)
+	 */
+	public void setCardIdMustString(String cardId) {
+		if (cardId != null && !cardId.trim().isEmpty()) {
+			this.cardId = new MustString(cardId.trim());
 		} else {
 			this.cardId = null;
 		}
@@ -93,7 +110,7 @@ public class SimpleCardReference implements ICardReference {
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.ICardReference#getLeadingCardId()
 	 */
-	public String getLeadingCardId() {
+	public CharSequence getLeadingCardId() {
 		return leadingCardId;
 	}
 
@@ -101,8 +118,19 @@ public class SimpleCardReference implements ICardReference {
 	 * @see org.uic.ticket.api.spec.ICardReference#setLeadingCardId(java.lang.String)
 	 */
 	public void setLeadingCardId(String leadingCardId) {
-		if (leadingCardId != null && leadingCardId.trim().length() > 0) {
+		if (leadingCardId != null && !leadingCardId.trim().isEmpty()) {
 			this.leadingCardId = leadingCardId.trim();
+		} else {
+			this.leadingCardId = null;
+		}
+	}
+
+	/* (nicht-Javadoc)
+	 * @see org.uic.ticket.api.spec.ICardReference#setLeadingCardIdMustString(java.lang.String)
+	 */
+	public void setLeadingCardIdMustString(String leadingCardId) {
+		if (leadingCardId != null && !leadingCardId.trim().isEmpty()) {
+			this.leadingCardId = new MustString(leadingCardId.trim());
 		} else {
 			this.leadingCardId = null;
 		}
@@ -111,7 +139,7 @@ public class SimpleCardReference implements ICardReference {
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.ICardReference#getTrailingCardId()
 	 */
-	public String getTrailingCardId() {
+	public CharSequence getTrailingCardId() {
 		return trailingCardId;
 	}
 
@@ -126,8 +154,14 @@ public class SimpleCardReference implements ICardReference {
 		}
 	}
 
-
-	
-	
-	
+	/* (nicht-Javadoc)
+	 * @see org.uic.ticket.api.spec.ICardReference#setTrailingCardId(java.lang.String)
+	 */
+	public void setTrailingCardIdMustString(String trailingCardId) {
+		if (trailingCardId != null && !trailingCardId.trim().isEmpty()) {
+			this.trailingCardId = new MustString(trailingCardId.trim());
+		} else {
+			this.trailingCardId = null;
+		}
+	}
 }

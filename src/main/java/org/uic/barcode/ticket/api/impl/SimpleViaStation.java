@@ -8,6 +8,7 @@ import java.util.LinkedHashSet;
 
 import org.uic.barcode.ticket.api.spec.IStationCodeTable;
 import org.uic.barcode.ticket.api.spec.IViaStation;
+import org.uic.barcode.ticket.api.utils.MustString;
 
 
 /**
@@ -19,10 +20,10 @@ public class SimpleViaStation implements IViaStation {
 	protected IStationCodeTable stationCodeTable = IStationCodeTable.stationUIC;
 	
 	/** The station. */
-	protected String station;
+	protected CharSequence station;
 	
 	/** The alternative routes. */
-	protected Collection<IViaStation>alternativeRoutes = new LinkedHashSet<IViaStation>();	
+	protected Collection<IViaStation>alternativeRoutes = new LinkedHashSet<>();
 	
 	/** The route. */
 	protected Collection<IViaStation>route = new LinkedHashSet<IViaStation>();	
@@ -31,7 +32,7 @@ public class SimpleViaStation implements IViaStation {
 	protected boolean border = false;
 	
 	/** The carriers. */
-	protected Collection<String>carriers = new LinkedHashSet<String>();	
+	protected Collection<CharSequence> carriers = new LinkedHashSet<>();
 	
 	/** The route id. */
 	protected int routeId;
@@ -40,10 +41,10 @@ public class SimpleViaStation implements IViaStation {
 	protected int seriesId;	
 	
     /** The included service brands. */
-    protected Collection<Integer>includedServiceBrands = new LinkedHashSet<Integer>();	
+    protected Collection<Integer> includedServiceBrands = new LinkedHashSet<>();
     	
     /** The excluded service brands. */
-    protected Collection<Integer>excludedServiceBrands = new LinkedHashSet<Integer>();	 
+    protected Collection<Integer> excludedServiceBrands = new LinkedHashSet<>();
 
 	
 	/* (nicht-Javadoc)
@@ -63,7 +64,7 @@ public class SimpleViaStation implements IViaStation {
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.IViaStation#getStation()
 	 */
-	public String getStation() {
+	public CharSequence getStation() {
 		return station;
 	}
 	
@@ -72,6 +73,13 @@ public class SimpleViaStation implements IViaStation {
 	 */
 	public void setStation(String station) {
 		this.station = station;
+	}
+
+	/* (nicht-Javadoc)
+	 * @see org.uic.ticket.api.spec.IViaStation#setStationMustString(java.lang.String)
+	 */
+	public void setStationMustString(String station) {
+		this.station = new MustString(station);
 	}
 	
 
@@ -120,7 +128,7 @@ public class SimpleViaStation implements IViaStation {
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.IViaStation#getCarriers()
 	 */
-	public Collection<String> getCarriers() {
+	public Collection<CharSequence> getCarriers() {
 		return carriers;
 	}
 	
@@ -129,6 +137,13 @@ public class SimpleViaStation implements IViaStation {
 	 */
 	public void addCarrier(String carrier) {
 		this.carriers.add(carrier);
+	}
+
+	/* (nicht-Javadoc)
+	 * @see org.uic.ticket.api.spec.IViaStation#addCarrierMustString(int)
+	 */
+	public void addCarrierMustString(String carrier) {
+		this.carriers.add(new MustString(carrier));
 	}
 	
 	/* (nicht-Javadoc)
