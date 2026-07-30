@@ -25,7 +25,7 @@ public class SimpleCustomerStatusDescription implements ICustomerStatusDescripti
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.ICustomerStatusDescription#getStatusProvider()
 	 */
-	public CharSequence getStatusProvider() {
+	public CharSequence getStatusProviderInt() {
 		return statusProvider;
 	}
 

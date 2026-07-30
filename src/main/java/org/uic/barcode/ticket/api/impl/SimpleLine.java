@@ -38,7 +38,7 @@ public class SimpleLine implements ILine {
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.ILine#getCarrier()
 	 */
-	public CharSequence getCarrier() {
+	public CharSequence getCarrierInt() {
 		return carrier;
 	}
 
@@ -87,7 +87,7 @@ public class SimpleLine implements ILine {
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.ILine#getEntryStation()
 	 */
-	public CharSequence getEntryStation() {
+	public CharSequence getEntryStationInt() {
 		return entryStation;
 	}
 
@@ -108,7 +108,7 @@ public class SimpleLine implements ILine {
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.ILine#getTerminatingStation()
 	 */
-	public CharSequence getTerminatingStation() {
+	public CharSequence getTerminatingStationInt() {
 		return terminatingStation;
 	}
 

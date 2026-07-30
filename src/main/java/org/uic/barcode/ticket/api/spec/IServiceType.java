@@ -20,19 +20,19 @@
 package org.uic.barcode.ticket.api.spec;
 
 public enum IServiceType {
-		seat("seat"),
-		couchette("couchette"),
-		berth("berth"),
-		carcarriage("carcarriage");
-		
-		public String text;
+    seat("seat"),
+    couchette("couchette"),
+    berth("berth"),
+    carcarriage("carcarriage");
 
-		IServiceType(String text) {
-			this.text = text;
-		}
-		
-		public String toString(){
-			return text;
-		}			
+    public String text;
+
+    IServiceType(String text) {
+        this.text = text;
+    }
+
+    public String toString() {
+        return text;
+    }
 }
 

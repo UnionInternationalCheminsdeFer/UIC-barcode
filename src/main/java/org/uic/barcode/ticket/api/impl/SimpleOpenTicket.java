@@ -256,7 +256,7 @@ public class SimpleOpenTicket extends SimpleDocumentData implements IOpenTicket 
     /* (nicht-Javadoc)
      * @see org.uic.ticket.api.spec.IOpenTicket#getFromStation()
      */
-    public CharSequence getFromStation() {
+    public CharSequence getFromStationInt() {
         return fromStation;
     }
 
@@ -277,7 +277,7 @@ public class SimpleOpenTicket extends SimpleDocumentData implements IOpenTicket 
     /* (nicht-Javadoc)
      * @see org.uic.ticket.api.spec.IOpenTicket#getToStation()
      */
-    public CharSequence getToStation() {
+    public CharSequence getToStationInt() {
         return toStation;
     }
 
@@ -384,7 +384,7 @@ public class SimpleOpenTicket extends SimpleDocumentData implements IOpenTicket 
     /* (nicht-Javadoc)
      * @see org.uic.ticket.api.spec.IOpenTicket#getIncludedCarriers()
      */
-    public Collection<CharSequence> getIncludedCarriers() {
+    public Collection<CharSequence> getIncludedCarriersInt() {
         return includedCarriers;
     }
 
@@ -475,7 +475,7 @@ public class SimpleOpenTicket extends SimpleDocumentData implements IOpenTicket 
     /* (nicht-Javadoc)
      * @see org.uic.ticket.api.spec.IOpenTicket#getReference()
      */
-    public CharSequence getReference() {
+    public CharSequence getReferenceInt() {
         return reference;
     }
 
@@ -496,7 +496,7 @@ public class SimpleOpenTicket extends SimpleDocumentData implements IOpenTicket 
     /* (nicht-Javadoc)
      * @see org.uic.ticket.api.spec.IOpenTicket#getProductId()
      */
-    public CharSequence getProductId() {
+    public CharSequence getProductIdInt() {
         return productId;
     }
 
@@ -517,7 +517,7 @@ public class SimpleOpenTicket extends SimpleDocumentData implements IOpenTicket 
     /* (nicht-Javadoc)
      * @see org.uic.ticket.api.spec.IOpenTicket#getProductOwner()
      */
-    public CharSequence getProductOwner() {
+    public CharSequence getProductOwnerInt() {
         return productOwner;
     }
 

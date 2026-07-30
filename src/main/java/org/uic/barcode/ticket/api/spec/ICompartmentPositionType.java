@@ -21,18 +21,18 @@ package org.uic.barcode.ticket.api.spec;
 
 
 public enum ICompartmentPositionType {
-		unspecified("unspecified"),
-		upperLevel("upperLevel"),
-		lowerLevel("lowerLevel");
-		
-		public String text;
+    unspecified("unspecified"),
+    upperLevel("upperLevel"),
+    lowerLevel("lowerLevel");
 
-		ICompartmentPositionType(String text) {
-			this.text = text;
-		}
-		
-		public String toString(){
-			return text;
-		}
+    public String text;
+
+    ICompartmentPositionType(String text) {
+        this.text = text;
+    }
+
+    public String toString() {
+        return text;
+    }
 }
 

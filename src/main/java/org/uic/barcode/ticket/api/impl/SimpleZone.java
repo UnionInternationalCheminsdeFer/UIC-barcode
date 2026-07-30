@@ -45,7 +45,7 @@ public class SimpleZone implements IZone {
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.IZone#getCarrier()
 	 */
-	public CharSequence getCarrier() {
+	public CharSequence getCarrierInt() {
 		return carrier;
 	}
 
@@ -80,7 +80,7 @@ public class SimpleZone implements IZone {
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.IZone#getEntryStation()
 	 */
-	public CharSequence getEntryStation() {
+	public CharSequence getEntryStationInt() {
 		return entryStation;
 	}
 
@@ -101,7 +101,7 @@ public class SimpleZone implements IZone {
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.IZone#getTerminatingStation()
 	 */
-	public CharSequence getTerminatingStation() {
+	public CharSequence getTerminatingStationInt() {
 		return terminatingStation;
 	}
 

@@ -72,7 +72,7 @@ public class SimplePlaces implements IPlaces {
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.IPlaces#getPlaces()
 	 */
-	public Collection<CharSequence> getPlaces() {
+	public Collection<CharSequence> getPlacesInt() {
 		return places;
 	}
 

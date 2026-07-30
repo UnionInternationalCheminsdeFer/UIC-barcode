@@ -37,7 +37,7 @@ public class SimpleReturnRouteDescription implements IReturnRouteDescription{
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.IReturnRouteDescription#getFromStation()
 	 */
-	public CharSequence getFromStation() {
+	public CharSequence getFromStationInt() {
 		return fromStation;
 	}
 
@@ -58,7 +58,7 @@ public class SimpleReturnRouteDescription implements IReturnRouteDescription{
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.IReturnRouteDescription#getToStation()
 	 */
-	public CharSequence getToStation() {
+	public CharSequence getToStationInt() {
 		return toStation;
 	}
 

@@ -294,18 +294,18 @@ public class Api2OpenAsnEncoder implements Api2AsnEncoder {
 		DelayConfirmation asnData = new DelayConfirmation();
 		asnDocument.getTicket().setDelayConfirmation(asnData);
 
-        IDWrapper t = new IDWrapper(document.getTrain());
+        IDWrapper t = new IDWrapper(document.getTrainInt());
 		asnData.setTrainIA5(t.getString());
 		asnData.setTrainNum(Asn1BigInteger.toAsn1(t.getNumber()));
 
-        IDWrapper r = new IDWrapper(document.getReference());
+        IDWrapper r = new IDWrapper(document.getReferenceInt());
 		asnData.setReferenceNum(r.getNumber());
 		asnData.setReferenceIA5(r.getString());
 		
 		if (document.getStationCodeTable() != IStationCodeTable.stationUIC && document.getStationCodeTable() != null){
 			asnData.setStationCodeTable(CodeTableType.valueOf(document.getStationCodeTable().name()));
 		}
-        IDWrapper s = new IDWrapper(document.getStation());
+        IDWrapper s = new IDWrapper(document.getStationInt());
 		asnData.setStationIA5(s.getString());
 		asnData.setStationNum(s.getNumber());
 
@@ -345,18 +345,18 @@ public class Api2OpenAsnEncoder implements Api2AsnEncoder {
 		CarCarriageReservationData asnData = new CarCarriageReservationData();
 		asnDocument.getTicket().setCarCarriageReservation(asnData);
 
-        IDWrapper t = new IDWrapper(document.getTrain());
+        IDWrapper t = new IDWrapper(document.getTrainInt());
 		asnData.setTrainIA5(t.getString());
 		asnData.setTrainNum(t.getNumber());
 				
-		IDWrapper wn = new IDWrapper(document.getProductOwner(),1,32000);
+		IDWrapper wn = new IDWrapper(document.getProductOwnerInt(),1,32000);
 		asnData.setProductOwnerNum(wn.getNumber());
 		asnData.setProductOwnerIA5(wn.getString());
-		wn = new IDWrapper(document.getProductId(),0,32000);
+		wn = new IDWrapper(document.getProductIdInt(),0,32000);
 		asnData.setProductIdNum(wn.getNumber());
 		asnData.setProductIdIA5(wn.getString());
 
-        IDWrapper r = new IDWrapper(document.getReference());
+        IDWrapper r = new IDWrapper(document.getReferenceInt());
         asnData.setReferenceNum(r.getNumber());
         asnData.setReferenceIA5(r.getString());
 
@@ -364,7 +364,7 @@ public class Api2OpenAsnEncoder implements Api2AsnEncoder {
 			asnData.setStationCodeTable(CodeTableType.valueOf(document.getStationCodeTable().name()));
 		}		
 		
-		IDListWrapper w = new IDListWrapper(document.getCarriers(),1,32000);
+		IDListWrapper w = new IDListWrapper(document.getCarriersInt(),1,32000);
 		asnData.setCarrierNum(SequenceOfCarrierNum.getSequence(w.getNumList()));
 		asnData.setCarrierIA5(w.getStringList());		
 		
@@ -389,11 +389,11 @@ public class Api2OpenAsnEncoder implements Api2AsnEncoder {
 			asnData.setStationCodeTable(CodeTableType.valueOf(document.getStationCodeTable().name()));
 		}		
 
-        IDWrapper fs = new IDWrapper(document.getFromStation());
+        IDWrapper fs = new IDWrapper(document.getFromStationInt());
 		asnData.setFromStationIA5(fs.getString());
 		asnData.setFromStationNum(fs.getNumber());
 
-        IDWrapper ts = new IDWrapper(document.getToStation());
+        IDWrapper ts = new IDWrapper(document.getToStationInt());
 		asnData.setToStationIA5(ts.getString());
 		asnData.setToStationNum(ts.getNumber());
 		
@@ -466,7 +466,7 @@ public class Api2OpenAsnEncoder implements Api2AsnEncoder {
 		asnData.setPlaceDescription(places.getPlaceDescription());
 		asnData.setPlaceString(UicEncoderUtils.getIA5(places.getPlaceString()));
 
-		IDListWrapper w = new IDListWrapper(places.getPlaces(),1,254);
+		IDListWrapper w = new IDListWrapper(places.getPlacesInt(),1,254);
 		asnData.setPlaceNum(SequenceOfPlaceNum.getSequence(w.getNumList()));
 		asnData.setPlaceIA5(w.getStringList());	
 		
@@ -567,21 +567,21 @@ public class Api2OpenAsnEncoder implements Api2AsnEncoder {
 		ReservationData asnData = new ReservationData();
 		asnDocument.getTicket().setReservation(asnData);
 		
-		IDWrapper wn = new IDWrapper(document.getProductOwner(),1,32000);
+		IDWrapper wn = new IDWrapper(document.getProductOwnerInt(),1,32000);
 		asnData.setProductOwnerNum(wn.getNumber());
 		asnData.setProductOwnerIA5(wn.getString());
-		wn = new IDWrapper(document.getProductId(),0,32000);
+		wn = new IDWrapper(document.getProductIdInt(),0,32000);
 		asnData.setProductIdNum(wn.getNumber());
 		asnData.setProductIdIA5(wn.getString());
 
-        IDWrapper r = new IDWrapper(document.getReference());
+        IDWrapper r = new IDWrapper(document.getReferenceInt());
         asnData.setReferenceNum(r.getNumber());
         asnData.setReferenceIA5(r.getString());
 
         asnData.setInfoText(document.getInfoText());
 		asnData.setExtension(encodeExtension(document.getExtension()));
 		
-		IDListWrapper w = new IDListWrapper(document.getCarriers(),1,32000);
+		IDListWrapper w = new IDListWrapper(document.getCarriersInt(),1,32000);
 		asnData.setCarrierNum(SequenceOfCarrierNum.getSequence(w.getNumList()));
 		asnData.setCarrierIA5(w.getStringList());	
 		
@@ -589,18 +589,18 @@ public class Api2OpenAsnEncoder implements Api2AsnEncoder {
 			asnData.setStationCodeTable(CodeTableType.valueOf(document.getStationCodeTable().name()));
 		}		
 
-        IDWrapper fs = new IDWrapper(document.getFromStation());
+        IDWrapper fs = new IDWrapper(document.getFromStationInt());
 		asnData.setFromStationIA5(fs.getString());
 		asnData.setFromStationNum(fs.getNumber());
 
-        IDWrapper ts = new IDWrapper(document.getToStation());
+        IDWrapper ts = new IDWrapper(document.getToStationInt());
 		asnData.setToStationIA5(ts.getString());
 		asnData.setToStationNum(ts.getNumber());
 		
 		asnData.setFromStationNameUTF8(document.getFromStationName());
 		asnData.setToStationNameUTF8(document.getToStationName());		
 
-        IDWrapper t = new IDWrapper(document.getTrain());
+        IDWrapper t = new IDWrapper(document.getTrainInt());
 		asnData.setTrainIA5(t.getString());
 		asnData.setTrainNum(t.getNumber());
 		
@@ -716,10 +716,10 @@ public class Api2OpenAsnEncoder implements Api2AsnEncoder {
 		
 		IncludedOpenTicketType asnData = new IncludedOpenTicketType();
 		
-		IDWrapper wn = new IDWrapper(document.getProductOwner(),1,32000);
+		IDWrapper wn = new IDWrapper(document.getProductOwnerInt(),1,32000);
 		asnData.setProductOwnerNum(wn.getNumber());
 		asnData.setProductOwnerIA5(wn.getString());
-		wn = new IDWrapper(document.getProductId(),0,32000);
+		wn = new IDWrapper(document.getProductIdInt(),0,32000);
 		asnData.setProductIdNum(wn.getNumber());
 		asnData.setProductIdIA5(wn.getString());			
 		
@@ -730,7 +730,7 @@ public class Api2OpenAsnEncoder implements Api2AsnEncoder {
 			asnData.setStationCodeTable(CodeTableType.valueOf(document.getStationCodeTable().name()));
 		}		
 				
-		IDListWrapper w = new IDListWrapper(document.getIncludedCarriers(),1,32000);
+		IDListWrapper w = new IDListWrapper(document.getIncludedCarriersInt(),1,32000);
 		asnData.setIncludedCarriersNum(SequenceOfCarrierNum.getSequence(w.getNumList()));
 		asnData.setIncludedCarriersIA5(w.getStringList());	
 		
@@ -788,11 +788,11 @@ public class Api2OpenAsnEncoder implements Api2AsnEncoder {
 		
 		ReturnRouteDescriptionType asnData = new ReturnRouteDescriptionType();
 
-        IDWrapper fs = new IDWrapper(route.getFromStation());
+        IDWrapper fs = new IDWrapper(route.getFromStationInt());
 		asnData.setFromStationIA5(fs.getString());
 		asnData.setFromStationNum(fs.getNumber());
 
-        IDWrapper ts = new IDWrapper(route.getToStation());
+        IDWrapper ts = new IDWrapper(route.getToStationInt());
 		asnData.setToStationIA5(ts.getString());
 		asnData.setToStationNum(ts.getNumber());
 		
@@ -882,14 +882,14 @@ public class Api2OpenAsnEncoder implements Api2AsnEncoder {
 		asnDocument.setTicket(asnTicket);
 		asnTicket.setOpenTicket(asnData);
 		
-		IDWrapper wn = new IDWrapper(document.getProductOwner(),1,32000);
+		IDWrapper wn = new IDWrapper(document.getProductOwnerInt(),1,32000);
 		asnData.setProductOwnerNum(wn.getNumber());
 		asnData.setProductOwnerIA5(wn.getString());
-		wn = new IDWrapper(document.getProductId(),0,32000);
+		wn = new IDWrapper(document.getProductIdInt(),0,32000);
 		asnData.setProductIdNum(wn.getNumber());
 		asnData.setProductIdIA5(wn.getString());
 
-        IDWrapper r = new IDWrapper(document.getReference());
+        IDWrapper r = new IDWrapper(document.getReferenceInt());
         asnData.setReferenceNum(r.getNumber());
         asnData.setReferenceIA5(r.getString());
 
@@ -900,18 +900,18 @@ public class Api2OpenAsnEncoder implements Api2AsnEncoder {
 			asnData.setStationCodeTable(CodeTableType.valueOf(document.getStationCodeTable().name()));
 		}
 
-        IDWrapper fs = new IDWrapper(document.getFromStation());
+        IDWrapper fs = new IDWrapper(document.getFromStationInt());
         asnData.setFromStationIA5(fs.getString());
         asnData.setFromStationNum(fs.getNumber());
 
-        IDWrapper ts = new IDWrapper(document.getToStation());
+        IDWrapper ts = new IDWrapper(document.getToStationInt());
         asnData.setToStationIA5(ts.getString());
         asnData.setToStationNum(ts.getNumber());
 		
 		asnData.setFromStationNameUTF8(document.getFromStationName());
 		asnData.setToStationNameUTF8(document.getToStationName());		
 		
-		IDListWrapper w = new IDListWrapper(document.getIncludedCarriers(),1,32000);
+		IDListWrapper w = new IDListWrapper(document.getIncludedCarriersInt(),1,32000);
 		asnData.setCarriersNum(SequenceOfCarrierNum.getSequence(w.getNumList()));
 		asnData.setCarriersIA5(w.getStringList());	
 		
@@ -998,14 +998,14 @@ public class Api2OpenAsnEncoder implements Api2AsnEncoder {
 		CountermarkData asnData = new CountermarkData();
 		asnDocument.getTicket().setCounterMark(asnData);
 		
-		IDWrapper wn = new IDWrapper(document.getProductOwner(),1,32000);
+		IDWrapper wn = new IDWrapper(document.getProductOwnerInt(),1,32000);
 		asnData.setProductOwnerNum(wn.getNumber());
 		asnData.setProductOwnerIA5(wn.getString());
-		wn = new IDWrapper(document.getProductId(),0,32000);
+		wn = new IDWrapper(document.getProductIdInt(),0,32000);
 		asnData.setProductIdNum(wn.getNumber());
 		asnData.setProductIdIA5(wn.getString());
 
-        IDWrapper tr = new IDWrapper(document.getTicketReference());
+        IDWrapper tr = new IDWrapper(document.getTicketReferenceInt());
 		asnData.setTicketReferenceNum(tr.getNumber());
 		asnData.setTicketReferenceIA5(tr.getString());
 		
@@ -1016,11 +1016,11 @@ public class Api2OpenAsnEncoder implements Api2AsnEncoder {
 			asnData.setStationCodeTable(CodeTableType.valueOf(document.getStationCodeTable().name()));
 		}
 
-        IDWrapper fs = new IDWrapper(document.getFromStation());
+        IDWrapper fs = new IDWrapper(document.getFromStationInt());
         asnData.setFromStationIA5(fs.getString());
         asnData.setFromStationNum(fs.getNumber());
 
-        IDWrapper ts = new IDWrapper(document.getToStation());
+        IDWrapper ts = new IDWrapper(document.getToStationInt());
         asnData.setToStationIA5(ts.getString());
         asnData.setToStationNum(ts.getNumber());
 		
@@ -1040,11 +1040,11 @@ public class Api2OpenAsnEncoder implements Api2AsnEncoder {
 		asnData.setNumberOfCountermark((long) document.getNumberOfCountermark());
 		asnData.setTotalOfCountermarks((long) document.getTotalOfCountermarks());
 
-        IDWrapper r = new IDWrapper(document.getReference());
+        IDWrapper r = new IDWrapper(document.getReferenceInt());
         asnData.setReferenceNum(r.getNumber());
         asnData.setReferenceIA5(r.getString());
 		
-		IDListWrapper w = new IDListWrapper(document.getIncludedCarriers(),1,32000);
+		IDListWrapper w = new IDListWrapper(document.getIncludedCarriersInt(),1,32000);
 		asnData.setCarriersNum(SequenceOfCarrierNum.getSequence(w.getNumList()));
 		asnData.setCarriersIA5(w.getStringList());	
 		
@@ -1114,7 +1114,7 @@ public class Api2OpenAsnEncoder implements Api2AsnEncoder {
 			asnData.setStationCodeTable(CodeTableType.valueOf(document.getStationCodeTable().name()));
 		}	
 
-        IDWrapper s = new IDWrapper(document.getStation());
+        IDWrapper s = new IDWrapper(document.getStationInt());
 		asnData.setStationIA5(s.getString());
 		asnData.setStationNum(s.getNumber());
 		
@@ -1122,7 +1122,7 @@ public class Api2OpenAsnEncoder implements Api2AsnEncoder {
 
         asnData.setBorder(document.isBorder());
 
-		IDListWrapper w = new IDListWrapper(document.getCarriers(),1,32000);
+		IDListWrapper w = new IDListWrapper(document.getCarriersInt(),1,32000);
 		asnData.setCarriersNum(SequenceOfCarrierNum.getSequence(w.getNumList()));
 		asnData.setCarriersIA5(w.getStringList());	
 		
@@ -1154,18 +1154,18 @@ public class Api2OpenAsnEncoder implements Api2AsnEncoder {
 		if (data.getBinaryZoneId() != null && data.getBinaryZoneId().length > 0) {
 			asnData.setBinaryZoneId(data.getBinaryZoneId());
 		}
-        IDWrapper c = new IDWrapper(data.getCarrier());
+        IDWrapper c = new IDWrapper(data.getCarrierInt());
 		asnData.setCarrierNum(c.getNumber());
 		asnData.setCarrierIA5(c.getString());
 		
 		if (data.getStationCodeTable() != IStationCodeTable.stationUIC && data.getStationCodeTable() != null){
 			asnData.setStationCodeTable(CodeTableType.valueOf(data.getStationCodeTable().name()));
 		}
-        IDWrapper es = new IDWrapper(data.getEntryStation());
+        IDWrapper es = new IDWrapper(data.getEntryStationInt());
 		asnData.setEntryStationIA5(es.getString());
 		asnData.setEntryStationNum(es.getNumber());
 
-        IDWrapper ts = new IDWrapper(data.getTerminatingStation());
+        IDWrapper ts = new IDWrapper(data.getTerminatingStationInt());
 		asnData.setTerminatingStationIA5(ts.getString());
 		asnData.setTerminatingStationNum(ts.getNumber());
 		
@@ -1199,18 +1199,18 @@ public class Api2OpenAsnEncoder implements Api2AsnEncoder {
 		
 		TrainLinkType asnData =new TrainLinkType();
 
-        IDWrapper fs = new IDWrapper(data.getFromStation());
+        IDWrapper fs = new IDWrapper(data.getFromStationInt());
         asnData.setFromStationIA5(fs.getString());
         asnData.setFromStationNum(fs.getNumber());
 
-        IDWrapper ts = new IDWrapper(data.getToStation());
+        IDWrapper ts = new IDWrapper(data.getToStationInt());
         asnData.setToStationIA5(ts.getString());
         asnData.setToStationNum(ts.getNumber());
 		
 		asnData.setFromStationName(data.getFromStationName());
 		asnData.setToStationName(data.getToStationName());	
 
-        IDWrapper t = new IDWrapper(data.getTrain());
+        IDWrapper t = new IDWrapper(data.getTrainInt());
 		asnData.setTrainIA5(t.getString());
 		asnData.setTrainNum(t.getNumber());
 		
@@ -1267,18 +1267,18 @@ public class Api2OpenAsnEncoder implements Api2AsnEncoder {
 		LineType asnData =new LineType();
 
 		asnData.setBinaryZoneId(data.getBinaryZoneId());
-        IDWrapper c = new IDWrapper(data.getCarrier());
+        IDWrapper c = new IDWrapper(data.getCarrierInt());
 		asnData.setCarrierNum(c.getNumber());
 		asnData.setCarrierIA5(c.getString());
 		if (data.getStationCodeTable() != IStationCodeTable.stationUIC && data.getStationCodeTable() != null){
 			asnData.setStationCodeTable(CodeTableType.valueOf(data.getStationCodeTable().name()));
 		}
 
-        IDWrapper es = new IDWrapper(data.getEntryStation());
+        IDWrapper es = new IDWrapper(data.getEntryStationInt());
 		asnData.setEntryStationIA5(es.getString());
 		asnData.setEntryStationNum(es.getNumber());
 
-        IDWrapper ts = new IDWrapper(data.getTerminatingStation());
+        IDWrapper ts = new IDWrapper(data.getTerminatingStationInt());
 		asnData.setTerminatingStationIA5(ts.getString());
 		asnData.setTerminatingStationNum(ts.getNumber());
 		
@@ -1376,14 +1376,14 @@ public class Api2OpenAsnEncoder implements Api2AsnEncoder {
 		ParkingGroundData asnData = new ParkingGroundData();
 		asnDocument.getTicket().setParkingGround(asnData);
 		
-		IDWrapper wn = new IDWrapper(document.getProductOwner(),1,32000);
+		IDWrapper wn = new IDWrapper(document.getProductOwnerInt(),1,32000);
 		asnData.setProductOwnerNum(wn.getNumber());
 		asnData.setProductOwnerIA5(wn.getString());
-		wn = new IDWrapper(document.getProductId(),0,32000);
+		wn = new IDWrapper(document.getProductIdInt(),0,32000);
 		asnData.setProductIdNum(wn.getNumber());
 		asnData.setProductIdIA5(wn.getString());
 
-        IDWrapper r = new IDWrapper(document.getReference());
+        IDWrapper r = new IDWrapper(document.getReferenceInt());
         asnData.setReferenceNum(Asn1BigInteger.toAsn1(r.getNumber()));
         asnData.setReferenceIA5(r.getString());
 
@@ -1393,7 +1393,7 @@ public class Api2OpenAsnEncoder implements Api2AsnEncoder {
 			asnData.setStationCodeTable(CodeTableType.valueOf(document.getStationCodeTable().name()));
 		}		
 
-        IDWrapper s = new IDWrapper(document.getStation());
+        IDWrapper s = new IDWrapper(document.getStationInt());
 		asnData.setStationIA5(s.getString());
 		asnData.setStationNum(s.getNumber());
 		
@@ -1439,11 +1439,11 @@ public class Api2OpenAsnEncoder implements Api2AsnEncoder {
 			asnRoute.setStationCodeTable(CodeTableType.valueOf(document.getStationCodeTable().name()));
 		}
 
-        IDWrapper fs = new IDWrapper(document.getFromStation());
+        IDWrapper fs = new IDWrapper(document.getFromStationInt());
         asnRoute.setFromStationIA5(fs.getString());
         asnRoute.setFromStationNum(fs.getNumber());
 
-        IDWrapper ts = new IDWrapper(document.getToStation());
+        IDWrapper ts = new IDWrapper(document.getToStationInt());
         asnRoute.setToStationIA5(ts.getString());
         asnRoute.setToStationNum(ts.getNumber());
 		
@@ -1525,7 +1525,7 @@ public class Api2OpenAsnEncoder implements Api2AsnEncoder {
 		
 
 		asnTariff.setTariffDesc(tariff.getTariffDescription());
-        IDWrapper t = new IDWrapper(tariff.getTariffId());
+        IDWrapper t = new IDWrapper(tariff.getTariffIdInt());
 		asnTariff.setTariffIdIA5(t.getString());
 		asnTariff.setTariffIdNum(t.getNumber());
 		
@@ -1559,14 +1559,14 @@ public class Api2OpenAsnEncoder implements Api2AsnEncoder {
 		VoucherData asnData = new VoucherData();
 		asnDocument.getTicket().setVoucher(asnData);
 		
-		IDWrapper wn = new IDWrapper(document.getProductOwner(),1,32000);
+		IDWrapper wn = new IDWrapper(document.getProductOwnerInt(),1,32000);
 		asnData.setProductOwnerNum(wn.getNumber());
 		asnData.setProductOwnerIA5(wn.getString());
-		wn = new IDWrapper(document.getProductId(),0,32000);
+		wn = new IDWrapper(document.getProductIdInt(),0,32000);
 		asnData.setProductIdNum(wn.getNumber());
 		asnData.setProductIdIA5(wn.getString());
 
-        IDWrapper r = new IDWrapper(document.getReference());
+        IDWrapper r = new IDWrapper(document.getReferenceInt());
         asnData.setReferenceNum(Asn1BigInteger.toAsn1(r.getNumber()));
         asnData.setReferenceIA5(r.getString());
 
@@ -1601,25 +1601,25 @@ public class Api2OpenAsnEncoder implements Api2AsnEncoder {
 		PassData asnData = new PassData();
 		asnDocument.getTicket().setPass(asnData);
 		
-		IDWrapper wn = new IDWrapper(document.getProductOwner(),1,32000);
+		IDWrapper wn = new IDWrapper(document.getProductOwnerInt(),1,32000);
 		asnData.setProductOwnerNum(wn.getNumber());
 		asnData.setProductOwnerIA5(wn.getString());
-		wn = new IDWrapper(document.getProductId(),0,32000);
+		wn = new IDWrapper(document.getProductIdInt(),0,32000);
 		asnData.setProductIdNum(wn.getNumber());
 		asnData.setProductIdIA5(wn.getString());
 
-        IDWrapper r = new IDWrapper(document.getReference());
+        IDWrapper r = new IDWrapper(document.getReferenceInt());
         asnData.setReferenceNum(Asn1BigInteger.toAsn1(r.getNumber()));
         asnData.setReferenceIA5(r.getString());
 
         asnData.setInfoText(document.getInfoText());
 		asnData.setExtension(encodeExtension(document.getExtension()));	
 		
-		IDListWrapper w = new IDListWrapper(document.getIncludedCarriers(),1,32000);
+		IDListWrapper w = new IDListWrapper(document.getIncludedCarriersInt(),1,32000);
 		asnData.setIncludedCarriersNum(SequenceOfCarrierNum.getSequence(w.getNumList()));
 		asnData.setIncludedCarriersIA5(w.getStringList());	
 		
-		w = new IDListWrapper(document.getExcludedCarriers(),1,32000);
+		w = new IDListWrapper(document.getExcludedCarriersInt(),1,32000);
 		asnData.setExcludedCarriersNum(SequenceOfCarrierNum.getSequence(w.getNumList()));
 		asnData.setExcludedCarriersIA5(w.getStringList());
 
@@ -1746,18 +1746,18 @@ public class Api2OpenAsnEncoder implements Api2AsnEncoder {
 		FIPTicketData asnData = new FIPTicketData();
 		asnDocument.getTicket().setFipTicket(asnData);
 		
-		IDWrapper wn = new IDWrapper(document.getProductOwner(),1,32000);
+		IDWrapper wn = new IDWrapper(document.getProductOwnerInt(),1,32000);
 		asnData.setProductOwnerNum(wn.getNumber());
 		asnData.setProductOwnerIA5(wn.getString());
-		wn = new IDWrapper(document.getProductId(),0,32000);
+		wn = new IDWrapper(document.getProductIdInt(),0,32000);
 		asnData.setProductIdNum(wn.getNumber());
 		asnData.setProductIdIA5(wn.getString());
 
-        IDWrapper r = new IDWrapper(document.getReference());
+        IDWrapper r = new IDWrapper(document.getReferenceInt());
         asnData.setReferenceNum(Asn1BigInteger.toAsn1(r.getNumber()));
         asnData.setReferenceIA5(r.getString());
 
-        IDListWrapper w = new IDListWrapper(document.getCarriers(),1,32000);
+        IDListWrapper w = new IDListWrapper(document.getCarriersInt(),1,32000);
 		asnData.setCarrierNum(SequenceOfCarrierNum.getSequence(w.getNumList()));
 		asnData.setCarrierIA5(w.getStringList());	
 		
@@ -1795,14 +1795,14 @@ public class Api2OpenAsnEncoder implements Api2AsnEncoder {
 		StationPassageData asnData = new StationPassageData();
 		asnDocument.getTicket().setStationPassage(asnData);
 		
-		IDWrapper wn = new IDWrapper(document.getProductOwner(),1,32000);
+		IDWrapper wn = new IDWrapper(document.getProductOwnerInt(),1,32000);
 		asnData.setProductOwnerNum(wn.getNumber());
 		asnData.setProductOwnerIA5(wn.getString());
-		wn = new IDWrapper(document.getProductId(),0,32000);
+		wn = new IDWrapper(document.getProductIdInt(),0,32000);
 		asnData.setProductIdNum(wn.getNumber());
 		asnData.setProductIdIA5(wn.getString());
 
-        IDWrapper r = new IDWrapper(document.getReference());
+        IDWrapper r = new IDWrapper(document.getReferenceInt());
         asnData.setReferenceNum(Asn1BigInteger.toAsn1(r.getNumber()));
         asnData.setReferenceIA5(r.getString());
 
@@ -1816,7 +1816,7 @@ public class Api2OpenAsnEncoder implements Api2AsnEncoder {
 			asnData.setStationCodeTable(CodeTableType.valueOf(document.getStationCodeTable().name()));
 		}
 		
-		IDListWrapper s = new IDListWrapper(document.getStations());
+		IDListWrapper s = new IDListWrapper(document.getStationsInt());
         asnData.setStationIA5(s.getStringList());
         asnData.setStationNum(SequenceOfUnrestrictedLong.getSequence(s.getNumList()));
 		
@@ -1847,7 +1847,7 @@ public class Api2OpenAsnEncoder implements Api2AsnEncoder {
 				
 		asnData.setExtension(encodeExtension(document.getExtension()));			
 
-        IDListWrapper ac = new IDListWrapper(document.getAreaCodes());
+        IDListWrapper ac = new IDListWrapper(document.getAreaCodesInt());
 		asnData.setAreaCodeNum(SequenceOfUnrestrictedLong.getSequence(ac.getNumList()));
 		asnData.setAreaCodeIA5(ac.getStringList());
 
@@ -1917,21 +1917,21 @@ public class Api2OpenAsnEncoder implements Api2AsnEncoder {
 			
 			CardReferenceType asnCard = new CardReferenceType();
 
-            IDWrapper c = new IDWrapper(card.getCardId());
+            IDWrapper c = new IDWrapper(card.getCardIdInt());
             asnCard.setCardIdNum(c.getNumber());
             asnCard.setCardIdIA5(c.getString());
 
-            IDWrapper ci = new IDWrapper(card.getCardIssuer());
+            IDWrapper ci = new IDWrapper(card.getCardIssuerInt());
 			asnCard.setCardIssuerNum(ci.getNumber());
 			asnCard.setCardIssuerIA5(ci.getString());
 			asnCard.setCardName(card.getCardName());
 			asnCard.setCardType(UicEncoderUtils.getUnRestrictedInt(card.getCardType()));
 
-            IDWrapper lci = new IDWrapper(card.getLeadingCardId());
+            IDWrapper lci = new IDWrapper(card.getLeadingCardIdInt());
 			asnCard.setLeadingCardIdNum(lci.getNumber());
 			asnCard.setLeadingCardIdIA5(lci.getString());
 
-            IDWrapper tci = new IDWrapper(card.getTrailingCardId());
+            IDWrapper tci = new IDWrapper(card.getTrailingCardIdInt());
 			asnCard.setTrailingCardIdNum(tci.getNumber());
 			asnCard.setTrailingCardIdIA5(tci.getString());
 			
@@ -1983,11 +1983,11 @@ public class Api2OpenAsnEncoder implements Api2AsnEncoder {
 		
 		asnData.setIssuerPNR(document.getIssuerPNR());
 		
-		IDWrapper wn = new IDWrapper(document.getProductOwner(),1,32000);
+		IDWrapper wn = new IDWrapper(document.getProductOwnerInt(),1,32000);
 		asnData.setProductOwnerNum(wn.getNumber());
 		asnData.setProductOwnerIA5(wn.getString());
 
-        IDWrapper r = new IDWrapper(document.getReference());
+        IDWrapper r = new IDWrapper(document.getReferenceInt());
         asnData.setReferenceNum(r.getNumber());
         asnData.setReferenceIA5(r.getString());
 
@@ -2067,22 +2067,22 @@ public class Api2OpenAsnEncoder implements Api2AsnEncoder {
 		
 		asnData.setIssuedOnLine(UicEncoderUtils.getRestrictedInt(data.getIssuedOnLine(), 1, 99999));
 
-        IDWrapper iit = new IDWrapper(data.getIssuedOnTrain());
+        IDWrapper iit = new IDWrapper(data.getIssuedOnTrainInt());
 		asnData.setIssuedOnTrainNum(iit.getNumber());
 		asnData.setIssuedOnTrainIA5(iit.getString());
 
 		if (data.getSecurityProvider() != null) {
-            IDWrapper sp = new IDWrapper(data.getSecurityProvider());
+            IDWrapper sp = new IDWrapper(data.getSecurityProviderInt());
 			asnData.setSecurityProviderNum(sp.getNumber());
 			asnData.setSecurityProviderIA5(sp.getString());
 		} else {
-            IDWrapper i = new IDWrapper(data.getIssuer());
+            IDWrapper i = new IDWrapper(data.getIssuerInt());
 			asnData.setSecurityProviderNum(i.getNumber());
 			asnData.setSecurityProviderIA5(i.getString());
 		}
 		
 		if (data.getIssuer()!= null && !data.getIssuer().equals(data.getSecurityProvider()) ){
-            IDWrapper i = new IDWrapper(data.getIssuer());
+            IDWrapper i = new IDWrapper(data.getIssuerInt());
             asnData.setIssuerNum(i.getNumber());
             asnData.setIssuerIA5(i.getString());
 		}
@@ -2200,7 +2200,7 @@ public class Api2OpenAsnEncoder implements Api2AsnEncoder {
 	private TokenType encodeToken(IToken token) throws EncodingFormatException {		
 		TokenType asnToken = new TokenType();
 		asnToken.setToken(token.getToken());
-        IDWrapper tp = new IDWrapper(token.getTokenProvider());
+        IDWrapper tp = new IDWrapper(token.getTokenProviderInt());
 		asnToken.setTokenProviderNum(tp.getNumber());
 		asnToken.setTokenProviderIA5(tp.getString());
 		asnToken.setTokenSpecification(token.getTokenSpecification());
@@ -2242,7 +2242,7 @@ public class Api2OpenAsnEncoder implements Api2AsnEncoder {
 		asnTraveler.setCountryOfPassport(UicEncoderUtils.getRestrictedInt(traveler.getPassportCountry(), 1, 999));
 		asnTraveler.setCountryOfIdCard(UicEncoderUtils.getRestrictedInt(traveler.getIDCardCountry(), 1, 999));		
 		
-		IDWrapper c = new IDWrapper(traveler.getCustomerId());
+		IDWrapper c = new IDWrapper(traveler.getCustomerIdInt());
 		asnTraveler.setCustomerIdNum(c.getNumber());
 		asnTraveler.setCustomerIdIA5(c.getString());
 		
@@ -2296,7 +2296,7 @@ public class Api2OpenAsnEncoder implements Api2AsnEncoder {
 			asnStatus.setCustomerStatus((long) status.getStatus());
 		}
 		asnStatus.setCustomerStatusDescr(status.getDescription());
-        IDWrapper sp = new IDWrapper(status.getStatusProvider());
+        IDWrapper sp = new IDWrapper(status.getStatusProviderInt());
 		asnStatus.setStatusProviderIA5(sp.getString());
 		asnStatus.setStatusProviderNum(sp.getNumber());
 

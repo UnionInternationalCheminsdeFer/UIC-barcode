@@ -23,17 +23,17 @@ import org.uic.barcode.asn1.datatypes.HasExtensionMarker;
 
 @HasExtensionMarker
 public enum ILinkMode {
-		issuedTogether("issuedTogether"),
-		onlyValidInCombination("onlyValidInCombination");
-		
-		public String text;
+    issuedTogether("issuedTogether"),
+    onlyValidInCombination("onlyValidInCombination");
 
-		ILinkMode(String text) {
-			this.text = text;
-		}
-		
-		public String toString(){
-			return text;
-		}				
+    public String text;
+
+    ILinkMode(String text) {
+        this.text = text;
+    }
+
+    public String toString() {
+        return text;
+    }
 }
 

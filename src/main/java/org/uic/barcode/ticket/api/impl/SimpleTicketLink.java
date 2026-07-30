@@ -36,7 +36,7 @@ public class SimpleTicketLink implements ITicketLink {
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.ITicketLink#getReference()
 	 */
-	public CharSequence getReference() {
+	public CharSequence getReferenceInt() {
 		return reference;
 	}
 
@@ -57,7 +57,7 @@ public class SimpleTicketLink implements ITicketLink {
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.ITicketLink#getIssuer()
 	 */
-	public CharSequence getIssuer() {
+	public CharSequence getIssuerInt() {
 		return issuer;
 	}
 
@@ -78,7 +78,7 @@ public class SimpleTicketLink implements ITicketLink {
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.ITicketLink#getProductOwner()
 	 */
-	public CharSequence getProductOwner() {
+	public CharSequence getProductOwnerInt() {
 		return productOwner;
 	}
 

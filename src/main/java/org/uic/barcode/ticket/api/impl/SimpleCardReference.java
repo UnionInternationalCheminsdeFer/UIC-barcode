@@ -32,7 +32,7 @@ public class SimpleCardReference implements ICardReference {
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.ICardReference#getCardIssuer()
 	 */
-	public CharSequence getCardIssuer() {
+	public CharSequence getCardIssuerInt() {
 		return cardIssuer;
 	}
 
@@ -53,7 +53,7 @@ public class SimpleCardReference implements ICardReference {
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.ICardReference#getCardId()
 	 */
-	public CharSequence getCardId() {
+	public CharSequence getCardIdInt() {
 		return cardId;
 	}
 
@@ -110,7 +110,7 @@ public class SimpleCardReference implements ICardReference {
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.ICardReference#getLeadingCardId()
 	 */
-	public CharSequence getLeadingCardId() {
+	public CharSequence getLeadingCardIdInt() {
 		return leadingCardId;
 	}
 
@@ -139,7 +139,7 @@ public class SimpleCardReference implements ICardReference {
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.ICardReference#getTrailingCardId()
 	 */
-	public CharSequence getTrailingCardId() {
+	public CharSequence getTrailingCardIdInt() {
 		return trailingCardId;
 	}
 

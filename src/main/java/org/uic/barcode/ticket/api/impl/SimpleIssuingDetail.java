@@ -63,7 +63,7 @@ public class SimpleIssuingDetail implements IIssuingDetail {
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.IIssuingDetail#getIssuer()
 	 */
-	public CharSequence getIssuer() {
+	public CharSequence getIssuerInt() {
 		if (issuer == null || issuer.length() == 0){
 			return this.securityProvider;
 		}
@@ -101,7 +101,7 @@ public class SimpleIssuingDetail implements IIssuingDetail {
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.IIssuingDetail#getSecurityProvider()
 	 */
-	public CharSequence getSecurityProvider() {
+	public CharSequence getSecurityProviderInt() {
 		return securityProvider;
 	}
 
@@ -192,7 +192,7 @@ public class SimpleIssuingDetail implements IIssuingDetail {
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.IIssuingDetail#getIssuedOnTrain()
 	 */
-	public CharSequence getIssuedOnTrain() {
+	public CharSequence getIssuedOnTrainInt() {
 		return issuedOnTrain;
 	}
 

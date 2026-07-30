@@ -74,7 +74,7 @@ public class SimpleVoucher extends SimpleDocumentData implements IVoucher {
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.IVoucher#getReference()
 	 */
-	public CharSequence getReference() {
+	public CharSequence getReferenceInt() {
 		return reference;
 	}
 
@@ -95,7 +95,7 @@ public class SimpleVoucher extends SimpleDocumentData implements IVoucher {
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.IVoucher#getProductId()
 	 */
-	public CharSequence getProductId() {
+	public CharSequence getProductIdInt() {
 		return productId;
 	}
 
@@ -116,7 +116,7 @@ public class SimpleVoucher extends SimpleDocumentData implements IVoucher {
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.IVoucher#getProductOwner()
 	 */
-	public CharSequence getProductOwner() {
+	public CharSequence getProductOwnerInt() {
 		return productOwner;
 	}
 

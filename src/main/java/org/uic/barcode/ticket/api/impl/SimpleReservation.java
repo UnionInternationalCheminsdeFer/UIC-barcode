@@ -207,7 +207,7 @@ public class SimpleReservation extends SimpleDocumentData implements IReservatio
     /* (nicht-Javadoc)
      * @see org.uic.ticket.api.spec.IReservation#getTrain()
      */
-    public CharSequence getTrain() {
+    public CharSequence getTrainInt() {
         return train;
     }
 
@@ -256,7 +256,7 @@ public class SimpleReservation extends SimpleDocumentData implements IReservatio
     /* (nicht-Javadoc)
      * @see org.uic.ticket.api.spec.IReservation#getReference()
      */
-    public CharSequence getReference() {
+    public CharSequence getReferenceInt() {
         return reference;
     }
 
@@ -277,7 +277,7 @@ public class SimpleReservation extends SimpleDocumentData implements IReservatio
     /* (nicht-Javadoc)
      * @see org.uic.ticket.api.spec.IReservation#getProductId()
      */
-    public CharSequence getProductId() {
+    public CharSequence getProductIdInt() {
         return productId;
     }
 
@@ -340,7 +340,7 @@ public class SimpleReservation extends SimpleDocumentData implements IReservatio
     /* (nicht-Javadoc)
      * @see org.uic.ticket.api.spec.IReservation#getFromStation()
      */
-    public CharSequence getFromStation() {
+    public CharSequence getFromStationInt() {
         return fromStation;
     }
 
@@ -361,7 +361,7 @@ public class SimpleReservation extends SimpleDocumentData implements IReservatio
     /* (nicht-Javadoc)
      * @see org.uic.ticket.api.spec.IReservation#getToStation()
      */
-    public CharSequence getToStation() {
+    public CharSequence getToStationInt() {
         return toStation;
     }
 
@@ -410,7 +410,7 @@ public class SimpleReservation extends SimpleDocumentData implements IReservatio
     /* (nicht-Javadoc)
      * @see org.uic.ticket.api.spec.IReservation#getCarriers()
      */
-    public Collection<CharSequence> getCarriers() {
+    public Collection<CharSequence> getCarriersInt() {
         return carriers;
     }
 
@@ -644,7 +644,7 @@ public class SimpleReservation extends SimpleDocumentData implements IReservatio
     /* (nicht-Javadoc)
      * @see org.uic.ticket.api.spec.IReservation#getProductOwner()
      */
-    public CharSequence getProductOwner() {
+    public CharSequence getProductOwnerInt() {
         return productOwner;
     }
 

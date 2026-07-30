@@ -21,18 +21,18 @@ package org.uic.barcode.ticket.api.spec;
 
 
 public enum ILoadingDeckType {
-		unspecified("unspecified"),
-		upper("upper"),
-		lower("lower");
-		
-		public String text;
+    unspecified("unspecified"),
+    upper("upper"),
+    lower("lower");
 
-		ILoadingDeckType(String text) {
-			this.text = text;
-		}
-		
-		public String toString(){
-			return text;
-		}			
+    public String text;
+
+    ILoadingDeckType(String text) {
+        this.text = text;
+    }
+
+    public String toString() {
+        return text;
+    }
 }
 

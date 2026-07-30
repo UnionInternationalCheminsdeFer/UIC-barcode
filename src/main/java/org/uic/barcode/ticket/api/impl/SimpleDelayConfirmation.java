@@ -62,7 +62,7 @@ public class SimpleDelayConfirmation extends SimpleDocumentData  implements IDel
 	 * @see org.uic.ticket.api.spec.IDelayConfirmation#getReference()
 	 */
 	@Override
-	public CharSequence getReference() {
+	public CharSequence getReferenceInt() {
 		return reference;
 	}
 
@@ -86,7 +86,7 @@ public class SimpleDelayConfirmation extends SimpleDocumentData  implements IDel
 	 * @see org.uic.ticket.api.spec.IDelayConfirmation#getTrain()
 	 */
 	@Override
-	public CharSequence getTrain() {
+	public CharSequence getTrainInt() {
 		return train;
 	}
 
@@ -126,7 +126,7 @@ public class SimpleDelayConfirmation extends SimpleDocumentData  implements IDel
 	 * @see org.uic.ticket.api.spec.IDelayConfirmation#getStation()
 	 */
 	@Override
-	public CharSequence getStation() {
+	public CharSequence getStationInt() {
 		return station;
 	}
 

@@ -99,7 +99,7 @@ public class SimpleParkingGround extends SimpleDocumentData implements IParkingG
     /* (nicht-Javadoc)
      * @see org.uic.ticket.api.spec.IParkingGround#getParkingGroundId()
      */
-    public CharSequence getParkingGroundId() {
+    public CharSequence getParkingGroundIdInt() {
         return parkingGroundId;
     }
 
@@ -153,7 +153,7 @@ public class SimpleParkingGround extends SimpleDocumentData implements IParkingG
     /* (nicht-Javadoc)
      * @see org.uic.ticket.api.spec.IParkingGround#getReference()
      */
-    public CharSequence getReference() {
+    public CharSequence getReferenceInt() {
         return reference;
     }
 
@@ -202,7 +202,7 @@ public class SimpleParkingGround extends SimpleDocumentData implements IParkingG
     /* (nicht-Javadoc)
      * @see org.uic.ticket.api.spec.IParkingGround#getStation()
      */
-    public CharSequence getStation() {
+    public CharSequence getStationInt() {
         return station;
     }
 
@@ -293,7 +293,7 @@ public class SimpleParkingGround extends SimpleDocumentData implements IParkingG
     /* (nicht-Javadoc)
      * @see org.uic.ticket.api.spec.IParkingGround#getProductOwner()
      */
-    public CharSequence getProductOwner() {
+    public CharSequence getProductOwnerInt() {
         return productOwner;
     }
 
@@ -315,7 +315,7 @@ public class SimpleParkingGround extends SimpleDocumentData implements IParkingG
      * @see org.uic.ticket.api.spec.IParkingGround#getProductId()
      */
     @Override
-    public CharSequence getProductId() {
+    public CharSequence getProductIdInt() {
         return productId;
     }
 

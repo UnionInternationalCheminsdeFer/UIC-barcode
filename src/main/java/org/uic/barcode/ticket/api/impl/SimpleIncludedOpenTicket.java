@@ -175,7 +175,7 @@ public class SimpleIncludedOpenTicket implements IIncludedOpenTicket {
     /* (nicht-Javadoc)
      * @see org.uic.ticket.api.spec.IIncludedOpenTicket#getProductId()
      */
-    public CharSequence getProductId() {
+    public CharSequence getProductIdInt() {
         return productId;
     }
 
@@ -196,7 +196,7 @@ public class SimpleIncludedOpenTicket implements IIncludedOpenTicket {
     /* (nicht-Javadoc)
      * @see org.uic.ticket.api.spec.IIncludedOpenTicket#getProductOwner()
      */
-    public CharSequence getProductOwner() {
+    public CharSequence getProductOwnerInt() {
         return productOwner;
     }
 
@@ -259,7 +259,7 @@ public class SimpleIncludedOpenTicket implements IIncludedOpenTicket {
     /* (nicht-Javadoc)
      * @see org.uic.ticket.api.spec.IIncludedOpenTicket#getFromStation()
      */
-    public CharSequence getFromStation() {
+    public CharSequence getFromStationInt() {
         return fromStation;
     }
 
@@ -280,7 +280,7 @@ public class SimpleIncludedOpenTicket implements IIncludedOpenTicket {
     /* (nicht-Javadoc)
      * @see org.uic.ticket.api.spec.IIncludedOpenTicket#getToStation()
      */
-    public CharSequence getToStation() {
+    public CharSequence getToStationInt() {
         return toStation;
     }
 
@@ -399,7 +399,7 @@ public class SimpleIncludedOpenTicket implements IIncludedOpenTicket {
     /* (nicht-Javadoc)
      * @see org.uic.ticket.api.spec.IIncludedOpenTicket#getIncludedCarriers()
      */
-    public Collection<CharSequence> getIncludedCarriers() {
+    public Collection<CharSequence> getIncludedCarriersInt() {
         return includedCarriers;
     }
 

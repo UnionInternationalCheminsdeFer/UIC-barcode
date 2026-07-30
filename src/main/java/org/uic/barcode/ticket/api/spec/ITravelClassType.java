@@ -23,27 +23,27 @@ import org.uic.barcode.asn1.datatypes.HasExtensionMarker;
 
 @HasExtensionMarker
 public enum ITravelClassType {
-		notApplicabel("notApplicabel"),
-		first("first"),
-		second("second"),
-		tourist("tourist"),
-		comfort("comfort"),
-		premium("premium"),
-		business("business"),
-		all("all"),
-	    premiumFirst("premiumFirst"),
-		standardFirst("standardFirst"),
-		premiumSecond("premiumSecond"),
-		standardSecond("standardSecond");
-		
-		public String text;
+    notApplicabel("notApplicabel"),
+    first("first"),
+    second("second"),
+    tourist("tourist"),
+    comfort("comfort"),
+    premium("premium"),
+    business("business"),
+    all("all"),
+    premiumFirst("premiumFirst"),
+    standardFirst("standardFirst"),
+    premiumSecond("premiumSecond"),
+    standardSecond("standardSecond");
 
-		ITravelClassType(String text) {
-			this.text = text;
-		}
-		
-		public String toString(){
-			return text;
-		}			
+    public String text;
+
+    ITravelClassType(String text) {
+        this.text = text;
+    }
+
+    public String toString() {
+        return text;
+    }
 }
 

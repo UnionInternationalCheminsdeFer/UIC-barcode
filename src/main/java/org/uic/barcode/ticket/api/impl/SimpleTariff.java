@@ -178,7 +178,7 @@ public class SimpleTariff implements ITariff {
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.ITariff#getTariffId()
 	 */
-	public CharSequence getTariffId() {
+	public CharSequence getTariffIdInt() {
 		return tariffId;
 	}
 

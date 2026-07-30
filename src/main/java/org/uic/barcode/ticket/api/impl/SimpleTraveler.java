@@ -170,7 +170,7 @@ public class SimpleTraveler implements ITraveler {
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.ITraveler#getCustomerId()
 	 */
-	public CharSequence getCustomerId() {
+	public CharSequence getCustomerIdInt() {
 		return customerId;
 	}
 	

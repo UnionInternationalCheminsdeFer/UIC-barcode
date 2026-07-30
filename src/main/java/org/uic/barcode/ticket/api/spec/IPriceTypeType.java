@@ -20,20 +20,20 @@
 package org.uic.barcode.ticket.api.spec;
 
 public enum IPriceTypeType {
-		noPrice("noPrice"),
-		reservationFee("reservationFee"),
-		supplement("supplement"),
-		travelPrice("travelPrice");
-		
-		
-		public String text;
+    noPrice("noPrice"),
+    reservationFee("reservationFee"),
+    supplement("supplement"),
+    travelPrice("travelPrice");
 
-		IPriceTypeType(String text) {
-			this.text = text;
-		}
-		
-		public String toString(){
-			return text;
-		}	
+
+    public String text;
+
+    IPriceTypeType(String text) {
+        this.text = text;
+    }
+
+    public String toString() {
+        return text;
+    }
 }
 

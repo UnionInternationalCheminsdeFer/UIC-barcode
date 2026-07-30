@@ -253,7 +253,7 @@ public class SimplePass extends SimpleDocumentData implements IPass {
     /* (nicht-Javadoc)
      * @see org.uic.ticket.api.spec.IPass#getIncludedCarriers()
      */
-    public Collection<CharSequence> getIncludedCarriers() {
+    public Collection<CharSequence> getIncludedCarriersInt() {
         return includedCarriers;
     }
 
@@ -274,7 +274,7 @@ public class SimplePass extends SimpleDocumentData implements IPass {
     /* (nicht-Javadoc)
      * @see org.uic.ticket.api.spec.IPass#getExcludedCarriers()
      */
-    public Collection<CharSequence> getExcludedCarriers() {
+    public Collection<CharSequence> getExcludedCarriersInt() {
         return excludedCarriers;
     }
 
@@ -352,7 +352,7 @@ public class SimplePass extends SimpleDocumentData implements IPass {
     /* (nicht-Javadoc)
      * @see org.uic.ticket.api.spec.IPass#getReference()
      */
-    public CharSequence getReference() {
+    public CharSequence getReferenceInt() {
         return reference;
     }
 
@@ -373,7 +373,7 @@ public class SimplePass extends SimpleDocumentData implements IPass {
     /* (nicht-Javadoc)
      * @see org.uic.ticket.api.spec.IPass#getProductId()
      */
-    public CharSequence getProductId() {
+    public CharSequence getProductIdInt() {
         return productId;
     }
 
@@ -394,7 +394,7 @@ public class SimplePass extends SimpleDocumentData implements IPass {
     /* (nicht-Javadoc)
      * @see org.uic.ticket.api.spec.IPass#getProductOwner()
      */
-    public CharSequence getProductOwner() {
+    public CharSequence getProductOwnerInt() {
         return productOwner;
     }
 

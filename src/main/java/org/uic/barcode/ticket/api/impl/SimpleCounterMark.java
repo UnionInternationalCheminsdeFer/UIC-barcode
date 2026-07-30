@@ -106,7 +106,7 @@ public class SimpleCounterMark extends SimpleDocumentData implements ICounterMar
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.ICounterMark#getReference()
 	 */
-	public CharSequence getReference() {
+	public CharSequence getReferenceInt() {
 		return reference;
 	}
 
@@ -155,7 +155,7 @@ public class SimpleCounterMark extends SimpleDocumentData implements ICounterMar
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.ICounterMark#getFromStation()
 	 */
-	public CharSequence getFromStation() {
+	public CharSequence getFromStationInt() {
 		return fromStation;
 	}
 
@@ -176,7 +176,7 @@ public class SimpleCounterMark extends SimpleDocumentData implements ICounterMar
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.ICounterMark#getToStation()
 	 */
-	public CharSequence getToStation() {
+	public CharSequence getToStationInt() {
 		return toStation;
 	}
 
@@ -309,7 +309,7 @@ public class SimpleCounterMark extends SimpleDocumentData implements ICounterMar
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.ICounterMark#getIncludedCarriers()
 	 */
-	public Collection<CharSequence> getIncludedCarriers() {
+	public Collection<CharSequence> getIncludedCarriersInt() {
 		return includedCarriers;
 	}
 
@@ -431,7 +431,7 @@ public class SimpleCounterMark extends SimpleDocumentData implements ICounterMar
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.ICounterMark#getProductOwner()
 	 */
-	public CharSequence getProductOwner() {
+	public CharSequence getProductOwnerInt() {
 		return productOwner;
 	}
 
@@ -452,7 +452,7 @@ public class SimpleCounterMark extends SimpleDocumentData implements ICounterMar
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.ICounterMark#getTicketReference()
 	 */
-	public CharSequence getTicketReference() {
+	public CharSequence getTicketReferenceInt() {
 		return ticketReference;
 	}
 
@@ -473,7 +473,7 @@ public class SimpleCounterMark extends SimpleDocumentData implements ICounterMar
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.ICounterMark#getProductId()
 	 */
-	public CharSequence getProductId() {
+	public CharSequence getProductIdInt() {
 		return productId;
 	}
 

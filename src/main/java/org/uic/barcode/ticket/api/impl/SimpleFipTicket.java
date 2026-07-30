@@ -104,7 +104,7 @@ public class SimpleFipTicket extends SimpleDocumentData implements IFipTicket {
     /* (nicht-Javadoc)
      * @see org.uic.ticket.api.spec.IFipTicket#getCarriers()
      */
-    public Collection<CharSequence> getCarriers() {
+    public Collection<CharSequence> getCarriersInt() {
         return carriers;
     }
 
@@ -125,7 +125,7 @@ public class SimpleFipTicket extends SimpleDocumentData implements IFipTicket {
     /* (nicht-Javadoc)
      * @see org.uic.ticket.api.spec.IFipTicket#getReference()
      */
-    public CharSequence getReference() {
+    public CharSequence getReferenceInt() {
         return reference;
     }
 
@@ -146,7 +146,7 @@ public class SimpleFipTicket extends SimpleDocumentData implements IFipTicket {
     /* (nicht-Javadoc)
      * @see org.uic.ticket.api.spec.IFipTicket#getProductId()
      */
-    public CharSequence getProductId() {
+    public CharSequence getProductIdInt() {
         return productId;
     }
 
@@ -167,7 +167,7 @@ public class SimpleFipTicket extends SimpleDocumentData implements IFipTicket {
     /* (nicht-Javadoc)
      * @see org.uic.ticket.api.spec.IFipTicket#getProductOwner()
      */
-    public CharSequence getProductOwner() {
+    public CharSequence getProductOwnerInt() {
         return productOwner;
     }
 

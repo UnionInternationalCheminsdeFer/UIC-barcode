@@ -27,6 +27,15 @@ public class MustString implements CharSequence {
         return this.underlyingString;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof CharSequence) {
+            return false;
+        }
+        String s = o.toString();
+        return this.underlyingString.equals(s);
+    }
+
     public boolean isEmpty() {
         return this.underlyingString.isEmpty();
     }

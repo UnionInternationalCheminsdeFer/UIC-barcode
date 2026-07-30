@@ -47,7 +47,7 @@ public class SimpleRouteSection implements IRouteSection {
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.IRouteSection#getFromStation()
 	 */
-	public CharSequence getFromStation() {
+	public CharSequence getFromStationInt() {
 		return fromStation;
 	}
 	
@@ -68,7 +68,7 @@ public class SimpleRouteSection implements IRouteSection {
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.IRouteSection#getToStation()
 	 */
-	public CharSequence getToStation() {
+	public CharSequence getToStationInt() {
 		return toStation;
 	}
 	

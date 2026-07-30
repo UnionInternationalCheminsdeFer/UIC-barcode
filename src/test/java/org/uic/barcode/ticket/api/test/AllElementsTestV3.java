@@ -838,7 +838,7 @@ public class AllElementsTestV3 {
 	    assert(p.getTrainValidity().getUntilDate() != null);
 	    assert(p.getTrainValidity().getIncludedCarriers() != null);
 	    assert(p.getTrainValidity().getIncludedCarriers().size() == 2);
-    	Iterator<CharSequence> i3 = p.getTrainValidity().getIncludedCarriers().iterator();
+    	Iterator<String> i3 = p.getTrainValidity().getIncludedCarriers().iterator();
     	assert(i3.next().equals("1234"));
     	assert(i3.next().equals("5678"));	
 	    
@@ -918,7 +918,7 @@ public class AllElementsTestV3 {
 	    assert(r.getArrivalDate() != null);  
 	    assert(r.getCarriers()!= null);
 	    assert(r.getCarriers().size() == 2);
-        Iterator<CharSequence> i8 = r.getCarriers().iterator();
+        Iterator<String> i8 = r.getCarriers().iterator();
     	assert(i8.next().equals("1080"));
     	assert(i8.next().equals("1181"));
 	 
@@ -932,7 +932,7 @@ public class AllElementsTestV3 {
 	    assert(r.getPlaces().getPlaceDescription().equals("Window"));
 	    assert(r.getPlaces().getPlaces() != null);
 	    assert(r.getPlaces().getPlaces().size() == 4);
-	    Iterator<CharSequence> is = r.getPlaces().getPlaces().iterator();
+	    Iterator<String> is = r.getPlaces().getPlaces().iterator();
 	    assert(is.next().equals("31"));
 	    assert(is.next().equals("32"));
 
@@ -1097,7 +1097,7 @@ public class AllElementsTestV3 {
         
 	    assert(r.getCarriers()!= null);
 	    assert(r.getCarriers().size() == 2);
-        Iterator<CharSequence> i9 = r.getCarriers().iterator();
+        Iterator<String> i9 = r.getCarriers().iterator();
     	assert(i9.next().equals("1080"));
     	assert(i9.next().equals("1181"));
         

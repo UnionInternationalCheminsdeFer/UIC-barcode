@@ -22,7 +22,7 @@ public class SimpleToken implements IToken {
 	 * @see org.uic.ticket.api.spec.IToken#getTokenProvider()
 	 */
 	@Override
-	public CharSequence getTokenProvider() {
+	public CharSequence getTokenProviderInt() {
 		return provider;
 	}
 

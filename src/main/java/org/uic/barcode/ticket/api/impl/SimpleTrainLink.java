@@ -39,7 +39,7 @@ public class SimpleTrainLink implements ITrainLink{
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.ITrainLink#getTrain()
 	 */
-	public CharSequence getTrain() {
+	public CharSequence getTrainInt() {
 		return train;
 	}
 	
@@ -74,7 +74,7 @@ public class SimpleTrainLink implements ITrainLink{
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.ITrainLink#getFromStation()
 	 */
-	public CharSequence getFromStation() {
+	public CharSequence getFromStationInt() {
 		return fromStation;
 	}
 	
@@ -95,7 +95,7 @@ public class SimpleTrainLink implements ITrainLink{
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.ITrainLink#getToStation()
 	 */
-	public CharSequence getToStation() {
+	public CharSequence getToStationInt() {
 		return toStation;
 	}
 	

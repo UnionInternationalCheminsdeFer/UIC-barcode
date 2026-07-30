@@ -23,20 +23,20 @@ import org.uic.barcode.asn1.datatypes.HasExtensionMarker;
 
 @HasExtensionMarker
 public enum ICompartmentGenderType {
-		unspecified("unspecified"),
-		family("family"),
-		female("female"),
-		male("male"),
-		mixed("mixed");
+    unspecified("unspecified"),
+    family("family"),
+    female("female"),
+    male("male"),
+    mixed("mixed");
 
-		public String text;
+    public String text;
 
-		ICompartmentGenderType(String text) {
-			this.text = text;
-		}
-		
-		public String toString(){
-			return text;
-		}
+    ICompartmentGenderType(String text) {
+        this.text = text;
+    }
+
+    public String toString() {
+        return text;
+    }
 
 }

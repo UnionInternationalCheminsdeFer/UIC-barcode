@@ -138,7 +138,7 @@ public class SimpleCarCarriageReservation extends SimpleDocumentData implements 
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.ICarCarriageReservation#getTrain()
 	 */
-	public CharSequence getTrain() {
+	public CharSequence getTrainInt() {
 		return train;
 	}
 
@@ -160,7 +160,7 @@ public class SimpleCarCarriageReservation extends SimpleDocumentData implements 
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.ICarCarriageReservation#getReference()
 	 */
-	public CharSequence getReference() {
+	public CharSequence getReferenceInt() {
 		return reference;
 	}
 
@@ -181,7 +181,7 @@ public class SimpleCarCarriageReservation extends SimpleDocumentData implements 
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.ICarCarriageReservation#getProductId()
 	 */
-	public CharSequence getProductId() {
+	public CharSequence getProductIdInt() {
 		return productId;
 	}
 
@@ -230,7 +230,7 @@ public class SimpleCarCarriageReservation extends SimpleDocumentData implements 
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.ICarCarriageReservation#getFromStation()
 	 */
-	public CharSequence getFromStation() {
+	public CharSequence getFromStationInt() {
 		return fromStation;
 	}
 
@@ -251,7 +251,7 @@ public class SimpleCarCarriageReservation extends SimpleDocumentData implements 
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.ICarCarriageReservation#getToStation()
 	 */
-	public CharSequence getToStation() {
+	public CharSequence getToStationInt() {
 		return toStation;
 	}
 
@@ -300,7 +300,7 @@ public class SimpleCarCarriageReservation extends SimpleDocumentData implements 
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.ICarCarriageReservation#getCarriers()
 	 */
-	public Collection<CharSequence> getCarriers() {
+	public Collection<CharSequence> getCarriersInt() {
 		return carriers;
 	}
 
@@ -633,7 +633,7 @@ public class SimpleCarCarriageReservation extends SimpleDocumentData implements 
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.ICarCarriageReservation#getProductOwner()
 	 */
-	public CharSequence getProductOwner() {
+	public CharSequence getProductOwnerInt() {
 		return productOwner;
 	}
 

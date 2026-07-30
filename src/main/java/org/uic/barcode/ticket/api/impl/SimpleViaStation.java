@@ -64,7 +64,7 @@ public class SimpleViaStation implements IViaStation {
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.IViaStation#getStation()
 	 */
-	public CharSequence getStation() {
+	public CharSequence getStationInt() {
 		return station;
 	}
 	
@@ -128,7 +128,7 @@ public class SimpleViaStation implements IViaStation {
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.IViaStation#getCarriers()
 	 */
-	public Collection<CharSequence> getCarriers() {
+	public Collection<CharSequence> getCarriersInt() {
 		return carriers;
 	}
 	

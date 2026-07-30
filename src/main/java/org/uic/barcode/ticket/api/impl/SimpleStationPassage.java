@@ -65,7 +65,7 @@ public class SimpleStationPassage extends SimpleDocumentData implements IStation
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.IStationPassage#getReference()
 	 */
-	public CharSequence getReference() {
+	public CharSequence getReferenceInt() {
 		return reference;
 	}
 
@@ -100,7 +100,7 @@ public class SimpleStationPassage extends SimpleDocumentData implements IStation
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.IStationPassage#getProductType()
 	 */
-	public CharSequence getProductId() {
+	public CharSequence getProductIdInt() {
 		return productId;
 	}
 
@@ -121,7 +121,7 @@ public class SimpleStationPassage extends SimpleDocumentData implements IStation
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.IStationPassage#getProductOwner()
 	 */
-	public CharSequence getProductOwner() {
+	public CharSequence getProductOwnerInt() {
 		return productOwner;
 	}
 
@@ -184,7 +184,7 @@ public class SimpleStationPassage extends SimpleDocumentData implements IStation
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.IStationPassage#getStations()
 	 */
-	public Collection<CharSequence> getStations() {
+	public Collection<CharSequence> getStationsInt() {
 		return stations;
 	}
 
@@ -251,7 +251,7 @@ public class SimpleStationPassage extends SimpleDocumentData implements IStation
 	 * @see org.uic.ticket.api.spec.IStationPassage#getAreaCodes()
 	 */
 	@Override
-	public Collection<CharSequence> getAreaCodes() {
+	public Collection<CharSequence> getAreaCodesInt() {
 		return areaCodes;
 	}
 

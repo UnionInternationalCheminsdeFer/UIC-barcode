@@ -23,24 +23,24 @@ import org.uic.barcode.asn1.datatypes.HasExtensionMarker;
 
 @HasExtensionMarker
 public enum IPassengerType {
-		adult("adult"),
-		senior("senior"),
-		child("child"),
-		youth("youth"),
-		dog("dog"),
-		bicycle("bicycle"),
-		freeAddonPassenger("freeAddonPassenger"),
-		freeAddonChild("freeAddonChild");
-		
-		public String text;
+    adult("adult"),
+    senior("senior"),
+    child("child"),
+    youth("youth"),
+    dog("dog"),
+    bicycle("bicycle"),
+    freeAddonPassenger("freeAddonPassenger"),
+    freeAddonChild("freeAddonChild");
 
-		IPassengerType(String text) {
-			this.text = text;
-		}
-		
-		public String toString(){
-			return text;
-		}	
-		
+    public String text;
+
+    IPassengerType(String text) {
+        this.text = text;
+    }
+
+    public String toString() {
+        return text;
+    }
+
 }
 

@@ -47,7 +47,7 @@ public class SimpleTrainValidity implements ITrainValidity {
 	 *
 	 * @return the included carriers
 	 */
-	public Collection<CharSequence> getIncludedCarriers() {
+	public Collection<CharSequence> getIncludedCarriersInt() {
 		return includedCarriers;
 	}
 
@@ -76,7 +76,7 @@ public class SimpleTrainValidity implements ITrainValidity {
 	 *
 	 * @return the excluded carriers
 	 */
-	public Collection<CharSequence> getExcludedCarriers() {
+	public Collection<CharSequence> getExcludedCarriersInt() {
 		return excludedCarriers;
 	}
 
