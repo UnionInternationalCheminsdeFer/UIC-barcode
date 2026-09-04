@@ -42,8 +42,10 @@ public class DynamicFrameCoderV2 {
 	private static void populateApi(ILevel2Data level2, Level2DataType asnLevel2) {
 		
 		if (asnLevel2 == null) return;
-				
-		level2.setLevel1Signature(asnLevel2.getLevel1SignatureBytes());
+
+        if (asnLevel2.getLevel1Signature() != null) {
+            level2.setLevel1Signature(asnLevel2.getLevel1SignatureBytes());
+        }
 		
 		if (asnLevel2.getLevel1Data() != null) {
 		    level2.setLevel1Data(new SimpleLevel1Data());
@@ -144,8 +146,10 @@ public class DynamicFrameCoderV2 {
 	private static Level2DataType populateAsn(ILevel2Data level2) throws EncodingFormatException {
 		
 		Level2DataType asnLevel2 = new Level2DataType();
-		
-		asnLevel2.setLevel1Signature(level2.getLevel1Signature());
+
+        if (level2.getLevel1Signature() != null && level2.getLevel1Signature().length > 0) {
+            asnLevel2.setLevel1Signature(level2.getLevel1Signature());
+        }
 		
 		Level1DataType asnLevel1 = populateAsn(level2.getLevel1Data());
 		

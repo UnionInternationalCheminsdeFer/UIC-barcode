@@ -8,6 +8,7 @@ import java.security.Provider;
 import java.security.PublicKey;
 import java.security.SignatureException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.zip.DataFormatException;
 
 import org.uic.barcode.dynamicContent.api.IUicDynamicContent;
@@ -79,11 +80,7 @@ public class Decoder {
 	 */
 	public Decoder (byte[] data) throws IOException, EncodingFormatException, DataFormatException {
 		this.data = data;
-		
-		if (defaultProvider == null) {
-			defaultProvider = SecurityUtils.getDefaultProvider();
-		}
-		
+		defaultProvider = SecurityUtils.getDefaultProvider();
 		decode(data);
 	}
 
@@ -130,7 +127,8 @@ public class Decoder {
 	 * @throws EncodingFormatException the encoding format exception
 	 * @deprecated
 	 */
-	public int validateLevel1(PublicKey key) throws InvalidKeyException, NoSuchAlgorithmException, SignatureException, IllegalArgumentException, UnsupportedOperationException, IOException, EncodingFormatException {
+	@Deprecated
+    public int validateLevel1(PublicKey key) throws InvalidKeyException, NoSuchAlgorithmException, SignatureException, IllegalArgumentException, UnsupportedOperationException, IOException, EncodingFormatException {
 		return validateLevel1(key,null, defaultProvider);
 	}
 	
@@ -151,7 +149,8 @@ public class Decoder {
 	 * @throws EncodingFormatException the encoding format exception
 	 * @deprecated
 	 */
-	public int validateLevel1(PublicKey key, String signatureAlgorithmName) throws InvalidKeyException, NoSuchAlgorithmException, SignatureException, IllegalArgumentException, UnsupportedOperationException, IOException, EncodingFormatException {
+	@Deprecated
+    public int validateLevel1(PublicKey key, String signatureAlgorithmName) throws InvalidKeyException, NoSuchAlgorithmException, SignatureException, IllegalArgumentException, UnsupportedOperationException, IOException, EncodingFormatException {
 		return validateLevel1(key, signatureAlgorithmName, defaultProvider);
 	}
 	
@@ -197,7 +196,8 @@ public class Decoder {
 	 * @return the return code indicating errors
 	 * @deprecated
 	 */
-	public int validateLevel2() throws EncodingFormatException {
+	@Deprecated
+    public int validateLevel2() throws EncodingFormatException {
 		return validateLevel2(defaultProvider);
 	}
 
@@ -223,7 +223,6 @@ public class Decoder {
 	 * @throws DataFormatException the data format exception
 	 */
 	public void decode(byte[] data) throws IOException, EncodingFormatException, DataFormatException {
-		
 		if (!isStaticHeader(data)) {
 			try {
 				decodeDynamicFrame(data);
@@ -242,8 +241,7 @@ public class Decoder {
 					throw new EncodingFormatException(e.getMessage());
 				}
 			}
-					
-		} else if (isStaticHeader(data)){
+		} else {
 			try {
 				decodeStaticFrame(data);
 			} catch (Exception e) {
@@ -254,15 +252,12 @@ public class Decoder {
 	}
 	
 	private void decodeDynamicFrame(byte[] data) throws EncodingFormatException, IOException {
-		
 		dynamicFrame = DynamicFrameCoder.decode(data);
 		
 		ILevel2Data level2 = dynamicFrame.getLevel2Data();
-		
 		ILevel1Data level1 = level2.getLevel1Data();
 		
 		for (IData level1Content : level1.getData()) {
-			
 			uicTicketCoder = new UicRailTicketCoder();
 			if (level1Content.getFormat().equals("FCB1")) {
 				uicTicket = uicTicketCoder.decodeFromAsn(level1Content.getData(), 1);
@@ -272,34 +267,26 @@ public class Decoder {
 				uicTicket = uicTicketCoder.decodeFromAsn(level1Content.getData(), 3);
 			}
 		}
-		
 	}
 	
 	private void decodeStaticFrame(byte[] data) throws EncodingFormatException, DataFormatException, IOException {
-		
 		staticFrame = new StaticFrame();
-		
 		staticFrame.decode(data);
 		
 		UFLEXDataRecord flex = staticFrame.getuFlex();
-		
 		if (flex != null) {
 			uicTicket = flex.getTicket();
 		}
 
 		UTLAYDataRecord tlay = staticFrame.getuTlay();
-		
 		if (tlay != null) {
 			layout = tlay.getLayout();
 		}
 	}
 
 	private void decodeSsbFrame(byte[] data) throws EncodingFormatException, DataFormatException, IOException {
-		
 		ssbFrame  = new SsbFrame();
-		
 		ssbFrame.decode(data);
-		
 	}
 
 	/**
@@ -310,9 +297,8 @@ public class Decoder {
 	 */
 	private boolean isStaticHeader(byte[] data) {
 		byte[] start = "#UT".getBytes();
-		if (start[0] != data[0] || start[1]!= start[1] || start[2] != data[2]) return false;
-		return true;
-	}
+        return start[0] == data[0] && start[1] == data[1] && start[2] == data[2];
+    }
 
 	/**
 	 * Checks if is ssb frame.
@@ -321,11 +307,8 @@ public class Decoder {
 	 * @return true, if is static header
 	 */
 	private boolean isSsbFrame(byte[] data) {
-		if (data.length == 114) {
-			return true;
-		} 
-		return false;
-	}
+        return data.length == 114;
+    }
 	
 	/**
 	 * Gets the uic ticket.
@@ -405,10 +388,18 @@ public class Decoder {
 	}
 
 	public IData getLevel2Data() {
-		if (!isStaticHeader(data) && dynamicFrame != null && dynamicFrame.getLevel2Data() != null) {
-			return dynamicFrame.getLevel2Data().getLevel2Data();
-		}
-		return null;
+        if (isStaticHeader(data)) return null;
+        if (dynamicFrame == null) return null;
+        if (dynamicFrame.getLevel2Data() == null) return null;
+        return dynamicFrame.getLevel2Data().getLevel2Data();
+	}
+
+	public Collection<IData> getLevel1Data() {
+        if (isStaticHeader(data)) return null;
+        if (dynamicFrame == null) return null;
+        if (dynamicFrame.getLevel2Data() == null) return null;
+        if (dynamicFrame.getLevel2Data().getLevel1Data() == null) return null;
+		return dynamicFrame.getLevel2Data().getLevel1Data().getData();
 	}
 	
 	public byte[] getEncodedLevel1Data() throws IOException, EncodingFormatException {
@@ -424,7 +415,6 @@ public class Decoder {
 	}
 	
 	public byte[] getLevel1Signature() throws IOException, EncodingFormatException {
-		
 		if (!isStaticHeader(data)) {
 			return dynamicFrame.getLevel2Data().getLevel1Signature();
 		} else if (staticFrame != null) {
@@ -437,7 +427,6 @@ public class Decoder {
 	}
 	
 	public String getLevel1KeyId() throws EncodingFormatException {
-		
 		if (dynamicFrame != null 
 			&& dynamicFrame.getLevel2Data() != null 
 			&& dynamicFrame.getLevel2Data().getLevel1Data() != null) {
@@ -453,7 +442,6 @@ public class Decoder {
 	}
 	
 	public String getTrimmedLevel1KeyId() throws EncodingFormatException {
-		
 		if (dynamicFrame != null 
 			&& dynamicFrame.getLevel2Data() != null 
 			&& dynamicFrame.getLevel2Data().getLevel1Data() != null) {
@@ -479,7 +467,6 @@ public class Decoder {
 	}
 	
 	public String getLevel1SecurityProvider() throws EncodingFormatException {
-	
 		if (dynamicFrame != null 
 			&& dynamicFrame.getLevel2Data() != null 
 			&& dynamicFrame.getLevel2Data().getLevel1Data() != null) {
@@ -501,7 +488,4 @@ public class Decoder {
 	public void setSsbFrame(SsbFrame ssbFrame) {
 		this.ssbFrame = ssbFrame;
 	}
-	
-	
-	
 }

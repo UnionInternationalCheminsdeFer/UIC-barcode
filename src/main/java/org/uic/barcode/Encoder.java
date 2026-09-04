@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.security.PrivateKey;
 import java.security.Provider;
 import java.security.PublicKey;
+import java.util.Objects;
 import java.util.zip.DataFormatException;
 
 import org.uic.barcode.dynamicContent.api.IUicDynamicContent;
@@ -33,11 +34,7 @@ import org.uic.barcode.utils.SecurityUtils;
 
 
 /**
- * The Class Encoder.
- * 
- * signing and encoding of UIC bar codes 
- * 
- * 
+ * Signing and encoding of UIC barcodes
  */
 public class Encoder {
 	
@@ -62,7 +59,6 @@ public class Encoder {
 	
 	private Provider defaultProvider = null;
 	
-	
 	public Provider getDefaultProvider() {
 		return defaultProvider;
 	}
@@ -83,74 +79,48 @@ public class Encoder {
 	 * @throws EncodingFormatException the encoding format exception
 	 */
 	public Encoder(IUicRailTicket ticket, TicketLayout layout, String barcodeType, int version, int fcbVersion) throws IOException, EncodingFormatException {
-        defaultProvider = SecurityUtils.getDefaultProvider();
-		
-		if (barcodeType == UIC_BARCODE_TYPE_CLASSIC) {
-
-			staticFrame = new StaticFrame();
-			staticFrame.setVersion(version);
-			
-			if (layout != null) {
-						
-				UHEADDataRecord head = new UHEADDataRecord();
-				head.setVersionId("01");
-				staticFrame.setHeaderRecord(head);				
-				
-				UTLAYDataRecord tlay = new UTLAYDataRecord();
-				tlay.setLayout(layout);
-				tlay.setVersionId("01");
-				staticFrame.setuTlay(tlay);
-			}		
-			
-			if (ticket != null) {
-				
-				UFLEXDataRecord flex = new UFLEXDataRecord();
-				flex.setTicket(ticket);
-				flex.setVersionId(String.format("%02d",fcbVersion));
-				staticFrame.setuFlex(flex);
-			}
-			
-			
-		} else if (barcodeType == UIC_BARCODE_TYPE_DOSIPAS) {
-			
-			dynamicFrame = new SimpleDynamicFrame();
-			dynamicFrame.setLevel2Data(new SimpleLevel2Data());
-			dynamicFrame.getLevel2Data().setLevel1Data(new SimpleLevel1Data());
-			
-			if (ticket != null) {
-				
-				if (version == 1) {
-					dynamicFrame.setFormat(Constants.DYNAMIC_BARCODE_FORMAT_VERSION_1);
-				} else if (version == 2) {
-					dynamicFrame.setFormat(Constants.DYNAMIC_BARCODE_FORMAT_VERSION_2);
-				} 
-				
-				IData ticketData = new SimpleData();
-				
-				UicRailTicketCoder uicTicketCoder = new UicRailTicketCoder();
-				if (fcbVersion == 1 || fcbVersion == 13) {
-					ticketData.setFormat(Constants.DATA_TYPE_FCB_VERSION_1);
-				} else if (fcbVersion == 2) {
-					ticketData.setFormat(Constants.DATA_TYPE_FCB_VERSION_2);
-				} else if (fcbVersion == 3) {
-					ticketData.setFormat(Constants.DATA_TYPE_FCB_VERSION_3);
-				}
-				ticketData.setData(uicTicketCoder.encode(ticket, fcbVersion));
-				dynamicFrame.getLevel2Data().getLevel1Data().addData(ticketData);
-				
-			}
-			
-		} else if (barcodeType == UIC_BARCODE_TYPE_SSB) {
-			
-			ssbFrame = new SsbFrame();
-
-		}
+        this(barcodeType, version);
+        if (layout != null) {
+            addTicketLayout(layout);
+        }
+        if (ticket != null) {
+            addTicketData(ticket, fcbVersion);
+        }
 	}
+
+    /**
+     * Instantiates a new encoder with an empty ticket, for adding data elements later.
+     *
+     * @param barcodeType the bar code type
+     * @param version the version of the bar code
+     * @throws EncodingFormatException the encoding format exception
+     */
+    public Encoder(String barcodeType, int version) throws EncodingFormatException {
+        defaultProvider = SecurityUtils.getDefaultProvider();
+
+        if (Objects.equals(barcodeType, UIC_BARCODE_TYPE_CLASSIC)) {
+            staticFrame = new StaticFrame();
+            staticFrame.setVersion(version);
+        } else if (Objects.equals(barcodeType, UIC_BARCODE_TYPE_DOSIPAS)) {
+            dynamicFrame = new SimpleDynamicFrame();
+            dynamicFrame.setLevel2Data(new SimpleLevel2Data());
+            dynamicFrame.getLevel2Data().setLevel1Data(new SimpleLevel1Data());
+            if (version == 1) {
+                dynamicFrame.setFormat(Constants.DYNAMIC_BARCODE_FORMAT_VERSION_1);
+            } else if (version == 2) {
+                dynamicFrame.setFormat(Constants.DYNAMIC_BARCODE_FORMAT_VERSION_2);
+            }
+        } else if (Objects.equals(barcodeType, UIC_BARCODE_TYPE_SSB)) {
+            ssbFrame = new SsbFrame();
+        } else {
+            throw new EncodingFormatException("Barcode type not supported");
+        }
+    }
 	
 	/**
 	 * Instantiates a new encoder for a level 2 encoding.
 	 *
-	 * @param level1Data the level 1 data (binary as signed)
+	 * @param level1DataBin the level 1 data (binary as signed)
 	 * @param signatureLevel1 the signature of the level 1 data 
 	 * @param version the version of the bar code 
 	 * @throws IOException Signals that an I/O exception has occurred.
@@ -163,30 +133,18 @@ public class Encoder {
 		dynamicFrame.setLevel2Data(new SimpleLevel2Data());
 			
 		if (version == 1) {
-			
 			dynamicFrame.setFormat(Constants.DYNAMIC_BARCODE_FORMAT_VERSION_1);
-			
 			ILevel1Data l1 = DynamicFrameCoderV1.decodeLevel1(level1DataBin);
-			
 			dynamicFrame.getLevel2Data().setLevel1Data(l1);
-			
 			dynamicFrame.getLevel2Data().setLevel1Signature(signatureLevel1);
-			
 		} else if (version == 2) {
-			
 			dynamicFrame.setFormat(Constants.DYNAMIC_BARCODE_FORMAT_VERSION_2);
-			
 			ILevel1Data l1 = DynamicFrameCoderV2.decodeLevel1(level1DataBin);
-			
 			dynamicFrame.getLevel2Data().setLevel1Data(l1);
-			
 			dynamicFrame.getLevel2Data().setLevel1Signature(signatureLevel1);
-			
 		} else {
 			throw new EncodingFormatException("Version of the dynamic header not supported");
 		}
-		
-				
 	}
 	
 	
@@ -206,40 +164,25 @@ public class Encoder {
 		if (decoder.getDynamicFrame() == null) {
 			throw new EncodingFormatException("No dynamic frame included");
 		}
-		
-			
+
 		dynamicFrame = decoder.getDynamicFrame();
 		byte[] level1DataBin = decoder.getEncodedLevel1Data();
 		byte[] signatureLevel1 = decoder.getLevel1Signature();
 			
 		if (version == 1) {
-			
 			dynamicFrame.setFormat(Constants.DYNAMIC_BARCODE_FORMAT_VERSION_1);
-			
 			ILevel1Data l1 = DynamicFrameCoderV1.decodeLevel1(level1DataBin);
-			
 			dynamicFrame.getLevel2Data().setLevel1Data(l1);
-			
 			dynamicFrame.getLevel2Data().setLevel1Signature(signatureLevel1);
-			
 		} else if (version == 2) {
-			
 			dynamicFrame.setFormat(Constants.DYNAMIC_BARCODE_FORMAT_VERSION_2);
-			
 			ILevel1Data l1 = DynamicFrameCoderV2.decodeLevel1(level1DataBin);
-			
 			dynamicFrame.getLevel2Data().setLevel1Data(l1);
-			
 			dynamicFrame.getLevel2Data().setLevel1Signature(signatureLevel1);
-			
 		} else {
 			throw new EncodingFormatException("Version of the dynamic header not supported");
 		}
-		
-				
 	}
-	
-	
 	
 	/**
 	 * Signing level 2 of a dynamic bar code
@@ -248,7 +191,8 @@ public class Encoder {
 	 * @throws Exception the exception
 	 * @deprecated
 	 */
-	public void signLevel2(PrivateKey key) throws Exception {
+	@Deprecated
+    public void signLevel2(PrivateKey key) throws Exception {
 		signLevel2(key, defaultProvider);
 	}
 	
@@ -359,13 +303,57 @@ public class Encoder {
 		}
 		return null;
 	}
-	
-	
-	public IUicDynamicContent getDynamicContent() {
+
+    public IUicDynamicContent getDynamicContent() {
         if (dynamicFrame == null)
             return null;
         return dynamicFrame.getDynamicContent();
-	}
+    }
+
+    public void addLevel1Data(IData level1Data) {
+        if (dynamicFrame != null) {
+            if (dynamicFrame.getLevel2Data() == null) {
+                dynamicFrame.setLevel2Data(new SimpleLevel2Data());
+            }
+            if (dynamicFrame.getLevel2Data().getLevel1Data() == null) {
+                dynamicFrame.getLevel2Data().setLevel1Data(new SimpleLevel1Data());
+            }
+            dynamicFrame.getLevel2Data().getLevel1Data().addData(level1Data);
+        }
+    }
+
+    public void addTicketData(IUicRailTicket ticket, int fcbVersion) throws EncodingFormatException, IOException {
+        if (dynamicFrame != null) {
+            IData ticketData = new SimpleData();
+            UicRailTicketCoder uicTicketCoder = new UicRailTicketCoder();
+            if (fcbVersion == 1 || fcbVersion == 13) {
+                ticketData.setFormat(Constants.DATA_TYPE_FCB_VERSION_1);
+            } else if (fcbVersion == 2) {
+                ticketData.setFormat(Constants.DATA_TYPE_FCB_VERSION_2);
+            } else if (fcbVersion == 3) {
+                ticketData.setFormat(Constants.DATA_TYPE_FCB_VERSION_3);
+            }
+            ticketData.setData(uicTicketCoder.encode(ticket, fcbVersion));
+            addLevel1Data(ticketData);
+        } else if (staticFrame != null) {
+            UFLEXDataRecord flex = new UFLEXDataRecord();
+            flex.setTicket(ticket);
+            flex.setVersionId(String.format("%02d", fcbVersion));
+            staticFrame.setuFlex(flex);
+        }
+    }
+
+    public void addTicketLayout(TicketLayout layout) {
+        if (staticFrame != null) {
+            UHEADDataRecord head = new UHEADDataRecord();
+            head.setVersionId("01");
+            staticFrame.setHeaderRecord(head);
+            UTLAYDataRecord tlay = new UTLAYDataRecord();
+            tlay.setLayout(layout);
+            tlay.setVersionId("01");
+            staticFrame.setuTlay(tlay);
+        }
+    }
 
     /**
      * Convert a Java Standard Algorithm name to an OID
@@ -398,7 +386,8 @@ public class Encoder {
 	 * @throws Exception the exception
 	 * @deprecated
 	 */
-	public void signLevel1(String securityProvider, PrivateKey key, String signingAlg, String keyId) throws Exception {
+	@Deprecated
+    public void signLevel1(String securityProvider, PrivateKey key, String signingAlg, String keyId) throws Exception {
 		signLevel1(securityProvider,key,signingAlg, keyId, defaultProvider);
 	}
 	
@@ -435,7 +424,6 @@ public class Encoder {
 			ssbFrame.signLevel1(key, provider, keyId, signatureAlgorithmName);
 	}
 	
-	
 	/**
 	 * Sets the static header parameter.
 	 *
@@ -458,8 +446,7 @@ public class Encoder {
 		return dynamicFrame;
 	}
 	
-	
-	
+
 	/**
 	 * Gets the static frame.
 	 *
@@ -468,7 +455,6 @@ public class Encoder {
 	public StaticFrame getStaticFrame() {
 		return staticFrame;
 	}
-
 
 
 	/**
