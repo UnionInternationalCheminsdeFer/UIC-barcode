@@ -29,11 +29,16 @@ public class MustString implements CharSequence {
 
     @Override
     public boolean equals(Object o) {
-        if (o instanceof CharSequence) {
+        if (!(o instanceof CharSequence)) {
             return false;
         }
         String s = o.toString();
         return this.underlyingString.equals(s);
+    }
+
+    @Override
+    public int hashCode() {
+        return underlyingString.hashCode();
     }
 
     public boolean isEmpty() {
