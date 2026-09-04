@@ -17,9 +17,3 @@ An interactive rendering of the latest Rail Ticket Data v3 ASN.1 may be viewed [
 
 OIDs for the ASN.1 modules are documented in `oid.md`, and defined in ASN.1 form
 in `asn-specs/oids.asn`.
-
-## Draft Multi Modal Ticket Data v1 (MMTDv1)
-
-The `mmtdv1-draft` branch contains a draft version of the future Multi Modal 
-Ticket Data v1 ASN.1 modules. These ASN.1 modules are *not* to be used in 
-production yet, they are provided to facilitate experimentation and public comment.
