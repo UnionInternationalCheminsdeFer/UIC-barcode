@@ -91,6 +91,7 @@ public class SsbStations {
 			arrivalStationNumber = bits.getInteger(offset, 30);
 			offset += 30;
 		} else {
+			Integer startingOffset = offset;
 			codeTable = SsbStationCodeTable.values()[bits.getInteger(offset, 4)];
 			offset += 4;
 			departureStationNumber = bits.getInteger(offset, 28);
@@ -99,6 +100,23 @@ public class SsbStations {
 			arrivalStationNumber = bits.getInteger(offset, 28);
 			arrivalStationCode = Integer.toString(arrivalStationNumber);
 			offset += 28;
+			// Thalys barcodes are encoded wrong, so we need to check if the station numbers are valid, otherwise we assume that the barcode is encoded in alpha numeric format
+			if (
+				departureStationNumber < 0 || 
+				departureStationNumber > 9999999 || 
+				arrivalStationNumber < 0 || 
+				arrivalStationNumber > 9999999
+			) {
+				offset = startingOffset;
+				alphaNumeric = true;
+				codeTable = SsbStationCodeTable.UNKNOWN_0;
+				departureStationCode = bits.getChar6String(offset,30);
+				departureStationNumber = bits.getInteger(offset, 30);
+				offset += 30;
+				arrivalStationCode = bits.getChar6String(offset,30);
+				arrivalStationNumber = bits.getInteger(offset, 30);
+				offset += 30;
+			}
 		}
 
 		

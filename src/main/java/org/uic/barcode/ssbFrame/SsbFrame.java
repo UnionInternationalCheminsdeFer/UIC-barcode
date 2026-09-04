@@ -35,6 +35,8 @@ public class SsbFrame {
 	
 	private SsbPass passData = null;
 	
+	private byte[] signedData = null;
+	
 	public void decode(byte[] bytes) throws EncodingFormatException {
 		
 		if (bytes.length != 114) {
@@ -76,6 +78,8 @@ public class SsbFrame {
 			
 		}
 		
+		signedData = Arrays.copyOfRange(bytes, 0, 58);
+		
 		byte[] signatureBytes = new byte[56];
 				
 		try {
@@ -108,23 +112,12 @@ public class SsbFrame {
 		
 		byte[] bytes = new byte[114];
 		
-		int offset = header.encodeContent(bytes,0);
+		if (signedData == null) {
+			signedData = getDataForSignature();
+		}
 		
-		
-		
-		if (nonUicData != null) {
-			offset = nonUicData.encodeContent(bytes, offset);
-		} else if (nonReservationData != null) {
-			offset = nonReservationData.encodeContent(bytes, offset);
-		} else if (reservationData != null) {
-			offset = reservationData.encodeContent(bytes, offset);
-		} else if (groupData != null) {
-			offset = groupData.encodeContent(bytes, offset);
-		} else if (passData != null) {
-			offset = passData.encodeContent(bytes, offset);
-		} else {
-			throw new EncodingFormatException("Data Content for SSB missing");
-		};
+		int offset = signedData.length;
+		System.arraycopy(signedData, 0, bytes, 0, offset);
 		
 		
 		if (signaturePart1.length > 28) {
@@ -156,6 +149,11 @@ public class SsbFrame {
 	
 	public byte[] getDataForSignature() throws EncodingFormatException {
 		
+		if (signedData != null) {
+			//signed data already build
+			return signedData;
+		}
+		
 		byte[] bytes = new byte[58];
 		
 		int offset = header.encodeContent(bytes,0);
@@ -175,7 +173,9 @@ public class SsbFrame {
 			throw new EncodingFormatException("Data Content for SSB missing");
 		};
 				
-		return bytes;
+		signedData = bytes;
+		
+		return signedData;
 		
 	}
 
