@@ -10,6 +10,7 @@ import java.util.LinkedHashSet;
 import org.uic.barcode.ticket.api.spec.IExtension;
 import org.uic.barcode.ticket.api.spec.IStationCodeTable;
 import org.uic.barcode.ticket.api.spec.IStationPassage;
+import org.uic.barcode.ticket.api.utils.MustString;
 
 
 /**
@@ -18,16 +19,16 @@ import org.uic.barcode.ticket.api.spec.IStationPassage;
 public class SimpleStationPassage extends SimpleDocumentData implements IStationPassage {
 	
 	/** The reference. */
-	protected String reference;
+	protected CharSequence reference;
 	
 	/** The product name. */
 	protected String productName;
 	
 	/** The product type. */
-	protected String productId;
+	protected CharSequence productId;
 	
 	/** The product owner. */
-	protected String productOwner;
+	protected CharSequence productOwner;
 	
 	/** The valid from. */
 	protected Date validFrom;
@@ -45,10 +46,10 @@ public class SimpleStationPassage extends SimpleDocumentData implements IStation
 	protected int numberOfdaysAllowed;
 	
 	/** The stations. */
-	protected Collection<String> stations = new LinkedHashSet<String>();
+	protected Collection<CharSequence> stations = new LinkedHashSet<>();
 
 	/** The station names. */
-	protected Collection<String> stationNames = new LinkedHashSet<String>();	
+	protected Collection<String> stationNames = new LinkedHashSet<>();
 	
 	
 	/** The extension data. */
@@ -56,15 +57,15 @@ public class SimpleStationPassage extends SimpleDocumentData implements IStation
 	
 	
 	/** The area codes. */
-	protected Collection<String> areaCodes = new LinkedHashSet<String>();	
+	protected Collection<CharSequence> areaCodes = new LinkedHashSet<>();
 	
 	/** The area names. */
-	protected Collection<String> areaNames = new LinkedHashSet<String>();	
+	protected Collection<String> areaNames = new LinkedHashSet<>();
 
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.IStationPassage#getReference()
 	 */
-	public String getReference() {
+	public CharSequence getReferenceInt() {
 		return reference;
 	}
 
@@ -73,6 +74,13 @@ public class SimpleStationPassage extends SimpleDocumentData implements IStation
 	 */
 	public void setReference(String reference) {
 		this.reference = reference;
+	}
+
+	/* (nicht-Javadoc)
+	 * @see org.uic.ticket.api.spec.IStationPassage#setReferenceMustString(java.lang.String)
+	 */
+	public void setReferenceMustString(String reference) {
+		this.reference = new MustString(reference);
 	}
 
 	/* (nicht-Javadoc)
@@ -92,21 +100,28 @@ public class SimpleStationPassage extends SimpleDocumentData implements IStation
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.IStationPassage#getProductType()
 	 */
-	public String getProductId() {
+	public CharSequence getProductIdInt() {
 		return productId;
 	}
 
 	/* (nicht-Javadoc)
-	 * @see org.uic.ticket.api.spec.IStationPassage#setProductType(int)
+	 * @see org.uic.ticket.api.spec.IStationPassage#setProductId(int)
 	 */
 	public void setProductId(String id) {
 		this.productId = id;
-	}	
+	}
+
+	/* (nicht-Javadoc)
+	 * @see org.uic.ticket.api.spec.IStationPassage#setProductIdMustString(int)
+	 */
+	public void setProductIdMustString(String id) {
+		this.productId = new MustString(id);
+	}
 
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.IStationPassage#getProductOwner()
 	 */
-	public String getProductOwner() {
+	public CharSequence getProductOwnerInt() {
 		return productOwner;
 	}
 
@@ -115,6 +130,13 @@ public class SimpleStationPassage extends SimpleDocumentData implements IStation
 	 */
 	public void setProductOwner(String productOwner) {
 		this.productOwner = productOwner;
+	}
+
+	/* (nicht-Javadoc)
+	 * @see org.uic.ticket.api.spec.IStationPassage#setProductOwnerMustString(java.lang.String)
+	 */
+	public void setProductOwnerMustString(String productOwner) {
+		this.productOwner = new MustString(productOwner);
 	}
 
 	/* (nicht-Javadoc)
@@ -162,7 +184,7 @@ public class SimpleStationPassage extends SimpleDocumentData implements IStation
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.IStationPassage#getStations()
 	 */
-	public Collection<String> getStations() {
+	public Collection<CharSequence> getStationsInt() {
 		return stations;
 	}
 
@@ -171,6 +193,13 @@ public class SimpleStationPassage extends SimpleDocumentData implements IStation
 	 */
 	public void addStation(String station) {
 		this.stations.add(station);
+	}
+
+	/* (nicht-Javadoc)
+	 * @see org.uic.ticket.api.spec.IStationPassage#addStationMustString(java.lang.String)
+	 */
+	public void addStationMustString(String station) {
+		this.stations.add(new MustString(station));
 	}
 
 	/* (nicht-Javadoc)
@@ -222,7 +251,7 @@ public class SimpleStationPassage extends SimpleDocumentData implements IStation
 	 * @see org.uic.ticket.api.spec.IStationPassage#getAreaCodes()
 	 */
 	@Override
-	public Collection<String> getAreaCodes() {
+	public Collection<CharSequence> getAreaCodesInt() {
 		return areaCodes;
 	}
 
@@ -240,6 +269,14 @@ public class SimpleStationPassage extends SimpleDocumentData implements IStation
 	@Override
 	public void addAreaCode(String code) {
 		areaCodes.add(code);
+	}
+
+	/* (nicht-Javadoc)
+	 * @see org.uic.ticket.api.spec.IStationPassage#addAreaCodeMustString(java.lang.String)
+	 */
+	@Override
+	public void addAreaCodeMustString(String code) {
+		areaCodes.add(new MustString(code));
 	}
 
 	/* (nicht-Javadoc)

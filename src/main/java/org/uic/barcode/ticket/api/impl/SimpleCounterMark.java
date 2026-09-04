@@ -13,6 +13,7 @@ import org.uic.barcode.ticket.api.spec.IRegionalValidity;
 import org.uic.barcode.ticket.api.spec.IReturnRouteDescription;
 import org.uic.barcode.ticket.api.spec.IStationCodeTable;
 import org.uic.barcode.ticket.api.spec.ITravelClassType;
+import org.uic.barcode.ticket.api.utils.MustString;
 
 
 /**
@@ -27,14 +28,14 @@ public class SimpleCounterMark extends SimpleDocumentData implements ICounterMar
 	protected Date   arrivalDate;		
  											
 	/** The reference. */
-	protected String reference;
+	protected CharSequence reference;
 	
 	/** The product owner. */
-	protected String productOwner;
+	protected CharSequence productOwner;
 	
 	
 	/** The product id. */
-	protected String productId;	
+	protected CharSequence productId;
 	
    	/** The number of countermark. */
 	   protected int numberOfCountermark;
@@ -52,10 +53,10 @@ public class SimpleCounterMark extends SimpleDocumentData implements ICounterMar
 	protected IStationCodeTable stationCodeTable = IStationCodeTable.stationUIC;
 	
 	/** The from station. */
-	protected String fromStation;
+	protected CharSequence fromStation;
 	
 	/** The to station. */
-	protected String toStation;        
+	protected CharSequence toStation;
 				                 
 	/** The from station name. */
 	protected String fromStationName;
@@ -82,13 +83,13 @@ public class SimpleCounterMark extends SimpleDocumentData implements ICounterMar
 	protected ITravelClassType	classCode = ITravelClassType.second;       
    
 	/** The included carriers. */
-	protected Collection<String>includedCarriers = new LinkedHashSet<String>();	  
+	protected Collection<CharSequence> includedCarriers = new LinkedHashSet<>();
 	
 	/** The included service brands. */
-	protected Collection<Integer>includedServiceBrands = new LinkedHashSet<Integer>();	
+	protected Collection<Integer> includedServiceBrands = new LinkedHashSet<>();
 	
 	/** The excluded service brands. */
-	protected Collection<Integer>excludedServiceBrands = new LinkedHashSet<Integer>();	    			                
+	protected Collection<Integer> excludedServiceBrands = new LinkedHashSet<>();
         
  	/** The info text. */
 	 protected String infoText;
@@ -99,13 +100,13 @@ public class SimpleCounterMark extends SimpleDocumentData implements ICounterMar
 	  
 	  
 	  /** The ticket reference. */
-  	protected String ticketReference;
+  	protected CharSequence ticketReference;
 
 
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.ICounterMark#getReference()
 	 */
-	public String getReference() {
+	public CharSequence getReferenceInt() {
 		return reference;
 	}
 
@@ -114,6 +115,13 @@ public class SimpleCounterMark extends SimpleDocumentData implements ICounterMar
 	 */
 	public void setReference(String reference) {
 		this.reference = reference;
+	}
+
+	/* (nicht-Javadoc)
+	 * @see org.uic.ticket.api.spec.ICounterMark#setReferenceMustString(java.lang.String)
+	 */
+	public void setReferenceMustString(String reference) {
+		this.reference = new MustString(reference);
 	}
 
 	/* (nicht-Javadoc)
@@ -147,7 +155,7 @@ public class SimpleCounterMark extends SimpleDocumentData implements ICounterMar
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.ICounterMark#getFromStation()
 	 */
-	public String getFromStation() {
+	public CharSequence getFromStationInt() {
 		return fromStation;
 	}
 
@@ -159,9 +167,16 @@ public class SimpleCounterMark extends SimpleDocumentData implements ICounterMar
 	}
 
 	/* (nicht-Javadoc)
+	 * @see org.uic.ticket.api.spec.ICounterMark#setFromStationMustString(java.lang.String)
+	 */
+	public void setFromStationMustString(String fromStation) {
+		this.fromStation = new MustString(fromStation);
+	}
+
+	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.ICounterMark#getToStation()
 	 */
-	public String getToStation() {
+	public CharSequence getToStationInt() {
 		return toStation;
 	}
 
@@ -170,6 +185,13 @@ public class SimpleCounterMark extends SimpleDocumentData implements ICounterMar
 	 */
 	public void setToStation(String toStation) {
 		this.toStation = toStation;
+	}
+
+	/* (nicht-Javadoc)
+	 * @see org.uic.ticket.api.spec.ICounterMark#setToStationMustString(java.lang.String)
+	 */
+	public void setToStationMustString(String toStation) {
+		this.toStation = new MustString(toStation);
 	}
 
 	/* (nicht-Javadoc)
@@ -287,7 +309,7 @@ public class SimpleCounterMark extends SimpleDocumentData implements ICounterMar
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.ICounterMark#getIncludedCarriers()
 	 */
-	public Collection<String> getIncludedCarriers() {
+	public Collection<CharSequence> getIncludedCarriersInt() {
 		return includedCarriers;
 	}
 
@@ -296,6 +318,13 @@ public class SimpleCounterMark extends SimpleDocumentData implements ICounterMar
 	 */
 	public void addIncludedCarrier(String carrier) {
 		this.includedCarriers.add(carrier);
+	}
+
+	/* (nicht-Javadoc)
+	 * @see org.uic.ticket.api.spec.ICounterMark#addIncludedCarrierMustString(java.lang.Integer)
+	 */
+	public void addIncludedCarrierMustString(String carrier) {
+		this.includedCarriers.add(new MustString(carrier));
 	}
 
 	/* (nicht-Javadoc)
@@ -402,7 +431,7 @@ public class SimpleCounterMark extends SimpleDocumentData implements ICounterMar
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.ICounterMark#getProductOwner()
 	 */
-	public String getProductOwner() {
+	public CharSequence getProductOwnerInt() {
 		return productOwner;
 	}
 
@@ -414,9 +443,16 @@ public class SimpleCounterMark extends SimpleDocumentData implements ICounterMar
 	}
 
 	/* (nicht-Javadoc)
+	 * @see org.uic.ticket.api.spec.ICounterMark#setProductOwnerMustString(java.lang.String)
+	 */
+	public void setProductOwnerMustString(String productOwner) {
+		this.productOwner = new MustString(productOwner);
+	}
+
+	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.ICounterMark#getTicketReference()
 	 */
-	public String getTicketReference() {
+	public CharSequence getTicketReferenceInt() {
 		return ticketReference;
 	}
 
@@ -428,9 +464,16 @@ public class SimpleCounterMark extends SimpleDocumentData implements ICounterMar
 	}
 
 	/* (nicht-Javadoc)
+	 * @see org.uic.ticket.api.spec.ICounterMark#setTicketReferenceMustString(java.lang.String)
+	 */
+	public void setTicketReferenceMustString(String ticketReference) {
+		this.ticketReference = new MustString(ticketReference);
+	}
+
+	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.ICounterMark#getProductId()
 	 */
-	public String getProductId() {
+	public CharSequence getProductIdInt() {
 		return productId;
 	}
 
@@ -439,6 +482,13 @@ public class SimpleCounterMark extends SimpleDocumentData implements ICounterMar
 	 */
 	public void setProductId(String productId) {
 		this.productId = productId;
+	}
+
+	/* (nicht-Javadoc)
+	 * @see org.uic.ticket.api.spec.ICounterMark#setProductIdMustString(java.lang.String)
+	 */
+	public void setProductIdMustString(String productId) {
+		this.productId = new MustString(productId);
 	}
 	
 	/** The valid from utc coffset. */

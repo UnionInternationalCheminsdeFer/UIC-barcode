@@ -11,6 +11,7 @@ import org.uic.barcode.ticket.api.spec.ICustomerStatusDescription;
 import org.uic.barcode.ticket.api.spec.IGenderType;
 import org.uic.barcode.ticket.api.spec.IPassengerType;
 import org.uic.barcode.ticket.api.spec.ITraveler;
+import org.uic.barcode.ticket.api.utils.MustString;
 
 
 /**
@@ -41,7 +42,7 @@ public class SimpleTraveler implements ITraveler {
 	protected IGenderType 	gender;									
 	
 	/** The customer id. */
-	protected String 	customerId;		
+	protected CharSequence 	customerId;
 	
 	/** The date of birth. */
 	protected Date 		dateOfBirth;
@@ -169,7 +170,7 @@ public class SimpleTraveler implements ITraveler {
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.ITraveler#getCustomerId()
 	 */
-	public String getCustomerId() {
+	public CharSequence getCustomerIdInt() {
 		return customerId;
 	}
 	
@@ -178,6 +179,13 @@ public class SimpleTraveler implements ITraveler {
 	 */
 	public void setCustomerId(String customerId) {
 		this.customerId = customerId;
+	}
+
+	/* (nicht-Javadoc)
+	 * @see org.uic.ticket.api.spec.ITraveler#setCustomerIdMustString(java.lang.String)
+	 */
+	public void setCustomerIdMustString(String customerId) {
+		this.customerId = new MustString(customerId);
 	}
 	
 	/* (nicht-Javadoc)

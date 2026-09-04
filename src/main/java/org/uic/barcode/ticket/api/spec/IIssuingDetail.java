@@ -1,5 +1,5 @@
 /*
- * 
+ *
  */
 package org.uic.barcode.ticket.api.spec;
 
@@ -10,206 +10,257 @@ import java.util.Date;
  * The Interface IIssuerDetails.
  */
 public interface IIssuingDetail {
-	
-	/**
-	 * Gets the issuing date.
-	 * 
-	 * The utc date in the barcode is
-	 * provided in the system default time zone.
-	 *
-	 * @return the issuing date
-	 */
-	public Date getIssuingDate();
-	
-	/**
-	 * Sets the utc issuing date.
-	 *
-	 * @param date the new issuing date
-	 */
-	public void setIssuingDate(Date date);
-	
-	
-	/**
-	 * Sets the issuing date using local time zone.
-	 * The system default time zone is assumed and the 
-	 * date is converted to UTC in the barcode
-	 *
-	 * @param date the new issuing date
-	 */
-	public void setIssuingLocalDate(Date date);
-	
-	
-	/**
-	 * Gets the issuer.
-	 *
-	 * @return the issuer
-	 */
-	public String getIssuer();
-	
-	/**
-	 * Sets the issuer.
-	 *
-	 * @param issuer the new issuer
-	 */
-	public void setIssuer(String issuer);
-	
-	/**
-	 * Gets the security provider.
-	 *
-	 * @return the security provider
-	 */
-	public String getSecurityProvider();
-	
 
-	/**
-	 * Sets the security provider.
-	 *
-	 * @param securityProvider the new security provider
-	 */
-	public void setSecurityProvider(String securityProvider);
-	
+    /**
+     * Gets the issuing date.
+     * <p>
+     * The utc date in the barcode is
+     * provided in the system default time zone.
+     *
+     * @return the issuing date
+     */
+    public Date getIssuingDate();
 
-	/**
-	 * Gets the issuer name.
-	 *
-	 * @return the issuer name
-	 */
-	public String getIssuerName();
-	
+    /**
+     * Sets the utc issuing date.
+     *
+     * @param date the new issuing date
+     */
+    public void setIssuingDate(Date date);
 
-	/**
-	 * Sets the issuer name.
-	 *
-	 * @param issuerName the new issuer name
-	 */
-	public void setIssuerName(String issuerName);
-	
 
-	/**
-	 * Checks if is specimen.
-	 *
-	 * @return true, if is specimen
-	 */
-	public boolean isSpecimen();
-	
+    /**
+     * Sets the issuing date using local time zone.
+     * The system default time zone is assumed and the
+     * date is converted to UTC in the barcode
+     *
+     * @param date the new issuing date
+     */
+    public void setIssuingLocalDate(Date date);
 
-	/**
-	 * Sets the specimen.
-	 *
-	 * @param specimen the new specimen
-	 */
-	public void setSpecimen(boolean specimen);
-	
 
-	/**
-	 * Checks if is activated.
-	 *
-	 * @return true, if is activated
-	 */
-	public boolean isActivated();
-	
+    /**
+     * Gets the issuer.
+     *
+     * @return the issuer
+     */
+    public default String getIssuer() {
+        CharSequence v = getIssuerInt();
+        if (v == null) {
+            return null;
+        }
+        return v.toString();
+    }
 
-	/**
-	 * Sets the activated.
-	 *
-	 * @param activated the new activated
-	 */
-	public void setActivated(boolean activated);
-	
+    public CharSequence getIssuerInt();
 
-	/**
-	 * Gets the issuer pnr.
-	 *
-	 * @return the issuer pnr
-	 */
-	public String getIssuerPNR();
-	
+    /**
+     * Sets the issuer.
+     *
+     * @param issuer the new issuer
+     */
+    public void setIssuer(String issuer);
 
-	/**
-	 * Sets the issuer pnr.
-	 *
-	 * @param issuerPNR the new issuer pnr
-	 */
-	public void setIssuerPNR(String issuerPNR);
-	
+    /**
+     * Sets the issuer, without conversion to an integer type in encoding.
+     *
+     * @param issuer the new issuer
+     */
+    public void setIssuerMustString(String issuer);
 
-	/**
-	 * Gets the extension.
-	 *
-	 * @return the extension
-	 */
-	public IExtension getExtension();
-	
+    /**
+     * Gets the security provider.
+     *
+     * @return the security provider
+     */
+    public default String getSecurityProvider() {
+        CharSequence v = getSecurityProviderInt();
+        if (v == null) {
+            return null;
+        }
+        return v.toString();
+    }
 
-	/**
-	 * Sets the extension.
-	 *
-	 * @param extension the new extension
-	 */
-	public void setExtension(IExtension extension);
-	
+    public CharSequence getSecurityProviderInt();
 
-	/**
-	 * Gets the issued on train.
-	 *
-	 * @return the issued on train
-	 */
-	public String getIssuedOnTrain();
-	
 
-	/**
-	 * Sets the issued on train.
-	 *
-	 * @param issuedOnTrain the new issued on train
-	 */
-	public void setIssuedOnTrain(String issuedOnTrain);
-	
+    /**
+     * Sets the security provider.
+     *
+     * @param securityProvider the new security provider
+     */
+    public void setSecurityProvider(String securityProvider);
 
-	/**
-	 * Gets the issued on line.
-	 *
-	 * @return the issued on line
-	 */
-	public Integer getIssuedOnLine();
-	
 
-	/**
-	 * Sets the line number or id in case the ticket was issued on a local transport line.
-	 *
-	 * @param issuedOnLine the new issued on line
-	 */
-	public void setIssuedOnLine(Integer issuedOnLine);
-	
+    /**
+     * Sets the security provider, without conversion to an integer type in encoding.
+     *
+     * @param securityProvider the new security provider
+     */
+    public void setSecurityProviderMustString(String securityProvider);
 
-	/**
-	 * Gets the point of sale.
-	 *
-	 * @return the point of sale
-	 */
-	public IGeoCoordinate getPointOfSale();
-	
 
-	/**
-	 * Sets the point of sale.
-	 *
-	 * @param pointOfSale the new point of sale
-	 */
-	public void setPointOfSale(IGeoCoordinate pointOfSale);
-	
-		
-	public boolean isSecurePaperTicket();
-	public void setSecurePaperTicket(boolean securePaperTicket); 
-	
-	public String getCurrency();
-	public void setCurrency(String currency);
-	
-	public Integer getCurrencyFraction();
-	public void setCurrencyFraction(Integer fraction);
-	
-	/**
-	 * provides the time zone in case a local date was provided
-	 * @return TimeZoneId 
-	 */
-	public String getTimeZoneId();
+    /**
+     * Gets the issuer name.
+     *
+     * @return the issuer name
+     */
+    public String getIssuerName();
+
+
+    /**
+     * Sets the issuer name.
+     *
+     * @param issuerName the new issuer name
+     */
+    public void setIssuerName(String issuerName);
+
+
+    /**
+     * Checks if is specimen.
+     *
+     * @return true, if is specimen
+     */
+    public boolean isSpecimen();
+
+
+    /**
+     * Sets the specimen.
+     *
+     * @param specimen the new specimen
+     */
+    public void setSpecimen(boolean specimen);
+
+
+    /**
+     * Checks if is activated.
+     *
+     * @return true, if is activated
+     */
+    public boolean isActivated();
+
+
+    /**
+     * Sets the activated.
+     *
+     * @param activated the new activated
+     */
+    public void setActivated(boolean activated);
+
+
+    /**
+     * Gets the issuer pnr.
+     *
+     * @return the issuer pnr
+     */
+    public String getIssuerPNR();
+
+
+    /**
+     * Sets the issuer pnr.
+     *
+     * @param issuerPNR the new issuer pnr
+     */
+    public void setIssuerPNR(String issuerPNR);
+
+
+    /**
+     * Gets the extension.
+     *
+     * @return the extension
+     */
+    public IExtension getExtension();
+
+
+    /**
+     * Sets the extension.
+     *
+     * @param extension the new extension
+     */
+    public void setExtension(IExtension extension);
+
+
+    /**
+     * Gets the issued on train.
+     *
+     * @return the issued on train
+     */
+    public default String getIssuedOnTrain() {
+        CharSequence v = getIssuedOnTrainInt();
+        if (v == null) {
+            return null;
+        }
+        return v.toString();
+    }
+
+    public CharSequence getIssuedOnTrainInt();
+
+
+    /**
+     * Sets the issued on train.
+     *
+     * @param issuedOnTrain the new issued on train
+     */
+    public void setIssuedOnTrain(String issuedOnTrain);
+
+
+    /**
+     * Sets the issued on train, without conversion to an integer type in encoding.
+     *
+     * @param issuedOnTrain the new issued on train
+     */
+    public void setIssuedOnTrainMustString(String issuedOnTrain);
+
+
+    /**
+     * Gets the issued on line.
+     *
+     * @return the issued on line
+     */
+    public Integer getIssuedOnLine();
+
+
+    /**
+     * Sets the line number or id in case the ticket was issued on a local transport line.
+     *
+     * @param issuedOnLine the new issued on line
+     */
+    public void setIssuedOnLine(Integer issuedOnLine);
+
+
+    /**
+     * Gets the point of sale.
+     *
+     * @return the point of sale
+     */
+    public IGeoCoordinate getPointOfSale();
+
+
+    /**
+     * Sets the point of sale.
+     *
+     * @param pointOfSale the new point of sale
+     */
+    public void setPointOfSale(IGeoCoordinate pointOfSale);
+
+
+    public boolean isSecurePaperTicket();
+
+    public void setSecurePaperTicket(boolean securePaperTicket);
+
+    public String getCurrency();
+
+    public void setCurrency(String currency);
+
+    public Integer getCurrencyFraction();
+
+    public void setCurrencyFraction(Integer fraction);
+
+    /**
+     * provides the time zone in case a local date was provided
+     *
+     * @return TimeZoneId
+     */
+    public String getTimeZoneId();
 
 }

@@ -7,6 +7,7 @@ import java.util.HashSet;
 
 import org.uic.barcode.ticket.api.spec.ILine;
 import org.uic.barcode.ticket.api.spec.IStationCodeTable;
+import org.uic.barcode.ticket.api.utils.MustString;
 
 /**
  * The Class SimpleLine.
@@ -14,7 +15,7 @@ import org.uic.barcode.ticket.api.spec.IStationCodeTable;
 public class SimpleLine implements ILine {
 	
 	/** The carrier. */
-	protected String carrier;
+	protected CharSequence carrier;
 	
 	/** The line ids. */
 	protected HashSet<Integer> lineIds = new HashSet<Integer>();
@@ -23,10 +24,10 @@ public class SimpleLine implements ILine {
 	protected IStationCodeTable stationCodeTable = IStationCodeTable.stationUIC;
 	
 	/** The entry station. */
-	protected String entryStation;
+	protected CharSequence entryStation;
 	
 	/** The terminating station. */
-	protected String terminatingStation;        
+	protected CharSequence terminatingStation;
 	
 	/** The city. */
 	protected int city;
@@ -37,7 +38,7 @@ public class SimpleLine implements ILine {
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.ILine#getCarrier()
 	 */
-	public String getCarrier() {
+	public CharSequence getCarrierInt() {
 		return carrier;
 	}
 
@@ -46,6 +47,13 @@ public class SimpleLine implements ILine {
 	 */
 	public void setCarrier(String carrier) {
 		this.carrier = carrier;
+	}
+
+	/* (nicht-Javadoc)
+	 * @see org.uic.ticket.api.spec.ILine#setCarrierMustString(java.lang.String)
+	 */
+	public void setCarrierMustString(String carrier) {
+		this.carrier = new MustString(carrier);
 	}
 
 	/* (nicht-Javadoc)
@@ -79,7 +87,7 @@ public class SimpleLine implements ILine {
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.ILine#getEntryStation()
 	 */
-	public String getEntryStation() {
+	public CharSequence getEntryStationInt() {
 		return entryStation;
 	}
 
@@ -91,9 +99,16 @@ public class SimpleLine implements ILine {
 	}
 
 	/* (nicht-Javadoc)
+	 * @see org.uic.ticket.api.spec.ILine#setEntryStationMustString(java.lang.String)
+	 */
+	public void setEntryStationMustString(String entryStation) {
+		this.entryStation = new MustString(entryStation);
+	}
+
+	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.ILine#getTerminatingStation()
 	 */
-	public String getTerminatingStation() {
+	public CharSequence getTerminatingStationInt() {
 		return terminatingStation;
 	}
 
@@ -102,6 +117,13 @@ public class SimpleLine implements ILine {
 	 */
 	public void setTerminatingStation(String terminatingStation) {
 		this.terminatingStation = terminatingStation;
+	}
+
+	/* (nicht-Javadoc)
+	 * @see org.uic.ticket.api.spec.ILine#setTerminatingStationMustString(java.lang.String)
+	 */
+	public void setTerminatingStationMustString(String terminatingStation) {
+		this.terminatingStation = new MustString(terminatingStation);
 	}
 
 	/* (nicht-Javadoc)

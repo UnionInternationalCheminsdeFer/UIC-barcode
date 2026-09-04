@@ -140,8 +140,9 @@ public class CardReferenceType extends Object {
 	}
 
 	public void setCardIdNum(Long cardIdNum) {
-
-		this.cardIdNum = new Asn1BigInteger(cardIdNum);
+        if (cardIdNum != null) {
+            this.cardIdNum = new Asn1BigInteger(cardIdNum);
+        }
 	}
 	
 	public void setCardIdIA5(String cardIdIA5) {

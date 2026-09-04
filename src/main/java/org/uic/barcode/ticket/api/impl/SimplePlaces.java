@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.LinkedHashSet;
 
 import org.uic.barcode.ticket.api.spec.IPlaces;
+import org.uic.barcode.ticket.api.utils.MustString;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -24,7 +25,7 @@ public class SimplePlaces implements IPlaces {
 	protected String placeDescription;
 	
 	/** The places. */
-	protected Collection<String> places = new LinkedHashSet<String>();
+	protected Collection<CharSequence> places = new LinkedHashSet<>();
 
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.IPlaces#getCoach()
@@ -71,7 +72,7 @@ public class SimplePlaces implements IPlaces {
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.IPlaces#getPlaces()
 	 */
-	public Collection<String> getPlaces() {
+	public Collection<CharSequence> getPlacesInt() {
 		return places;
 	}
 
@@ -80,6 +81,13 @@ public class SimplePlaces implements IPlaces {
 	 */
 	public void addPlace(String place) {
 		this.places.add(place);
+	}
+
+	/* (nicht-Javadoc)
+	 * @see org.uic.ticket.api.spec.IPlaces#addPlaceMustString(java.lang.String)
+	 */
+	public void addPlaceMustString(String place) {
+		this.places.add(new MustString(place));
 	}
 	
 	

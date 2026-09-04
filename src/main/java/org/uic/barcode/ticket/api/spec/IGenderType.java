@@ -23,20 +23,20 @@ import org.uic.barcode.asn1.datatypes.HasExtensionMarker;
 
 @HasExtensionMarker
 public enum IGenderType {
-		unspecified("unspecified"),
-		female("female"),
-		male("male"),
-		other("other");
-		
-		
-		public String text;
+    unspecified("unspecified"),
+    female("female"),
+    male("male"),
+    other("other");
 
-		IGenderType(String text) {
-			this.text = text;
-		}
-		
-		public String toString(){
-			return text;
-		}
+
+    public String text;
+
+    IGenderType(String text) {
+        this.text = text;
+    }
+
+    public String toString() {
+        return text;
+    }
 }
 

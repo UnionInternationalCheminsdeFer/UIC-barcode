@@ -21,18 +21,18 @@ package org.uic.barcode.ticket.api.spec;
 
 
 public enum IGeoCoordinateSystemType {
-		wgs84("wgs84"),
-		grs80("grs80");
-		
-		
-		public String text;
+    wgs84("wgs84"),
+    grs80("grs80");
 
-		IGeoCoordinateSystemType(String text) {
-			this.text = text;
-		}
-		
-		public String toString(){
-			return text;
-		}
+
+    public String text;
+
+    IGeoCoordinateSystemType(String text) {
+        this.text = text;
+    }
+
+    public String toString() {
+        return text;
+    }
 }
 

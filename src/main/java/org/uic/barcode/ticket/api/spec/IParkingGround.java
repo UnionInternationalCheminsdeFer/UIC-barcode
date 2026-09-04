@@ -1,5 +1,5 @@
 /*
- * 
+ *
  */
 package org.uic.barcode.ticket.api.spec;
 
@@ -7,246 +7,319 @@ import java.util.Collection;
 import java.util.Date;
 
 
-
 /**
  * The Interface IParkingGround.
- * 
+ * <p>
  * IParkingGround provides the data for a prking ground reservation
  */
-public interface IParkingGround  extends IDocumentData {
-	
-	/**
-	 * Gets the parking ground id.
-	 *
-	 * @return the parking ground id
-	 */
-	public String getParkingGroundId();
+public interface IParkingGround extends IDocumentData {
 
-	/**
-	 * Sets the id of the parking ground
-	 *
-	 * @param parkingGroundId the new parking ground id
-	 */
-	public void setParkingGroundId(String parkingGroundId);
+    /**
+     * Gets the parking ground id.
+     *
+     * @return the parking ground id
+     */
+    public default String getParkingGroundId() {
+        CharSequence v = getParkingGroundIdInt();
+        if (v == null) {
+            return null;
+        }
+        return v.toString();
+    }
 
-	/**
-	 * Gets the from parking date.
-	 *
-	 * @return the from parking date
-	 */
-	public Date getFromParkingDate();
+    public CharSequence getParkingGroundIdInt();
 
-	/**
-	 * Sets the from parking date.
-	 *
-	 * @param parkingDate the new from parking date
-	 */
-	public void setFromParkingDate(Date parkingDate);
+    /**
+     * Sets the id of the parking ground
+     *
+     * @param parkingGroundId the new parking ground id
+     */
+    public void setParkingGroundId(String parkingGroundId);
 
-	/**
-	 * Gets the to parking date.
-	 *
-	 * @return the to parking date
-	 */
-	public Date getToParkingDate();
+    /**
+     * Sets the id of the parking ground, without conversion to an integer type in encoding.
+     *
+     * @param parkingGroundId the new parking ground id
+     */
+    public void setParkingGroundIdMustString(String parkingGroundId);
 
-	/**
-	 * Sets the to parking date.
-	 *
-	 * @param parkingDate the new to parking date
-	 */
-	public void setToParkingDate(Date parkingDate);	
+    /**
+     * Gets the from parking date.
+     *
+     * @return the from parking date
+     */
+    public Date getFromParkingDate();
 
-	/**
-	 * Gets the reference.
-	 *
-	 * @return the reference
-	 */
-	public String getReference();
+    /**
+     * Sets the from parking date.
+     *
+     * @param parkingDate the new from parking date
+     */
+    public void setFromParkingDate(Date parkingDate);
 
-	/**
-	 * Sets the reference.
-	 *
-	 * @param reference the new reference
-	 */
-	public void setReference(String reference);
+    /**
+     * Gets the to parking date.
+     *
+     * @return the to parking date
+     */
+    public Date getToParkingDate();
 
-	/**
-	 * Gets the access code to enter the parking ground.
-	 *
-	 * @return the access code to enter the parking ground
-	 */
-	public String getAccessCode();
+    /**
+     * Sets the to parking date.
+     *
+     * @param parkingDate the new to parking date
+     */
+    public void setToParkingDate(Date parkingDate);
 
-	/**
-	 * Sets the access code to enter the parking ground.
-	 *
-	 * @param accessCode the new access code to enter the parking ground
-	 */
-	public void setAccessCode(String accessCode);
+    /**
+     * Gets the reference.
+     *
+     * @return the reference
+     */
+    public default String getReference() {
+        CharSequence v = getReferenceInt();
+        if (v == null) {
+            return null;
+        }
+        return v.toString();
+    }
 
-	/**
-	 * Gets the human readable location name of the parking ground.
-	 *
-	 * @return the human readable location name of the parking ground.
-	 */
-	public String getLocation();
+    public CharSequence getReferenceInt();
 
-	/**
-	 * Sets the human readable location name of the parking ground.
-	 *
-	 * @param location the new human readable location name of the parking ground.
-	 */
-	public void setLocation(String location);
+    /**
+     * Sets the reference.
+     *
+     * @param reference the new reference
+     */
+    public void setReference(String reference);
 
-	/**
-	 * Gets the station code in case the parking ground is associated with a station 
-	 *
-	 * @return the station code in case the parking ground is associated with a station 
-	 */
-	public String getStation();
+    /**
+     * Sets the reference, without conversion to an integer type in encoding.
+     *
+     * @param reference the new reference
+     */
+    public void setReferenceMustString(String reference);
 
-	/**
-	 * Sets the station code in case the parking ground is associated with a station 
-	 *
-	 * @param station the new station code in case the parking ground is associated with a station 
-	 */
-	public void setStation(String station);
+    /**
+     * Gets the access code to enter the parking ground.
+     *
+     * @return the access code to enter the parking ground
+     */
+    public String getAccessCode();
 
-	/**
-	 * Gets the special information.
-	 *
-	 * @return the special information
-	 */
-	public String getSpecialInformation();
+    /**
+     * Sets the access code to enter the parking ground.
+     *
+     * @param accessCode the new access code to enter the parking ground
+     */
+    public void setAccessCode(String accessCode);
 
-	/**
-	 * Sets the special information.
-	 *
-	 * @param specialInformation the new special information
-	 */
-	public void setSpecialInformation(String specialInformation);
+    /**
+     * Gets the human readable location name of the parking ground.
+     *
+     * @return the human readable location name of the parking ground.
+     */
+    public String getLocation();
 
-	/**
-	 * Gets the entry track to enter the parking ground.
-	 *
-	 * @return the entry track to enter the parking ground.
-	 */
-	public String getEntryTrack();
+    /**
+     * Sets the human readable location name of the parking ground.
+     *
+     * @param location the new human readable location name of the parking ground.
+     */
+    public void setLocation(String location);
 
-	/**
-	 * Sets the entry track to enter the parking ground..
-	 *
-	 * @param entryTrack the new entry track to enter the parking ground.
-	 */
-	public void setEntryTrack(String entryTrack);
+    /**
+     * Gets the station code in case the parking ground is associated with a station
+     *
+     * @return the station code in case the parking ground is associated with a station
+     */
+    public default String getStation() {
+        CharSequence v = getStationInt();
+        if (v == null) {
+            return null;
+        }
+        return v.toString();
+    }
 
-	/**
-	 * Gets the number plate.
-	 *
-	 * @return the number plate
-	 */
-	public String getNumberPlate();
+    public CharSequence getStationInt();
 
-	/**
-	 * Sets the number plate.
-	 *
-	 * @param numberPlate the new number plate
-	 */
-	public void setNumberPlate(String numberPlate);
+    /**
+     * Sets the station code in case the parking ground is associated with a station
+     *
+     * @param station the new station code in case the parking ground is associated with a station
+     */
+    public void setStation(String station);
 
-	/**
-	 * Gets the extension.
-	 *
-	 * @return the extension
-	 */
-	public IExtension getExtension();
+    /**
+     * Sets the station code in case the parking ground is associated with a station, without conversion to an integer type in encoding.
+     *
+     * @param station the new station code in case the parking ground is associated with a station
+     */
+    public void setStationMustString(String station);
 
-	/**
-	 * Sets the extension.
-	 *
-	 * @param extensionData the new extension
-	 */
-	public void setExtension(IExtension extensionData);
-	
-	/**
-	 * Gets the station code table.
-	 *
-	 * @return the station code table
-	 */
-	public  IStationCodeTable getStationCodeTable();
+    /**
+     * Gets the special information.
+     *
+     * @return the special information
+     */
+    public String getSpecialInformation();
 
-	/**
-	 * Sets the station code table.
-	 *
-	 * @param stationCodeTable the new station code table
-	 */
-	public void setStationCodeTable( IStationCodeTable stationCodeTable);
+    /**
+     * Sets the special information.
+     *
+     * @param specialInformation the new special information
+     */
+    public void setSpecialInformation(String specialInformation);
 
-	/**
-	 * Gets the product owner.
-	 *
-	 * @return the product owner
-	 */
-	public String getProductOwner();
-	
-	/**
-	 * Sets the product owner.
-	 *
-	 * @param productOwner the new product owner
-	 */
-	public void setProductOwner(String productOwner);
-	
+    /**
+     * Gets the entry track to enter the parking ground.
+     *
+     * @return the entry track to enter the parking ground.
+     */
+    public String getEntryTrack();
 
-	/**
-	 * Gets the product type.
-	 *
-	 * @return the product type
-	 */
-	public String getProductId();
-	
-	/**
-	 * Sets the product type.
-	 *
-	 * @param id the new product id
-	 */
-	public void setProductId(String type);	
-	
-	/**
-	 * Sets the price. 
-	 *
-	 *
-	 * @param price
-	 */
-	public void setPrice(Long price);
-	
-	
-	/**
-	 * Gets the price.
-	 *
-	 * The price
-	 *
-	 * @return the price
-	 */
-	public Long getPrice();
-	
-	
-	/**
-	 * Gets the included add on tickets.
-	 *	 
-	 * E.g. an included local transport ticket at the beginning or end of the route.
-	 * 	 
-	 * @return the included add ons
-	 */
-	public Collection<IVatDetail> getVatDetails();
+    /**
+     * Sets the entry track to enter the parking ground..
+     *
+     * @param entryTrack the new entry track to enter the parking ground.
+     */
+    public void setEntryTrack(String entryTrack);
 
-	/**
-	 * Adds an included add on ticket.
-	 * 
-	 * E.g. an included local transport ticket at the beginning or end of the route.
-	 *
-	 * @param includedAddOn the included add on
-	 */
-	public void addVatDetail(IVatDetail vatDetail) ;
-	
+    /**
+     * Gets the number plate.
+     *
+     * @return the number plate
+     */
+    public String getNumberPlate();
+
+    /**
+     * Sets the number plate.
+     *
+     * @param numberPlate the new number plate
+     */
+    public void setNumberPlate(String numberPlate);
+
+    /**
+     * Gets the extension.
+     *
+     * @return the extension
+     */
+    public IExtension getExtension();
+
+    /**
+     * Sets the extension.
+     *
+     * @param extensionData the new extension
+     */
+    public void setExtension(IExtension extensionData);
+
+    /**
+     * Gets the station code table.
+     *
+     * @return the station code table
+     */
+    public IStationCodeTable getStationCodeTable();
+
+    /**
+     * Sets the station code table.
+     *
+     * @param stationCodeTable the new station code table
+     */
+    public void setStationCodeTable(IStationCodeTable stationCodeTable);
+
+    /**
+     * Gets the product owner.
+     *
+     * @return the product owner
+     */
+    public default String getProductOwner() {
+        CharSequence v = getProductOwnerInt();
+        if (v == null) {
+            return null;
+        }
+        return v.toString();
+    }
+
+    public CharSequence getProductOwnerInt();
+
+    /**
+     * Sets the product owner.
+     *
+     * @param productOwner the new product owner
+     */
+    public void setProductOwner(String productOwner);
+
+    /**
+     * Sets the product owner, without conversion to an integer type in encoding.
+     *
+     * @param productOwner the new product owner
+     */
+    public void setProductOwnerMustString(String productOwner);
+
+
+    /**
+     * Gets the product type.
+     *
+     * @return the product type
+     */
+    public default String getProductId() {
+        CharSequence v = getProductIdInt();
+        if (v == null) {
+            return null;
+        }
+        return v.toString();
+    }
+
+    public CharSequence getProductIdInt();
+
+    /**
+     * Sets the product type.
+     *
+     * @param id the new product id
+     */
+    public void setProductId(String id);
+
+    /**
+     * Sets the product type, without conversion to an integer type in encoding.
+     *
+     * @param id the new product id
+     */
+    public void setProductIdMustString(String id);
+
+    /**
+     * Sets the price.
+     *
+     * @param price
+     */
+    public void setPrice(Long price);
+
+
+    /**
+     * Gets the price.
+     * <p>
+     * The price
+     *
+     * @return the price
+     */
+    public Long getPrice();
+
+
+    /**
+     * Gets the included add on tickets.
+     * <p>
+     * E.g. an included local transport ticket at the beginning or end of the route.
+     *
+     * @return the included add ons
+     */
+    public Collection<IVatDetail> getVatDetails();
+
+    /**
+     * Adds an included add on ticket.
+     * <p>
+     * E.g. an included local transport ticket at the beginning or end of the route.
+     *
+     * @param includedAddOn the included add on
+     */
+    public void addVatDetail(IVatDetail vatDetail);
+
 }

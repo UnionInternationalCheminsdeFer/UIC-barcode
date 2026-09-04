@@ -8,6 +8,7 @@ import java.util.LinkedHashSet;
 
 import org.uic.barcode.ticket.api.spec.IRegionalValidity;
 import org.uic.barcode.ticket.api.spec.IReturnRouteDescription;
+import org.uic.barcode.ticket.api.utils.MustString;
 
 /**
  * The Class SimpleReturnRouteDescription.
@@ -15,10 +16,10 @@ import org.uic.barcode.ticket.api.spec.IReturnRouteDescription;
 public class SimpleReturnRouteDescription implements IReturnRouteDescription{
 	
 	/** The from station. */
-	protected String fromStation;
+	protected CharSequence fromStation;
 	
 	/** The to station. */
-	protected String toStation;        
+	protected CharSequence toStation;
 				                 
 	/** The from station name. */
 	protected String fromStationName;
@@ -36,7 +37,7 @@ public class SimpleReturnRouteDescription implements IReturnRouteDescription{
 	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.IReturnRouteDescription#getFromStation()
 	 */
-	public String getFromStation() {
+	public CharSequence getFromStationInt() {
 		return fromStation;
 	}
 
@@ -48,9 +49,16 @@ public class SimpleReturnRouteDescription implements IReturnRouteDescription{
 	}
 
 	/* (nicht-Javadoc)
+	 * @see org.uic.ticket.api.spec.IReturnRouteDescription#setFromStationMustString(java.lang.String)
+	 */
+	public void setFromStationMustString(String fromStation) {
+		this.fromStation = new MustString(fromStation);
+	}
+
+	/* (nicht-Javadoc)
 	 * @see org.uic.ticket.api.spec.IReturnRouteDescription#getToStation()
 	 */
-	public String getToStation() {
+	public CharSequence getToStationInt() {
 		return toStation;
 	}
 
@@ -59,6 +67,13 @@ public class SimpleReturnRouteDescription implements IReturnRouteDescription{
 	 */
 	public void setToStation(String toStation) {
 		this.toStation = toStation;
+	}
+
+	/* (nicht-Javadoc)
+	 * @see org.uic.ticket.api.spec.IReturnRouteDescription#setToStationMustString(java.lang.String)
+	 */
+	public void setToStationMustString(String toStation) {
+		this.toStation = new MustString(toStation);
 	}
 
 	/* (nicht-Javadoc)

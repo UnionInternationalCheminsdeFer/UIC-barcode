@@ -23,24 +23,24 @@ import org.uic.barcode.asn1.datatypes.HasExtensionMarker;
 
 @HasExtensionMarker
 public enum IRoofRackType {
-		norack("norack"),
-		roofRailing("roofRailing"),
-		luggageRack("luggageRack"),
-		skiRack("skiRack"),
-		boxRack("boxRack"),
-		rackWithOneBox("rackWithOneBox"),
-		rackWithTwoBoxes("rackWithTwoBoxes"),
-		bicycleRack("bicycleRack"),
-		otherRack("otherRack");
-		
-		public String text;
+    norack("norack"),
+    roofRailing("roofRailing"),
+    luggageRack("luggageRack"),
+    skiRack("skiRack"),
+    boxRack("boxRack"),
+    rackWithOneBox("rackWithOneBox"),
+    rackWithTwoBoxes("rackWithTwoBoxes"),
+    bicycleRack("bicycleRack"),
+    otherRack("otherRack");
 
-		IRoofRackType(String text) {
-			this.text = text;
-		}
-		
-		public String toString(){
-			return text;
-		}		
+    public String text;
+
+    IRoofRackType(String text) {
+        this.text = text;
+    }
+
+    public String toString() {
+        return text;
+    }
 }
 

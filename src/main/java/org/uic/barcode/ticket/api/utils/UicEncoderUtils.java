@@ -352,8 +352,8 @@ public class UicEncoderUtils {
 	public static String getIA5RestrictedNonNum(String text, int min, int max) throws EncodingFormatException {
 		if (text == null || text.length() == 0) {
 			return null;
-		}		
-		
+		}
+
 		for (int i = 0; i < text.length(); i++){
 			int index = text.charAt(i);
 			if (index < 0 || index > 127) {
@@ -370,7 +370,7 @@ public class UicEncoderUtils {
 			}
 		} catch (NumberFormatException e) {
 			return text;
-		}	
+		}
 	}
 
 	/**

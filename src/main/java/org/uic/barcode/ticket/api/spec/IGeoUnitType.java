@@ -20,21 +20,21 @@
 package org.uic.barcode.ticket.api.spec;
 
 public enum IGeoUnitType {
-		microDegree("microDegree"),
-		tenthmilliDegree("tenthmilliDegree"),
-		milliDegree("milliDegree"),
-		centiDegree("centiDegree"),
-		deciDegree("deciDegree");
-		
-		
-		public String text;
+    microDegree("microDegree"),
+    tenthmilliDegree("tenthmilliDegree"),
+    milliDegree("milliDegree"),
+    centiDegree("centiDegree"),
+    deciDegree("deciDegree");
 
-		IGeoUnitType(String text) {
-			this.text = text;
-		}
-		
-		public String toString(){
-			return text;
-		}		
+
+    public String text;
+
+    IGeoUnitType(String text) {
+        this.text = text;
+    }
+
+    public String toString() {
+        return text;
+    }
 }
 

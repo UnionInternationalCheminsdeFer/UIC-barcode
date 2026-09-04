@@ -23,19 +23,19 @@ import org.uic.barcode.asn1.datatypes.HasExtensionMarker;
 
 @HasExtensionMarker
 public enum ITicketType {
-		openTicket("openTicket"),
-		pass("pass"),
-		reservation("reservation"),
-		carCarriageReservation("carCarriageReservation");
-		
-		public String text;
+    openTicket("openTicket"),
+    pass("pass"),
+    reservation("reservation"),
+    carCarriageReservation("carCarriageReservation");
 
-		ITicketType(String text) {
-			this.text = text;
-		}
-		
-		public String toString(){
-			return text;
-		}			
+    public String text;
+
+    ITicketType(String text) {
+        this.text = text;
+    }
+
+    public String toString() {
+        return text;
+    }
 }
 

@@ -128,7 +128,7 @@ public class DelayConfirmationTestV3 {
 		assert(del.getDelay() == 31L);
 		assert(del.isTrainCancelled() == false);
 		assert(del.getInfoText().equals("delay confirmation"));
-		assert(del.getReference().equals("ABDJ12345"));
+		assert(del.getReference().toString().equals("ABDJ12345"));
 		assert(del.getTrain().equals("100"));
 		
 		

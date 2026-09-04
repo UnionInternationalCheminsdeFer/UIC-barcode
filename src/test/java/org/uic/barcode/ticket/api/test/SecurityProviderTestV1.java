@@ -143,8 +143,8 @@ public class SecurityProviderTestV1 {
         assert(signatureCheck == Constants.LEVEL1_VALIDATION_OK);
         
         
-        assert(dec.getUicTicket().getIssuerDetails().getSecurityProvider().equals("1080"));
-        assert(dec.getUicTicket().getIssuerDetails().getIssuer().equals("4711"));
+        assert(dec.getUicTicket().getIssuerDetails().getSecurityProvider().toString().equals("1080"));
+        assert(dec.getUicTicket().getIssuerDetails().getIssuer().toString().equals("4711"));
         assert(dec.getStaticFrame().getHeaderRecord().getIssuer().equals("1080"));
 
         

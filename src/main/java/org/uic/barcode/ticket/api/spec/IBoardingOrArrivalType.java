@@ -23,17 +23,17 @@ import org.uic.barcode.asn1.datatypes.HasExtensionMarker;
 
 @HasExtensionMarker
 public enum IBoardingOrArrivalType {
-		boarding("boarding"),
-		arrival("arrival");
-		
-		public String text;
+    boarding("boarding"),
+    arrival("arrival");
 
-		IBoardingOrArrivalType(String text) {
-			this.text = text;
-		}
-		
-		public String toString(){
-			return text;
-		}		
+    public String text;
+
+    IBoardingOrArrivalType(String text) {
+        this.text = text;
+    }
+
+    public String toString() {
+        return text;
+    }
 }
 

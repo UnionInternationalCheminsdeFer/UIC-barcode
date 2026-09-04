@@ -20,22 +20,22 @@
 package org.uic.barcode.ticket.api.spec;
 
 public enum IBerthTypeType {
-		single("single"),
-		special("special"),
-		double_("double_"),
-		t2("t2"),
-		t3("t3"),
-		t4("t4");
-		
-		
-		public String text;
+    single("single"),
+    special("special"),
+    double_("double_"),
+    t2("t2"),
+    t3("t3"),
+    t4("t4");
 
-		IBerthTypeType(String text) {
-			this.text = text;
-		}
-		
-		public String toString(){
-			return text;
-		}		
+
+    public String text;
+
+    IBerthTypeType(String text) {
+        this.text = text;
+    }
+
+    public String toString() {
+        return text;
+    }
 }
 
