@@ -121,7 +121,7 @@ public class ReservationData extends Object {
 	@Asn1Optional public String toStationNameUTF8;
 
 	@FieldOrder(order = 20)
-	@IntRange(minValue=0,maxValue=1440)
+	@IntRange(minValue=0,maxValue=1439)
 	public Long departureTime;
 	
 	@FieldOrder(order = 21)

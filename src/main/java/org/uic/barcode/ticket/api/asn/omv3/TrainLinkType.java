@@ -47,7 +47,7 @@ public class TrainLinkType extends Object {
 	public Long travelDate;
 
 	@FieldOrder(order = 3)
-	@IntRange(minValue=0,maxValue=1440)
+	@IntRange(minValue=0,maxValue=1439)
 	public Long departureTime;
 	
 	@FieldOrder(order = 4)

@@ -38,7 +38,7 @@ public class TrainValidityType extends Object {
 	}
 
 	@FieldOrder(order = 0)
-	@IntRange(minValue=-1,maxValue=700)
+	@IntRange(minValue=-367,maxValue=700)
 	@Asn1Default(value="0")
 	@Asn1Optional public Long validFromDay;
 

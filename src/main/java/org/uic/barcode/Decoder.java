@@ -468,6 +468,34 @@ public class Decoder {
 
 	}
 
+	/*
+	 * get the issuer of a ticket
+	 */
+	public String getIssuer() throws EncodingFormatException {
+		
+		if (dynamicFrame != null) {
+			if (this.getUicTicket()!= null
+				&& this.getUicTicket().getIssuerDetails() != null) {
+				return this.getUicTicket().getIssuerDetails().getIssuer();
+			}	
+		} else if (staticFrame != null) {
+			if (staticFrame.getHeaderRecord() != null) {
+				return staticFrame.getHeaderRecord().getIssuer();
+			} else if (staticFrame.getuFlex() != null  
+					&& staticFrame.getuFlex() != null  
+					&& staticFrame.getuFlex().getTicket() != null 
+					&& staticFrame.getuFlex().getTicket().getIssuerDetails() != null){
+				return staticFrame.getuFlex().getTicket().getIssuerDetails().getIssuer();
+			}
+		} else if (ssbFrame != null) {
+			return String.valueOf(ssbFrame.getHeader().getIssuer());
+		} else {
+			throw new EncodingFormatException("Unknown Header");
+		}
+		return null;
+
+	}
+	
 	public SsbFrame getSsbFrame() {
 		return ssbFrame;
 	}
