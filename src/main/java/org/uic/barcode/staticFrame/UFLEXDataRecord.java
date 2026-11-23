@@ -36,10 +36,8 @@ public class UFLEXDataRecord extends DataRecord {
 	 * Gets the ticket.
 	 *
 	 * @return the ticket
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 * @throws EncodingFormatException the encoding format exception
 	 */
-	public IUicRailTicket getTicket() throws IOException, EncodingFormatException {
+	public IUicRailTicket getTicket()  {
 		if (ticket != null) {
 			return ticket;
 		}
